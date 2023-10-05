@@ -1,4 +1,8 @@
-openapi: "3.0.0"
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: '3.0.0'
 info:
   version: 1.0.0
   title: SAK
@@ -77,7 +81,7 @@ paths:
       operationId: exampleRequest3
       security:
         - oAuth2:
-          - write:pets
+            - write:pets
       tags:
         - tag1
         - tag2
@@ -91,9 +95,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
 components:
   securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+
+    #    BearerAuth:
+    #      type: http
+    #      scheme: bearer
+    #      bearerFormat: JWT
     oAuth2:
       type: oauth2
       flows:

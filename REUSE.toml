@@ -1,0 +1,83 @@
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: CC0-1.0
+
+version = 1
+
+# configurations
+[[annotations]]
+path = ["tsconfig.json","package.json","package-lock.json"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 diggsweden/rest-api-profil-lint-processor"
+SPDX-License-Identifier = "CC0-1.0"
+
+# images etc
+[[annotations]]
+path = [
+    "document/instructions/images/regelutfall.png",
+    "document/instructions/images/regelutfall-2.png",
+    "images/ame1.png",
+    "images/ame2.png",
+    "images/ame4.png",
+    "images/ame5.png",
+    "images/ame7.png",
+    "images/arq1.png",
+    "images/arq3.png",
+    "images/dok1.png",
+    "images/dok15.png",
+    "images/dok15_2.png",
+    "images/dok17-2.png",
+    "images/dok17.png",
+    "images/dok19.png",
+    "images/dok20.png",
+    "images/dok3.png",
+    "images/dok7.png",
+    "images/dot1-2.png",
+    "images/dot1.png",
+    "images/dot4.png",
+    "images/fel1-2.png",
+    "images/fel1.png",
+    "images/fel2.png",
+    "images/fns01.png",
+    "images/fns01_2.png",
+    "images/for02.png",
+    "images/fns03.png",
+    "images/fns05.png",
+    "images/fns06.png",
+    "images/fns07.png",
+    "images/fns08.png",
+    "images/fns09.png",
+    "images/rest-api-profil.png",
+    "images/sak09.png",
+    "images/sak10.png",
+    "images/sak18.png",
+    "images/ufn1-2.png",
+    "images/ufn1.png",
+    "images/ufn2.png",
+    "images/ufn5-1.png",
+    "images/ufn5-2.png",
+    "images/ufn5-3.png",
+    "images/ufn5.png",
+    "images/ufn7-2.png",
+    "images/ufn7.png",
+    "images/ufn8-2.png",
+    "images/ufn8.png",
+    "images/ufn9-2.png",
+    "images/ufn9-3.png",
+    "images/ufn9.png",
+    "images/ver5.png",
+    "**/*.md",
+    "**/*.json",
+    ".prettierrc",
+    "**/*/code_quality.sh",
+    "images/ver6.png"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 diggsweden/rest-api-profil-lint-processor"
+SPDX-License-Identifier = "CC0-1.0"
+
+# documents etc
+[[annotations]]
+path = ["document/Avstaemning_REST_API_profil_v_1_2_0_0.xlsx"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 diggsweden/rest-api-profil-lint-processor"
+SPDX-License-Identifier = "CC0-1.0"

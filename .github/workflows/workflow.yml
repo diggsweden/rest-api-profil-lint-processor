@@ -1,18 +1,22 @@
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: EUPL-1.2
+
 ---
 name: RAP-LP project Workflow
 
 on: # yamllint disable-line rule:truthy
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"      
+      - "v[0-9]+.[0-9]+.[0-9]+"
 jobs:
   publish-package:
     uses: ./.github/workflows/publish-package.yaml
     permissions:
       contents: read
-      packages: write    
+      packages: write
   publish-image:
     uses: ./.github/workflows/publish-image.yaml
     permissions:
       contents: read
-      packages: write    
+      packages: write

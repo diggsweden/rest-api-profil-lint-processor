@@ -1,10 +1,10 @@
 {
   "name": "@diggsweden/rest-api-profil-lint-processor",
-  "version": "v0.2.6",
+  "version": "v1.0.0",
   "main": ".src/app.ts",
   "type": "module",
   "engines": {
-    "node": ">=20.17.0 <20.18.0"
+    "node": ">=20.17.0 <=22.15.0"
   },
   "repository": {
     "type": "git",
@@ -16,26 +16,28 @@
     "pretest": "openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o tests/generated",
     "test": "jest",
     "test:integration": "node --experimental-vm-modules ./node_modules/.bin/jest --config jest.integration.config.cjs ",
-    "start": "node --import=./register.js src/app.ts"
+    "start": "node --import=./register.js src/app.ts",
+    "version": "standard-version --skip.commit"
   },
   "directories": {
     "test": "test"
   },
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.14.0",
     "@stoplight/spectral-formats": "^1.5.0",
     "@types/adm-zip": "^0.5.6",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.13",
-    "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.7.5",
     "jest": "^29.7.0",
-    "supertest": "^7.0.0",
+    "standard-version": "^9.5.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "@openapitools/openapi-generator-cli": "^2.14.0",
+    "@types/js-yaml": "^4.0.9",
+    "supertest": "^7.0.0"
   },
   "dependencies": {
-    "@stoplight/spectral-core": "^1.18.3",
+    "@stoplight/spectral-core": "^1.19.5",
     "@stoplight/spectral-functions": "^1.7.2",
     "@types/express": "^5.0.0",
     "adm-zip": "^0.5.16",
@@ -51,10 +53,12 @@
   },
   "//": [
     "Override transitive dependency due to vulnerability",
-    "[CVE-2024-21534] CWE-94: Improper Control of Generation of Code ('Code Injection')"],
+    "[GHSA-pppg-cpfq-h7wr] JSONPath Plus Remote Code Execution (RCE) Vulnerability - https://github.com/advisories/GHSA-pppg-cpfq-h7wr",
+    "[GHSA-hw8r-x6gr-5gjp] JSONPath Plus allows Remote Code Execution - https://github.com/advisories/GHSA-hw8r-x6gr-5gjp"
+  ],
   "overrides": {
-   "@stoplight/spectral-core": {
-      "jsonpath-plus": "10.0.0"
+    "@stoplight/spectral-core": {
+      "jsonpath-plus": "10.3.0"
     }
   },
   "author": "Digg - Agency for Digital Government",

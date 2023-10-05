@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+---
+openapi: '3.0.0'
+info:
+  version: 1.2.0
+  title: RAP-LP
+  description: OpenAPI Specification example to handle Rules for the category []Felhantering] in the Swedish REST API-profil https://dev.dataportal.se/rest-api-profil
+  license:
+    name: EUPL-1.2 license
+paths:
+  /:
+    get:
+      responses:
+        '200':
+          description: Desc goes here
+        '501':
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string

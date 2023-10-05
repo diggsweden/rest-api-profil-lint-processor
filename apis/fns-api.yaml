@@ -1,4 +1,8 @@
-openapi: "3.0.0"
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: '3.0.0'
 info:
   version: 1.0.0
   title: FNS
@@ -79,7 +83,7 @@ paths:
           schema:
             type: integer
             format: int32
-            default: 20
+            default: 200
         - name: offset
           in: query
           description: offset (persons are sorted by name)
@@ -142,6 +146,46 @@ paths:
           required: false
           schema:
             type: string
+            default: 100
+      responses:
+        '200':
+          description: person response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /personal:
+    get:
+      summary: Returns all persons
+      operationId: findPersonal
+      tags:
+        - Persons
+      description: |
+        Returns all persons
+      parameters:
+        - name: 1limit_this
+          in: query
+          description: max number of persons to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: pageThis
+          in: query
+          description: Test
+          required: true
+          schema:
+            type: string
             default: 1
       responses:
         '200':
@@ -159,11 +203,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-
-
 components:
   securitySchemes:
-    bearerAuth:     # <-- arbitrary name for the security scheme
+    bearerAuth: # <-- arbitrary name for the security scheme
       type: http
       scheme: bearer
   schemas:
@@ -208,7 +250,7 @@ components:
           type: string
         epost:
           type: string
-  
+
 tags:
   - name: Organization
     description: Organization

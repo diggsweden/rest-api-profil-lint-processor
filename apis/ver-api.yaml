@@ -1,4 +1,8 @@
-openapi: "3.0.0"
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: '3.0.0'
 info:
   version: 1.0.0
   title: Swagger Petstore
@@ -12,7 +16,7 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: http://petstore.swagger.io/
+  - url: http://petstore.swagger.io/v09/my-api
 
 paths:
   /example:
@@ -76,7 +80,7 @@ paths:
           schema:
             type: array
             items:
-              type: string        
+              type: string
         - name: offset
           in: query
           schema:
@@ -248,11 +252,11 @@ paths:
 
 components:
   securitySchemes:
-    bearerAuth:     # <-- arbitrary name for the security scheme
+    bearerAuth: # <-- arbitrary name for the security scheme
       type: http
       scheme: bearer
   security:
-  - bearerAuth: []  # <-- use the same name here
+    - bearerAuth: [] # <-- use the same name here
 
   schemas:
     Pet:
@@ -260,7 +264,7 @@ components:
         - $ref: '#/components/schemas/NewPet'
         - type: object
           required:
-          - id
+            - id
           properties:
             id:
               type: integer
@@ -269,12 +273,12 @@ components:
     NewPet:
       type: object
       required:
-        - name  
+        - name
       properties:
         name:
           type: string
         tag:
-          type: string    
+          type: string
 
     Error:
       type: object
