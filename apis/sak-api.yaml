@@ -1,0 +1,134 @@
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: SAK
+  description: Säkerhet RAP-LP
+  contact:
+    name: RAP-LP
+    email: rap-lp@example.com
+    url: http://example.com
+  termsOfService: http://swagger.io/terms/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://example.com/myapi/v2
+paths:
+  /example:
+    post:
+      summary: Example API with Payload in Headers Allowed
+      description: For testing
+      operationId: exampleRequest
+      tags:
+        - tag1
+        - tag2
+      parameters:
+        - name: Date
+          in: header
+          schema:
+            type: object
+            properties:
+              data:
+                type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+      responses:
+        '200':
+          description: example response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /example2:
+    post:
+      summary: Example API with Payload in Headers Allowed
+      description: For testing
+      operationId: exampleRequest2
+      tags:
+        - tag1
+        - tag2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+      responses:
+        '200':
+          description: example response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /example3:
+    get:
+      summary: Example API with Payload in Headers Allowed
+      description: For testing
+      operationId: exampleRequest3
+      security:
+        - oAuth2:
+          - write:pets
+      tags:
+        - tag1
+        - tag2
+      responses:
+        '200':
+          description: example response
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic  
+
+#    BearerAuth:
+#      type: http
+#      scheme: bearer
+#      bearerFormat: JWT  
+    oAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: http://example.com/api/oauth/token
+          refreshUrl: http://example.com/api/oauth/refresh
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+tags:
+  - name: tag1
+    description: Everything about tag1
+  - name: tag2
+    description: Everything about tag2

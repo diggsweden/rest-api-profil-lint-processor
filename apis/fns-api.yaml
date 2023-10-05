@@ -1,0 +1,259 @@
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: FNS
+  description: Filtrering, paginering och sökparametrar
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: RAP-LP Team
+    email: rap-lp@example.com
+    url: http://example.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://fns.example.com/
+
+paths:
+  /organisationer:
+    get:
+      summary: Returns all organizations
+      operationId: findOrganizations
+      tags:
+        - Organization
+      description: |
+        Returns all organizations from the system that the user has access to
+      parameters:
+        - name: limit
+          in: query
+          description: max number of organizations to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: page
+          in: query
+          description: page number (organizations are sorted by name)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: custom
+          in: query
+          description: special case
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 55
+      responses:
+        '200':
+          description: Organization response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organisation'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /personer:
+    get:
+      summary: Returns all persons
+      operationId: findPersonal
+      tags:
+        - Persons
+      description: |
+        Returns all persons
+      parameters:
+        - name: limit
+          in: query
+          description: max number of persons to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 200
+        - name: offset
+          in: query
+          description: offset (persons are sorted by name)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: page
+          in: query
+          description: Test
+          required: false
+          schema:
+            type: string
+            default: 1
+      responses:
+        '200':
+          description: person response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /default_limit:
+    get:
+      summary: Returns all persons
+      operationId: findPersonal
+      tags:
+        - Persons
+      description: |
+        Returns all persons
+      parameters:
+        - name: limit
+          in: query
+          description: max number of persons to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: offset
+          in: query
+          description: offset (persons are sorted by name)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: page
+          in: query
+          description: Test
+          required: false
+          schema:
+            type: string
+            default: 100
+      responses:
+        '200':
+          description: person response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /personal:
+    get:
+      summary: Returns all persons
+      operationId: findPersonal
+      tags:
+        - Persons
+      description: |
+        Returns all persons
+      parameters:
+        - name: 1limit_this
+          in: query
+          description: max number of persons to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: pageThis
+          in: query
+          description: Test
+          required: true
+          schema:
+            type: string
+            default: 1
+      responses:
+        '200':
+          description: person response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+components:
+  securitySchemes:
+    bearerAuth:     # <-- arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    Organisation:
+      type: object
+      required:
+        - id
+        - namn
+      properties:
+        id:
+          type: string
+          format: uuid
+        namn:
+          type: string
+        homepage:
+          type: string
+        epost:
+          type: string
+    Person:
+      type: object
+      required:
+        - id
+        - namn
+      properties:
+        id:
+          type: string
+          format: uuid
+        namn:
+          type: string
+        homepage:
+          type: string
+        epost:
+          type: string
+  
+tags:
+  - name: Organization
+    description: Organization
+  - name: Persons
+    description: Persons

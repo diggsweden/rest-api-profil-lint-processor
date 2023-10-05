@@ -1,0 +1,125 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "osvVulnerabilityAlerts": true,
+    "dependencyDashboardOSVVulnerabilitySummary": "all",
+    "extends": [
+      "config:best-practices",
+      "workarounds:all",
+      "security:openssf-scorecard",
+      ":configMigration",
+      ":dependencyDashboard",
+      ":gitSignOff",
+      ":maintainLockFilesWeekly",
+      ":automergeMinor",
+      ":semanticCommits",
+      "npm:unpublishSafe",
+      ":rebaseStalePrs",
+      ":semanticCommitTypeAll(chore)",
+      "mergeConfidence:all-badges"
+    ],
+    "commitMessageLowerCase": "auto",
+    "minimumReleaseAge": "4 days",
+    "labels": [
+      "dependencies"
+    ],
+    "vulnerabilityAlerts": {
+      "labels": [
+        "security",
+        "dependencies"
+      ]
+    },
+    "packageRules": [
+      {
+        "matchManagers": [
+          "github-actions"
+        ],
+        "addLabels": [
+          "actions"
+        ],
+        "pinDigests": true,
+        "groupName": "github actions"
+      },
+      {
+        "matchManagers": [
+          "github-actions"
+        ],
+        "matchPackageNames": [
+          "slsa-framework/slsa-github-generator"
+        ],
+        "pinDigests": false
+      },
+      {
+        "description": "Node.js dependencies - Major updates",
+        "matchManagers": [
+          "npm"
+        ],
+        "matchUpdateTypes": [
+          "major"
+        ],
+        "addLabels": [
+          "dependencies",
+          "major-update"
+        ]
+      },
+      {
+        "description": "Development dependencies",
+        "matchManagers": [
+          "npm"
+        ],
+        "matchDepTypes": [
+          "devDependencies"
+        ],
+        "excludePackageNames": [
+          "@stoplight/spectral-formats"
+        ],
+        "groupName": "dev dependencies",
+        "addLabels": [
+          "dev-deps"
+        ]
+      },
+      {
+        "description": "Core dependencies",
+        "matchManagers": [
+          "npm"
+        ],
+        "matchDepTypes": [
+          "dependencies"
+        ],
+        "excludePackagePatterns": [
+          "^@stoplight/spectral"
+        ],
+        "groupName": "core dependencies",
+        "addLabels": [
+          "core-deps"
+        ]
+      },
+      {
+        "description": "Spectral dependencies",
+        "groupName": "spectral",
+        "matchPackagePatterns": [
+          "^@stoplight/spectral"
+        ],
+        "labels": [
+          "spectral"
+        ]
+      },
+      {
+        "description": "Node.js engine",
+        "matchManagers": [
+          "npm"
+        ],
+        "matchDepTypes": [
+          "engines"
+        ],
+        "matchPackageNames": [
+          "node"
+        ],
+        "enabled": true,
+        "rangeStrategy": "replace",
+        "labels": [
+          "node-engine"
+        ]
+      }
+    ]
+  }
+  

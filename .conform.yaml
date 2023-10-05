@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: CC0-1.0
+
+---
+policies:
+  - type: commit
+    spec:
+      dco: true
+      gpg:
+        required: true
+      header:
+        length: 120
+        imperative: true
+        case: lower
+        invalidLastCharacters: .
+      body:
+        required: false
+      conventional:
+        types:
+          [
+            "chore",
+            "build",
+            "docs",
+            "ci",
+            "perf",
+            "refactor",
+            "style",
+            "test",
+            "release",
+          ]
+        scopes: [".*"]

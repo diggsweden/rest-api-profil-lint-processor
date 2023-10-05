@@ -1,0 +1,62 @@
+{
+  "name": "@diggsweden/rest-api-profil-lint-processor",
+  "version": "v0.5.3",
+  "main": ".src/app.ts",
+  "type": "module",
+  "engines": {
+    "node": ">=20.17.0 <=22.15.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:diggsweden/rest-api-profil-lint-processor"
+  },
+  "description": "A command-line tool to lint OpenAPI v3 definitions using Spectral",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "jest",
+    "start": "node --import=./register.js src/app.ts",
+    "version": "standard-version --skip.commit"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "@stoplight/spectral-formats": "^1.5.0",
+    "@types/adm-zip": "^0.5.6",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.13",
+    "@types/node": "^22.7.5",
+    "jest": "^29.7.0",
+    "standard-version": "^9.5.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@stoplight/spectral-core": "^1.19.5",
+    "@stoplight/spectral-functions": "^1.7.2",
+    "@types/express": "^5.0.0",
+    "adm-zip": "^0.5.16",
+    "body-parser": "^1.20.3",
+    "chalk": "^5.3.0",
+    "express": "^4.21.1",
+    "express-openapi-validator": "^5.3.7",
+    "fast-xml-parser": "^4.5.0",
+    "js-yaml": "^4.1.0",
+    "path": "^0.12.7",
+    "ts-node": "^10.9.2",
+    "yargs": "^17.7.2"
+  },
+  "//": [
+    "Override transitive dependency due to vulnerability",
+    "[GHSA-pppg-cpfq-h7wr] JSONPath Plus Remote Code Execution (RCE) Vulnerability - https://github.com/advisories/GHSA-pppg-cpfq-h7wr",
+    "[GHSA-hw8r-x6gr-5gjp] JSONPath Plus allows Remote Code Execution - https://github.com/advisories/GHSA-hw8r-x6gr-5gjp"
+  ],
+  "overrides": {
+    "@stoplight/spectral-core": {
+      "jsonpath-plus": "10.3.0"
+    }
+  },
+  "author": "Digg - Agency for Digital Government",
+  "license": "EUPL",
+  "keywords": []
+}
