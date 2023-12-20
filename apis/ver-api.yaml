@@ -86,6 +86,10 @@ paths:
           schema:
             type: integer
             format: int32
+        - accept: application/json
+          in: header
+          description: "accept json or xml data",
+          required: false,
       responses:
         '200':
           description: pet response

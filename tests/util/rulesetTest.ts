@@ -14,7 +14,8 @@ const ruleInstances: Record<string, any> = {};
  * Define each rule class to create instance of
  */
 const ruleTypes = [
-  ArqRules.Arq05ComplexStructure, ArqRules.Arq05NestedStructure, ArqRules.Arq05StringBinary,
+  ArqRules.Arq05ComplexStructure, ArqRules.Arq05StringBinary,ArqRules.Arq05NestedStructure,
+  ArqRules.Arq04,
   UfnRules.Ufn02,
   UfnRules.Ufn06,
   UfnRules.Ufn09,

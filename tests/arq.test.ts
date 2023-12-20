@@ -192,3 +192,58 @@ testRule("Arq05ComplexStructure", [
       ],
     },
   ]);
+  
+  testRule("Arq04", [
+    {
+      name: "giltigt testfall",
+      document: {
+        openapi: "3.1.0",
+        info: { version: "1.0" },
+        paths: {
+          "/test": {
+            get: {
+              parameters: [
+                {
+                  accept: "application/json",
+                  in: "header",
+                  description: "accept json or xml data",
+                  required: true
+               },
+                
+              ],
+            },
+          },
+        },
+      },
+      errors: [],
+    },
+    {
+      name: "ogiltigt testfall",
+      document: {
+        openapi: "3.1.0",
+        info: { version: "1.0" },
+        paths: {
+          "/test": {
+            get: {
+              parameters: [
+                {
+                  accept: "application-json",
+                  in: "header",
+                  description: "header should accept only json or xml data.",
+                  required: true
+                 
+                },
+              ],
+            },
+          },
+        },
+      },
+      errors: [
+        {
+          message: "Ett av följande värden för Accept BÖR användas",
+          path: ["paths", "/test", "get", "parameters","0", "accept"],
+          severity: DiagnosticSeverity.Warning,
+        },
+      ],
+    },
+  ]);

@@ -34,7 +34,7 @@ export class Arq05NestedStructure extends Arq05Base {
       }
       return [];
     },
-  };
+  }; 
 }
 
 export class Arq05StringBinary extends Arq05Base {
@@ -74,4 +74,17 @@ export class Arq05ComplexStructure extends Arq05Base {
   };
 }
 
-export default { Arq05NestedStructure, Arq05StringBinary, Arq05ComplexStructure };
+export class Arq04 implements RulesetInterface {
+    description = "Ett av följande värden för Accept BÖR användas"
+    message = "Ett av följande värden för Accept BÖR användas";
+    given = "$..parameters.[*].accept"
+    then = {
+      function: pattern,
+      functionOptions: {
+        match: '^application/(?:json|xml)$'
+      }
+    }
+    severity = DiagnosticSeverity.Warning;
+  }
+
+export default {Arq05ComplexStructure, Arq05StringBinary, Arq05NestedStructure, Arq04};
