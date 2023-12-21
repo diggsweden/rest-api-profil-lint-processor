@@ -17,7 +17,7 @@ const ruleModules = [
   "SakRules",
   "VerRules",
   "FnsRules",
-  "ArqRulles",
+  "ArqRules",
   "DokRules"
 ];
 /**
