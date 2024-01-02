@@ -30,7 +30,8 @@ const ruleTypes = [
   VerRules.Ver06,
   FnsRules.Fns01,
   FnsRules.Fns03,
-  DokRules.Dok23
+  DokRules.Dok23,
+  DokRules.Dok24
 ];
 ruleTypes.forEach((RuleClass) => {
   const instance = new RuleClass();

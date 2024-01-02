@@ -16,6 +16,44 @@ export class Dok23 extends BaseRuleset {
       match: "^[a-z]+://(?:[a-z0-9\-.]+\.)+([a-z]{2,6})(?:\/[a-z0-9-]+/[a-z0-9-]+)?$"
     }
   }
-  severity = DiagnosticSeverity.Error; 
+  severity = DiagnosticSeverity.Error;
 }
-export default { Dok23 };
+
+export class Dok24 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: "Dokumentation",
+    id: "DOK.24",
+  };
+  given = "$.servers[*].url";
+  message = "Om API specifikationen specificeras med OpenAPI SKALL roten till specifikationen namnges med openapi.yaml eller openapi.json";
+  then = {
+    field: "url",
+    function: (targetVal: string, _opts: string, paths: string) => {
+      const regex = /\/openapi\.(.*)$/;;
+      const match = targetVal.match(regex);
+
+      if (match) {
+        const extension = match[1];
+        const api = match[0].slice(1, 8);
+        if (api === 'openapi' && (extension === 'yaml' || extension === 'json')) {
+          return [];
+
+        } else {
+          return [
+            {
+              message: this.message,
+              severity: this.severity
+            },
+          ];
+        }
+      } else {
+        return [];
+      }
+
+    }
+  }
+  severity = DiagnosticSeverity.Error;
+}
+
+
+export default { Dok23, Dok24 };
