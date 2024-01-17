@@ -1,0 +1,88 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: AME
+  description: API message
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: Swagger API Team
+    email: apiteam@swagger.io
+    url: http://swagger.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://example.com/myapi/v2
+paths:
+  /example:
+    post:
+      summary: Example API with Payload in Headers Allowed
+      description: For testing
+      operationId: exampleRequest
+      tags:
+        [tag1, tag2]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+      responses:
+        '200':
+          description: example response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /example2:
+    post:
+      summary: Example API with Payload in Headers Allowed
+      description: For testing
+      operationId: exampleRequest2
+      tags:
+        - tag1
+        - tag2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: integer
+      responses:
+        '200':
+          description: example response
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+components:
+  securitySchemes:
+    bearerAuth:     # <-- arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+tags:
+  - name: tag1
+    description: Everything about tag1
+  - name: tag2
+    description: Everything about tag2

@@ -24,7 +24,6 @@ testRule("Fns01", [
     },
     errors: [],
   },
-
   {
     name: "ogiltigt testfall",
     document: {
@@ -48,7 +47,7 @@ testRule("Fns01", [
     errors: [
       {
         message:
-          "name--> Parameternamn SKALL anges med en konsekvent namnkonvention exempelvis antingen snake_case eller camelCase",
+          "Parameternamn SKALL anges med en konsekvent namnkonvention exempelvis antingen snake_case eller camelCase",
         path: ["paths", "/foo", "get", "parameters", "0","name"],
         severity: DiagnosticSeverity.Error,
       },
@@ -76,7 +75,6 @@ testRule("Fns01", [
     },
     errors: [],
   },
-
   {
     name: "ogiltigt testfall",
     document: {
@@ -100,7 +98,7 @@ testRule("Fns01", [
     errors: [
       {
         message:
-          "name--> Parameternamn SKALL anges med en konsekvent namnkonvention exempelvis antingen snake_case eller camelCase",
+          "Parameternamn SKALL anges med en konsekvent namnkonvention exempelvis antingen snake_case eller camelCase",
         path: ["paths", "/foo", "get", "parameters", "0","name"],
         severity: DiagnosticSeverity.Error,
       },
@@ -117,7 +115,7 @@ testRule("Fns03", [
       paths: {
         "/charactercheck": {
           get: {
-            description: "Gilitigt testfall av Sökparametrar SKALL starta med en bokstav",
+            description: "Sökparametrar SKALL starta med en bokstav.",
             parameters: [
               {
                 name: "veryLongName",
@@ -140,7 +138,7 @@ testRule("Fns03", [
       paths: {
         "/charactercheck": {
           get: {
-            description: "Ogiltigt testfall av sökparametrar SKALL starta med en bokstav",
+            description: "Sökparametrar SKALL starta med en bokstav.",
             parameters: [
               {
                 name: "_VeryLongName",
@@ -155,11 +153,65 @@ testRule("Fns03", [
     errors: [
       {
         message:
-          "name--> Sökparametrar SKALL starta med en bokstav",
+          "Sökparametrar SKALL starta med en bokstav.",
         path: ["paths", "/charactercheck", "get", "parameters", "0","name"],
         severity: DiagnosticSeverity.Error,
       },
     ],
   }
 ]);
-  
+
+testRule("Fns04", [
+  {
+    name: "giltigt testfall",
+    document: {
+      openapi: "3.1.0",
+      info: { version: "1.0" },
+      paths: {
+        "/gemenercheck": {
+          get: {
+            description: "Sökparametrar BÖR använda enbart gemener",
+            parameters: [
+              {
+                name: "verylongname",
+                in: "query",
+                required: false,
+              },
+            ],
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+
+  {
+    name: "ogiltigt testfall",
+    document: {
+      openapi: "3.1.0",
+      info: { version: "1.0" },
+      paths: {
+        "/gemenercheck": {
+          get: {
+            description: "Sökparametrar BÖR använda enbart gemener",
+            parameters: [
+              {
+                name: "veryLongName",
+                in: "query",
+                required: false,
+              },
+            ],
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message:
+          "Sökparametrar BÖR använda enbart gemener",
+        path: ["paths", "/gemenercheck", "get", "parameters", "0","name"],
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  }
+]);

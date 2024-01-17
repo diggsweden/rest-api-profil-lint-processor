@@ -1,5 +1,13 @@
 // ruleUtil.ts
-
+interface CustomSchema {
+  id: string;
+  krav: string;
+  sökväg: string[];
+  allvarlighetsgrad: number;
+  omfattning: { start: Record<string, unknown>; end: Record<string, unknown> };
+  kategori: string;
+  typ: string;
+}
 /**
  *  Add other rule modules when applying new rules to RAP-LP
  *  Modules are loaded as default ones when no explicit category is choosed from the command line
@@ -8,7 +16,10 @@ const ruleModules = [
   "UfnRules",
   "SakRules",
   "VerRules",
-  "ArqRules"
+  "FnsRules",
+  "ArqRules",
+  "DokRules",
+  "AmeRules"
 ];
 /**
  * 
@@ -23,9 +34,10 @@ export function getRuleModules() {
  * @param ruleCategories Defined category (optional)
  * @returns Promise object with enabled rules in RAP-LP to run
  */
-export async function importAndCreateRuleInstances(ruleCategories?: string[]): Promise<{ rules: Record<string, any> }> {
+export async function importAndCreateRuleInstances(ruleCategories?: string[]): Promise<{ rules: Record<string, any>;instanceCategoryMap: Map<string, any> }> {
   const ruleInstances: Record<string, any> = {}; // store instances of rule classes
   const ruleTypes: any[] = []; // array to store rule classes.
+  const instanceCategoryMap: Map<string, any> = new Map();
 
     /**
      * 
@@ -59,8 +71,10 @@ export async function importAndCreateRuleInstances(ruleCategories?: string[]): P
         const ruleClasses = await importRuleModule(category);
         if (ruleClasses) {
           for (const ruleClass of ruleClasses) {
-            if (ruleClass instanceof Function) // Check to see if has constructor function 
+            if (ruleClass instanceof Function) { // Check to see if has constructor function 
             ruleTypes.push(ruleClass); // Push the imported ruleClass in RAP-LP to array of ruleTypes 
+            //Store ruletype for each instance
+            }
           }
         }
       }
@@ -68,19 +82,26 @@ export async function importAndCreateRuleInstances(ruleCategories?: string[]): P
     async function importAllRules() {
       await importRulesByCategory(ruleModules);
     }
+    /**
+     * Load modules
+     */
     if (ruleCategories && ruleCategories.length > 0) {
       await importRulesByCategory(ruleCategories);
     } else {
       await importAllRules();
     }
+    /**
+     * Loop entries of instanceCategory map
+     */
     // Create instances of rule classes in RAP-LP
     ruleTypes.forEach((RuleClass) => {
       try {
         const instance = new RuleClass();
         ruleInstances[RuleClass.name] = instance;
+        instanceCategoryMap.set(RuleClass.name, RuleClass); // Do we have name of ruleClass ?
       } catch (error: any) {
         console.error(`Error creating instance of rule class ${RuleClass.name}:`, error.message);
       }
     });
-    return { rules: ruleInstances };
+    return { rules: ruleInstances, instanceCategoryMap };
 }

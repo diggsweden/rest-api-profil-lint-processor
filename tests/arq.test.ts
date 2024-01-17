@@ -53,7 +53,7 @@ testRule("Arq05ComplexStructure", [
       errors: [
         {
           message:
-            "Payload data SKALL INTE användas i HTTP-headers.",
+            "[Payload data SKALL INTE användas i HTTP-headers.] Om en header förväntas innehålla komplexa datastrukturer, såsom JSON eller XML, kan det indikera en okonventionell användning av headers.",
           path: ["paths", "/foo", "post", "parameters", "0"],
           severity: DiagnosticSeverity.Warning,
         },
@@ -113,7 +113,7 @@ testRule("Arq05ComplexStructure", [
       errors: [
         {
           message:
-            "Payload data SKALL INTE användas i HTTP-headers.",
+            "[Payload data SKALL INTE användas i HTTP-headers.] Om en header förväntas innehålla data med ovanliga MIME-typer kan det indikera en okonventionell användning av headers.",
           path: ["paths", "/foo", "post", "parameters", "0"],
           severity: DiagnosticSeverity.Warning,
         },
@@ -185,7 +185,7 @@ testRule("Arq05ComplexStructure", [
       errors: [
         {
           message:
-            "Payload data SKALL INTE användas i HTTP-headers.",
+            "[Payload data SKALL INTE användas i HTTP-headers.] Om en header använder nästlade strukturer, är en requestbody mer lämplig.",
           path: ["paths", "/foo", "post", "parameters", "0"],
           severity: DiagnosticSeverity.Warning,
         },
@@ -204,12 +204,41 @@ testRule("Arq05ComplexStructure", [
             get: {
               parameters: [
                 {
-                  accept: "application/json",
+                  name: 'Date',
                   in: "header",
-                  description: "accept json or xml data",
+                  description: "Följande värden BÖR användas: Date",
                   required: true
-               },
-                
+                },
+                {
+                name: 'Accept-Charset',
+                in: "header",
+                description: "Följande värden BÖR användas: Accept-Charset",
+                required: true
+                },
+                {
+                name: 'ETag',
+                in: "header",
+                description: "Följande värden BÖR användas: Accept-Charset",
+                required: true
+                },
+                {
+                  name: 'Cache-Control',
+                  in: "header",
+                  description: "Följande värden BÖR användas: Accept-Charset",
+                  required: true
+                },
+                {
+                  name: 'Cookie',
+                  in: "header",
+                  description: "Följande värden BÖR användas: Accept-Charset",
+                  required: true
+                },
+                {
+                  name: 'Connection',
+                  in: "header",
+                  description: "Följande värden BÖR användas: Accept-Charset",
+                  required: true
+                },              
               ],
             },
           },
@@ -227,9 +256,44 @@ testRule("Arq05ComplexStructure", [
             get: {
               parameters: [
                 {
-                  accept: "application-json",
+                  name: 'noDate',
                   in: "header",
-                  description: "header should accept only json or xml data.",
+                  description: "Följande värden BÖR användas: Date",
+                  required: true
+                 
+                },
+                {
+                  name: 'noAccept-Charset',
+                  in: "header",
+                  description: "Följande värden BÖR användas: Date",
+                  required: true
+                 
+                },
+                {
+                  name: 'noETag',
+                  in: "header",
+                  description: "Följande värden BÖR användas: Date",
+                  required: true
+                 
+                },
+                {
+                  name: 'noCache-Control',
+                  in: "header",
+                  description: "Följande värden BÖR användas: Date",
+                  required: true
+                 
+                },
+                {
+                  name: 'noCookie',
+                  in: "header",
+                  description: "Följande värden BÖR användas: Date",
+                  required: true
+                 
+                },
+                {
+                  name: 'noConnection',
+                  in: "header",
+                  description: "Följande värden BÖR användas: Date",
                   required: true
                  
                 },
@@ -240,8 +304,33 @@ testRule("Arq05ComplexStructure", [
       },
       errors: [
         {
-          message: "Ett av följande värden för Accept BÖR användas",
-          path: ["paths", "/test", "get", "parameters","0", "accept"],
+          message: "Följande värden BÖR användas: [Date, Accept-Charset,ETag,Cache-Control,Cookie,Connection]",
+          path: ["paths", "/test", "get", "parameters","0", "name"],
+          severity: DiagnosticSeverity.Warning,
+        },
+        {
+          message: "Följande värden BÖR användas: [Date, Accept-Charset,ETag,Cache-Control,Cookie,Connection]",
+          path: ["paths", "/test", "get", "parameters","1", "name"],
+          severity: DiagnosticSeverity.Warning,
+        },
+        {
+          message: "Följande värden BÖR användas: [Date, Accept-Charset,ETag,Cache-Control,Cookie,Connection]",
+          path: ["paths", "/test", "get", "parameters","2", "name"],
+          severity: DiagnosticSeverity.Warning,
+        },
+        {
+          message: "Följande värden BÖR användas: [Date, Accept-Charset,ETag,Cache-Control,Cookie,Connection]",
+          path: ["paths", "/test", "get", "parameters","3", "name"],
+          severity: DiagnosticSeverity.Warning,
+        },
+        {
+          message: "Följande värden BÖR användas: [Date, Accept-Charset,ETag,Cache-Control,Cookie,Connection]",
+          path: ["paths", "/test", "get", "parameters","4", "name"],
+          severity: DiagnosticSeverity.Warning,
+        },
+        {
+          message: "Följande värden BÖR användas: [Date, Accept-Charset,ETag,Cache-Control,Cookie,Connection]",
+          path: ["paths", "/test", "get", "parameters","5", "name"],
           severity: DiagnosticSeverity.Warning,
         },
       ],

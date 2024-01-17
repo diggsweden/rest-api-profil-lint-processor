@@ -1,20 +1,9 @@
-interface Than{
-    field?: string;
-
-}
-interface FunctionOptions {
-    match?: string;
-    notMatch?: string;
-}
-export interface RuleInterface extends Than, FunctionOptions{
+export interface RulesetInterface {
     given?: string;
     message?: string;
     field?: string;
     severity?:number;
-   }
-export interface RulesetInterface extends Than, FunctionOptions, RuleInterface {
+    category?: string;
     function?:() => any;
     description?:string;
-    ruleName?: string;
 }
-export {};

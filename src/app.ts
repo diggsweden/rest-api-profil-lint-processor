@@ -16,6 +16,9 @@ import Parsers from "@stoplight/spectral-parsers";
 import spectralCore from "@stoplight/spectral-core";
 import { importAndCreateRuleInstances, getRuleModules } from "./util/ruleUtil.ts"; // Import the helper function
 import util from 'util';
+import {RapLPCustomSpectral} from "./util/RapLPCustomSpectral.ts";
+import chalk from 'chalk';
+
 const { Spectral, Document } = spectralCore;
 const writeFileAsync = util.promisify(fs.writeFile);
 const appendFileAsync = util.promisify(fs.appendFile);
@@ -53,45 +56,69 @@ try {
   const logFilePath = argv.log as string | undefined;
   try {
     // Import and create rule instances in RAP-LP
-    const enabledRules = await importAndCreateRuleInstances(ruleCategories);
-    
-    // Create Spectral instance
-    const spectral = new Spectral();
-    // Set ruleset
-    spectral.setRuleset(enabledRules);
-
+    const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
     // Load API specification into a Document object
     const apiSpecDocument = new Document(
       fs.readFileSync(join(apiSpecFileName), "utf-8").trim(),
       Parsers.Yaml,
       apiSpecFileName
     );
-
     try {
+
+    /**
+     * CustomSpectral
+     */
+    const customSpectral = new RapLPCustomSpectral();
+    customSpectral.setCategorys(enabledRulesAndCategorys.instanceCategoryMap);
+    customSpectral.setRuleset(enabledRulesAndCategorys.rules);
+    const result = await customSpectral.run(apiSpecDocument);
+
+    /**
+     * Chalk impl.
+     * @param allvarlighetsgrad 
+     * @returns 
+     */
       // Run Spectral on the API specification and log the result
-      const result = await spectral.run(apiSpecDocument);
+      const colorizeSeverity = (allvarlighetsgrad: string) => {
+        switch (allvarlighetsgrad) {
+          case 'ERROR': // Error
+            return chalk.red('Error');
+          case 'WARNING': // Warning
+            return chalk.yellow('Warning');
+          case 'HINT': // Info
+            return chalk.greenBright('Hint');
+          default:
+            return chalk.white('Info');
+        }
+      };
+      const formatLintingResult = (result: any) => {
+        return `allvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${result.krav} \nområde: ${result.område} \nsökväg:[${result.sökväg}] \nomfattning:${JSON.stringify(result.omfattning,null,2)} `;
+      };
+      const content = JSON.stringify(result, null, 2);
       //Check specified option from yargs input
       if (logFilePath) {
-
+        const utf8EncodedContent = Buffer.from(content, 'utf8');
         if (argv.append) {
-          await appendFileAsync(logFilePath,JSON.stringify(result,null,2));
-          console.log(`Appending linting results from RAP-LP to ${logFilePath}`);
+          await appendFileAsync(logFilePath,utf8EncodedContent);
+          console.log(chalk.green(`Appending linting results from RAP-LP to ${logFilePath}`));
         }else {
         //Log to disc
-        await writeFileAsync(logFilePath,JSON.stringify(result,null,2));
-        console.log(`Writing linting results from RAP-LP to ${logFilePath}`);
+        await writeFileAsync(logFilePath,utf8EncodedContent);
+        console.log(chalk.green(`Writing linting results from RAP-LP to ${logFilePath}`));
         }
       }else {
         //Log to stdout
-        console.log(JSON.stringify(result,null,2));
+        console.log('<<Regelutfall RAP-LP>> \n');
+        result.forEach(item => {
+          console.log(formatLintingResult(item));
+        });
       }
-      //console.log(result);
     } catch (spectralError: any) {
-      console.error("Error running Spectral:", spectralError.message);
+      console.error(chalk.red("Error running Spectral:", spectralError));
     }
   } catch (ruleError: any) {
-    console.error("Error importing and creating rule instances:", ruleError.message);
+    console.error(chalk.red("Error importing and creating rule instances:", ruleError));
   }
 } catch (yargsError: any) {
-  console.error("Error parsing command-line arguments:", yargsError.message);
+  console.error(chalk.red("Error parsing command-line arguments:", yargsError.message));
 }

@@ -12,9 +12,11 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: http://petstore.swagger.io/v_2
-paths:
+  - url: http://petstore.swagger.io
+    type: string
+    maxLength: 2048
 
+paths:
   /example:
     post:
       summary: Example API with Payload in Headers Allowed
@@ -39,12 +41,6 @@ paths:
           description: Payload data in headers (allowed in this example)
           required: true
           schema:
-            type: object
-        - name: payloadData3
-          in: header
-          description: Payload data in headers (allowed in this example)
-          required: true
-          schema:
             type: string
             format: binary
         - name: nestedHeaders
@@ -60,7 +56,6 @@ paths:
       responses:
         '200':
           description: Successful response
-
   /pets:
     get:
       description: |
@@ -70,7 +65,7 @@ paths:
         Sed tempus felis lobortis leo pulvinar rutrum. Nam mattis velit nisl, eu condimentum ligula luctus nec. Phasellus semper velit eget aliquet faucibus. In a mattis elit. Phasellus vel urna viverra, condimentum lorem id, rhoncus nibh. Ut pellentesque posuere elementum. Sed a varius odio. Morbi rhoncus ligula libero, vel eleifend nunc tristique vitae. Fusce et sem dui. Aenean nec scelerisque tortor. Fusce malesuada accumsan magna vel tempus. Quisque mollis felis eu dolor tristique, sit amet auctor felis gravida. Sed libero lorem, molestie sed nisl in, accumsan tempor nisi. Fusce sollicitudin massa ut lacinia mattis. Sed vel eleifend lorem. Pellentesque vitae felis pretium, pulvinar elit eu, euismod sapien.
       operationId: findPets
       parameters:
-        - name: very_longName
+        - name: verylon_name
           in: query
           description: tags to filter by
           required: false
@@ -86,10 +81,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - accept: application/json
-          in: header
-          description: "accept json or xml data",
-          required: false,
       responses:
         '200':
           description: pet response
@@ -128,7 +119,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /pets/{id}:
+  /pe,ts/{id}:
     get:
       description: Returns a user based on a single ID, if the user does not have access to the pet
       operationId: find pet by id
@@ -199,7 +190,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /petshamtame/{id_djur}:
+/petshamtame/{id_djur}:
     get:
       description: Returns a user based on a single ID, if the user does not have access to the pet
       operationId: find pet by id
@@ -232,6 +223,7 @@ components:
       scheme: bearer
   security:
   - bearerAuth: []  # <-- use the same name here
+
   schemas:
     Pet:
       allOf:

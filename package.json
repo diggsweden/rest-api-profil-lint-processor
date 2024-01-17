@@ -23,6 +23,7 @@
     "@stoplight/spectral-core": "^1.18.3",
     "@stoplight/spectral-functions": "^1.7.2",
     "@stoplight/spectral-ruleset-bundler": "^1.5.2",
+    "chalk": "^5.3.0",
     "js-yaml": "^4.1.0",
     "path": "^0.12.7",
     "yargs": "^17.7.2"

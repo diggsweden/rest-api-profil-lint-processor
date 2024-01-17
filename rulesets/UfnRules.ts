@@ -1,35 +1,128 @@
-import { RulesetInterface } from "../ruleinterface/RuleInterface.ts"
-import { enumeration, truthy, falsy, undefined as undefinedFunc, pattern, schema } from "@stoplight/spectral-functions";
+import { Rule } from "@stoplight/spectral-core";
+import { BaseRuleset, CustomProperties } from "./BaseRuleset.ts"
+import { enumeration, truthy, falsy, undefined as undefinedFunc, pattern, schema, length} from "@stoplight/spectral-functions";
 import { DiagnosticSeverity } from "@stoplight/types";
 
-0
-export class Ufn02 implements RulesetInterface {
+export class Ufn02 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: "URL Format och namngivning",
+    id: "UFN.02",
+  };
   given = "$.servers[?(@.url.startsWith('http'))]";
-  message = "{{property}} Alla API:er SKALL exponeras via HTTPS på port 443.";
+  message = "Alla API:er SKALL exponeras via HTTPS på port 443.";
   then = {
     field: 'url',
     function: pattern,
     functionOptions: {
       match: "/^https:/"
-    }
+    },
   }
   severity = DiagnosticSeverity.Error;
 }
-export class Ufn06 implements RulesetInterface {
+
+export class Ufn05 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: "URL Format och namngivning",
+    id: "UFN.05",
+  };
+  description = "En URL BÖR INTE vara längre än 2048 tecken.";
   given = "$.paths[*]~";
-  message = "{{property}} - Bokstäver i URL:n SKALL bestå av enbart gemener";
+  message = "En URL BÖR INTE vara längre än 2048 tecken.";
+  then = {
+    field: "url",
+    function: length,
+    functionOptions: {
+      max: 2048
+    }
+  }
+  severity = DiagnosticSeverity.Warning;
+}
+
+export class Ufn06 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: "URL Format och namngivning",
+    id: "UFN.06",
+  };
+  given = "$.paths[*]~";
+  message = "Bokstäver i URL:n SKALL bestå av enbart gemener.";
   then = {
     function: pattern,
     functionOptions: {
-      match: "^[a-z/{}]*$"
+      notMatch: "[A-Z]"
     }
   }
   severity = DiagnosticSeverity.Error;
 }
-export class Ufn09 implements RulesetInterface {
+
+export class Ufn08 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: "URL Format och namngivning",
+    id: "UFN.08",
+  };
+
+  given = "$.paths[*]~";
+  message = "Endast bindestreck '-' SKALL användas för att separera ord för att öka läsbarheten samt förenkla för sökmotorer att indexera varje ord för sig.";
+  then = {
+    function: (targetVal: string, _opts: string, paths: string[]) => {
+
+      const split = targetVal.split("/").filter(removeEmpty => removeEmpty);
+
+      const pathElements = split.filter(e => !e.startsWith("{"));
+
+      var valid:boolean = true;
+      pathElements.forEach(part => {
+
+        //  regexp tillåter inte "-", ".", "_" samt "~"
+        const separators = /([,._~]+)/g;
+        if (separators.test(part)) {
+          valid = false;
+        }
+        if (part.startsWith('-') || part.endsWith('-')) {
+          valid = false;
+        }
+        if (part.indexOf('--') >= 0) {
+          valid = false;
+        }
+      });
+
+      if (!valid) {
+        return [
+          {
+            message: this.message,
+            severity: this.severity
+          },
+        ];
+      } else {
+        return [];
+      }
+    }
+  }
+  severity = DiagnosticSeverity.Error;
+}
+export class Ufn07 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: "URL Format och namngivning",
+    id: "UFN.07",
+  };
+  given = "$.paths[*]~";
+  message = "URL:n SKALL använda tecken som är URL-säkra (tecknen A-Z, a-z, 0-9, \"-\", \".\", \"_\" samt \"~\", se vidare i RFC 3986).";
+  then = {
+    function: pattern,
+    functionOptions: {
+      match: "^[a-zA-Z0-9/\\\-\\\,\\\.\\\_\\\~{}]*$",
+    }
+  }
+  severity = DiagnosticSeverity.Error;
+}
+
+export class Ufn09 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: "URL Format och namngivning",
+    id: "UFN.09",
+  };
   description = "Blanksteg ' ' och understreck '_' SKALL INTE användas i URL:er med undantag av parameter-delen.";
   given = "$.paths[*]~";
-  message = "{{property}} --> ska vara kebab-case (gemener och separerade med ett '-').[Kategori: URL format och namngivning, Typ: SKALL INTE]";
+  message = "Blanksteg ' ' och understreck '_' SKALL INTE användas i URL:er med undantag av parameter-delen.";
   then = {
     function: pattern,
     functionOptions: {
@@ -38,10 +131,15 @@ export class Ufn09 implements RulesetInterface {
   }
   severity = DiagnosticSeverity.Error;
 }
-export class Ufn10 implements RulesetInterface {
-  description = "Understreck '_' SKALL (UFN.10) endast användas för att separera ord i query parameternamn.";
+
+export class Ufn10 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: "URL Format och namngivning",
+    id: "UFN.10",
+  };
+  description = "Understreck '_' SKALL endast användas för att separera ord i parameternamn.";
   given = "$.paths.*.*.parameters[?(@.in=='query')].name";
-  message = "Understreck '_' SKALL (UFN.10) endast användas för att separera ord i query parameternamn.";
+  message = "Understreck '_' SKALL endast användas för att separera ord i parameternamn.";
   then = {
     function: pattern,
     functionOptions: {
@@ -50,7 +148,12 @@ export class Ufn10 implements RulesetInterface {
   }
   severity = DiagnosticSeverity.Error;
 }
-export class Ufn11 implements RulesetInterface {
+
+export class Ufn11 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: "URL Format och namngivning",
+    id: "UFN.11",
+  };
   description = "Understreck '_' SKALL INTE vara del av bas URL:en.";
   given = "$.servers..url";
   message = "Understreck '_' SKALL INTE vara del av bas URL:en.";
@@ -63,4 +166,4 @@ export class Ufn11 implements RulesetInterface {
   }
   severity = DiagnosticSeverity.Error;
 }
-export default { Ufn02, Ufn09,Ufn10,Ufn11 };
+export default { Ufn02, Ufn05, Ufn06, Ufn08, Ufn09, Ufn10, Ufn11 };
