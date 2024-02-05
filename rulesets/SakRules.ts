@@ -52,4 +52,31 @@ export class Sak18 extends BaseRuleset {
   }
   severity = DiagnosticSeverity.Warning;
 }
-export default { Sak09, Sak10, Sak18 };
+export class Sak02 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: "Säkerhet",
+    id: "SAK.02",
+  };
+  description = "Alla certifikat SKALL vara från SHA-2 (Secure Hash Algorithm 2) kryptografiska hashfunktioner med minsta nyckellängd på 2048";
+  message = "Alla certifikat SKALL vara från SHA-2 (Secure Hash Algorithm 2) kryptografiska hashfunktioner med minsta nyckellängd på 2048";
+  given = "$.components.securitySchemes.[*].keyLength";
+  then = {
+    function :(targetVal: any) => {
+      if(targetVal.length < 2048){
+        return [
+          {
+            message: this.message,
+            severity: this.severity
+          },
+        ];
+      } else {
+        return [];
+      }
+
+    }
+   
+  }
+  severity = DiagnosticSeverity.Warning;
+}
+
+export default {Sak02, Sak09, Sak10, Sak18 };
