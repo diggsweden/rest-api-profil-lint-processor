@@ -9,6 +9,7 @@ import * as FnsRules from "../../rulesets/FnsRules.ts";
 import * as ArqRules from "../../rulesets/ArqRules.ts";
 import * as DokRules from "../../rulesets/DokRules.ts";
 import * as AmeRules from "../../rulesets/AmeRules.ts";
+import * as  HypRules  from "../../rulesets/HypRules.ts";
 
 const ruleInstances: Record<string, any> = {};
 
@@ -38,7 +39,8 @@ const ruleTypes = [
   FnsRules.Fns09,
   FnsRules.Fns07,
   FnsRules.Fns06,
-  DokRules.Dok23
+  DokRules.Dok23,
+  HypRules.Hyp09  
 ];
 ruleTypes.forEach((RuleClass) => {
   const instance = new RuleClass();

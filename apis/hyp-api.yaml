@@ -81,6 +81,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /headertest:
+    get:
+      summary: Return all pets
+      tags:
+        - pets
+      parameters:
+        - name: forwarded
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Pet:
