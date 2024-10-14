@@ -1,37 +1,22 @@
 import express from 'express';
+import { importAndCreateRuleInstances } from "./util/ruleUtil.ts"; // Import the helper function
+import { registerValidationRoutes } from './routes/validate.ts';
+import { errorHadler } from './util/RapLPCustomApiError.ts';
+import bodyParser from 'body-parser';
 
 // Funktion för att starta API-servern
-export function startServer() {
+export async function startServer() {
   const app = express();
   const port = process.env.PORT || 3000;
 
+  const rules = await importAndCreateRuleInstances();
+  app.use(bodyParser.raw())
   // API Endpoint, t.ex. för att validera en YAML-fil
-  app.get('/validate', (req, res) => {
-    res.send('API-läge aktiverat! Validerar YAML-filer här...');
-  });
+  registerValidationRoutes(app, rules);
 
-  /*
-        Open API schema för restinterfacet för RAP-LP
-  */
-    /*      - Gemensam funktionalitet?
-            - Funktion för att invoka nuvarande kodbas för regelmotorn 
-            - Funktion för att leverera resultat från Diagnostiseringen 
+  // Middleware för att mappa interna error till HTTP koder.
+  app.use(errorHadler)
 
-    */
-  /*	Möjlighet till att specificera en URL för att kunna 
-        peka ut en OpenApi Specifikation v. >3.0  för validering
-        - Konstruera en enpoint för detta  (Routes också)
-        - Funktion för att invoka URL(tredjeparts lib(typ axios)) (Medium) inkl. validering etc.
-  */
-  /*	Möjlighet till att specificera en fil för att kunna 
-        peka ut en OpenApi Specifikation v. >3.0  för validering
-        - Konstruera en enpoint för detta  (Routes också)
-
-    	- Möjlighet till att specificera content för en 
-        - Konstruera en enpoint för detta  (Routes också)
-          OpenApi Specifikation v. >3.0 för validering 
-  */
-  // Starta servern
   app.listen(port, () => {
     console.log(`Servern körs på http://localhost:${port}`);
   });
