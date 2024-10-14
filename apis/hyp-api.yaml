@@ -3,8 +3,12 @@ info:
   version: 1.2.0
   title: RAP-LP
   description: OpenAPI Specification example to handle Rules for the category []Hypermedia] in the Swedish REST API-profil https://dev.dataportal.se/rest-api-profil
+  contact:
+    name: Swagger API Team
+    email: apiteam@swagger.io
   license:
-    name:  EUPL-1.2 license
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
   - url: http://petstore.swagger.io/v1
 paths:
