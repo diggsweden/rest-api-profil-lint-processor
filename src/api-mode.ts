@@ -10,7 +10,11 @@ export async function startServer() {
   const port = process.env.PORT || 3000;
 
   const rules = await importAndCreateRuleInstances();
-  app.use(bodyParser.text({type: "text/plain"}))
+
+  // For the case of content upload
+  app.use(bodyParser.text({type: "application/x-yaml"}))
+
+
   // API Endpoint, t.ex. för att validera en YAML-fil
   registerValidationRoutes(app, rules);
 

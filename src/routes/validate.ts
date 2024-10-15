@@ -8,8 +8,16 @@ import { processApiSpec, validateYamlInput } from "../util/apiUtil.ts"
 export const registerValidationRoutes = (app: Express, enabledRulesAndCategorys: { rules: Record<string, any>,
     instanceCategoryMap: Map<string, any> }) => {
 
+    // Route based on content-type, in order to support file upload.
+    app.use(function(req, res, next) {
+        if (req.url === "/validate/content" && req.headers["content-type"]?.includes("multipart/form-data")) {
+            req.url = "/validate/file"
+        }
+        next();
+    });
+
     // Route for raw content upload.
-    app.post("/validate/raw", async (req, res, next) => {
+    app.post("/validate/content", async (req, res, next) => {
         const rawInput = req.body;
 
         if(!validateYamlInput(rawInput)) {
