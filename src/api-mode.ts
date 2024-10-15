@@ -1,7 +1,7 @@
 import express from 'express';
 import { importAndCreateRuleInstances } from "./util/ruleUtil.ts"; // Import the helper function
 import { registerValidationRoutes } from './routes/validate.ts';
-import { errorHadler } from './util/RapLPCustomApiError.ts';
+import { errorHandler } from './util/RapLPCustomApiError.ts';
 import bodyParser from 'body-parser';
 
 // Funktion för att starta API-servern
@@ -15,7 +15,7 @@ export async function startServer() {
   registerValidationRoutes(app, rules);
 
   // Middleware för att mappa interna error till HTTP koder.
-  app.use(errorHadler)
+  app.use(errorHandler)
 
   app.listen(port, () => {
     console.log(`Servern körs på http://localhost:${port}`);

@@ -22,7 +22,7 @@ export const isExtendedError = (error: unknown): error is RapLPCustomApiError =>
 }
 
 // Express.js middleware to map Extended
-export const errorHadler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
     if(isExtendedError(err)) {
         res
         .status(err.errorType)
