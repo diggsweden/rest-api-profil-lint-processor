@@ -1,5 +1,5 @@
 import { Document } from "@stoplight/spectral-core"
-import Parsers from "@stoplight/spectral-parsers"
+import { Yaml } from "@stoplight/spectral-parsers"
 import { Express } from 'express'
 import multer from 'multer'
 import { ERROR_TYPE, RapLPCustomApiError } from "../util/RapLPCustomApiError.ts"
@@ -27,7 +27,7 @@ export const registerValidationRoutes = (app: Express, enabledRulesAndCategorys:
 
         const apiSpecDocument = new Document(
             rawInput,
-            Parsers.Yaml,
+            Yaml,
             ""
         );
 
@@ -55,7 +55,7 @@ export const registerValidationRoutes = (app: Express, enabledRulesAndCategorys:
 
         const apiSpecDocument = new Document(
             fileContent,
-            Parsers.Yaml,
+            Yaml,
             file.originalname
         );
 
