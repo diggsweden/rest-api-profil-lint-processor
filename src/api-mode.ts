@@ -21,7 +21,7 @@ export async function startServer() {
   // Middleware för att mappa interna error till HTTP koder.
   app.use(errorHandler)
 
-  app.listen(port, () => {
+  return app.listen(port, () => {
     console.log(`Servern körs på http://localhost:${port}`);
   });
 }

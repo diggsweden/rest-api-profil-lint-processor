@@ -13,6 +13,7 @@
   "description": "A command-line tool to lint OpenAPI v3 definitions using Spectral",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "pretest": "openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o tests/generated",
     "test": "jest",
     "start": "node --import=./register.js src/app.ts"
   },
@@ -20,6 +21,7 @@
     "test": "test"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.14.0",
     "@stoplight/spectral-formats": "^1.5.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^28.1.6",
