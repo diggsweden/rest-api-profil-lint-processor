@@ -1,0 +1,158 @@
+openapi: 3.0.3
+info:
+  title: REST API-profil - Lint Processor - OpenAPI 3.0
+  description: |-
+    This is a description.
+    
+    Some useful links:
+    - [REST API-profil - Lint Processor (RAP-LP) repository](https://github.com/diggsweden/rest-api-profil-lint-processor/)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: 'test testsson'
+    email: apiteam@swagger.io
+    url: https://github.com/diggsweden/rest-api-profil-lint-processor/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about RAPL-LP
+  url: https://www.dataportal.se/rest-api-profil
+servers:
+  - url: https://test.com/api/v1
+tags:
+  - name: validate
+    description: Everything about your validations
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+paths:
+  /api/validate/content:
+    post:
+      tags:
+        - validate
+      summary: Validate your yaml
+      description: Validate your yaml
+      operationId: validateContent
+      requestBody:
+        description: Validate your yaml
+        content:
+          application/x-yaml:
+            schema:
+              type: 'string'
+          multipart/form-data:
+            schema:
+              type: 'string'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RapLPCustomSpectralDiagnostic'          
+        '400':
+          description: BAD_REQUEST
+        '500':
+          description: INTERNAL_SERVER_ERROR
+  /api-info:
+    get:
+      tags:
+        - api-info
+      summary: Get info about the api
+      description: Get name, version, release date, links and status.
+      operationId: getApiInfo
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiInfo'
+        '400':
+          description: BAD_REQUEST
+        '500':
+          description: INTERNAL_SERVER_ERROR
+
+components:
+  schemas:
+    ApiInfo:
+      type: object
+      properties:
+        apiName:
+          type: string
+        apiVersion:
+          type: string
+        apiReleased:
+          type: string
+          format: date
+        apiDocumentation:
+          type: string
+          format: uri
+        apiStatus:
+          type: string
+    IDiagnostic:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+        relatedInformation:
+          type: array
+          items: 
+            $ref: "#/components/schemas/IDiagnosticRelatedInformation"
+    IDiagnosticRelatedInformation: 
+      type: object
+      properties:
+        location:
+          $ref: "#/components/schemas/ILocation"
+        message:
+          type: string
+    ILocation:
+      type: object
+      properties:
+        uri:
+          type: string
+          nullable: true
+        range: 
+          $ref: "#/components/schemas/IRange"
+    IPosition:
+      type: object
+      properties:
+        line:
+          type: "integer"
+        character:
+          type: "integer"
+    IRange:
+      type: object
+      properties:
+        start:
+          $ref: "#/components/schemas/IPosition"
+        end:
+          $ref: "#/components/schemas/IPosition"
+    RapLPCustomSpectralDiagnostic:
+      allOf:
+        - $ref: "#/components/schemas/IDiagnostic"
+        - type: object
+          properties:
+            id:
+              type: string
+              nullable: true
+            område:
+              type: string
+              nullable: true
+            krav:
+              type: string
+              nullable: true
+            allvarlighetsgrad:
+              type: string
+              nullable: true
+            sökväg:
+              type: object
+              nullable: true
+            omfattning:
+              type: object
+              nullable: true
+      xml:
+        name: order
