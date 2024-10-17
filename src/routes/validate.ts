@@ -1,8 +1,8 @@
 import { Document } from "@stoplight/spectral-core"
-import { Yaml } from "@stoplight/spectral-parsers"
+import Parsers from "@stoplight/spectral-parsers"
 import { Express } from 'express'
 import multer from 'multer'
-import { ERROR_TYPE, RapLPCustomApiError } from "../util/RapLPCustomApiError.ts"
+import { ERROR_TYPE, RapLPBaseApiError } from "../util/RapLPBaseApiError.ts"
 import { processApiSpec, validateYamlInput } from "../util/apiUtil.ts"
 
 export const registerValidationRoutes = (app: Express, enabledRulesAndCategorys: { rules: Record<string, any>,
@@ -21,13 +21,13 @@ export const registerValidationRoutes = (app: Express, enabledRulesAndCategorys:
         const rawInput = req.body;
 
         if(!validateYamlInput(rawInput)) {
-            next(new RapLPCustomApiError("Kunde inte parsa YAML filen.", ERROR_TYPE.BAD_REQUEST));
+            next(new RapLPBaseApiError("Kunde inte parsa YAML filen.", ERROR_TYPE.BAD_REQUEST));
             return
         }
 
         const apiSpecDocument = new Document(
             rawInput,
-            Yaml,
+            Parsers.Yaml,
             ""
         );
 
@@ -43,19 +43,19 @@ export const registerValidationRoutes = (app: Express, enabledRulesAndCategorys:
 
         const file = req.file;
         if (!file) {
-            next(new RapLPCustomApiError("Kunde inte ladda upp fil.", ERROR_TYPE.INTERNAL_SERVER_ERROR))
+            next(new RapLPBaseApiError("Kunde inte ladda upp fil.", ERROR_TYPE.INTERNAL_SERVER_ERROR))
             return
         }
 
         const fileContent = file.buffer.toString()
         if (!validateYamlInput(fileContent)) {
-            next(new RapLPCustomApiError("Kunde inte parsa YAML filen.", ERROR_TYPE.BAD_REQUEST));
+            next(new RapLPBaseApiError("Kunde inte parsa YAML filen.", ERROR_TYPE.BAD_REQUEST));
             return
         }
 
         const apiSpecDocument = new Document(
             fileContent,
-            Yaml,
+            Parsers.Yaml,
             file.originalname
         );
 

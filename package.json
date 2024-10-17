@@ -15,6 +15,7 @@
     "build": "tsc -p tsconfig.json",
     "pretest": "openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o tests/generated",
     "test": "jest",
+    "test:integration": "node --experimental-vm-modules ./node_modules/.bin/jest --config jest.integration.config.cjs ",
     "start": "node --import=./register.js src/app.ts"
   },
   "directories": {

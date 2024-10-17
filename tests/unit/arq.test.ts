@@ -1,5 +1,5 @@
 import { DiagnosticSeverity } from "@stoplight/types";
-import testRule from "./util/helperTest.ts";
+import testRule from "../util/helperTest.ts";
 
 testRule("Arq05ComplexStructure", [
     {
