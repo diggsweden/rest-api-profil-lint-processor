@@ -27,7 +27,7 @@ tags:
       description: Find out more
       url: http://swagger.io
 paths:
-  /api/validate/content:
+  /validate/content:
     post:
       tags:
         - validate
@@ -131,7 +131,7 @@ components:
           $ref: "#/components/schemas/IPosition"
         end:
           $ref: "#/components/schemas/IPosition"
-    RapLPCustomSpectralDiagnostic:
+    RapLPCustomSpectralDiagnosticItem:
       allOf:
         - $ref: "#/components/schemas/IDiagnostic"
         - type: object
@@ -156,3 +156,7 @@ components:
               nullable: true
       xml:
         name: order
+    RapLPCustomSpectralDiagnostic:
+      type: array
+      items:
+        $ref: "#/components/schemas/RapLPCustomSpectralDiagnosticItem"

@@ -2,8 +2,8 @@ import yargs from "yargs";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { join } from "path";
-import Parsers from "@stoplight/spectral-parsers";
-import spectralCore from "@stoplight/spectral-core";
+import { Yaml } from "@stoplight/spectral-parsers";
+import { Document } from "@stoplight/spectral-core";
 import { importAndCreateRuleInstances, getRuleModules } from "./util/ruleUtil.ts"; // Import the helper function
 import util from 'util';
 import {RapLPCustomSpectral} from "./util/RapLPCustomSpectral.ts";
@@ -15,7 +15,7 @@ declare var AggregateError: {
     prototype: AggregateError;
     new(errors: any[], message?: string): AggregateError;
 };
-const { Spectral, Document } = spectralCore;
+
 const writeFileAsync = util.promisify(fs.writeFile);
 const appendFileAsync = util.promisify(fs.appendFile);
 
@@ -67,7 +67,7 @@ export async function execCLI() {
           // Load API specification into a Document object
           const apiSpecDocument = new Document(
             fs.readFileSync(join(apiSpecFileName), "utf-8").trim(),
-            Parsers.Yaml,
+            Yaml,
             apiSpecFileName
           );
           try {

@@ -1,5 +1,5 @@
 import { Document } from "@stoplight/spectral-core"
-import Parsers from "@stoplight/spectral-parsers"
+import { Yaml } from "@stoplight/spectral-parsers"
 import { Express } from 'express'
 import multer from 'multer'
 import { ERROR_TYPE, RapLPCustomApiError } from "../util/RapLPCustomApiError.ts"
@@ -10,14 +10,14 @@ export const registerValidationRoutes = (app: Express, enabledRulesAndCategorys:
 
     // Route based on content-type, in order to support file upload.
     app.use(function(req, res, next) {
-        if (req.url === "/validate/content" && req.headers["content-type"]?.includes("multipart/form-data")) {
-            req.url = "/validate/file"
+        if (req.url === "/api/v1/validate/content" && req.headers["content-type"]?.includes("multipart/form-data")) {
+            req.url = "/api/v1/validate/file"
         }
         next();
     });
 
     // Route for raw content upload.
-    app.post("/validate/content", async (req, res, next) => {
+    app.post("/api/v1/validate/content", async (req, res, next) => {
         const rawInput = req.body;
 
         if(!validateYamlInput(rawInput)) {
@@ -27,7 +27,7 @@ export const registerValidationRoutes = (app: Express, enabledRulesAndCategorys:
 
         const apiSpecDocument = new Document(
             rawInput,
-            Parsers.Yaml,
+            Yaml,
             ""
         );
 
@@ -39,7 +39,7 @@ export const registerValidationRoutes = (app: Express, enabledRulesAndCategorys:
     const upload = multer({ storage: storage })
 
     // Route for uploading file through standard multipart/form-data.
-    app.post("/validate/file", upload.single("file"), async (req, res, next) => {
+    app.post("/api/v1/validate/file", upload.single("file"), async (req, res, next) => {
 
         const file = req.file;
         if (!file) {
@@ -55,7 +55,7 @@ export const registerValidationRoutes = (app: Express, enabledRulesAndCategorys:
 
         const apiSpecDocument = new Document(
             fileContent,
-            Parsers.Yaml,
+            Yaml,
             file.originalname
         );
 

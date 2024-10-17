@@ -1,8 +1,8 @@
 import * as SpectralCore from '@stoplight/spectral-core';
 import { ruleExecutionStatus,RuleExecutionLog,ruleExecutionLogDictionary } from './RuleExecutionStatusModule.ts';
 import { ISpectralDiagnostic } from '@stoplight/spectral-core';
-import spectralCore from "@stoplight/spectral-core";
-const { Spectral, Document } = spectralCore;
+import { Spectral } from "@stoplight/spectral-core";
+
 import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.ts';
 
 class RapLPCustomSpectral {
