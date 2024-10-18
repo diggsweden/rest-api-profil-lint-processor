@@ -20,19 +20,23 @@ export const registerValidationRoutes = (app: Express, enabledRulesAndCategorys:
     app.post("/api/v1/validate/content", async (req, res, next) => {
         const rawInput = req.body;
 
-        if(!validateYamlInput(rawInput)) {
-            next(new RapLPBaseApiError("Kunde inte parsa YAML filen.", ERROR_TYPE.BAD_REQUEST));
-            return
+        try {
+            if(!validateYamlInput(rawInput)) {
+                next(new RapLPBaseApiError("Kunde inte parsa YAML filen.", ERROR_TYPE.BAD_REQUEST));
+                return
+            }
+
+            const apiSpecDocument = new Document(
+                rawInput,
+                Parsers.Yaml,
+                ""
+            );
+
+            const result = await processApiSpec(enabledRulesAndCategorys, apiSpecDocument)
+            res.send(result)
+        } catch (e) {
+            next(e)
         }
-
-        const apiSpecDocument = new Document(
-            rawInput,
-            Parsers.Yaml,
-            ""
-        );
-
-        const result = await processApiSpec(enabledRulesAndCategorys, apiSpecDocument)
-        res.send(result)
     })
 
     const storage = multer.memoryStorage()
