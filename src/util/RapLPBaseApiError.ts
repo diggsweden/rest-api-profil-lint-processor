@@ -24,6 +24,7 @@ export const isExtendedError = (error: unknown): error is RapLPBaseApiError => {
 
 // Express.js middleware to map Extended
 const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.log(err)
     var errorType: ERROR_TYPE;
     if(isExtendedError(err)) {
         errorType = err.errorType

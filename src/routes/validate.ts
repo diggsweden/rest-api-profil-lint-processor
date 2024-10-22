@@ -1,72 +1,40 @@
 import { Document } from "@stoplight/spectral-core"
 import Parsers from "@stoplight/spectral-parsers"
 import { Express } from 'express'
-import multer from 'multer'
 import { ERROR_TYPE, RapLPBaseApiError } from "../util/RapLPBaseApiError.ts"
-import { processApiSpec, validateYamlInput } from "../util/apiUtil.ts"
+import { decodeBase64String, processApiSpec, validateYamlInput } from "../util/apiUtil.ts"
+import { ContentType, YamlContentDto } from "../model/YamlContentDto.ts"
+import { importAndCreateRuleInstances } from "../util/ruleUtil.ts"
 
-export const registerValidationRoutes = (app: Express, enabledRulesAndCategorys: {
-    rules: Record<string, any>,
-    instanceCategoryMap: Map<string, any>
-}) => {
-
-    // Route based on content-type, in order to support file upload.
-    app.use(function (req, res, next) {
-        if (req.url === "/api/v1/validate/content" && req.headers["content-type"]?.includes("multipart/form-data")) {
-            req.url = "/api/v1/validate/file"
-        }
-        next();
-    });
+export const registerValidationRoutes = (app: Express) => {
 
     // Route for raw content upload.
     app.post("/api/v1/validate/content", async (req, res, next) => {
-        const rawInput = req.body;
-
         try {
-            if (!validateYamlInput(rawInput)) {
+            const yamlContent: YamlContentDto = req.body
+
+            let yamlContentString: string;
+            if (yamlContent.contentType === ContentType.FILE) {
+                //Handle base64Encoded file
+                yamlContentString = decodeBase64String(yamlContent.yaml)
+            } else {
+                yamlContentString = yamlContent.yaml
+            }
+
+            if (!validateYamlInput(yamlContentString)) {
                 next(new RapLPBaseApiError("Kunde inte parsa YAML filen.", ERROR_TYPE.BAD_REQUEST));
                 return
             }
 
             const apiSpecDocument = new Document(
-                rawInput,
+                yamlContentString,
                 Parsers.Yaml,
                 ""
             );
 
-            const result = await processApiSpec(enabledRulesAndCategorys, apiSpecDocument)
-            res.send(result)
-        } catch (e) {
-            next(e)
-        }
-    })
+            const rules = await importAndCreateRuleInstances(yamlContent.categories);
 
-    const storage = multer.memoryStorage()
-    const upload = multer({ storage: storage })
-
-    // Route for uploading file through standard multipart/form-data.
-    app.post("/api/v1/validate/file", upload.single("file"), async (req, res, next) => {
-
-        try {
-            const file = req.file;
-            if (!file) {
-                next(new RapLPBaseApiError("Kunde inte ladda upp fil.", ERROR_TYPE.INTERNAL_SERVER_ERROR))
-                return
-            }
-
-            const fileContent = file.buffer.toString()
-            if (!validateYamlInput(fileContent)) {
-                next(new RapLPBaseApiError("Kunde inte parsa YAML filen.", ERROR_TYPE.BAD_REQUEST));
-                return
-            }
-
-            const apiSpecDocument = new Document(
-                fileContent,
-                Parsers.Yaml,
-                file.originalname
-            );
-
-            const result = await processApiSpec(enabledRulesAndCategorys, apiSpecDocument)
+            const result = await processApiSpec(rules, apiSpecDocument)
             res.send(result)
         } catch (e) {
             next(e)

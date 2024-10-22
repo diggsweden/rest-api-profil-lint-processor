@@ -4,11 +4,7 @@ import Parsers from "@stoplight/spectral-parsers"
 import { ERROR_TYPE, RapLPBaseApiError } from "./RapLPBaseApiError.ts";
 import yaml from "js-yaml"
 
-export const validateYamlInput = (input: unknown): input is string => {
-    if(typeof input !== 'string') {
-        return false
-    }
-
+export const validateYamlInput = (input: string): input is string => {
     try {
         //Parse the yaml to verify
         yaml.load(input);
@@ -18,6 +14,16 @@ export const validateYamlInput = (input: unknown): input is string => {
     }
 
     return true
+}
+
+export function decodeBase64String(base64YamlFile: string) {
+    // Import the necessary Node.js module (Buffer is built-in)
+    const atob = (b64String: string): string => Buffer.from(b64String, 'base64').toString('utf-8');
+
+    // Decode the base64 string
+    const decodedYaml = atob(base64YamlFile);
+
+    return decodedYaml;
 }
 
 export async function processApiSpec(enabledRulesAndCategorys: { rules: Record<string, any>; instanceCategoryMap: Map<string, any>; }, apiSpecDocument: Document<unknown, Parsers.YamlParserResult<unknown>>) {

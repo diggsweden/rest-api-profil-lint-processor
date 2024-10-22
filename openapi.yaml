@@ -19,7 +19,7 @@ externalDocs:
   description: Find out more about RAPL-LP
   url: https://www.dataportal.se/rest-api-profil
 servers:
-  - url: https://test.com/api/v1
+  - url: http://localhost:3000/api/v1
 tags:
   - name: validate
     description: Everything about your validations
@@ -37,12 +37,9 @@ paths:
       requestBody:
         description: Validate your yaml
         content:
-          application/yaml:
+          application/json:
             schema:
-              type: 'string'
-          multipart/form-data:
-            schema:
-              type: 'string'
+              $ref: '#/components/schemas/YamlContentDto'
         required: true
       responses:
         '200':
@@ -50,11 +47,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RapLPCustomSpectralDiagnostic'          
+                $ref: '#/components/schemas/RapLPCustomSpectralDiagnostic'
         '400':
           description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
         '500':
           description: INTERNAL_SERVER_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
   /api-info:
     get:
       tags:
@@ -76,6 +81,32 @@ paths:
 
 components:
   schemas:
+    YamlContentDto:
+      type: object
+      properties:
+        yaml:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+            example: "DokRules,UfnRules"
+        contentType:
+          type: string
+          enum: 
+            - TEXT
+            - FILE
+          example: FILE
+    ErrorMessageDto:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date
     ApiInfo:
       type: object
       properties:
