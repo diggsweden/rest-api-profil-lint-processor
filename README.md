@@ -17,7 +17,9 @@ RAP-LP is a command-line tool to lint OpenAPI v3 definitions using [Spectral](ht
   - [Table of Contents](#table-of-contents)
   - [Installation and Requirements](#installation-and-requirements)
   - [Quick start instructions](#quick-start-instructions)
-  - [Usage](#usage)
+    - [REST API Mode](#rest-api-mode)
+    - [CLI Mode](#cli-command-line-interface-mode)
+    - [Usage](#usage)
   - [Known issues](#known-issues)
   - [Support](#support)
   - [Contributing](#contributing)
@@ -37,20 +39,52 @@ $ npm install
 
 
 ## Quick start instructions
-Use this command to run the application on YAML-file: 
+This application can be used in two different modes:
+
+### REST API Mode
+The application also provides a set of RESTful API endpoints. 
+To start a local development server run:
+
 ```bash
-$ npm start -- -f Path_to_the_YAML_file
-```
-**Example** 
-```bash
-$ npm start -- -f apis/dok-api.yaml
+$ npm start -- m api
 ```
 
-## Usage
+Use this command to validate a YAML-file:
+```bash
+$ curl localhost:3000/api/v1/validate/file -F "file=@Path_to_the_YAML_file"
+```
+
+**Example**
+```bash
+$ curl localhost:3000/api/v1/validate/file -F "file=@apis/dok-api.yaml"
+```
+
+Use this command to validate a YAML-file as raw text: 
+```bash
+$ curl localhost:3000/api/v1/validate/content -H "Content-Type: application/yaml" --data-binary @Path_to_the_YAML_file
+```
+**Example**
+```bash
+$ curl localhost:3000/api/v1/validate/content -H "Content-Type: application/yaml" --data-binary @apis/dok-api.yaml
+```
+
+### CLI (Command-Line Interface) Mode
+   You can interact with the application directly from your terminal using various command-line options.
+   Use this command to run the application on YAML-file: 
+```bash
+$ npm start -- -m cli -f Path_to_the_YAML_file
+```
+
+**Example** 
+```bash
+$ npm start -- -m cli -f apis/dok-api.yaml
+```
+
+### Usage (cli-mode only)
 To validate a specific category add `-c CategoryName`
 **Example**
 ```bash
-$ npm start -- -f apis/dok-api.yaml -c DokRules
+$ npm start -- -m cli -f apis/dok-api.yaml -c DokRules
 ```
    **Available categories**
   * UfnRules
@@ -66,19 +100,19 @@ $ npm start -- -f apis/dok-api.yaml -c DokRules
 To save log errors in a file add `-l FileName`
 **Example**
 ```bash
-$ npm start -- -f apis/dok-api.yaml -l rap-lp.log
+$ npm start -- -m cli -f apis/dok-api.yaml -l rap-lp.log
 ```
 
 To append logs add `-a`
 **Example**
 ```bash
-$ npm start -- -f apis/dok-api.yaml -l rap-lp.log -a
+$ npm start -- -m cli -f apis/dok-api.yaml -l rap-lp.log -a
 ```
 
 To save log diagnostic in a file add `-d FileName`
 **Example**
 ```bash
-$ npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
+$ npm start -- -m cli -f apis/dok-api.yaml -d logDiagnostic.log
 ```
 
 **Show help**

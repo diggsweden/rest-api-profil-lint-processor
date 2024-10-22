@@ -1,15 +1,15 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = async () => {
   return {
-    preset: 'ts-jest',
+    preset: 'ts-jest/presets/default-esm',
     testPathIgnorePatterns: ['util'],
     testEnvironment: 'node',
     "extensionsToTreatAsEsm": [".ts"],
     globals: {
       'ts-jest': {
-        useIsolatedModules: true,
+        useESM: true,
       },
     },
-    testMatch: ['**/tests/unit/**/*.test.ts']
+    testMatch: ['**/tests/integration/**/*.test.ts']
   };
 };

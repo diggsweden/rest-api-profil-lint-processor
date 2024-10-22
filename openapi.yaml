@@ -37,7 +37,7 @@ paths:
       requestBody:
         description: Validate your yaml
         content:
-          application/x-yaml:
+          application/yaml:
             schema:
               type: 'string'
           multipart/form-data:

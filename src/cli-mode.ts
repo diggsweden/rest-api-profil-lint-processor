@@ -2,7 +2,7 @@ import yargs from "yargs";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { join } from "path";
-import { Yaml } from "@stoplight/spectral-parsers";
+import Parsers from "@stoplight/spectral-parsers";
 import { Document } from "@stoplight/spectral-core";
 import { importAndCreateRuleInstances, getRuleModules } from "./util/ruleUtil.ts"; // Import the helper function
 import util from 'util';
@@ -67,7 +67,7 @@ export async function execCLI() {
           // Load API specification into a Document object
           const apiSpecDocument = new Document(
             fs.readFileSync(join(apiSpecFileName), "utf-8").trim(),
-            Yaml,
+            Parsers.Yaml,
             apiSpecFileName
           );
           try {

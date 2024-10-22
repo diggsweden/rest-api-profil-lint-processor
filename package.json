@@ -15,6 +15,7 @@
     "build": "tsc -p tsconfig.json",
     "pretest": "openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o tests/generated",
     "test": "jest",
+    "test:integration": "node --experimental-vm-modules ./node_modules/.bin/jest --config jest.integration.config.cjs ",
     "start": "node --import=./register.js src/app.ts"
   },
   "directories": {
@@ -25,8 +26,10 @@
     "@stoplight/spectral-formats": "^1.5.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^28.1.6",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.8.8",
     "jest": "^28.0",
+    "supertest": "^7.0.0",
     "ts-jest": "^28.0.8",
     "typescript": "^5.2.2"
   },

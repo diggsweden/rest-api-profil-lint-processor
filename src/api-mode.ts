@@ -1,7 +1,7 @@
 import express from 'express';
 import { importAndCreateRuleInstances } from "./util/ruleUtil.ts"; // Import the helper function
 import { registerValidationRoutes } from './routes/validate.ts';
-import { errorHandler } from './util/RapLPCustomApiError.ts';
+import { errorHandler } from './util/RapLPBaseApiError.ts';
 import bodyParser from 'body-parser';
 
 // Funktion för att starta API-servern
@@ -12,7 +12,7 @@ export async function startServer() {
   const rules = await importAndCreateRuleInstances();
 
   // For the case of content upload
-  app.use(bodyParser.text({type: "application/x-yaml"}))
+  app.use(bodyParser.text({type: "application/yaml"}))
 
 
   // API Endpoint, t.ex. för att validera en YAML-fil
