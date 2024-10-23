@@ -35,11 +35,20 @@ paths:
       description: Validate your yaml
       operationId: validateContent
       requestBody:
-        description: Validate your yaml
+        description: |- 
+          Yaml can be sent as a base64 encoded file or a yaml string. 
+
+          ContentType is specifying the type of yaml content being sent
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/YamlContentDto'
+            example:
+              yaml: "<base64encoded file>"
+              categories:
+                - "DokRules"
+                - "UfnRules"
+              contentType: "FILE"
         required: true
       responses:
         '200':
@@ -48,18 +57,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RapLPCustomSpectralDiagnostic'
+              example:
+                - id: "AME.04"
+                  omrade: "API Message"
+                  krav: "För fältnamn i request och response body BÖR camelCase eller snake_case notation användas."
+                  allvarlighetsgrad: "WARNING"
+                  sokvag:
+                    - "components"
+                    - "schemas"
+                  omfattning: 
+                    start:
+                      line: 1
+                      character: 5
+                    end:
+                      line: 1
+                      character: 10
         '400':
           description: BAD_REQUEST
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessageDto'
+              example:
+                code: 500
+                message: "request/body/contentType must be equal to one of the allowed values: TEXT, FILE"
+                timestamp: "2024-10-23T06:50:16.559Z"
         '500':
           description: INTERNAL_SERVER_ERROR
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessageDto'
+              example:
+                code: 500
+                message: "request/body/contentType must be equal to one of the allowed values: TEXT, FILE"
+                timestamp: "2024-10-23T06:50:16.559Z"
   /api-info:
     get:
       tags:
@@ -74,10 +106,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiInfo'
+              example:
+                apiName: "RAP-LP"
+                apiVersion: "0.0.1"
+                apiReleased: "2024-10-10"
+                apiDocumentation: "http://example.digg/docs"
+                apiStatus: "active"
         '400':
           description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+              example:
+                code: 500
+                message: "request/body/contentType must be equal to one of the allowed values: TEXT, FILE"
+                timestamp: "2024-10-23T06:50:16.559Z"
         '500':
           description: INTERNAL_SERVER_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+              example:
+                code: 500
+                message: "request/body/contentType must be equal to one of the allowed values: TEXT, FILE"
+                timestamp: "2024-10-23T06:50:16.559Z"
 
 components:
   schemas:
@@ -106,7 +160,8 @@ components:
           type: string
         timestamp:
           type: string
-          format: date
+          format: date-time
+          example: "2024-10-23T06:50:16.559Z"
     ApiInfo:
       type: object
       properties:
@@ -117,6 +172,7 @@ components:
         apiReleased:
           type: string
           format: date
+          example: "2024-10-23"
         apiDocumentation:
           type: string
           format: uri
@@ -170,7 +226,7 @@ components:
             id:
               type: string
               nullable: true
-            område:
+            omrade:
               type: string
               nullable: true
             krav:
@@ -179,8 +235,10 @@ components:
             allvarlighetsgrad:
               type: string
               nullable: true
-            sökväg:
-              type: object
+            sokvag:
+              type: array
+              items:
+                type: string
               nullable: true
             omfattning:
               type: object

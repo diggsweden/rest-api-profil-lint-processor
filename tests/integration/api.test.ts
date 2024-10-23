@@ -5,6 +5,9 @@ import { Configuration, ResponseError } from "../generated/runtime.ts";
 import path from "path";
 import { fileURLToPath } from "url";
 import request from 'supertest'
+import { ContentType, YamlContentDto } from "../../src/model/YamlContentDto.ts";
+import { YamlContentDtoContentTypeEnum } from "../generated/models/YamlContentDto.ts";
+import { ErrorMessageDto } from "../generated/models/ErrorMessageDto.ts";
 
 // Emulate __dirname in ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -26,37 +29,39 @@ describe("API Test", () => {
         api = new ValidateApi(new Configuration({ basePath: "http://localhost:3000/api/v1" }))
     })
 
-    it("test", async () => {
-        const data = readFileSync(path.resolve(__dirname, "../../openapi.yaml"))
+    it("Assert that the endpoint is returning correct body", async () => {
+        const data = readFileSync(path.resolve(__dirname, "../../apis/dok-api.yaml"))
 
         const response = await api.validateContent({
-            body: data.toString()
+            yamlContentDto: new YamlContentDto(data.toString("base64"), [], ContentType.FILE)
         })
+
+        console.log(response)
 
         expect(response.length).toBeGreaterThan(0)
 
-
     })
 
-    it("assert error handler works as intended with simple invalid yaml", async () => {
-        const invalidYaml = `
-            this: is
-              invalid: yaml
-            not-well-formatted
-        `;
-
+    it("Assert that the error handler is intercepting faults", async () => {
+        const data = readFileSync(path.resolve(__dirname, "../../apis/dok-api.yaml"))
 
         const response = await request(app)
             .post("/api/v1/validate/content")
-            .set('Content-Type', 'application/yaml')
-            .send(invalidYaml)
+            .set('Content-Type', 'application/json')
+            .send({
+                yaml: data.toString("base64"),
+                categories: [],
+                contentType: "FIL" as unknown as YamlContentDtoContentTypeEnum
+            })
+
 
         expect(response.status).toBe(400)
         expect(response.body).toMatchObject({
             code: 400,
-            message: "Invalid YAML",
+            message: "request/body/contentType must be equal to one of the allowed values: TEXT, FILE",
             timestamp: expect.any(String),
         })
+
 
 
     })

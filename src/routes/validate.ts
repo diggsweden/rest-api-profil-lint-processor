@@ -5,6 +5,7 @@ import { ERROR_TYPE, RapLPBaseApiError } from "../util/RapLPBaseApiError.ts"
 import { decodeBase64String, processApiSpec, validateYamlInput } from "../util/apiUtil.ts"
 import { ContentType, YamlContentDto } from "../model/YamlContentDto.ts"
 import { importAndCreateRuleInstances } from "../util/ruleUtil.ts"
+import { ApiInfo } from "../model/ApiInfo.ts"
 
 export const registerValidationRoutes = (app: Express) => {
 
@@ -39,5 +40,9 @@ export const registerValidationRoutes = (app: Express) => {
         } catch (e) {
             next(e)
         }
+    })
+
+    app.get("/api/v1/api-info", async (req, res, next) => {
+        res.send(new ApiInfo("RAP-LP", "1.0.11", new Date().toDateString(), "http://example.digg.se/RAP-LP-docs", "development"));
     })
 }

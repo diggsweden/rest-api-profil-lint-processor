@@ -1,5 +1,5 @@
 // Define a type for CustomProperties
 export interface CustomProperties {
-    område: string;
+    omrade: string;
     id: string;
 }

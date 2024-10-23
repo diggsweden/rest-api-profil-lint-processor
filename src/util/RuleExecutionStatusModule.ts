@@ -19,11 +19,11 @@ export const ruleExecutionStatus: Record<string, boolean> = {};
 
 // Function to register module and class information
 export function registerRuleExecutionStatus(moduleName: string, className: string, customProperties: CustomProperties,severity: string) {
-    const key = `${moduleName}:${customProperties.id}:${customProperties.område}:${severity}`;
+    const key = `${moduleName}:${customProperties.id}:${customProperties.omrade}:${severity}`;
     ruleExecutionStatus[key] = true;
 }
 export function logRuleExecution(moduleName: string, className: string, customProperties: CustomProperties, severity: string, passed: boolean, targetVal: string) {
-    const key = `${moduleName}:${customProperties.id}:${customProperties.område}:${severity}`;
+    const key = `${moduleName}:${customProperties.id}:${customProperties.omrade}:${severity}`;
     
     if (!ruleExecutionLogDictionary[key]) {
         ruleExecutionLogDictionary[key] = [];

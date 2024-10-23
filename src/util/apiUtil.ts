@@ -32,3 +32,14 @@ export async function processApiSpec(enabledRulesAndCategorys: { rules: Record<s
     customSpectral.setRuleset(enabledRulesAndCategorys.rules);
     return await customSpectral.run(apiSpecDocument);
 }
+
+/**
+ * https://oida.dev/typescript-hasownproperty/
+ * @param obj Object to check
+ * @param prop Property to check for
+ * @returns Boolean
+ */
+export function hasOwnProperty<X extends {}, Y extends PropertyKey>
+  (obj: X, prop: Y): obj is X & Record<Y, unknown> {
+  return obj.hasOwnProperty(prop)
+}

@@ -6,7 +6,7 @@ const moduleName: string = "VerRules.ts";
 
 export class Ver06 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Versionhantering",
+    omrade: "Versionhantering",
     id: "VER.06",
   };
   given = "$.paths";
@@ -31,7 +31,7 @@ export class Ver06 extends BaseRuleset {
 }
 export class Ver05 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Versionhantering",
+    omrade: "Versionhantering",
     id: "VER.05",
   };
 

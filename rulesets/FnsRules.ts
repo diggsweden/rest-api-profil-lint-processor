@@ -7,7 +7,7 @@ const moduleName: string = "FnsRules.ts";
 
 export class Fns01 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Filtrering, paginering och sökparametrar",
+    omrade: "Filtrering, paginering och sökparametrar",
     id: "FNS.01",
   };
   description = "Parameternamn SKALL anges med en konsekvent namnkonvention inom ett API, exempelvis antingen snake_case eller camelCase";
@@ -35,7 +35,7 @@ export class Fns01 extends BaseRuleset {
 
 export class Fns03 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Filtrering, paginering och sökparametrar",
+    omrade: "Filtrering, paginering och sökparametrar",
     id: "FNS.03",
   };
   description = "Sökparametrar SKALL starta med en bokstav";
@@ -62,7 +62,7 @@ export class Fns03 extends BaseRuleset {
 
 export class Fns09 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Filtrering, paginering och sökparametrar",
+    omrade: "Filtrering, paginering och sökparametrar",
     id: "FNS.09",
   };
   description = "Defaultvärde för limit BÖR vara 20";
@@ -115,7 +115,7 @@ export class Fns09 extends BaseRuleset {
 }
 export class Fns05 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Filtrering, paginering och sökparametrar",
+    omrade: "Filtrering, paginering och sökparametrar",
     id: "FNS.05",
   };
   description = "Sökparametrar BÖR vara frivilliga.";
@@ -149,7 +149,7 @@ export class Fns05 extends BaseRuleset {
 }
 export class Fns06 extends BaseRuleset {
     static customProperties: CustomProperties = {
-      område: "Filtrering, paginering och sökparametrar",
+      omrade: "Filtrering, paginering och sökparametrar",
       id: "FNS.06",
     };
     description = "Sökparametrar BÖR använda tecken som är URL-säkra (tecknen A-Z, a-z, 0-9, '-'', '.', '_' samt '~', se vidare i RFC 3986)";
@@ -177,7 +177,7 @@ export class Fns06 extends BaseRuleset {
 
 export class Fns07 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Filtrering, paginering och sökparametrar",
+    omrade: "Filtrering, paginering och sökparametrar",
     id: "FNS.07",
   };
   description = "";
@@ -237,7 +237,7 @@ export class Fns07 extends BaseRuleset {
 
 export class Fns08 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Filtrering, paginering och sökparametrar",
+    omrade: "Filtrering, paginering och sökparametrar",
     id: "FNS.08",
   };
   description = "";

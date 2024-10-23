@@ -12,7 +12,7 @@ const moduleName: string = "ForRules.ts";
  */
 export class For01 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Förutsättningar",
+    omrade: "Förutsättningar",
     id: "FOR.01",
   };
   description = "Swagger 2-filer är inte tillåtna. Använd OpenAPI >= 3.0";
@@ -36,7 +36,7 @@ export class For01 extends BaseRuleset {
  */
 export class For02 extends BaseRuleset {
   static customProperties: CustomProperties = {
-  område: "Förutsättningar",
+  omrade: "Förutsättningar",
   id: "FOR.02",
   };
   description = "EN GET -förfrågan SKALL INTE acceptera en body";

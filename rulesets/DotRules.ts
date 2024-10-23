@@ -8,7 +8,7 @@ const moduleName: string = "DotRules.ts";
 
 export class Dot01 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Datum- och tidsformat",
+    omrade: "Datum- och tidsformat",
     id: "DOT.01",
   };
   description = "Datum och tid SKALL (DOT.01) hanteras enligt följande, använd alltid RFC 3339 för datum och tid, acceptera alla tidszoner i API:er returnera datum och tid i UTC och använd inte tidsdelen om du inte behöver den.";
@@ -44,7 +44,7 @@ export class Dot01 extends BaseRuleset {
 
 export class Dot02 extends DotRuleBase {
   static customProperties: CustomProperties = {
-    område: "Datum- och tidsformat",
+    omrade: "Datum- och tidsformat",
     id: "DOT.02",
   };
   description = "Ett giltigt exempel enligt DOT.02 behöver anges som ett exempel";
@@ -82,7 +82,7 @@ export class Dot02 extends DotRuleBase {
 export class Dot04 extends DotRuleBase {
 
   static customProperties: CustomProperties = {
-    område: "Datum- och tidsformat",
+    omrade: "Datum- och tidsformat",
     id: "DOT.04",
   };
   description = "När man använder RFC 3339 format BÖR tidszonen anges.";
