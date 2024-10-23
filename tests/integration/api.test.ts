@@ -36,9 +36,7 @@ describe("API Test", () => {
             yamlContentDto: new YamlContentDto(data.toString("base64"), [], ContentType.FILE)
         })
 
-        console.log(response)
-
-        expect(response.length).toBeGreaterThan(0)
+        expect(response.length).toBe(9)
 
     })
 
