@@ -42,30 +42,41 @@ $ npm install
 This application can be used in two different modes:
 
 ### REST API Mode
-The application also provides a set of RESTful API endpoints. 
-To start a local development server run:
+The application also provides a way to validate . 
 
+**To start a local development server run:**
 ```bash
 $ npm start -- m api
 ```
 
-Use this command to validate a YAML-file:
+**Validate against the endpoint:**
 ```bash
-$ curl localhost:3000/api/v1/validate/file -F "file=@Path_to_the_YAML_file"
+POST http://localhost:3000/api/v1/validate/content
+```
+
+**Request body - application/json**
+```bash 
+{
+  "yaml": "<base64encoded file>",
+  "categories": [
+    "CATEGORY1",
+    "CATEGORY2"
+  ]
+}
+```
+
+**Use this command to validate a YAML-file using a terminal:**
+```bash
+$ curl -X POST http://localhost:3000/api/v1/validate/content \
+    -H "Content-Type: application/json" \
+    -d "{\"yaml\": \"$(base64 -w 0 Path_to_the_YAML_file)\", \"categories\": [\"CATEGORY1\", \"CATEGORY2\"]}"
 ```
 
 **Example**
 ```bash
-$ curl localhost:3000/api/v1/validate/file -F "file=@apis/dok-api.yaml"
-```
-
-Use this command to validate a YAML-file as raw text: 
-```bash
-$ curl localhost:3000/api/v1/validate/content -H "Content-Type: application/yaml" --data-binary @Path_to_the_YAML_file
-```
-**Example**
-```bash
-$ curl localhost:3000/api/v1/validate/content -H "Content-Type: application/yaml" --data-binary @apis/dok-api.yaml
+$ curl -X POST http://localhost:3000/api/v1/validate/content \
+    -H "Content-Type: application/json" \
+    -d "{\"yaml\": \"$(base64 -w 0 apis/dok-api.yaml)\", \"categories\": [\"DokRules\", \"UfnRules\"]}"
 ```
 
 ### CLI (Command-Line Interface) Mode
