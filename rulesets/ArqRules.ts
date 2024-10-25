@@ -82,7 +82,7 @@ export class Arq05ComplexStructure extends Arq05Base {
 }
 export class Arq01 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "API Request",
+    omrade: "API Request",
     id: "ARQ.01",
   };
   description = "Ett request BÖR skickas i UTF-8";
@@ -114,7 +114,7 @@ export class Arq01 extends BaseRuleset {
 }
 export class Arq03 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "API Request",
+    omrade: "API Request",
     id: "ARQ.03",
   };
   description = "Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, ETag, Connection och Cookie.";

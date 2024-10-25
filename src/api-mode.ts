@@ -1,22 +1,32 @@
 import express from 'express';
-import { importAndCreateRuleInstances } from "./util/ruleUtil.ts"; // Import the helper function
 import { registerValidationRoutes } from './routes/validate.ts';
 import { errorHandler } from './util/RapLPBaseApiError.ts';
-import bodyParser from 'body-parser';
+import OpenApiValidator from 'express-openapi-validator';
+import path from "path";
 
 // Funktion för att starta API-servern
 export async function startServer() {
   const app = express();
   const port = process.env.PORT || 3000;
 
-  const rules = await importAndCreateRuleInstances();
+  app.use('/api/v1/openapi.yaml', express.static(path.join(process.cwd(), 'openapi.yaml')));
 
   // For the case of content upload
-  app.use(bodyParser.text({type: "application/yaml"}))
+  app.use(express.json())
+  // Path to your OpenAPI spec
+  const apiSpec = path.join(process.cwd(), 'openapi.yaml');
 
+  // Initialize OpenAPI Validator middleware
+app.use(
+  OpenApiValidator.middleware({
+    apiSpec,              // Path to OpenAPI spec
+    validateRequests: true,  // Automatically validate request bodies
+    validateResponses: true, // Automatically validate responses
+  })
+);
 
   // API Endpoint, t.ex. för att validera en YAML-fil
-  registerValidationRoutes(app, rules);
+  registerValidationRoutes(app);
 
   // Middleware för att mappa interna error till HTTP koder.
   app.use(errorHandler)

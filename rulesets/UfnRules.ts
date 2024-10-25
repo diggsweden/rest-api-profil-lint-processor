@@ -9,7 +9,7 @@ const moduleName: string = "UfnRules.ts";
 
 export class Ufn01 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "URL Format och namngivning",
+    omrade: "URL Format och namngivning",
     id: "UFN.01",
   };
   description = "{protokoll}://{domännamn}/{api}/{version}/{resurs}/{identifierare}?{parametrar}"
@@ -37,7 +37,7 @@ export class Ufn01 extends BaseRuleset {
 }
 export class Ufn02 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "URL Format och namngivning",
+    omrade: "URL Format och namngivning",
     id: "UFN.02",
   };
   given = "$.servers.[url]";
@@ -214,7 +214,7 @@ export class Ufn05paths extends Ufn05Base {
 }
 export class Ufn08 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "URL Format och namngivning",
+    omrade: "URL Format och namngivning",
     id: "UFN.08",
   };
 
@@ -269,7 +269,7 @@ export class Ufn08 extends BaseRuleset {
 }
 export class Ufn07 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "URL Format och namngivning",
+    omrade: "URL Format och namngivning",
     id: "UFN.07",
   };
   message = 'URL:n SKALL använda dessa tecknen a-z, 0-9, "-", "." samt "~", se vidare i RFC 3986)';

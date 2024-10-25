@@ -8,7 +8,7 @@ const moduleName: string = "SakRules.ts";
 
 export class Sak09 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Säkerhet",
+    omrade: "Säkerhet",
     id: "SAK.09",
   };
   description = "HTTP Basic är ett naturligt osäkert sätt att skicka inloggningsuppgifter till API:et. De placeras i URL:en i base64 som enkelt kan dekrypteras. Även om du använder en token finns det mycket bättre sätt att hantera att skicka tokens till ett API som är mindre benägna att läcka ut information";
@@ -48,7 +48,7 @@ export class Sak09 extends BaseRuleset {
 }  
 export class Sak10 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Säkerhet",
+    omrade: "Säkerhet",
     id: "SAK.10",
   };
   description = "Genom att använda HTTPS för att kryptera kommunikationen mellan klient och server kan Bearer Authentication erbjuda en hög nivå av säkerhet. Det gör det svårare för angripare att avlyssna eller ändra åtkomsttoken under överföringen";
@@ -77,7 +77,7 @@ export class Sak10 extends BaseRuleset {
 }
 export class Sak18 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: "Säkerhet",
+    omrade: "Säkerhet",
     id: "SAK.18",
   };
   description = "OAuth är ett auktorisationsprotokoll som säkert delegerar behörighet till en annan resurs.";

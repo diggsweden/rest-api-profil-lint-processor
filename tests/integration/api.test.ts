@@ -5,6 +5,9 @@ import { Configuration, ResponseError } from "../generated/runtime.ts";
 import path from "path";
 import { fileURLToPath } from "url";
 import request from 'supertest'
+import { YamlContentDto } from "../../src/model/YamlContentDto.ts";
+import { YamlContentDtoContentTypeEnum } from "../generated/models/YamlContentDto.ts";
+import { ErrorMessageDto } from "../generated/models/ErrorMessageDto.ts";
 
 // Emulate __dirname in ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -26,30 +29,28 @@ describe("API Test", () => {
         api = new ValidateApi(new Configuration({ basePath: "http://localhost:3000/api/v1" }))
     })
 
-    it("test", async () => {
-        const data = readFileSync(path.resolve(__dirname, "../../openapi.yaml"))
+    it("Assert that the endpoint is returning correct body", async () => {
+        const data = readFileSync(path.resolve(__dirname, "../../apis/dok-api.yaml"))
 
         const response = await api.validateContent({
-            body: data.toString()
+            yamlContentDto: new YamlContentDto(data.toString("base64"), [])
         })
 
-        expect(response.length).toBeGreaterThan(0)
-
+        expect(response.length).toBe(9)
 
     })
 
-    it("assert error handler works as intended with simple invalid yaml", async () => {
-        const invalidYaml = `
-            this: is
-              invalid: yaml
-            not-well-formatted
-        `;
-
+    it("Assert that the error handler is intercepting faults", async () => {
+        const data = readFileSync(path.resolve(__dirname, "../../apis/dok-api.yaml"))
 
         const response = await request(app)
             .post("/api/v1/validate/content")
-            .set('Content-Type', 'application/yaml')
-            .send(invalidYaml)
+            .set('Content-Type', 'application/json')
+            .send({
+                yaml: data.toString("base64") + "123qwdsdfgaerg39e4rg",
+                categories: []
+            })
+
 
         expect(response.status).toBe(400)
         expect(response.body).toMatchObject({
@@ -57,6 +58,7 @@ describe("API Test", () => {
             message: "Invalid YAML",
             timestamp: expect.any(String),
         })
+
 
 
     })

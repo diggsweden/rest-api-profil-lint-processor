@@ -47,7 +47,7 @@ class RapLPCustomSpectral {
             const customProperties = ruleClass.getCustomProperties;
             const customResult: RapLPCustomSpectralDiagnostic = {
               id: ruleClass.customProperties.id,
-              område: ruleClass.customProperties.område,
+              omrade: ruleClass.customProperties.omrade,
               ...customProperties, // For more copy
                 ...this.mapResultToCustom(result),
             };
@@ -86,7 +86,7 @@ class RapLPCustomSpectral {
       
       krav: message, 
       allvarlighetsgrad,
-      sökväg: path,
+      sokvag: path,
       omfattning: range,
     };
   }

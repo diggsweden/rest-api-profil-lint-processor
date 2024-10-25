@@ -38,12 +38,11 @@
     "@stoplight/spectral-functions": "^1.7.2",
     "@stoplight/spectral-ruleset-bundler": "^1.5.2",
     "@types/express": "^5.0.0",
-    "@types/multer": "^1.4.12",
     "body-parser": "^1.20.3",
     "chalk": "^5.3.0",
     "express": "^4.21.1",
+    "express-openapi-validator": "^5.3.7",
     "js-yaml": "^4.1.0",
-    "multer": "^1.4.5-lts.1",
     "path": "^0.12.7",
     "ts-node": "^10.9.2",
     "yargs": "^17.7.2"

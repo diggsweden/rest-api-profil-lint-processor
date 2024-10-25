@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ErrorMessageDto } from "../model/ErrorMessageDto.ts"
+import { hasOwnProperty } from "./apiUtil.ts";
 
 /**
  * Extended error class with errorType that will be used as HTTP error codes in custom error handler.
@@ -23,12 +24,17 @@ export const isExtendedError = (error: unknown): error is RapLPBaseApiError => {
 }
 
 // Express.js middleware to map Extended
-const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+    console.log(err)
     var errorType: ERROR_TYPE;
-    if(isExtendedError(err)) {
+    if (isExtendedError(err)) {
         errorType = err.errorType
     } else {
-        errorType = ERROR_TYPE.INTERNAL_SERVER_ERROR
+        if (hasOwnProperty(err, "status")) {
+            errorType = err.status
+        } else {
+            errorType = ERROR_TYPE.INTERNAL_SERVER_ERROR
+        }
     }
 
     const errorMessage = new ErrorMessageDto(
