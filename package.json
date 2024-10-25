@@ -25,18 +25,17 @@
     "@openapitools/openapi-generator-cli": "^2.14.0",
     "@stoplight/spectral-formats": "^1.5.0",
     "@types/express": "^5.0.0",
-    "@types/jest": "^28.1.6",
+    "@types/jest": "^29.5.13",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^20.8.8",
-    "jest": "^28.0",
+    "@types/node": "^22.7.5",
+    "jest": "^29.7.0",
     "supertest": "^7.0.0",
-    "ts-jest": "^28.0.8",
+    "ts-jest": "^29.2.5",
     "typescript": "^5.2.2"
   },
   "dependencies": {
     "@stoplight/spectral-core": "^1.18.3",
     "@stoplight/spectral-functions": "^1.7.2",
-    "@stoplight/spectral-ruleset-bundler": "^1.5.2",
     "@types/express": "^5.0.0",
     "body-parser": "^1.20.3",
     "chalk": "^5.3.0",
@@ -46,6 +45,14 @@
     "path": "^0.12.7",
     "ts-node": "^10.9.2",
     "yargs": "^17.7.2"
+  },
+  "//": [
+    "Override transitive dependency due to vulnerability",
+    "[CVE-2024-21534] CWE-94: Improper Control of Generation of Code ('Code Injection')"],
+  "overrides": {
+   "@stoplight/spectral-core": {
+      "jsonpath-plus": "10.0.0"
+    }
   },
   "author": "Digg - Agency for Digital Government",
   "license": "EUPL",
