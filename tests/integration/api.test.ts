@@ -5,7 +5,7 @@ import { Configuration, ResponseError } from "../generated/runtime.ts";
 import path from "path";
 import { fileURLToPath } from "url";
 import request from 'supertest'
-import { ContentType, YamlContentDto } from "../../src/model/YamlContentDto.ts";
+import { YamlContentDto } from "../../src/model/YamlContentDto.ts";
 import { YamlContentDtoContentTypeEnum } from "../generated/models/YamlContentDto.ts";
 import { ErrorMessageDto } from "../generated/models/ErrorMessageDto.ts";
 
@@ -33,7 +33,7 @@ describe("API Test", () => {
         const data = readFileSync(path.resolve(__dirname, "../../apis/dok-api.yaml"))
 
         const response = await api.validateContent({
-            yamlContentDto: new YamlContentDto(data.toString("base64"), [], ContentType.FILE)
+            yamlContentDto: new YamlContentDto(data.toString("base64"), [])
         })
 
         expect(response.length).toBe(9)
@@ -47,16 +47,15 @@ describe("API Test", () => {
             .post("/api/v1/validate/content")
             .set('Content-Type', 'application/json')
             .send({
-                yaml: data.toString("base64"),
-                categories: [],
-                contentType: "FIL" as unknown as YamlContentDtoContentTypeEnum
+                yaml: data.toString("base64") + "123qwdsdfgaerg39e4rg",
+                categories: []
             })
 
 
         expect(response.status).toBe(400)
         expect(response.body).toMatchObject({
             code: 400,
-            message: "request/body/contentType must be equal to one of the allowed values: TEXT, FILE",
+            message: "Invalid YAML",
             timestamp: expect.any(String),
         })
 
