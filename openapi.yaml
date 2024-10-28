@@ -48,7 +48,6 @@ paths:
               categories:
                 - "DokRules"
                 - "UfnRules"
-              contentType: "FILE"
         required: true
       responses:
         '200':
@@ -92,6 +91,31 @@ paths:
                 code: 500
                 message: "request/body/contentType must be equal to one of the allowed values: TEXT, FILE"
                 timestamp: "2024-10-23T06:50:16.559Z"
+  /validation/rules:
+    get:
+      tags:
+        - validation-rules
+      summary: Get validation rules
+      description: Get a collection of available validation rules.
+      operationId: getValidationRules
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationRules'
+        '500':
+          description: INTERNAL_SERVER_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+              example:
+                code: 500
+                message: ""
+                timestamp: "2024-10-23T06:50:16.559Z"
+
   /api-info:
     get:
       tags:
@@ -135,6 +159,39 @@ paths:
 
 components:
   schemas:
+    ValidationRules:
+      type: array
+      description: A list of validation rules.
+      items:
+        type: object
+        properties:
+          rule:
+            type: string
+            description: The name of the validation rule.
+            example: "UfnRules"  # Example rule name
+          description:
+            type: string
+            description: Description of the validation rule.
+            example: "URL Format och namngivning"  # Example description
+      example:  # Example array of rules
+        - rule: "UfnRules"
+          description: "URL Format och namngivning"
+        - rule: "SakRules"
+          description: "Säkerhet"
+        - rule: "VerRules"
+          description: "Versionshantering"
+        - rule: "FnsRules"
+          description: "Filtrering, paginering och sökparametrar"
+        - rule: "ArqRules"
+          description: "API Request"
+        - rule: "DokRules"
+          description: "Dokumentation"
+        - rule: "AmeRules"
+          description: "API Message"
+        - rule: "ForRules"
+          description: "Förutsättningar"
+        - rule: "DotRules"
+          description: "Datum- och tidsformat"
     YamlContentDto:
       type: object
       properties:
@@ -145,12 +202,6 @@ components:
           items:
             type: string
             example: "DokRules,UfnRules"
-        contentType:
-          type: string
-          enum: 
-            - TEXT
-            - FILE
-          example: FILE
     ErrorMessageDto:
       type: object
       properties:
