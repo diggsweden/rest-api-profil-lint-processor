@@ -1,3 +1,4 @@
+import { RuleCategoryError } from "./RapLPBaseApiErrorHandling.ts";
 
 // ruleUtil.ts
 interface CustomSchema {
@@ -62,7 +63,7 @@ export async function importAndCreateRuleInstances(ruleCategories?: string[]):
         }
       } catch (error: any) {
         //Saftey check in case of error when loading module[s]
-        throw new Error(`Fel vid importering av regler för kategori ${category}:, category ${error.message}`);
+        throw new Error(`Fel vid importering av regler för kategori: ${category}, category ${error.message}`);
       }
     }
     /**
@@ -88,6 +89,7 @@ export async function importAndCreateRuleInstances(ruleCategories?: string[]):
     /**
      * Load modules
      */
+    try {
     if (ruleCategories && ruleCategories.length > 0) {
       //Check if we gonna load PrerequisetRules or if it is specified
       if (!ruleCategories.includes("ForRules")) {
@@ -96,6 +98,12 @@ export async function importAndCreateRuleInstances(ruleCategories?: string[]):
       await importRulesByCategory(ruleCategories);
     } else {
       await importAllRules();
+    }
+    } catch (e) {
+      if(e instanceof Error) {
+        throw new RuleCategoryError(e.message)
+      }
+      throw e
     }
     /**
      * Loop entries of instanceCategory map

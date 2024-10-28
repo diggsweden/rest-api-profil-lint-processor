@@ -44,7 +44,7 @@ describe("API Test", () => {
         const data = readFileSync(path.resolve(__dirname, "../../apis/dok-api.yaml"))
 
         const response = await request(app)
-            .post("/api/v1/validate/content")
+            .post("/api/v1/validation/validate")
             .set('Content-Type', 'application/json')
             .send({
                 yaml: data.toString("base64") + "123qwdsdfgaerg39e4rg",
@@ -54,9 +54,11 @@ describe("API Test", () => {
 
         expect(response.status).toBe(400)
         expect(response.body).toMatchObject({
-            code: 400,
-            message: "Invalid YAML",
-            timestamp: expect.any(String),
+            type: "about:blank",
+            title: "Could not validate Yaml",
+            status: 400,
+            detail: "Invalid YAML",
+            instance: "/api/v1/validation/validate"
         })
 
 
