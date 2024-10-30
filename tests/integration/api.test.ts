@@ -1,13 +1,11 @@
 import { readFileSync } from "fs";
 import { startServer } from "../../src/api-mode.ts"
 import { ValidateApi } from "../generated/apis/index.ts";
-import { Configuration, ResponseError } from "../generated/runtime.ts";
+import { Configuration } from "../generated/runtime.ts";
 import path from "path";
 import { fileURLToPath } from "url";
 import request from 'supertest'
 import { YamlContentDto } from "../../src/model/YamlContentDto.ts";
-import { YamlContentDtoContentTypeEnum } from "../generated/models/YamlContentDto.ts";
-import { ErrorMessageDto } from "../generated/models/ErrorMessageDto.ts";
 
 // Emulate __dirname in ES Modules
 const __filename = fileURLToPath(import.meta.url);
