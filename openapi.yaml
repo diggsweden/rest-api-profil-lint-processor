@@ -90,9 +90,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailsDto'
               example:
-                code: 500
-                message: "request/body/contentType must be equal to one of the allowed values: TEXT, FILE"
-                timestamp: "2024-10-23T06:50:16.559Z"
+                type: "about:blank"
+                title: "Test title"
+                status: 500
+                detail: "Test error"
+                instance: "/example"
   /validation/rules:
     get:
       tags:
@@ -112,12 +114,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMessageDto'
+                $ref: '#/components/schemas/ProblemDetailsDto'
               example:
-                code: 500
-                message: ""
-                timestamp: "2024-10-23T06:50:16.559Z"
-
+                type: "about:blank"
+                title: "Test title"
+                status: 500
+                detail: "Test error"
+                instance: "/example"
   /api-info:
     get:
       tags:
@@ -208,7 +211,7 @@ components:
           items:
             type: string
             example: "DokRules,UfnRules"
-    ProblemDetailsDto::
+    ProblemDetailsDto:
       type: object
       properties:
         type:
