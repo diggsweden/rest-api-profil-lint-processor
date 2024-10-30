@@ -27,7 +27,7 @@ tags:
       description: Find out more
       url: http://swagger.io
 paths:
-  /validate/content:
+  /validation/validate:
     post:
       tags:
         - validate
@@ -76,17 +76,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMessageDto'
+                $ref: '#/components/schemas/ProblemDetailsDto'
               example:
-                code: 500
-                message: "request/body/contentType must be equal to one of the allowed values: TEXT, FILE"
-                timestamp: "2024-10-23T06:50:16.559Z"
+                type: "about:blank"
+                title: "Test title"
+                status: 400
+                detail: "Test error"
+                instance: "/example"
         '500':
           description: INTERNAL_SERVER_ERROR
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMessageDto'
+                $ref: '#/components/schemas/ProblemDetailsDto'
               example:
                 code: 500
                 message: "request/body/contentType must be equal to one of the allowed values: TEXT, FILE"
@@ -141,21 +143,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMessageDto'
+                $ref: '#/components/schemas/ProblemDetailsDto'
               example:
-                code: 500
-                message: "request/body/contentType must be equal to one of the allowed values: TEXT, FILE"
-                timestamp: "2024-10-23T06:50:16.559Z"
+                type: "about:blank"
+                title: "Test title"
+                status: 400
+                detail: "Test error"
+                instance: "/example"
         '500':
           description: INTERNAL_SERVER_ERROR
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMessageDto'
+                $ref: '#/components/schemas/ProblemDetailsDto'
               example:
-                code: 500
-                message: "request/body/contentType must be equal to one of the allowed values: TEXT, FILE"
-                timestamp: "2024-10-23T06:50:16.559Z"
+                type: "about:blank"
+                title: "Test title"
+                status: 500
+                detail: "Test error"
+                instance: "/example"
 
 components:
   schemas:
@@ -202,17 +208,19 @@ components:
           items:
             type: string
             example: "DokRules,UfnRules"
-    ErrorMessageDto:
+    ProblemDetailsDto::
       type: object
       properties:
-        code:
-          type: integer
-        message:
+        type:
           type: string
-        timestamp:
+        title:
           type: string
-          format: date-time
-          example: "2024-10-23T06:50:16.559Z"
+        status:
+          type: "integer"
+        detail:
+          type: string
+        instance:
+          type: string
     ApiInfo:
       type: object
       properties:

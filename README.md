@@ -51,7 +51,7 @@ $ npm start -- m api
 
 **Validate against the endpoint:**
 ```bash
-POST http://localhost:3000/api/v1/validate/content
+POST http://localhost:3000/api/v1/validation/validate
 ```
 
 **Request body - application/json**
@@ -67,14 +67,14 @@ POST http://localhost:3000/api/v1/validate/content
 
 **Use this command to validate a YAML-file using a terminal:**
 ```bash
-$ curl -X POST http://localhost:3000/api/v1/validate/content \
+$ curl -X POST http://localhost:3000/api/v1/validation/validate \
     -H "Content-Type: application/json" \
     -d "{\"yaml\": \"$(base64 -w 0 Path_to_the_YAML_file)\", \"categories\": [\"CATEGORY1\", \"CATEGORY2\"]}"
 ```
 
 **Example**
 ```bash
-$ curl -X POST http://localhost:3000/api/v1/validate/content \
+$ curl -X POST http://localhost:3000/api/v1/validation/validate \
     -H "Content-Type: application/json" \
     -d "{\"yaml\": \"$(base64 -w 0 apis/dok-api.yaml)\", \"categories\": [\"DokRules\", \"UfnRules\"]}"
 ```

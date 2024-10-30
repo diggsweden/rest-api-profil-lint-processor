@@ -1,7 +1,7 @@
 import { RapLPCustomSpectral } from "./RapLPCustomSpectral.ts";
 import { Document } from "@stoplight/spectral-core"
 import Parsers from "@stoplight/spectral-parsers"
-import { ERROR_TYPE, RapLPBaseApiError } from "./RapLPBaseApiError.ts";
+import { ERROR_TYPE, RapLPBaseApiError } from "./RapLPBaseApiErrorHandling.ts";
 import yaml from "js-yaml"
 
 export const validateYamlInput = (input: string): input is string => {
@@ -10,7 +10,7 @@ export const validateYamlInput = (input: string): input is string => {
         yaml.load(input);
     } catch (e) {
         // Handle YAML parsing error
-        throw new RapLPBaseApiError("Invalid YAML", ERROR_TYPE.BAD_REQUEST);
+        throw new RapLPBaseApiError("Could not validate Yaml", "Invalid YAML", ERROR_TYPE.BAD_REQUEST);
     }
 
     return true
