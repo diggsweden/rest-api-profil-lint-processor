@@ -1,6 +1,6 @@
 import express from 'express';
 import { registerValidationRoutes } from './routes/validate.ts';
-import { errorHandler } from './util/RapLPBaseApiError.ts';
+import { errorHandler } from './util/RapLPBaseApiErrorHandling.ts';
 import OpenApiValidator from 'express-openapi-validator';
 import path from "path";
 
