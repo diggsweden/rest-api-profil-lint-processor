@@ -121,6 +121,86 @@ paths:
                 status: 500
                 detail: "Test error"
                 instance: "/example"
+  /validation/url:
+    post:
+      tags:
+        - validate
+      summary: Validate your yaml from remote url
+      description: Validate your yaml from remote url
+      operationId: validateUrl
+      requestBody:
+        description: |- 
+          OpenApi yaml is fetched from remote server and validated on server. 
+          Feature must be enabled explicitly on server.
+
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UrlContentDto'
+            example:
+              url: "http://localhost:8080/q/openapi"
+              categories:
+                - "DokRules"
+                - "UfnRules"
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RapLPCustomSpectralDiagnostic'
+              example:
+                - id: "AME.04"
+                  omrade: "API Message"
+                  krav: "För fältnamn i request och response body BÖR camelCase eller snake_case notation användas."
+                  allvarlighetsgrad: "WARNING"
+                  sokvag:
+                    - "components"
+                    - "schemas"
+                  omfattning: 
+                    start:
+                      line: 1
+                      character: 5
+                    end:
+                      line: 1
+                      character: 10
+        '400':
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsDto'
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 400
+                detail: "Test error"
+                instance: "/example"
+        '409':
+          description: CONFLICT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsDto'
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 400
+                detail: "Test error"
+                instance: "/example"        
+        '500':
+          description: INTERNAL_SERVER_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsDto'
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 500
+                detail: "Test error"
+                instance: "/example"
   /api-info:
     get:
       tags:
@@ -205,6 +285,16 @@ components:
       type: object
       properties:
         yaml:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+            example: "DokRules,UfnRules"
+    UrlContentDto:
+      type: object
+      properties:
+        url:
           type: string
         categories:
           type: array

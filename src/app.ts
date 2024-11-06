@@ -40,6 +40,14 @@ async function main() {
       describe: 'Sökväg till fill för diagnostiseringsinformation från  RAP-LP. Om en specificerad , så kommer diagnostiseringsinformationen att skrivas ut till stdout.',
       type: 'string',
     })
+    .option("enableUrlValidation", {
+      type: 'boolean',
+      describe: "[api-mode] Möjliggör validering av filer givet url."
+    })
+    .option("urlValidationConfigFile", {
+      type: 'string',
+      describe: "[api-mode] Sökväg till fil för configuration av urlValidation funktionalliteten faller tillbaka på ./urlValidationConfig.cjs",
+    })
     .check(function (argv) {
       if (!argv.mode) {
         console.error('Missing required argument: mode ')
@@ -68,7 +76,7 @@ async function main() {
   if (mode === 'cli') {
     await execCLI(argv); // Starta CLI-läget
   } else if (mode === 'api') {
-    startServer(); // Starta API-läget
+    startServer(argv); // Starta API-läget
   }
 }
 
