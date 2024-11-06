@@ -1,10 +1,8 @@
-import yargs from "yargs";
 import * as fs from "node:fs";
-import * as path from "node:path";
 import { join } from "path";
 import Parsers from "@stoplight/spectral-parsers";
 import { Document } from "@stoplight/spectral-core";
-import { importAndCreateRuleInstances, getRuleModules } from "./util/ruleUtil.ts"; // Import the helper function
+import { importAndCreateRuleInstances } from "./util/ruleUtil.ts"; // Import the helper function
 import util from 'util';
 import {RapLPCustomSpectral} from "./util/RapLPCustomSpectral.ts";
 import {DiagnosticReport, RapLPDiagnostic} from "./util/RapLPDiagnostic.ts";
@@ -19,43 +17,19 @@ declare var AggregateError: {
 const writeFileAsync = util.promisify(fs.writeFile);
 const appendFileAsync = util.promisify(fs.appendFile);
 
-export async function execCLI() {
+export type CliArgs = {
+  file?: string;
+  categories?: string;
+  logError?: string;
+  append: boolean;
+  logDiagnostic?: string;
+}
+
+export async function execCLI<T extends CliArgs>(argv: T) {
     try {
         // Parse command-line arguments using yargs
-        const argv = await yargs(process.argv.slice(2)).version("1.2.0")
-          .option("file", {
-            alias: "f",
-            describe: "Path to the YAML file",
-            demandOption: true,
-            type: "string",
-            coerce: (file: string) => path.resolve(file), // convert to absolute path
-          })
-          .option("categories", {
-            alias: "c",
-            describe: `Regelkategorier separerade med kommatecken.\nAvailable categories:\r ${getRuleModules().join(",")}`,
-            type: "string",
-          })
-          .option("logError", {
-            alias: "l",
-            describe: 'Sökväg till fil med information för eventuell felloggningsinformation från RAP-LP. Om ej specificerad, så kommer felet att skrivas ut till stdout.',
-            type: 'string',
-          })
-          .option("append", {
-            alias: "a",
-            describe: "Utöka loginformationen i filen för felloggningsiformation. Utökda loginformation till befintlig fil för loggning av fel( om specificerad ).",
-            type: "boolean",
-            default: false,
-          })  
-          .option("logDiagnostic", {
-            alias: "d",
-            describe: 'Sökväg till fill för diagnostiseringsinformation från  RAP-LP. Om en specificerad , så kommer diagnostiseringsinformationen att skrivas ut till stdout.',
-            type: 'string',
-          }).argv;
+        
 
-         /* if (argv.help || argv.h) {
-            yargs(argv).showHelp();
-          }*/
-        // Extract arguments from yargs
         const apiSpecFileName = (argv.file as string) || "";
         const ruleCategories = argv.categories ? (argv.categories as string).split(",") : undefined;
         const logErrorFilePath = argv.logError as string | undefined;
