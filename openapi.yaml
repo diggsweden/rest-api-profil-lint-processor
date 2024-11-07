@@ -186,7 +186,7 @@ paths:
               example:
                 type: "about:blank"
                 title: "Test title"
-                status: 400
+                status: 409
                 detail: "Test error"
                 instance: "/example"        
         '500':
