@@ -1,4 +1,4 @@
-class ApiInfo {
+export class ApiInfo {
     // Properties based on the OpenAPI specification
     apiName: string;
     apiVersion: string;
@@ -20,6 +20,5 @@ class ApiInfo {
       this.apiDocumentation = apiDocumentation;
       this.apiStatus = apiStatus;
     }
-  }
+}
   
-  export { ApiInfo }

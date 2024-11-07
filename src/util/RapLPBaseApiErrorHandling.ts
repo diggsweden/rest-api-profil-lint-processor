@@ -42,6 +42,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
 
 export enum ERROR_TYPE {
     BAD_REQUEST = 400,
+    CONFLICT = 409,
     INTERNAL_SERVER_ERROR = 500
 }
 
