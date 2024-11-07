@@ -5,35 +5,47 @@ import { decodeBase64String, processApiSpec, validateYamlInput } from "../util/a
 import { YamlContentDto } from "../model/YamlContentDto.ts"
 import { importAndCreateRuleInstances } from "../util/ruleUtil.ts"
 import { ApiInfo } from "../model/ApiInfo.ts"
+import { validationRules } from "../model/validationRules.ts";
 
 export const registerValidationRoutes = (app: Express) => {
+  // Route for raw content upload.
+  app.post("/api/v1/validation/validate", async (req, res, next) => {
+    try {
+        const yamlContent: YamlContentDto = req.body
 
-    // Route for raw content upload.
-    app.post("/api/v1/validation/validate", async (req, res, next) => {
-        try {
-            const yamlContent: YamlContentDto = req.body
+        let yamlContentString: string;
+        yamlContentString = decodeBase64String(yamlContent.yaml)
 
-            let yamlContentString: string;
-            yamlContentString = decodeBase64String(yamlContent.yaml)
+        validateYamlInput(yamlContentString)
 
-            validateYamlInput(yamlContentString)
+        const apiSpecDocument = new Document(
+            yamlContentString,
+            Parsers.Yaml,
+            ""
+        );
 
-            const apiSpecDocument = new Document(
-                yamlContentString,
-                Parsers.Yaml,
-                ""
-            );
+        const rules = await importAndCreateRuleInstances(yamlContent.categories);
 
-            const rules = await importAndCreateRuleInstances(yamlContent.categories);
+        const result = await processApiSpec(rules, apiSpecDocument)
+        res.send(result)
+    } catch (e) {
+        next(e)
+    }
+})
 
-            const result = await processApiSpec(rules, apiSpecDocument)
-            res.send(result)
-        } catch (e) {
-            next(e)
-        }
-    })
+  app.get("/api/v1/validation/rules", (req, res) => {
+    res.send(validationRules);
+  });
 
-    app.get("/api/v1/api-info", async (req, res, next) => {
-        res.send(new ApiInfo("RAP-LP", "1.0.11", new Date().toDateString(), "http://example.digg.se/RAP-LP-docs", "development"));
-    })
-}
+  app.get("/api/v1/api-info", async (req, res, next) => {
+    res.send(
+      new ApiInfo(
+        "RAP-LP",
+        "1.0.11",
+        new Date().toDateString(),
+        "http://example.digg.se/RAP-LP-docs",
+        "development"
+      )
+    );
+  });
+};
