@@ -1,37 +1,37 @@
-import { Document } from "@stoplight/spectral-core"
-import Parsers from "@stoplight/spectral-parsers"
-import { Express } from 'express'
-import { decodeBase64String, processApiSpec, validateYamlInput } from "../util/apiUtil.ts"
-import { YamlContentDto } from "../model/YamlContentDto.ts"
-import { importAndCreateRuleInstances } from "../util/ruleUtil.ts"
-import { ApiInfo } from "../model/ApiInfo.ts"
+import { Document } from "@stoplight/spectral-core";
+import Parsers from "@stoplight/spectral-parsers";
+import { Express } from "express";
+import {
+  decodeBase64String,
+  processApiSpec,
+  validateYamlInput,
+} from "../util/apiUtil.ts";
+import { YamlContentDto } from "../model/YamlContentDto.ts";
+import { importAndCreateRuleInstances } from "../util/ruleUtil.ts";
+import { ApiInfo } from "../model/ApiInfo.ts";
 import { validationRules } from "../model/validationRules.ts";
 
 export const registerValidationRoutes = (app: Express) => {
   // Route for raw content upload.
   app.post("/api/v1/validation/validate", async (req, res, next) => {
     try {
-        const yamlContent: YamlContentDto = req.body
+      const yamlContent: YamlContentDto = req.body;
 
-        let yamlContentString: string;
-        yamlContentString = decodeBase64String(yamlContent.yaml)
+      let yamlContentString: string;
+      yamlContentString = decodeBase64String(yamlContent.yaml);
 
-        validateYamlInput(yamlContentString)
+      validateYamlInput(yamlContentString);
 
-        const apiSpecDocument = new Document(
-            yamlContentString,
-            Parsers.Yaml,
-            ""
-        );
+      const apiSpecDocument = new Document(yamlContentString, Parsers.Yaml, "");
 
-        const rules = await importAndCreateRuleInstances(yamlContent.categories);
+      const rules = await importAndCreateRuleInstances(yamlContent.categories);
 
-        const result = await processApiSpec(rules, apiSpecDocument)
-        res.send(result)
+      const result = await processApiSpec(rules, apiSpecDocument);
+      res.send(result);
     } catch (e) {
-        next(e)
+      next(e);
     }
-})
+  });
 
   app.get("/api/v1/validation/rules", (req, res) => {
     res.send(validationRules);
