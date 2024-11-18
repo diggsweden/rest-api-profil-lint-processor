@@ -1,12 +1,11 @@
 // Define the YamlContent class
-export class YamlContentDto {
-    // Properties
-    yaml: string;
+export class UrlContentDto {
+    url: string;
     categories: string[];
 
     // Constructor to initialize the object
-    constructor(yaml: string, categories: string[]) {
-        this.yaml = yaml;
+    constructor(url: string, categories: string[]) {
+        this.url = url;
         this.categories = categories;
     }
 }
