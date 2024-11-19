@@ -6,14 +6,45 @@ import yaml from "js-yaml"
 
 export const validateYamlInput = (input: string): input is string => {
     try {
-        //Parse the yaml to verify
-        yaml.load(input);
-    } catch (e) {
+        const parsed = yaml.load(input); // Parsar YAML till ett JSON-objekt
+
+        if (typeof parsed !== 'object' || parsed === null) {
+            throw new RapLPBaseApiError(
+                "Could not validate Yaml",
+                "Parsed YAML is not a valid object",
+                ERROR_TYPE.BAD_REQUEST);
+        }
+
+        // Kontrollera att alla nödvändiga toppnivånycklar finns
+        const requiredKeys = ['openapi', 'info', 'paths'];
+        const missingKeys = requiredKeys.filter(key => !(key in parsed));
+
+        if (missingKeys.length > 0) {
+            throw new RapLPBaseApiError(
+                "Missing required top-level keys",
+                `Missing required top-level keys: ${missingKeys.join(', ')}`,
+                ERROR_TYPE.BAD_REQUEST);
+        }
+    } catch (error) {
         // Handle YAML parsing error
-        throw new RapLPBaseApiError("Could not validate Yaml", "Invalid YAML", ERROR_TYPE.BAD_REQUEST);
+        if (error instanceof yaml.YAMLException) {
+            throw new RapLPBaseApiError(
+                "Could not validate Yaml",
+                `YAML Syntax Error: ${error.message}`,
+                ERROR_TYPE.BAD_REQUEST);
+        } else if (error instanceof RapLPBaseApiError) {
+            throw error
+        } else {
+            throw new RapLPBaseApiError(
+                "Failed to validate yaml",
+                `Could not vaildate yaml: ${error}`,
+                ERROR_TYPE.INTERNAL_SERVER_ERROR
+            )
+        }
+
     }
 
-    return true
+    return true;
 }
 
 export function decodeBase64String(base64YamlFile: string) {
@@ -40,6 +71,6 @@ export async function processApiSpec(enabledRulesAndCategorys: { rules: Record<s
  * @returns Boolean
  */
 export function hasOwnProperty<X extends {}, Y extends PropertyKey>
-  (obj: X, prop: Y): obj is X & Record<Y, unknown> {
-  return obj.hasOwnProperty(prop)
+    (obj: X, prop: Y): obj is X & Record<Y, unknown> {
+    return obj.hasOwnProperty(prop)
 }

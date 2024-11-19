@@ -23,7 +23,12 @@ describe("API Test", () => {
     var app: any
 
     beforeAll(async () => {
-        app = await startServer();
+        const mockArgs = {
+            enableUrlValidation: false,
+            urlValidationConfigFile: 'custom-config.json',
+          };
+
+        app = await startServer(mockArgs);
         api = new ValidateApi(new Configuration({ basePath: "http://localhost:3000/api/v1" }))
     })
 
@@ -40,12 +45,17 @@ describe("API Test", () => {
 
     it("Assert that the error handler is intercepting faults", async () => {
         const data = readFileSync(path.resolve(__dirname, "../../apis/dok-api.yaml"))
+        const missingTopLevelKeysYaml = `
+        name: Jane Smith
+        age: 25
+        occupation: Designer
+      `;
 
         const response = await request(app)
             .post("/api/v1/validation/validate")
             .set('Content-Type', 'application/json')
             .send({
-                yaml: data.toString("base64") + "123qwdsdfgaerg39e4rg",
+                yaml: Buffer.from(missingTopLevelKeysYaml).toString('base64'),
                 categories: []
             })
 
@@ -53,9 +63,9 @@ describe("API Test", () => {
         expect(response.status).toBe(400)
         expect(response.body).toMatchObject({
             type: "about:blank",
-            title: "Could not validate Yaml",
+            title: "Missing required top-level keys",
             status: 400,
-            detail: "Invalid YAML",
+            detail: "Missing required top-level keys: openapi, info, paths",
             instance: "/api/v1/validation/validate"
         })
 
