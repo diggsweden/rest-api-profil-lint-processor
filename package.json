@@ -21,6 +21,8 @@
   },
   "devDependencies": {
     "@stoplight/spectral-formats": "^1.5.0",
+    "@types/adm-zip": "^0.5.6",
+    "@types/express": "^5.0.0",
     "@types/jest": "^29.5.13",
     "@types/node": "^22.7.5",
     "jest": "^29.7.0",
@@ -30,11 +32,16 @@
   "dependencies": {
     "@stoplight/spectral-core": "^1.18.3",
     "@stoplight/spectral-functions": "^1.7.2",
+    "@types/express": "^5.0.0",
+    "adm-zip": "^0.5.16",
+    "body-parser": "^1.20.3",
     "chalk": "^5.3.0",
+    "express": "^4.21.1",
+    "express-openapi-validator": "^5.3.7",
+    "fast-xml-parser": "^4.5.0",
     "js-yaml": "^4.1.0",
     "path": "^0.12.7",
     "ts-node": "^10.9.2",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "yargs": "^17.7.2"
   },
   "//": [
