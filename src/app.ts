@@ -59,7 +59,12 @@ try {
       alias: "d",
       describe: 'Sökväg till fill för diagnostiseringsinformation från  RAP-LP. Om en specificerad , så kommer diagnostiseringsinformationen att skrivas ut till stdout.',
       type: 'string',
-    }).argv;
+    })
+    .option("generateResultXlsxFile", {
+      type: 'boolean',
+      describe: "[cli mode] Generera Avstämningsfil med resultat från körningen. Resultatet generas i ./Avstaemning_REST_API_profil_generated.xlsx"
+    })
+    .argv;
   // Extract arguments from yargs
   const apiSpecFileName = (argv.file as string) || "";
   const ruleCategories = argv.categories ? (argv.categories as string).split(",") : undefined;
@@ -90,8 +95,8 @@ try {
     const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
     /**
      * Chalk impl.
-     * @param allvarlighetsgrad 
-     * @returns 
+     * @param allvarlighetsgrad
+     * @returns
      */
       // Run Spectral on the API specification and log the result
       const colorizeSeverity = (allvarlighetsgrad: string) => {
@@ -126,7 +131,7 @@ try {
         console.log(chalk.green(`Skriver diagnostiseringsinformation från RAP-LP till ${logDiagnosticFilePath}`));
       }else {
         //STDOUT
-        if (customDiagnostic.diagnosticInformation.executedUniqueRules!=undefined && 
+        if (customDiagnostic.diagnosticInformation.executedUniqueRules!=undefined &&
           customDiagnostic.diagnosticInformation.executedUniqueRules.length>0) {
             console.log(chalk.green("<<<Verkställda och godkända regler - RAP-LP>>>\r"));
             console.log(chalk.whiteBright("STATUS\tOMRÅDE") + " / " +chalk.whiteBright("IDENTIFIKATIONSNUMMER")) ;
@@ -134,7 +139,7 @@ try {
               console.log(chalk.bgGreen("OK") + "\t" + item.område + " / " + item.id) ;
             });
         }
-        if (customDiagnostic.diagnosticInformation.executedUniqueRulesWithError!=undefined && 
+        if (customDiagnostic.diagnosticInformation.executedUniqueRulesWithError!=undefined &&
           customDiagnostic.diagnosticInformation.executedUniqueRulesWithError.length>0) {
             console.log(chalk.green("<<<Verkställda och ej godkända regler - RAP-LP>>>\r"));
             console.log(chalk.whiteBright("STATUS\tOMRÅDE") + " / " + chalk.whiteBright("IDENTIFIKATIONSNUMMER")) ;
@@ -142,7 +147,7 @@ try {
               console.log(chalk.bgRed("EJ OK") + "\t" + item.område + " / " + item.id) ;
             });
         }
-        if (customDiagnostic.diagnosticInformation.notApplicableRules!=undefined && 
+        if (customDiagnostic.diagnosticInformation.notApplicableRules!=undefined &&
           customDiagnostic.diagnosticInformation.notApplicableRules.length>0) {
           console.log(chalk.grey("<<<Ej tillämpade regler - RAP-LP>>>\r"));
           console.log(chalk.whiteBright("STATUS\tOMRÅDE") + " / " + chalk.whiteBright("IDENTIFIKATIONSNUMMER")) ;
