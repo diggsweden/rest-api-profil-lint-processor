@@ -24,6 +24,7 @@ export type CliArgs = {
   logError?: string;
   append: boolean;
   logDiagnostic?: string;
+  generateResultXlsxFile: boolean
 }
 
 export async function execCLI<T extends CliArgs>(argv: T) {
@@ -59,8 +60,10 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           customDiagnostic.processRuleExecutionInformation(result,enabledRulesAndCategorys.instanceCategoryMap);
           const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
 
-          const reportHandler = new ExcelReportProcessor();
-          reportHandler.generateReportDocument(customDiagnostic)
+          if(argv.generateResultXlsxFile) {
+            const reportHandler = new ExcelReportProcessor();
+            reportHandler.generateReportDocument(customDiagnostic)
+          }
 
           /**
            * Chalk impl.

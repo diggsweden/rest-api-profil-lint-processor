@@ -48,6 +48,10 @@ async function main() {
       type: 'string',
       describe: "[api-mode] Sökväg till fil för configuration av urlValidation funktionalliteten faller tillbaka på ./urlValidationConfig.cjs",
     })
+    .option("generateResultXlsxFile", {
+      type: 'boolean',
+      describe: "[cli mode] Generera Avstämningsfil med resultat från körningen. Resultatet generas i ./Avstaemning_REST_API_profil_generated.xlsx"
+    })
     .check(function (argv) {
       if (!argv.mode) {
         console.error('Missing required argument: mode ')
