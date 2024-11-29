@@ -37,7 +37,11 @@ async function main() {
     })  
     .option("logDiagnostic", {
       alias: "d",
-      describe: 'Sökväg till fill för diagnostiseringsinformation från  RAP-LP. Om en specificerad , så kommer diagnostiseringsinformationen att skrivas ut till stdout.',
+      describe: 'Sökväg till fill för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i JSON format.',
+      type: 'string',
+    })
+    .option("dex", {
+      describe: 'Sökväg till fill för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i Excel format.',
       type: 'string',
     })
     .option("enableUrlValidation", {
@@ -47,10 +51,6 @@ async function main() {
     .option("urlValidationConfigFile", {
       type: 'string',
       describe: "[api-mode] Sökväg till fil för configuration av urlValidation funktionalliteten faller tillbaka på ./urlValidationConfig.cjs",
-    })
-    .option("generateResultXlsxFile", {
-      type: 'boolean',
-      describe: "[cli mode] Generera Avstämningsfil med resultat från körningen. Resultatet generas i ./Avstaemning_REST_API_profil_generated.xlsx"
     })
     .check(function (argv) {
       if (!argv.mode) {

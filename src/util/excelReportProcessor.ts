@@ -11,29 +11,36 @@ interface ExcelTemplateConfig {
     outputFilePath: string
 }
 
+const DEFAULT_CONFIG: ExcelTemplateConfig = {
+    reportTemplatePath: path.resolve(process.cwd(), "document/Avstaemning_REST_API_profil_v_1_1_0_0.xlsx"),
+    dataSheetName: "Kravlista REST API profil",
+    ruleColumn: "B",
+    statusColumn: "E",
+    outputFilePath: path.resolve(process.cwd(), "Avstaemning_REST_API_profil_generated.xlsx")
+}
+
 export class ExcelReportProcessor {
 
-    private config: ExcelTemplateConfig = {
-        reportTemplatePath: path.resolve(process.cwd(), "document/Avstaemning_REST_API_profil_v_1_1_0_0.xlsx"),
-        dataSheetName: "Kravlista REST API profil",
-        ruleColumn: "B",
-        statusColumn: "E",
-        outputFilePath: path.resolve(process.cwd(), "Avstaemning_REST_API_profil_generated.xlsx")
-    }
+    private config: ExcelTemplateConfig;
 
     private parser = new XMLParser({ignoreAttributes: false});
     private builder = new XMLBuilder({ignoreAttributes: false});
     private zip: AdmZip
     constructor(config?: Partial<ExcelTemplateConfig>) {
+
+        const isPresent = (x?: string): x is string => {
+            return x != null && x !== '';
+        }
+        const outputPath = config?.outputFilePath
         this.config = {
-            ...this.config,
-            ...config
+            ...DEFAULT_CONFIG,
+            ...config,
+            outputFilePath: isPresent(outputPath) ? outputPath : DEFAULT_CONFIG.outputFilePath
         }
         
         this.zip = new AdmZip(this.config.reportTemplatePath);
 
     }
-
 
     public generateReportDocument(result: RapLPDiagnostic) {
         

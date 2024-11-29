@@ -24,7 +24,7 @@ export type CliArgs = {
   logError?: string;
   append: boolean;
   logDiagnostic?: string;
-  generateResultXlsxFile?: boolean
+  dex?: string
 }
 
 export async function execCLI<T extends CliArgs>(argv: T) {
@@ -60,8 +60,10 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           customDiagnostic.processRuleExecutionInformation(result,enabledRulesAndCategorys.instanceCategoryMap);
           const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
 
-          if(argv.generateResultXlsxFile) {
-            const reportHandler = new ExcelReportProcessor();
+          if(argv.dex != null) {
+            const reportHandler = new ExcelReportProcessor({
+              outputFilePath: argv.dex,
+            });
             reportHandler.generateReportDocument(customDiagnostic)
           }
 
