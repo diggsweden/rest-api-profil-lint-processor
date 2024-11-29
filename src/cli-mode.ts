@@ -24,7 +24,7 @@ export type CliArgs = {
   logError?: string;
   append: boolean;
   logDiagnostic?: string;
-  generateResultXlsxFile: boolean
+  generateResultXlsxFile?: boolean
 }
 
 export async function execCLI<T extends CliArgs>(argv: T) {
