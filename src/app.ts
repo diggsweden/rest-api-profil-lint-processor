@@ -60,6 +60,10 @@ try {
       describe: 'Sökväg till fill för diagnostiseringsinformation från  RAP-LP. Om en specificerad , så kommer diagnostiseringsinformationen att skrivas ut till stdout.',
       type: 'string',
     })
+    .option("dex", {
+      describe: 'Sökväg till fill för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i Excel format.',
+      type: 'string',
+    })
     .option("generateResultXlsxFile", {
       type: 'boolean',
       describe: "[cli mode] Generera Avstämningsfil med resultat från körningen. Resultatet generas i ./Avstaemning_REST_API_profil_generated.xlsx"
