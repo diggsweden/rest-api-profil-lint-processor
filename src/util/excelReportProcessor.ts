@@ -19,6 +19,14 @@ const DEFAULT_CONFIG: ExcelTemplateConfig = {
     outputFilePath: path.resolve(process.cwd(), "Avstaemning_REST_API_profil_generated.xlsx")
 }
 
+/**
+ *
+ * This class is responsible to parse the template Excel report, fill out the result from
+ * the current RapLPDiagnostic report and persist the result to a file specified by the user.
+ * 
+ * If the template file (document/Avstaemning_REST_API_profil_v_1_1_0_0.xlsx) is updated, this class will probably need 
+ * modifications. Tools like "unzip" and  "xmllint" is recomended to identify the updates needed.
+ */
 export class ExcelReportProcessor {
 
     private config: ExcelTemplateConfig;
@@ -71,6 +79,11 @@ export class ExcelReportProcessor {
     }
 
 
+    /**
+     * Utility function to map the Diagnostic report into basic components.
+     * A map with the rule name as Key and the reported status as Value.
+     * 
+     */
     private reportToMap(result: RapLPDiagnostic): Record<string, 'OK' | 'NOK' | 'N/A'> {
         const okRules: Record<string, 'OK'>[] = result.diagnosticInformation.executedUniqueRules.map((res) => ({
              [res.id]: 'OK'
@@ -89,7 +102,11 @@ export class ExcelReportProcessor {
          }, {} as Record<string, 'OK' | 'NOK' | 'N/A'>)
      }
 
-
+    /**
+     * Unzip the workbook entry from the excel file. 
+     * The workbook contains general metadata over the files structure and 
+     * acts as the root object.
+     */
     private loadWorkBook(): unknown {
         const wbzip = this.zip.getEntry("xl/workbook.xml")?.getData();
         if(!wbzip) {
@@ -98,11 +115,22 @@ export class ExcelReportProcessor {
         return this.parser.parse(wbzip);
     }
 
+    /**
+     * Sets the parameter "fullCalcOnLoad" to true, this causes the 
+     * sheet to be re-calculated when the user opens it in order for the 
+     * linked calculations and tables to be performed since we only update
+     * the data column. 
+     */
     private enableFullCalcOnLoad(workbook): void {
         workbook.workbook.calcPr['@_fullCalcOnLoad'] = "1";
         this.zip.updateFile("xl/workbook.xml",  this.builder.build(workbook))
     }
 
+    /**
+     * The "Sheet" represents an actual table or sheet in Excel.
+     * The workbook contains the name and Id of each sheet. We can then 
+     * use "xl/_rels/workbook.xml.rels" in order to find the path of the sheet.
+     */
     private getSheetPathFromName(workbook, name: string): string {
     const sheetId = workbook?.workbook?.sheets?.sheet.find(s => 
         s["@_name"] === name
@@ -122,6 +150,10 @@ export class ExcelReportProcessor {
         return `xl/${path}`
     }
 
+    /**
+     * The "sharedStrings" contains a list of all strings used in the sheets.
+     * The strings are then referenced by index from the sheet cells.
+    */
     private loadSharedStrings(): string[] | undefined {
         const sharedzip = this.zip.getEntry("xl/sharedStrings.xml")?.getData();
         if(!sharedzip) {
@@ -131,6 +163,14 @@ export class ExcelReportProcessor {
         return this.parser.parse(sharedzip)?.sst?.si.map(s => s.t);
     }
 
+    /**
+     *  Utility method to create a map from the provided strings to it's corresponding 
+     *  index within the "sharedStrings" list.
+     *  
+     *  @param values The list of values.
+     *  @param sharedStrings The list of sharedStrings extracted from #loadSharedStrings
+     *  @returns A Map with each value from the values list as key and its corresponding index from sharedStrings as value.
+     */
     private indexMapOf(values: string[], sharedStrings: string[]): Record<string, number> {
         return values.reduce((res, curr) => {
             const indx = sharedStrings.findIndex((v) => v === curr);
@@ -142,6 +182,11 @@ export class ExcelReportProcessor {
     }
 
 
+    /**
+     * Given a path within the xlsx file, load a sheet to memory.
+     * See #getSheetPathFromName to extract the path.
+     * 
+     */
     private loadSheet(path: string) {
         const shzip = this.zip.getEntry(path)
 
@@ -151,7 +196,13 @@ export class ExcelReportProcessor {
         return this.parser.parse(shzip.getData())
     }
 
-
+    /**
+     * This function will look at the column specified by "config:ruleColumn", if the value matches any 
+     * of the reported rule keys in the "results" object the cell object of that row and column specified by "config:statusColumn"
+     * will be updated with the value from the results object.
+     * 
+     * The result will update the in-memory instance of the file, but will not persist to disc.
+     */
     private updateResultColumn(sheetPath: string, results: {[rule: string]: string}, sharedStrings, valueMap) {
         const sheet = this.loadSheet(sheetPath)
         sheet?.worksheet?.sheetData?.row.forEach(row => {
@@ -168,6 +219,9 @@ export class ExcelReportProcessor {
         this.zip.updateFile(sheetPath, this.builder.build(sheet))
     }
 
+    /**
+     * This method will persis the current representation of the excel file.
+     */
     private persistUpdates(outputFile: string) {
         this.zip.writeZip(outputFile)
     }
