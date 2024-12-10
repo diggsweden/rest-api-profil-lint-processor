@@ -1,7 +1,7 @@
 import AdmZip from "adm-zip";
 import { XMLBuilder, XMLParser } from "fast-xml-parser";
 import path from "path";
-import { RapLPDiagnostic } from "./RapLPDiagnostic";
+import { DiagnosticReport } from "./RapLPDiagnostic";
 
 interface ExcelTemplateConfig {
     reportTemplatePath: string
@@ -42,7 +42,7 @@ export class ExcelReportProcessor {
 
     }
 
-    public generateReportDocument(result: RapLPDiagnostic) {
+    public generateReportDocument(result: DiagnosticReport[]) {
         
         // Convert the result Raport to map with Rule name as key and status as value.
         const resultMap = this.reportToMap(result);
@@ -70,23 +70,28 @@ export class ExcelReportProcessor {
         this.persistUpdates(this.config.outputFilePath)
     }
 
+    public generateReportDocumentBuffer(result: DiagnosticReport[]): Buffer {
+        try {
+            this.generateReportDocument(result);
+            let reportDocumentBuffer = this.zip.toBuffer();
+    
+            if (!reportDocumentBuffer || reportDocumentBuffer.length === 0) {
+                throw new Error("Generated buffer is empty or invalid.");
+            }
+    
+            return reportDocumentBuffer;
+        } catch (error) {
+            console.error("Error generating report document buffer:", error);
+            throw new Error("Failed to generate the report document buffer.");
+        }
+    }
 
-    private reportToMap(result: RapLPDiagnostic): Record<string, 'OK' | 'NOK' | 'N/A'> {
-        const okRules: Record<string, 'OK'>[] = result.diagnosticInformation.executedUniqueRules.map((res) => ({
-             [res.id]: 'OK'
-         }));
-     
-         const nokRules: Record<string, 'NOK'>[] = result.diagnosticInformation.executedUniqueRulesWithError.map((res) => ({
-             [res.id]: 'NOK'
-         }));
-     
-         const naRules: Record<string, 'N/A'>[] = result.diagnosticInformation.notApplicableRules.map((res) => ({
-             [res.id]: 'N/A'
-         }));
-     
-         return [...okRules, ...nokRules, ...naRules].reduce((res, curr) => {
-             return {...res, ...curr }
-         }, {} as Record<string, 'OK' | 'NOK' | 'N/A'>)
+    private reportToMap(result: DiagnosticReport[]): Record<string, string> {
+        const flatMappedResult = result.flatMap((r) => r.regler);
+
+         return flatMappedResult.reduce((res, curr) => {
+             return {...res,  [curr.id]: curr.status}
+         }, {} as Record<string, string>)
      }
 
 

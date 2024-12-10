@@ -59,12 +59,12 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           const customDiagnostic = new RapLPDiagnostic();
           customDiagnostic.processRuleExecutionInformation(result,enabledRulesAndCategorys.instanceCategoryMap);
           const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
-
+          
           if(argv.dex != null) {
             const reportHandler = new ExcelReportProcessor({
               outputFilePath: argv.dex,
             });
-            reportHandler.generateReportDocument(customDiagnostic)
+            reportHandler.generateReportDocument(diagnosticReports)
           }
 
           /**
