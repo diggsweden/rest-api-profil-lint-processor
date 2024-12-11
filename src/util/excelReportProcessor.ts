@@ -50,7 +50,7 @@ export class ExcelReportProcessor {
 
     }
 
-    public generateReportDocument(result: RapLPDiagnostic) {
+    public generateReportDocument(result: DiagnosticReport[]) {
         
         // Convert the result Raport to map with Rule name as key and status as value.
         const resultMap = this.reportToMap(result);
@@ -82,21 +82,21 @@ export class ExcelReportProcessor {
     /**
      * Utility function to map the Diagnostic report into basic components.
      * A map with the rule name as Key and the reported status as Value.
-     * 
+     *
      */
     private reportToMap(result: RapLPDiagnostic): Record<string, 'OK' | 'NOK' | 'N/A'> {
         const okRules: Record<string, 'OK'>[] = result.diagnosticInformation.executedUniqueRules.map((res) => ({
              [res.id]: 'OK'
          }));
-     
+
          const nokRules: Record<string, 'NOK'>[] = result.diagnosticInformation.executedUniqueRulesWithError.map((res) => ({
              [res.id]: 'NOK'
          }));
-     
+
          const naRules: Record<string, 'N/A'>[] = result.diagnosticInformation.notApplicableRules.map((res) => ({
              [res.id]: 'N/A'
          }));
-     
+
          return [...okRules, ...nokRules, ...naRules].reduce((res, curr) => {
              return {...res, ...curr }
          }, {} as Record<string, 'OK' | 'NOK' | 'N/A'>)
