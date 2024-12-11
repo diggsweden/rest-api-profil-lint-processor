@@ -98,7 +98,7 @@ export class ExcelReportProcessor {
         const flatMappedResult = result.flatMap((r) => r.regler);
 
          return flatMappedResult.reduce((res, curr) => {
-             return {...res,  [curr.id]: curr.status}
+             return {...res,  [curr.id]: curr.status === 'EJ OK' ? 'NOK' : curr.status}
          }, {} as Record<string, string>)
      }
 
