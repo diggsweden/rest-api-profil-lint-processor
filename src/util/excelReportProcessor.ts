@@ -2,6 +2,7 @@ import AdmZip from "adm-zip";
 import { XMLBuilder, XMLParser } from "fast-xml-parser";
 import path from "path";
 import { DiagnosticReport } from "./RapLPDiagnostic";
+import fs from 'fs';
 
 interface ExcelTemplateConfig {
     reportTemplatePath: string
@@ -18,6 +19,15 @@ const DEFAULT_CONFIG: ExcelTemplateConfig = {
     statusColumn: "E",
     outputFilePath: path.resolve(process.cwd(), "Avstaemning_REST_API_profil_generated.xlsx")
 }
+
+const isFileAccessible = (filePath: string): boolean => {
+    try {
+        fs.accessSync(filePath, fs.constants.R_OK | fs.constants.W_OK);
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
 
 /**
  *
@@ -44,6 +54,13 @@ export class ExcelReportProcessor {
             ...DEFAULT_CONFIG,
             ...config,
             outputFilePath: isPresent(outputPath) ? outputPath : DEFAULT_CONFIG.outputFilePath
+        }
+
+        if (fs.existsSync(this.config.outputFilePath) && isFileAccessible(this.config.outputFilePath)) {
+            const timestamp = new Date().toISOString().replace(/[^\w]/g, '-');
+            const newFileName = `Avstaemning_REST_API_profil_generated_${timestamp}.xlsx`;
+            const newOutputFilePath = path.join(path.dirname(this.config.outputFilePath), newFileName);
+            this.config.outputFilePath = newOutputFilePath;
         }
         
         this.zip = new AdmZip(this.config.reportTemplatePath);
