@@ -10,6 +10,8 @@ import { YamlContentDto } from "../model/YamlContentDto.ts";
 import { importAndCreateRuleInstances } from "../util/ruleUtil.ts";
 import { ApiInfo } from "../model/ApiInfo.ts";
 import { validationRules } from "../model/validationRules.ts";
+import { ExcelReportProcessor } from "../util/excelReportProcessor.ts"
+import {DiagnosticReport } from "../util/RapLPDiagnostic.ts";
 
 export const registerValidationRoutes = (app: Express) => {
   // Route for raw content upload.
@@ -47,5 +49,32 @@ export const registerValidationRoutes = (app: Express) => {
         "development"
       )
     );
+  });
+
+  app.post("/api/v1/validation/generate-report", async (req, res, next): Promise<any> => {
+    try {
+      const data = req.body;
+
+    if (!data || !data.report || !Array.isArray(data.report)) {
+      return res.status(400).json({ error: 'Invalid data format. Expected an object with a "report" array.' });
+    }
+    
+    const reportHandler = new ExcelReportProcessor();
+    let buffer: Buffer;
+
+    try {
+        buffer = reportHandler.generateReportDocumentBuffer(data.report);
+    } catch (error) {
+        console.error("Error generating report buffer:", error);
+        return res.status(500).json({ error: 'Failed to generate report.' });
+    }
+  
+    res.setHeader('Content-Disposition', 'attachment; filename="avstamningsfil.xlsx"');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer)
+
+    } catch (e) {
+      next(e)
+    }
   });
 };

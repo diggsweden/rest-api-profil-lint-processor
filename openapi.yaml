@@ -144,6 +144,65 @@ paths:
                 status: 500
                 detail: "Test error"
                 instance: "/example"
+  /validation/generate-report:
+      post:
+        tags:
+          - validate
+        summary: Generate status report
+        description: Accepts report data as the request body and returns a generated status report as a downloadable excel file.
+        operationId: generateReport
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - report
+                properties:
+                  report:
+                    type: array
+                    items:
+                      type: object
+                    description: An array of objects representing the data for the report.
+        responses:
+          '200':
+            description: Successful operation
+            content:
+              application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+                schema:
+                  type: string
+                  format: binary
+                example:
+            headers:
+              Content-Disposition:
+                schema:
+                  type: string
+                description: Header to indicate the filename for the downloaded file.
+          '400':
+            description: BAD_REQUEST
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ProblemDetailsDto'
+                example:
+                  type: "about:blank"
+                  title: "Test title"
+                  status: 400
+                  detail: "Test error"
+                  instance: "/example"  
+          '500':
+            description: INTERNAL_SERVER_ERROR
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ProblemDetailsDto'
+                example:
+                  type: "about:blank"
+                  title: "Test title"
+                  status: 500
+                  detail: "Test error"
+                  instance: "/example"
   /validation/url:
     post:
       tags:

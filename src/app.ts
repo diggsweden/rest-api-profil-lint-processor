@@ -37,7 +37,11 @@ async function main() {
     })  
     .option("logDiagnostic", {
       alias: "d",
-      describe: 'Sökväg till fill för diagnostiseringsinformation från  RAP-LP. Om en specificerad , så kommer diagnostiseringsinformationen att skrivas ut till stdout.',
+      describe: 'Sökväg till fil för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i JSON format.',
+      type: 'string',
+    })
+    .option("dex", {
+      describe: 'Sökväg till fil för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i Excel format.',
       type: 'string',
     })
     .option("enableUrlValidation", {
