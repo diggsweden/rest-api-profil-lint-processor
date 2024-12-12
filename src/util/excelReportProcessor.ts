@@ -56,7 +56,7 @@ export class ExcelReportProcessor {
             outputFilePath: isPresent(outputPath) ? outputPath : DEFAULT_CONFIG.outputFilePath
         }
 
-        if (fs.existsSync(this.config.outputFilePath) && isFileAccessible(this.config.outputFilePath)) {
+        if (fs.existsSync(this.config.outputFilePath) && !isFileAccessible(this.config.outputFilePath)) {
             const timestamp = new Date().toISOString().replace(/[^\w]/g, '-');
             const newFileName = `Avstaemning_REST_API_profil_generated_${timestamp}.xlsx`;
             const newOutputFilePath = path.join(path.dirname(this.config.outputFilePath), newFileName);
