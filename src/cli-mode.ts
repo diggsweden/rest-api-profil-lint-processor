@@ -28,8 +28,6 @@ export type CliArgs = {
 export async function execCLI<T extends CliArgs>(argv: T) {
     try {
         // Parse command-line arguments using yargs
-        
-
         const apiSpecFileName = (argv.file as string) || "";
         const ruleCategories = argv.categories ? (argv.categories as string).split(",") : undefined;
         const logErrorFilePath = argv.logError as string | undefined;
@@ -44,8 +42,8 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             Parsers.Yaml,
             apiSpecFileName
           );
+          
           try {
-      
           /**
            * CustomSpectral
            */

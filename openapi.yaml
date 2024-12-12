@@ -3,12 +3,12 @@ info:
   title: REST API-profil - Lint Processor - OpenAPI 3.0
   description: |-
     This is a description.
-    
+
     Some useful links:
     - [REST API-profil - Lint Processor (RAP-LP) repository](https://github.com/diggsweden/rest-api-profil-lint-processor/)
   termsOfService: http://swagger.io/terms/
   contact:
-    name: 'test testsson'
+    name: "test testsson"
     email: apiteam@swagger.io
     url: https://github.com/diggsweden/rest-api-profil-lint-processor/
   license:
@@ -35,14 +35,14 @@ paths:
       description: Validate your yaml
       operationId: validateContent
       requestBody:
-        description: |- 
+        description: |-
           Yaml can be sent as a base64 encoded file or a yaml string. 
 
           ContentType is specifying the type of yaml content being sent
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/YamlContentDto'
+              $ref: "#/components/schemas/YamlContentDto"
             example:
               yaml: "<base64encoded file>"
               categories:
@@ -50,45 +50,68 @@ paths:
                 - "UfnRules"
         required: true
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RapLPCustomSpectralDiagnostic'
+                $ref: "#/components/schemas/ValidationResponseDto"
               example:
-                - id: "AME.04"
-                  omrade: "API Message"
-                  krav: "För fältnamn i request och response body BÖR camelCase eller snake_case notation användas."
-                  allvarlighetsgrad: "WARNING"
-                  sokvag:
-                    - "components"
-                    - "schemas"
-                  omfattning: 
-                    start:
-                      line: 1
-                      character: 5
-                    end:
-                      line: 1
-                      character: 10
-        '400':
+                result:
+                  - id: "AME.04"
+                    omrade: "API Message"
+                    krav: "För fältnamn i request och response body BÖR camelCase eller snake_case notation användas."
+                    allvarlighetsgrad: "WARNING"
+                    sokvag:
+                      - "components"
+                      - "schemas"
+                      - "ValidationResponseDto"
+                      - "properties"
+                      - "report"
+                      - "items"
+                      - "properties"
+                      - "Notering"
+                    omfattning:
+                      start:
+                        character: 0
+                        line: 0
+                      end:
+                        character: 0
+                        line: 0
+                report:
+                  - Notering: "Godkända regler - RAP-LP"
+                    regler:
+                      - id: "UFN.05"
+                        omrade: "URL Format och namngivning"
+                        status: "OK"
+                  - Notering: "Ej Godkända regler - RAP-LP"
+                    regler:
+                      - id: "DOK.03"
+                        omrade: "Dokumentation"
+                        status: "EJ OK"
+                  - Notering: "Ej tillämpade regler - RAP-LP"
+                    regler:
+                      - id: "SAK.09"
+                        omrade: "Säkerhet"
+                        status: "N/A"
+        "400":
           description: BAD_REQUEST
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetailsDto'
+                $ref: "#/components/schemas/ProblemDetailsDto"
               example:
                 type: "about:blank"
                 title: "Test title"
                 status: 400
                 detail: "Test error"
                 instance: "/example"
-        '500':
+        "500":
           description: INTERNAL_SERVER_ERROR
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetailsDto'
+                $ref: "#/components/schemas/ProblemDetailsDto"
               example:
                 type: "about:blank"
                 title: "Test title"
@@ -103,18 +126,18 @@ paths:
       description: Get a collection of available validation rules.
       operationId: getValidationRules
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationRules'
-        '500':
+                $ref: "#/components/schemas/ValidationRules"
+        "500":
           description: INTERNAL_SERVER_ERROR
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetailsDto'
+                $ref: "#/components/schemas/ProblemDetailsDto"
               example:
                 type: "about:blank"
                 title: "Test title"
@@ -129,14 +152,14 @@ paths:
       description: Validate your yaml from remote url
       operationId: validateUrl
       requestBody:
-        description: |- 
+        description: |-
           OpenApi yaml is fetched from remote server and validated on server. 
           Feature must be enabled explicitly on server.
 
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UrlContentDto'
+              $ref: "#/components/schemas/UrlContentDto"
             example:
               url: "http://localhost:8080/q/openapi"
               categories:
@@ -144,12 +167,12 @@ paths:
                 - "UfnRules"
         required: true
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RapLPCustomSpectralDiagnostic'
+                $ref: "#/components/schemas/RapLPCustomSpectralDiagnostic"
               example:
                 - id: "AME.04"
                   omrade: "API Message"
@@ -158,43 +181,43 @@ paths:
                   sokvag:
                     - "components"
                     - "schemas"
-                  omfattning: 
+                  omfattning:
                     start:
                       line: 1
                       character: 5
                     end:
                       line: 1
                       character: 10
-        '400':
+        "400":
           description: BAD_REQUEST
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetailsDto'
+                $ref: "#/components/schemas/ProblemDetailsDto"
               example:
                 type: "about:blank"
                 title: "Test title"
                 status: 400
                 detail: "Test error"
                 instance: "/example"
-        '409':
+        "409":
           description: CONFLICT
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetailsDto'
+                $ref: "#/components/schemas/ProblemDetailsDto"
               example:
                 type: "about:blank"
                 title: "Test title"
                 status: 409
                 detail: "Test error"
-                instance: "/example"        
-        '500':
+                instance: "/example"
+        "500":
           description: INTERNAL_SERVER_ERROR
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetailsDto'
+                $ref: "#/components/schemas/ProblemDetailsDto"
               example:
                 type: "about:blank"
                 title: "Test title"
@@ -209,36 +232,36 @@ paths:
       description: Get name, version, release date, links and status.
       operationId: getApiInfo
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiInfo'
+                $ref: "#/components/schemas/ApiInfo"
               example:
                 apiName: "RAP-LP"
                 apiVersion: "0.0.1"
                 apiReleased: "2024-10-10"
                 apiDocumentation: "http://example.digg/docs"
                 apiStatus: "active"
-        '400':
+        "400":
           description: BAD_REQUEST
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetailsDto'
+                $ref: "#/components/schemas/ProblemDetailsDto"
               example:
                 type: "about:blank"
                 title: "Test title"
                 status: 400
                 detail: "Test error"
                 instance: "/example"
-        '500':
+        "500":
           description: INTERNAL_SERVER_ERROR
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetailsDto'
+                $ref: "#/components/schemas/ProblemDetailsDto"
               example:
                 type: "about:blank"
                 title: "Test title"
@@ -257,12 +280,12 @@ components:
           rule:
             type: string
             description: The name of the validation rule.
-            example: "UfnRules"  # Example rule name
+            example: "UfnRules" # Example rule name
           description:
             type: string
             description: Description of the validation rule.
-            example: "URL Format och namngivning"  # Example description
-      example:  # Example array of rules
+            example: "URL Format och namngivning" # Example description
+      example: # Example array of rules
         - rule: "UfnRules"
           description: "URL Format och namngivning"
         - rule: "SakRules"
@@ -339,9 +362,9 @@ components:
             type: string
         relatedInformation:
           type: array
-          items: 
+          items:
             $ref: "#/components/schemas/IDiagnosticRelatedInformation"
-    IDiagnosticRelatedInformation: 
+    IDiagnosticRelatedInformation:
       type: object
       properties:
         location:
@@ -354,7 +377,7 @@ components:
         uri:
           type: string
           nullable: true
-        range: 
+        range:
           $ref: "#/components/schemas/IRange"
     IPosition:
       type: object
@@ -401,3 +424,42 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/RapLPCustomSpectralDiagnosticItem"
+    ValidationResponseDto:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            $ref: "#/components/schemas/RapLPCustomSpectralDiagnosticItem"
+        report:
+          type: array
+          items:
+            $ref: "#/components/schemas/DiagnosticReport"
+    DiagnosticRuleInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "UFN.05"
+        omrade:
+          type: string
+          example: "URL Format och namngivning"
+    PopulatedDiagnosticRuleInfo:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/DiagnosticRuleInfo"
+        - type: object
+          properties:
+            status:
+              type: string
+              example: "OK"
+    DiagnosticReport:
+      type: object
+      properties:
+        Notering:
+          type: string
+          example: "Godkända regler - RAP-LP"
+        regler:
+          type: array
+          items:
+            $ref: "#/components/schemas/PopulatedDiagnosticRuleInfo"
