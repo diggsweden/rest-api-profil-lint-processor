@@ -103,7 +103,7 @@ try {
         const reportHandler = new ExcelReportProcessor({
           outputFilePath: argv.dex,
         });
-        reportHandler.generateReportDocument(diagnosticReports)
+        reportHandler.generateReportDocument(customDiagnostic)
       } 
 
     /**

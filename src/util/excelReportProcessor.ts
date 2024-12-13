@@ -1,7 +1,7 @@
 import AdmZip from "adm-zip";
 import { XMLBuilder, XMLParser } from "fast-xml-parser";
 import path from "path";
-import { RapLPDiagnostic } from "./RapLPDiagnostic";
+import { RapLPDiagnostic } from "./RapLPDiagnostic.js";
 import fs from 'fs';
 
 interface ExcelTemplateConfig {
@@ -68,7 +68,7 @@ export class ExcelReportProcessor {
 
     }
 
-    public generateReportDocument(result: DiagnosticReport[]) {
+    public generateReportDocument(result: RapLPDiagnostic) {
         
         // Convert the result Raport to map with Rule name as key and status as value.
         const resultMap = this.reportToMap(result);
