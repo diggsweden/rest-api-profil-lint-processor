@@ -20,6 +20,7 @@ import {RapLPCustomSpectral} from "./util/RapLPCustomSpectral.ts";
 import {DiagnosticReport, RapLPDiagnostic} from "./util/RapLPDiagnostic.ts";
 import {AggregateError} from "./util/RapLPCustomErrorInfo.ts";
 import chalk from 'chalk';
+import { ExcelReportProcessor } from "./util/excelReportProcessor.ts";
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -97,6 +98,14 @@ try {
     const customDiagnostic = new RapLPDiagnostic();
     customDiagnostic.processRuleExecutionInformation(result,enabledRulesAndCategorys.instanceCategoryMap);
     const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
+      
+      if(argv.dex != null) {
+        const reportHandler = new ExcelReportProcessor({
+          outputFilePath: argv.dex,
+        });
+        reportHandler.generateReportDocument(diagnosticReports)
+      } 
+
     /**
      * Chalk impl.
      * @param allvarlighetsgrad
