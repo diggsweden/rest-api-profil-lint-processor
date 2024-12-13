@@ -6,7 +6,7 @@ module.exports = async () => {
     testEnvironment: 'node',
     "extensionsToTreatAsEsm": [".ts"],
     transform: {
-      '.*': ['ts-jest', {useIsolatedModules: true }] 
+      '.*': ['ts-jest', {useIsolatedModules: true }]
     }
   };
 };

@@ -22,7 +22,8 @@ const DEFAULT_CONFIG: ExcelTemplateConfig = {
 
 const isFileAccessible = (filePath: string): boolean => {
     try {
-        fs.accessSync(filePath, fs.constants.R_OK | fs.constants.W_OK);
+        const fd = fs.openSync(filePath, 'r+');
+        fs.closeSync(fd);
         return true;
     } catch (error) {
         return false;
