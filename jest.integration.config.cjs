@@ -5,10 +5,8 @@ module.exports = async () => {
     testPathIgnorePatterns: ['util'],
     testEnvironment: 'node',
     "extensionsToTreatAsEsm": [".ts"],
-    globals: {
-      'ts-jest': {
-        useESM: true,
-      },
+    transform: {
+      '^.+\\.ts$': ['ts-jest', { useESM: true }], // ts-jest config moved here
     },
     testMatch: ['**/tests/integration/**/*.test.ts']
   };

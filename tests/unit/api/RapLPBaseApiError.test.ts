@@ -88,8 +88,6 @@ describe('errorHandler middleware', () => {
          const sendMock = res.send as jest.Mock;
          const sentResponse = sendMock.mock.calls[0][0] as ProblemDetailsDTO;
 
-         console.log(req.originalUrl)
-
         // Validate the structure and content of the sent response
         expect(sentResponse).toMatchObject({
             type: "about:blank",
