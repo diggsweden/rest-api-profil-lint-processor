@@ -8,6 +8,7 @@ import {RapLPCustomSpectral} from "./util/RapLPCustomSpectral.ts";
 import {DiagnosticReport, RapLPDiagnostic} from "./util/RapLPDiagnostic.ts";
 import {AggregateError} from "./util/RapLPCustomErrorInfo.ts";
 import chalk from 'chalk';
+import { validateYamlInput } from "./util/baseUtil.ts"
 
 declare var AggregateError: {
     prototype: AggregateError;
@@ -35,7 +36,31 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         const logErrorFilePath = argv.logError as string | undefined;
         const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
         try {
-      
+          const fileContent = fs.readFileSync(apiSpecFileName, "utf-8");
+          try {
+            validateYamlInput(fileContent);
+          } catch (error) {
+            if (error instanceof Error) {
+              const cause = error.cause;
+              switch (cause) {
+                case 'INVALID_YAML':
+                  console.error('Validation error: The YAML content is invalid or empty. Please provide a valid YAML file.');
+                  break;
+                case 'MISSING_KEYS':
+                  console.error(`Validation error: ${error.message}. Ensure the file includes required keys like 'openapi', 'info', and 'paths'.`);
+                  break;
+                case 'SYNTAX_ERROR':
+                  console.error(`Validation error: There is a syntax error in your YAML file. ${error.message}`);
+                  break;
+                default:
+                  console.error(`Unexpected validation error: ${error.message}`);
+              }
+              return;
+            } else {
+              console.error('Unknown validation error occurred.');
+              return;
+            }
+          }
           // Import and create rule instances in RAP-LP
           const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
           // Load API specification into a Document object
@@ -145,6 +170,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           }
         } catch (initializingError: any) {
           logErrorToFile(initializingError);
+          // console.error(chalk.red(initializingError));
           console.error(chalk.red("Ett fel uppstod vid inläsning av moduler och skapande av regelklasser! Undersök felloggen för RAP-LP för mer information om felet"));
         }
       } catch (error: any) {

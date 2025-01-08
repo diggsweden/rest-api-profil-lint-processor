@@ -1,15 +1,4 @@
 openapi: "3.0.0"
-info:
-  version: 1.0.0
-  title: AME
-  description: API message
-  termsOfService: http://swagger.io/terms/
-  contact:
-    name: Swagger API Team
-    email: apiteam@swagger.io
-  license:
-    name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
 externalDocs:
   description: "Find out more about the API info text goes here"
   url: Url to external documentation
