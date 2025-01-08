@@ -1,5 +1,5 @@
 
-import { validateYamlInput } from "../../../src/util/apiUtil.ts"
+import { validateYamlInput } from "../../../src/util/baseUtil.ts"
 import { RapLPBaseApiError } from "../../../src/util/RapLPBaseApiErrorHandling.ts";
 
 describe('validateYamlInput', () => {
