@@ -9,6 +9,7 @@ import {DiagnosticReport, RapLPDiagnostic} from "./util/RapLPDiagnostic.ts";
 import {AggregateError} from "./util/RapLPCustomErrorInfo.ts";
 import chalk from 'chalk';
 import { validateYamlInput } from "./util/baseUtil.ts"
+import { ExcelReportProcessor } from "./util/excelReportProcessor.ts";
 
 declare var AggregateError: {
     prototype: AggregateError;
@@ -24,13 +25,12 @@ export type CliArgs = {
   logError?: string;
   append: boolean;
   logDiagnostic?: string;
+  dex?: string
 }
 
 export async function execCLI<T extends CliArgs>(argv: T) {
     try {
         // Parse command-line arguments using yargs
-        
-
         const apiSpecFileName = (argv.file as string) || "";
         const ruleCategories = argv.categories ? (argv.categories as string).split(",") : undefined;
         const logErrorFilePath = argv.logError as string | undefined;
@@ -69,8 +69,8 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             Parsers.Yaml,
             apiSpecFileName
           );
+          
           try {
-      
           /**
            * CustomSpectral
            */
@@ -82,6 +82,14 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           const customDiagnostic = new RapLPDiagnostic();
           customDiagnostic.processRuleExecutionInformation(result,enabledRulesAndCategorys.instanceCategoryMap);
           const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
+          
+          if(argv.dex != null) {
+            const reportHandler = new ExcelReportProcessor({
+              outputFilePath: argv.dex,
+            });
+            reportHandler.generateReportDocument(diagnosticReports)
+          }
+
           /**
            * Chalk impl.
            * @param allvarlighetsgrad 

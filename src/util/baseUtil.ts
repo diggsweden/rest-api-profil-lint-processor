@@ -1,7 +1,9 @@
 import { RapLPCustomSpectral } from "./RapLPCustomSpectral.ts";
-import { Document } from "@stoplight/spectral-core"
-import Parsers from "@stoplight/spectral-parsers"
-import yaml from "js-yaml"
+import { Document } from "@stoplight/spectral-core";
+import Parsers from "@stoplight/spectral-parsers";
+import { DiagnosticReport, RapLPDiagnostic } from "../util/RapLPDiagnostic.ts";
+import yaml from "js-yaml";
+import { ValidationResponseDto } from "../model/ValidationResponseDto.ts";
 
 export const validateYamlInput = (input: string): input is string => {
     try {
@@ -32,20 +34,37 @@ export const validateYamlInput = (input: string): input is string => {
 }
 
 export function decodeBase64String(base64YamlFile: string) {
-    // Import the necessary Node.js module (Buffer is built-in)
-    const atob = (b64String: string): string => Buffer.from(b64String, 'base64').toString('utf-8');
+  // Import the necessary Node.js module (Buffer is built-in)
+  const atob = (b64String: string): string =>
+    Buffer.from(b64String, "base64").toString("utf-8");
 
-    // Decode the base64 string
-    const decodedYaml = atob(base64YamlFile);
+  // Decode the base64 string
+  const decodedYaml = atob(base64YamlFile);
 
-    return decodedYaml;
+  return decodedYaml;
 }
 
-export async function processApiSpec(enabledRulesAndCategorys: { rules: Record<string, any>; instanceCategoryMap: Map<string, any>; }, apiSpecDocument: Document<unknown, Parsers.YamlParserResult<unknown>>) {
-    const customSpectral = new RapLPCustomSpectral();
-    customSpectral.setCategorys(enabledRulesAndCategorys.instanceCategoryMap);
-    customSpectral.setRuleset(enabledRulesAndCategorys.rules);
-    return await customSpectral.run(apiSpecDocument);
+export async function processApiSpec(
+  enabledRulesAndCategorys: {
+    rules: Record<string, any>;
+    instanceCategoryMap: Map<string, any>;
+  },
+  apiSpecDocument: Document<unknown, Parsers.YamlParserResult<unknown>>
+): Promise<ValidationResponseDto> {
+  const customSpectral = new RapLPCustomSpectral();
+  customSpectral.setCategorys(enabledRulesAndCategorys.instanceCategoryMap);
+  customSpectral.setRuleset(enabledRulesAndCategorys.rules);
+  const result = await customSpectral.run(apiSpecDocument);
+
+  const customDiagnostic = new RapLPDiagnostic();
+  customDiagnostic.processRuleExecutionInformation(
+    result,
+    enabledRulesAndCategorys.instanceCategoryMap
+  );
+  const diagnosticReports: DiagnosticReport[] =
+    customDiagnostic.processDiagnosticInformation();
+
+  return { result, report: diagnosticReports };
 }
 
 /**

@@ -8,11 +8,12 @@ import { ApiInfo } from "../model/ApiInfo.ts"
 import { validationRules } from "../model/validationRules.ts";
 import { ERROR_TYPE, RapLPBaseApiError } from "../util/RapLPBaseApiErrorHandling.ts";
 
+import { ExcelReportProcessor } from "../util/excelReportProcessor.ts"
 
 export const registerValidationRoutes = (app: Express) => {
   app.post("/api/v1/validation/validate", async (req, res, next) => {
     try {
-        const yamlContent: YamlContentDto = req.body
+      const yamlContent: YamlContentDto = req.body;
 
         let yamlContentString: string;
         yamlContentString = decodeBase64String(yamlContent.yaml)
@@ -47,20 +48,16 @@ export const registerValidationRoutes = (app: Express) => {
           }
         }
 
-        const apiSpecDocument = new Document(
-            yamlContentString,
-            Parsers.Yaml,
-            ""
-        );
+      const apiSpecDocument = new Document(yamlContentString, Parsers.Yaml, "");
 
-        const rules = await importAndCreateRuleInstances(yamlContent.categories);
+      const rules = await importAndCreateRuleInstances(yamlContent.categories);
 
-        const result = await processApiSpec(rules, apiSpecDocument)
-        res.send(result)
+      const result = await processApiSpec(rules, apiSpecDocument);
+      res.send(result);
     } catch (e) {
-        next(e)
+      next(e);
     }
-})
+  });
 
   app.get("/api/v1/validation/rules", (req, res) => {
     res.send(validationRules);
@@ -76,5 +73,32 @@ export const registerValidationRoutes = (app: Express) => {
         "development"
       )
     );
+  });
+
+  app.post("/api/v1/validation/generate-report", async (req, res, next): Promise<any> => {
+    try {
+      const data = req.body;
+
+    if (!data || !data.report || !Array.isArray(data.report)) {
+      return res.status(400).json({ error: 'Invalid data format. Expected an object with a "report" array.' });
+    }
+    
+    const reportHandler = new ExcelReportProcessor();
+    let buffer: Buffer;
+
+    try {
+        buffer = reportHandler.generateReportDocumentBuffer(data.report);
+    } catch (error) {
+        console.error("Error generating report buffer:", error);
+        return res.status(500).json({ error: 'Failed to generate report.' });
+    }
+  
+    res.setHeader('Content-Disposition', 'attachment; filename="avstamningsfil.xlsx"');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer)
+
+    } catch (e) {
+      next(e)
+    }
   });
 };
