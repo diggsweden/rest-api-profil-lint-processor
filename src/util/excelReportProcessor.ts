@@ -13,7 +13,7 @@ interface ExcelTemplateConfig {
 }
 
 const DEFAULT_CONFIG: ExcelTemplateConfig = {
-    reportTemplatePath: path.resolve(process.cwd(), "document/Avstaemning_REST_API_profil_v_1_1_0_0.xlsx"),
+    reportTemplatePath: path.resolve(process.cwd(), "document/Avstaemning_REST_API_profil_v_1_2_0_0.xlsx"),
     dataSheetName: "Kravlista REST API profil",
     ruleColumn: "B",
     statusColumn: "E",
@@ -178,7 +178,21 @@ export class ExcelReportProcessor {
             return
         }
 
-        return this.parser.parse(sharedzip)?.sst?.si.map(s => s.t);
+        return this.parser.parse(sharedzip)?.sst?.si.map(s => {
+            // Support RichText run
+            if(s.r != null) {
+                if(Array.isArray(s.r)) {
+                    return s.r.map(r => r.t['#text']).join(' ')
+                }
+                return s.r.t['#text']
+            }
+            if(typeof s.t === 'object') {
+                return s.t['#text']
+            }
+            
+            // Base case, plain text
+            return s.t
+        });
     }
 
     /**
@@ -224,8 +238,8 @@ export class ExcelReportProcessor {
     private updateResultColumn(sheetPath: string, results: {[rule: string]: string}, sharedStrings, valueMap) {
         const sheet = this.loadSheet(sheetPath)
         sheet?.worksheet?.sheetData?.row.forEach(row => {
-            const ruleColumn = row.c.find(col => col['@_r']?.startsWith(this.config.ruleColumn))
-            const resultColumn = row.c.find(col => col['@_r']?.startsWith(this.config.statusColumn))
+            const ruleColumn = row.c?.find(col => col['@_r']?.startsWith(this.config.ruleColumn))
+            const resultColumn = row.c?.find(col => col['@_r']?.startsWith(this.config.statusColumn))
             
             // See if the value of the rule column match any reported rule from the result report.
             const status = results[sharedStrings[ruleColumn?.v]]
