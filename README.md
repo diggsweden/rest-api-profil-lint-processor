@@ -114,7 +114,7 @@ The reviewer will review your pull request and decide whether to accept it.
 
 ## License
 European Union Public Licence v. 1.2
-See the [LICENSE]([LICENSE](https://github.com/diggsweden/rest-api-profil-lint-processor/blob/main/LICENSE)) file for details
+See the [LICENSE](LICENSE) file for details
 
 ## Maintainers
 [Digg - Agency for Digital Government](https://github.com/diggsweden)
