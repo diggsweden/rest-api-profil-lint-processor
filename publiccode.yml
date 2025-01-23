@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Skatteverket - Swedish Tax Agency
+# SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 #
 # SPDX-License-Identifier: CC0-1.0
 
@@ -8,27 +8,21 @@
 
 publiccodeYmlVersion: "0.4.0"
 categories:
-  - collaboration
+  - application-development
+  - it-development
+  - compliance-management
+  - test-management
 description:
   en:
     features:
-      - Create network analysis charts
-      - Visual representation of relationships through graphs
-      - Custom information model
-      - Crime Scripting
-      - Geo Positioning using maps
-      - Retrive information from external sources
-      - Customizable
-    genericName: MLA
+      - Schema validation
+      - Ensure adherence to OpenAPI standards
+      - Missing attributes check
+      - Detect missing or misconfigured attributes in specifications
     longDescription: |
-      MLA is a web component that lets users create network analysis charts in a fast and intuitive way. 
-      It has a config file that lets the user configure it's own information model, create rules,
-      set theme colors, connect it to existing information sources and alot more.
-
-      MLA can run as part of a existing system, as a web application or as a desktop application. 
-      It has no dependencies and works in a air-gaped environment.
-    shortDescription: Network analysis application that supports Crime Scripting
-developmentStatus: stable
+      REST API-profil - Lint Processor is a command-line tool to lint OpenAPI v3 definitions of the swedish rest api-profile specification using Spectral.
+    shortDescription: A linting tool for the swedish rest api-profile specification
+developmentStatus: beta
 legal:
   license: EUPL-1.2
 localisation:
@@ -37,14 +31,15 @@ localisation:
   localisationReady: false
 maintenance:
   contacts:
-    - name: Whiteflight@skatteverket.se
+    - name: Fredrik Nordlander
+    - email: "fredrik.nordlander@digg.se"
   type: internal
-name: MLA
+name: "REST API-profil - Lint Processor (RAP-LP)"
 platforms:
-  - web
   - windows
-releaseDate: "2024-09-01"
+  - mac
+  - linux
+releaseDate: "2025-X-X"
 softwareType: "library"
-softwareVersion: "1.0"
-url: "https://github.com/diggsweden/mla.git"
-roadmap: "https://github.com/diggsweden/mla#roadmap"
+softwareVersion: "0.0.1"
+url: "https://github.com/diggsweden/rest-api-profil-lint-processor.git"
