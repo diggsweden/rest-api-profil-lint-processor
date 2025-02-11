@@ -4,156 +4,161 @@ SPDX-FileCopyrightText: 2023 Digg - Agency for Digital Government
 SPDX-License-Identifier: CC0-1.0
 -->
 
-# Contributing
+# Riktlinjer för bidrag
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?style=for-the-badge&logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 [![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-2.1-4baaaa.svg?style=for-the-badge)](CODE_OF_CONDUCT.md)
 [![DCO - developer certificate of origin](https://img.shields.io/badge/DCO-Developer%20Certificate%20of%20Origin-lightyellow?style=for-the-badge)](https://developercertificate.org/)
 
-Welcome! We are excited that you are interested in contributing to our project!
+Välkommen! Vi är glada över att du vill bidra till vårt projekt!
 
-Here's what you need to know:
+Här är vad du behöver veta:
 
-## Ways to Contribute
+## Bidra
 
-As a new contributor, you're in an excellent position to provide valuable feedback. Here are some ways you can help:
+Som ny är det ett värdefullt tillfälle för återkoppling.
+Exempelvis genom att:
 
-- Fix or report a bug.
-- Suggest enhancements to code, tests, and documentation.
-- Report or fix problems found during installation or in developer environments.
-- Propose new features or improvements.
+- Fixa eller rapportera en bugg.
+- Föreslå förbättringar av kod, tester och dokumentation.
+- Rapportera eller fixa problem som upptäcks under installation eller i utvecklingsmiljöer.
+- Föreslå nya funktioner eller förbättringar.
 
-## Community Guideline
+## Uppförandekoder
 
-Be nice and respectful to each other.
+Var trevlig och respektfull mot varandra.
 
-We follow the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
+Vi följer [Contributor Covenants uppförandekod](CODE_OF_CONDUCT.md).
 
-## File an Issue
+## Att skapa ett ärende
 
-Before creating a new issue, please check if a similar one already exists.
+Innan du skapar ett nytt ärende, vänligen kontrollera om ett liknande redan finns.
 
-If so, you can add your information as a comment to the existing issue.
+Om så är fallet kan du lägga till din information som en kommentar till det befintliga ärendet.
 
-### Report a Bug
+### Att rapportera fel
 
-Reporting bugs is a valuable way to contribute:
+Att rapportera programfel är ett värdefullt sätt att bidra:
 
-1. Open an issue that summarizes the bug.
-2. Set the label to "bug".
+1. Öppna ett ärende som sammanfattar felet.
+2. Sätt etiketten till "bug".
 
-### Suggest a Feature
+### Föreslå en förbättring
 
-To request a new feature:
+För att begära en ny funktion:
 
-1. Open an issue summarizing the desired functionality and its use case.
-2. Set the label to "feature" or "enhancement".
+1. Öppna ett ärende som sammanfattar den önskade funktionaliteten och dess användningsfall.
+2. Sätt etiketten till "feature" eller "enhancement".
 
-## Contribute Code, Documentation, and More
+## Bidra med kod, dokumentation och mer
 
-To contribute code, documentation, or other improvements:
+För att bidra med kod, dokumentation eller andra förbättringar:
 
-1. Discuss your plans beforehand to ensure alignment with project goals.
-2. Check the list of open issues. Assign yourself an existing issue or create a new one.
-3. Follow project conventions for tests, code style, documentation, and commit messages.
-4. Understand that contributions may be declined if they don't align with project guidelines or goals.
-5. Familiarize yourself with the [Pull Request Lifecycle](#pull-request-lifecycle).
-6. Agree to the "inbound=outbound" norm: your contributions will be under the same license as the project.
-7. [Sign your commits](#dco---signoff-and-signing-a-commit).
+1. Diskutera dina planer i förväg för att säkerställa att de stämmer överens med projektmålen.
+2. Kontrollera listan över öppna ärenden. Tilldela dig själv ett befintligt ärende eller skapa ett nytt.
+3. Följ projektkonventioner för tester, kodstil, dokumentation och commit-meddelanden.
+4. Förstå att bidrag kan avslås om de inte överensstämmer med projektets riktlinjer eller mål.
+5. Bekanta dig med [Pull Request-livscykeln](#pull-request-livscykel).
+6. Godkänn "inbound=outbound"-normen: dina bidrag kommer att vara under samma licens som projektet.
+7. [Signera dina commits](#dco---signoff-och-signering-av-en-commit).
 
-## Issues and Pull Request Feedback
+## Återkoppling på ärenden och Pull Requests
 
-Project maintainers will do their best to review and respond to issues within [INSERT_DAYS] business days.
+Projektunderhållare kommer att göra sitt bästa för att granska och svara på ärenden inom fem arbetsdagar.
 
-The quality of information in your issue or pull request will affect the feedback loop.
+Kvaliteten på informationen i ditt ärende eller pull request kommer att påverka feedbackslingan.
 
-For non-trivial contributions, please discuss with the project team first.
+För icke-triviala bidrag, vänligen diskutera med projektteamet först.
 
-**If the project is not listed as archived, it is maintained.**
+**Om projektet inte är listat som arkiverat underhålls det.**
 
-## Pull Request Lifecycle
+## Pull Request-livscykel
 
-We use the [Fork-and-Pull Model](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/getting-started/about-collaborative-development-models#fork-and-pull-model):
+Vi använder [Fork-and-Pull-modellen](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/getting-started/about-collaborative-development-models#fork-and-pull-model):
 
-1. Fork the repository.
-2. Create a topic branch from your fork's main branch.
-3. Push your changes to the topic branch in your fork.
-4. Open a new pull request to the main project.
-5. Respond to any feedback from project maintainers.
+1. Forka repositoriet.
+2. Skapa en ämnesgren från din forks huvudgren.
+3. Pusha dina ändringar till ämnesgrenen i din fork.
+4. Öppna en ny pull request till huvudprojektet.
+5. Svara på eventuell feedback från projektunderhållare.
 
-## Commit Guidelines
+## Commit-riktlinjer
 
-### DCO - Signoff and Signing a Commit
+### DCO - Signoff och signering av en commit
 
-#### Signoff (DCO agree)
+#### Signoff (DCO-godkännande)
 
-***A Signoff assures to the project that you have the right to contribute your content*** +
+**_En Signoff försäkrar projektet om att du har rätt att bidra med ditt innehåll_** +
 
-Add a signoff to your commit using the `-s` or `--signoff` flag:
+Lägg till en signoff till din commit med flaggan `-s` eller `--signoff`:
 
 ```console
-git commit --signoff -m 'fix: add fix for superbug x'
+git commit --signoff -m 'fix: lägg till fix för superbug x'
 ```
 
-#### Sign
+#### Signera
 
-***A Sign assures that the commit came from you***
+**_En signatur försäkrar att commiten kom från dig_**
 
-Sign your commit with `-S` or `--gpg-sign`:
+Signera din commit med `-S` eller `--gpg-sign`:
 
 ```shell
-git commit --signoff --gpg-sign -m "fix: add fix for the bug"
+git commit --signoff --gpg-sign -m "fix: lägg till fix för buggen"
 ```
 
-### Commit Standard
+### Commit-standard
 
-- Use the [Conventional Commit standard](https://www.conventionalcommits.org).
-- Group relevant changes in commits.
-- Write clear, human-readable commit messages.
+- Använd [Conventional Commit-standarden](https://www.conventionalcommits.org).
+- Gruppera relevanta ändringar i commits.
+- Skriv tydliga, lättlästa commit-meddelanden.
 
-## Reporting Security Issues
+## Rapportera säkerhetsproblem
 
-For security vulnerabilities, please follow the guidelines in our [Security information](SECURITY.md).
+För säkerhetssårbarheter, följ riktlinjerna i vår [Säkerhetsinformation](SECURITY.md).
 
-## Development Guidelines
+## Utvecklingsriktlinjer
 
-For development guidance, see the [DEVELOPMENT Guide](./DEVELOPMENT.md).
+För utvecklingsvägledning, se [DEVELOPMENT Guide](DEVELOPMENT.md).
 
-## Writing Style and Translations
+## Skrivstil och översättningar
 
-- Keep documentation easy to read.
-- Use bullet points for clarity.
-- Be concise and link to external resources when needed.
-- Use British English (e.g., "colour" instead of "color").
-- Follow the [one-sentence-per-line](https://sembr.org/) principle in Markdown or AsciiDoc.
+- Håll dokumentationen lättläst.
+- Använd punktlistor för tydlighet.
+- Var koncis och länka till externa resurser vid behov.
+- Använd brittisk engelska (t.ex. "colour" istället för "color").
+- Följ [en-mening-per-rad](https://sembr.org/)-principen i Markdown eller AsciiDoc.
 
-English is the primary language, with translations on a best-effort basis.
+Engelska är det primära språket, med översättningar på bästa möjliga sätt.
 
-## FOSS Standards
+## FOSS-standarder
 
-We aim to comply with the following standards and best practices:
+Vi strävar efter att följa följande standarder och bästa praxis:
 
-- [REUSE License specification](https://reuse.software/)
-  - Ensures clear and standardized license compliance across the project.
+- [REUSE Licensspecifikation](https://reuse.software/)
 
-- [Conventional Commits format](https://www.conventionalcommits.org/en/v1.1.0/)
-  - Provides a clear and structured project history through standardized commit messages.
+  - Säkerställer tydlig och standardiserad licensefterlevnad i hela projektet.
 
-- [Keep-A-Changelog format](https://keepachangelog.com/en/1.1.0/)
-  - Maintains a clear and user-friendly release history.
+- [Conventional Commits-format](https://www.conventionalcommits.org/en/v1.1.0/)
 
-- [Contributor Covenant guidelines](https://www.contributor-covenant.org/)
-  - Establishes a social contract for respectful and inclusive collaboration.
+  - Ger en tydlig och strukturerad projekthistorik genom standardiserade commit-meddelanden.
+
+- [Keep-A-Changelog-format](https://keepachangelog.com/en/1.1.0/)
+
+  - Upprätthåller en tydlig och användarvänlig versionshistorik.
+
+- [Contributor Covenant-riktlinjer](https://www.contributor-covenant.org/)
+
+  - Upprättar ett socialt kontrakt för respektfullt och inkluderande samarbete.
 
 - [OpenSSF Scorecard](https://scorecard.dev/)
-  - Helps assess and improve the security health of our project.
+
+  - Hjälper till att bedöma och förbättra säkerhetshälsan i vårt projekt.
 
 - [PublicCode.yml](https://yml.publiccode.tools/index.html)
-  - Facilitates easy metadata indexing for better discoverability of our project.
+
+  - Underlättar enkel metadataindexering för bättre upptäckbarhet av vårt projekt.
 
 - [Standard for Public Code](https://standard.publiccode.net/)
-  - Ensures our project meets criteria for public code quality and sustainability.
+  - Säkerställer att projektet uppfyller kriterier för offentlig kodkvalitet och hållbarhet.
 
-Contributors are encouraged to familiarize themselves with these guidelines and help us uphold these standards in their contributions.
-
-***Happy contributing!***
+Bidragsgivare uppmuntras att bekanta sig med dessa riktlinjer och hjälpa oss att upprätthålla dessa standarder i sina bidrag.
