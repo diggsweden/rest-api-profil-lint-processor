@@ -4,134 +4,114 @@ SPDX-FileCopyrightText: Contributor Covenant
 SPDX-License-Identifier: CC-BY-4.0
 -->
 
-# Contributor Covenant Code of Conduct
+# Gemenskapens uppförandekod vid bidrag
 
-## Our Pledge
+## Vårt löfte
 
-We as members, contributors, and leaders pledge to make participation in our
-community a harassment-free experience for everyone, regardless of age, body
-size, visible or invisible disability, ethnicity, sex characteristics, gender
-identity and expression, level of experience, education, socio-economic status,
-nationality, personal appearance, race, caste, color, religion, or sexual
-identity and orientation.
+Vi som medlemmar, bidragsgivare och ledare lovar att göra deltagandet i vår
+gemenskap fri från trakasserier och för alla oavsett ålder, kropp,
+storlek, funktionsnedsättning, etnicitet, könsegenskaper, könsidentitet, erfarenhetsnivå, utbildning, socioekonomisk status,
+nationalitet, personligt utseende, ras, kast, färg, religion eller sexuell
+identitet och inriktning.
 
-We pledge to act and interact in ways that contribute to an open, welcoming,
-diverse, inclusive, and healthy community.
+Vi lovar att agera och interagera på ett sätt som bidrar till en öppen, välkomnande,
+inkluderande och trygg gemenskap rik på mångfald.
 
-## Our Standards
+## Våra standarder
 
-Examples of behavior that contributes to a positive environment for our
-community include:
+Några exempel på beteenden som bidrar till en positiv miljö för
+gemenskapen:
 
-- Demonstrating empathy and kindness toward other people
-- Being respectful of differing opinions, viewpoints, and experiences
-- Giving and gracefully accepting constructive feedback
-- Accepting responsibility and apologizing to those affected by our mistakes,
-  and learning from the experience
-- Focusing on what is best not just for us as individuals, but for the overall
-  community
+- Att visa empati och vänlighet mot andra människor.
+- Att visa respekt för olika åsikter, synsätt och erfarenheter.
+- Att tacksamt ge och ta emot konstruktiv återkoppling.
+- Att ta ansvar och att be om ursäkt till de som drabbats av våra misstag,
+  och lära av erfarenheten
+- Att fokusera på det som är bäst, inte bara för oss som individer, utan för gemenskapens helhet.
 
-Examples of unacceptable behavior include:
+Några exempel på beteenden som inte är acceptabelt:
 
-- The use of sexualized language or imagery, and sexual attention or advances of
-  any kind
-- Trolling, insulting or derogatory comments, and personal or political attacks
-- Public or private harassment
-- Publishing others' private information, such as a physical or email address,
-  without their explicit permission
-- Other conduct which could reasonably be considered inappropriate in a
-  professional setting
+- Användning av sexualiserat språk eller bildspråk, samt sexuella närmanden eller anspråk.
+- Trollande, förolämpande och nedsättande kommentarer, personliga eller politiska attacker.
+- Offentliga eller privata trakasserier.
+- Att utan lov publicera andras privata information, såsom en fysisk adress eller e-postadress.
+- Annat beteende som rimligen kan anses vara olämpligt i en professionell miljö.
 
-## Enforcement Responsibilities
+## Ansvar för tillämpning
 
-Community leaders are responsible for clarifying and enforcing our standards of
-acceptable behavior and will take appropriate and fair corrective action in
-response to any behavior that they deem inappropriate, threatening, offensive,
-or harmful.
+Gemenskapens ledare är ansvariga för att klargöra och upprätthålla våra standarder för ett acceptabelt beteende och kommer att vidta lämpliga och rättvisa tillrättavisande åtgärder som svar på beteenden som de anser vara olämpliga, hotfulla, stötande, eller skadliga.
 
-Community leaders have the right and responsibility to remove, edit, or reject
-comments, commits, code, wiki edits, issues, and other contributions that are
-not aligned to this Code of Conduct, and will communicate reasons for moderation
-decisions when appropriate.
+Gemenskapens ledare har rätt och ansvar att ta bort, redigera eller avvisa
+kommentarer, commit, kod, wiki-redigeringar, frågor och andra bidrag som
+inte följer denna uppförandekod. Gemenskapens ledare kommer att informera om skäl för modereringen när så är lämpligt.
 
-## Scope
+## Omfattning
 
-This Code of Conduct applies within all community spaces, and also applies when
-an individual is officially representing the community in public spaces.
-Examples of representing our community include using an official e-mail address,
-posting via an official social media account, or acting as an appointed
-representative at an online or offline event.
+Denna uppförandekod gäller inom alla gemenskapsområden, även när en individ officiellt representerar gemenskapen i allmänheten.
+Exempel på att representera vår gemenskap inkluderar att använda en officiell e-postadress, att göra inlägg via ett officiellt konto på sociala medier, eller att vara en utsedd representant vid ett evenemang, oavsett om det är virtuellt eller verkligt.
 
-## Enforcement
+## Tillämpning och rapportering
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at
+Fall av kränkande, trakasserande eller på annat sätt oacceptabelt beteende
+rapporteras till ansvariga ledare för gemenskapen
 <ospo@digg.se>.
-All complaints will be reviewed and investigated promptly and fairly.
+Klagomål kommer att granskas och utredas snabbt och rättvist.
 
-All community leaders are obligated to respect the privacy and security of the
-reporter of any incident.
+Alla gemenskapens ledare är skyldiga att respektera rapportörens integritet och säkerhet oavsett incident.
 
-## Enforcement Guidelines
+## Riktlinjer för tillämpning
 
-Community leaders will follow these Community Impact Guidelines in determining
-the consequences for any action they deem in violation of this Code of Conduct:
+Gemenskapens ledare kommer att följa dessa riktlinjer för att avgöra konsekvenserna för handlingar som de anser strider mot denna uppförandekod:
 
-### 1. Correction
+### 1. Rättelse
 
-**Community Impact**: Use of inappropriate language or other behavior deemed
-unprofessional or unwelcome in the community.
+**Påverkan på gemenskapen**: Användande av olämpligt språk eller annat beteende som anses vara oprofessionellt eller opassande i gemenskapen.
 
-**Consequence**: A private, written warning from community leaders, providing
-clarity around the nature of the violation and an explanation of why the
-behavior was inappropriate. A public apology may be requested.
+**Konsekvens**: En privat, skriftlig varning från gemenskapsansvariga, en tydlig förklaring av överträdelsens art och till varför beteendet var olämpligt. En offentlig ursäkt kan begäras.
 
-### 2. Warning
+### 2. Varning
 
-**Community Impact**: A violation through a single incident or series of
-actions.
+**Påverkan på gemenskapen**: En överträdelse genom en enskild incident eller serie av
+åtgärder.
 
-**Consequence**: A warning with consequences for continued behavior. No
-interaction with the people involved, including unsolicited interaction with
-those enforcing the Code of Conduct, for a specified period of time. This
-includes avoiding interactions in community spaces as well as external channels
-like social media. Violating these terms may lead to a temporary or permanent
-ban.
+**Konsekvens**: En varning med konsekvenser om beteendet fortsätter. Ingen
+interaktion med de inblandade personerna, inklusive oönskad interaktion med
+de som upprätthåller uppförandekoden, under en viss tidsperiod.
+Det inkluderar att undvika interaktioner i gemenskapsutrymmen såväl som externa kanaler som sociala medier. Överträdelse mot dessa villkor kan leda till en tillfällig eller permanent utslutning ur gemenskapen.
 
-### 3. Temporary Ban
+### 3. Tillfälligt avstängd
 
-**Community Impact**: A serious violation of community standards, including
-sustained inappropriate behavior.
+**Påverkan på gemenskapen**: En allvarlig överträdelse mot gemenskapsstandarder, inklusive ett kontinuerligt olämpligt beteende.
 
-**Consequence**: A temporary ban from any sort of interaction or public
-communication with the community for a specified period of time. No public or
-private interaction with the people involved, including unsolicited interaction
-with those enforcing the Code of Conduct, is allowed during this period.
-Violating these terms may lead to a permanent ban.
+**Konsekvens**: En tillfällig avstängning från någon form av interaktion eller offentlig kommunikation med gemenskapen under en viss tidsperiod.
+Ingen offentlig eller privat interaktion med de inblandade personerna, inklusive oönskad interaktion
+med dem som upprätthåller uppförandekoden, tillåts under denna period.
+Överträdelse mot dessa villkor kan leda till en permanent avstängning.
 
-### 4. Permanent Ban
+### 4. Permanent avstängd
 
-**Community Impact**: Demonstrating a pattern of violation of community
-standards, including sustained inappropriate behavior, harassment of an
-individual, or aggression toward or disparagement of classes of individuals.
+**Påverkan på gemenskapen**: Visar ett mönster av överträdelser av gemenskapens
+riktlinjer, inklusive kontinuerligt olämpligt beteende, trakasserier av en
+individ, eller aggression eller nedvärderande av individ.
 
-**Consequence**: A permanent ban from any sort of public interaction within the
-community.
+**Konsekvens**: En permanent avstängning för alla former av offentlig interaktion inom
+gemenskapen.
 
-## Attribution
+## Erkännanden
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage],
-version 2.1, available at
+Denna uppförandekod är en översättning av [Contributor Covenant][hemsida],
+version 2.1, tillgänglig på
 [https://www.contributor-covenant.org/version/2/1/code_of_conduct.html][v2.1].
 
-Community Impact Guidelines were inspired by
-[Mozilla's code of conduct enforcement ladder][Mozilla CoC].
+Uppförandekoden inspirerades av
+[Mozillas uppförandekod][Mozilla CoC].
 
-For answers to common questions about this code of conduct, see the FAQ at
-[https://www.contributor-covenant.org/faq][FAQ]. Translations are available at
+För svar på vanliga frågor kring uppförandekod, se "Vanliga frågor (F.A.Q)",
+[https://www.contributor-covenant.org/faq][FAQ].
+Översättningar finns tillgängliga på
 [https://www.contributor-covenant.org/translations][translations].
 
-[homepage]: https://www.contributor-covenant.org
+[hemsida]: https://www.contributor-covenant.org
 [v2.1]: https://www.contributor-covenant.org/version/2/1/code_of_conduct.html
 [Mozilla CoC]: https://github.com/mozilla/diversity
 [FAQ]: https://www.contributor-covenant.org/faq
