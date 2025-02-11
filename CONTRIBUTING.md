@@ -116,10 +116,6 @@ git commit --signoff --gpg-sign -m "fix: lägg till fix för buggen"
 
 För säkerhetssårbarheter, följ riktlinjerna i vår [Säkerhetsinformation](SECURITY.md).
 
-## Utvecklingsriktlinjer
-
-För utvecklingsvägledning, se [DEVELOPMENT Guide](DEVELOPMENT.md).
-
 ## Skrivstil och översättningar
 
 - Håll dokumentationen lättläst.
