@@ -22,6 +22,7 @@ RAP-LP är ett kommandoradsverktyg för att linta OpenAPI v3-definitioner med hj
   - [Installation och krav](#installation-och-krav)
   - [Instruktioner för att komma igång snabbtt](#instruktioner-för-att-komma-igång-snabbt)
   - [Användning](#användning)
+    - [Förklaring av status](#förklaring-av-status)
   - [Kända problem](#known-issues)
   - [Support](#support)
   - [Bidra](#bidra)
@@ -102,6 +103,14 @@ $ npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
 ```bash
 $ npm start -- --help
 ```
+
+**Förklaring av status:**
+
+**\-** = Krav ej bedömt\
+**OK** = Krav bedömt och hanterat för att möta kravet\
+**Pågående** = Krav bedömt och hantering påbörjat men ej klart\
+**NOK** = Krav bedömt men API möter inte kravet\
+**N/A** = Krav bedömt men inte applicerbart på API
 
 ## Kända problem
 
