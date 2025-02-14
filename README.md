@@ -15,6 +15,8 @@ SPDX-License-Identifier: CC0-1.0
 
 RAP-LP är ett kommandoradsverktyg för att linta OpenAPI v3-definitioner med hjälp av [Spectral](https://github.com/stoplightio/spectral). Verktyget är specifikt utvecklat för att linta OpenAPI-definitioner enligt den svenska REST API-profilens specifikation [REST API-profil](https://dev.dataportal.se/rest-api-profil).
 
+
+
 ## Innehållsförteckning
 
 - [REST API-profil - Lint Processor (RAP-LP)](#rest-api-profil---lint-processor-rap-lp)
@@ -32,7 +34,7 @@ RAP-LP är ett kommandoradsverktyg för att linta OpenAPI v3-definitioner med hj
 
 ## Installation och krav
 
-Det enklaste sättet att installera spectral är genom att använda [npm](https://www.npmjs.com/):
+Det enklaste sättet att installera RAP-LP är genom att använda [npm](https://www.npmjs.com/):
 
 1. Klona ned projektet
 2. Installera alla beroenden:
@@ -58,6 +60,7 @@ $ npm start -- -f apis/dok-api.yaml
 ## Användning
 
 För att validera mot en specifik kategori av regler, lägg till `-c CategoryName`.
+
 **Exempel**
 
 ```bash
@@ -66,17 +69,19 @@ $ npm start -- -f apis/dok-api.yaml -c DokRules
 
 **Tillgängliga kategorier med regler**
 
-- UfnRules
-- SakRules
-- VerRules
-- FnsRules
+- AmeRules
 - ArqRules
 - DokRules
-- AmeRules
-- ForRules
 - DotRules
+- FelRules
+- FnsRules
+- ForRules
+- SakRules
+- UfnRules
+- VerRules
 
 För att spara meddelanden från felloggar, lägg till `-l FileName`.
+
 **Exempel**
 
 ```bash
@@ -84,6 +89,7 @@ $ npm start -- -f apis/dok-api.yaml -l rap-lp.log
 ```
 
 För att lägga till loggning, lägg till `-a`
+
 **Exempel**
 
 ```bash
@@ -91,17 +97,45 @@ $ npm start -- -f apis/dok-api.yaml -l rap-lp.log -a
 ```
 
 För att spara loggdiagnostik i en fil, lägg till `-d FileName`
+
 **Exempel**
 
 ```bash
 $ npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
 ```
+För att spara information om regelutfall för diagnostiseringen till en avstämningsgil i Excel, lägg till `--dex` Om man vill ange en specfik sökväg till avstämningsfilen, så kan man lägga till en sökväg. Ifall man väljer att inte ange en sökväg till, så kommer verktyget att generera en ny avstämningsfil relativt är verktyget körs. Avstämningsfilen i Excel har ett fast format och vill man peka ut en egen version av den, så behöver man hämta den utpekade resursen som kommer med kompatibel version av REST API-profilen.
 
+**Exempel utan sökvög till avstämningsfil i Excel**
+
+```bash
+$ npm start -- -f apis/dok-api.yaml --dex
+```
+
+**Exempel med sökvög till avstämningsfil i Excel**
+
+```bash
+$ npm start -- -f apis/dok-api.yaml --dex path-to-excel-file
+```
+
+
+För att visa aktuell version av verktyget, lägg till `--version`
+
+**Exempel**
+
+```bash
+$ npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
+```
 **Visa hjälp**
 
 ```bash
 $ npm start -- --help
 ```
+
+
+
+
+**Förklaring av regelutfall:**
+
 
 ## Kända problem
 

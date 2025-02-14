@@ -154,12 +154,9 @@ export class Dok01 extends BaseRuleset {
       function:(targetVal, _opts, paths) => {
         let obj:any = [];
         if (targetVal.hasOwnProperty('externalDocs')) {
-          {
+            this.trackRuleExecutionHandler(JSON.stringify(targetVal,null,2), _opts, paths,this.severity,
+            this.constructor.name, moduleName,Dok01.customProperties);
             
-              this.trackRuleExecutionHandler(JSON.stringify(targetVal,null,2), _opts, paths,this.severity,
-              this.constructor.name, moduleName,Dok01.customProperties);
-            
-          }
           obj =  targetVal['externalDocs'];
           if(obj === null) {
             return [
@@ -170,17 +167,17 @@ export class Dok01 extends BaseRuleset {
               }
             ]
           }
-          if(obj.hasOwnProperty('description') && obj.hasOwnProperty('url')){
-              return [];
-          } else {
-              return [
-                      {
-                        path: ['externalDocs'],
-                        message: this.message,
-                        severity: this.severity
-                      }
-                    ]
-                  }
+          const hasValidDescription = obj.hasOwnProperty('description') && obj.description != null && obj.description.toString().trim() !== "";
+          const hasValidUrl = obj.hasOwnProperty('url') && obj.url != null && obj.url.toString().trim() !== "";
+          if (!hasValidDescription || !hasValidUrl) {
+            return [
+              {
+                path: ['externalDocs'],
+                message: this.message,
+                severity: this.severity
+              }
+            ]
+          }          
         }          
     }         
   }];

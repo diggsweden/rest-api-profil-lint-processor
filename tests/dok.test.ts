@@ -688,7 +688,7 @@ testRule("Dok03Info", [
 
         code: "Dok03Info",
         path: ['info'],
-        message:  "Dokumentationen för ett API SKALL (DOK.03) innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering,Kontaktuppgifter." + "[ info objektet bör ha title, version , description, termsOfService, contact , license ]",
+        message:  "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter." + "[ info objektet bör ha title, version , description, termsOfService, contact , license ]",
         severity: DiagnosticSeverity.Warning,
       },
     ],
@@ -731,7 +731,7 @@ testRule("Dok03ContactName", [
 
         code: "Dok03ContactName",
         path: ["info","contact"],
-        message:  "Dokumentationen för ett API SKALL (DOK.03) innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering,Kontaktuppgifter." + "(Contact saknar name)"
+        message:  "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter." + "(Contact saknar name)"
       }
     ],
   },
@@ -773,7 +773,7 @@ testRule("Dok03ContactEmail", [
 
         code: "Dok03ContactEmail",
         path: ["info","contact"],
-        message:  "Dokumentationen för ett API SKALL (DOK.03) innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering,Kontaktuppgifter.(Contact saknar email)"
+        message:  "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter.(Contact saknar email)"
       }
     ],
   },
@@ -816,7 +816,7 @@ testRule("Dok03ContactUrl", [
 
         code: "Dok03ContactUrl",
         path: ["info","contact"],
-        message:  "Dokumentationen för ett API SKALL (DOK.03) innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering,Kontaktuppgifter.(Contact saknar url)"
+        message:  "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter.(Contact saknar url)"
       }
     ],
   },
@@ -853,7 +853,7 @@ testRule("Dok03Contact", [
 
         code: "Dok03Contact",
         path: ["info"],
-        message:  "Dokumentationen för ett API SKALL (DOK.03) innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering,Kontaktuppgifter.(Saknar contact objektet)"
+        message:  "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter.(Saknar contact objektet)"
       }
     ],
   },
@@ -890,7 +890,7 @@ testRule("Dok03License", [
 
         code: "Dok03License",
         path: ["info"],
-        message:  "Dokumentationen för ett API SKALL (DOK.03) innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering,Kontaktuppgifter.(Saknar license objektet)"
+        message:  "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter.(Saknar license objektet)"
       }
     ],
   },
@@ -930,7 +930,7 @@ testRule("Dok03LicenseUrl", [
 
         code: "Dok03LicenseUrl",
         path: ["info", "license"],
-        message:  "Dokumentationen för ett API SKALL (DOK.03) innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering,Kontaktuppgifter.(license saknar url)"
+        message:  "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter.(license saknar url)"
       }
     ],
   },
@@ -972,7 +972,7 @@ testRule("Dok03LicenseName", [
 
         code: "Dok03LicenseName",
         path: ["info", "license"],
-        message:  "Dokumentationen för ett API SKALL (DOK.03) innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering,Kontaktuppgifter.(license saknar name)"
+        message:  "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter.(license saknar name)"
       }
     ],
   },

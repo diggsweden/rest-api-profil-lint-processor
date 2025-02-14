@@ -11,8 +11,8 @@ export class Dok03Base extends BaseRuleset {
   constructor() {
     super()
     super.initializeFormats(['OAS3']);
-    this.description = "Dokumentationen för ett API SKALL (DOK.03) innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering,Kontaktuppgifter.";
-    this.severity = DiagnosticSeverity.Warning;
+    this.description = "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter.";
+    this.severity = DiagnosticSeverity.Error;
   }
 
 }

@@ -12,8 +12,13 @@ interface ExcelTemplateConfig {
     outputFilePath: string
 }
 
+/**
+ * Mapped to actual Excel template for corresponding version of the Swedish REST API-profile
+ * This integration is intended to facilitate reconciliation against the respective requirements 
+ * and to provide an overview of how an API meets this REST API profile. 
+ */
 const DEFAULT_CONFIG: ExcelTemplateConfig = {
-    reportTemplatePath: path.resolve(process.cwd(), "document/Avstaemning_REST_API_profil_v_1_1_0_0.xlsx"),
+    reportTemplatePath: path.resolve(process.cwd(), "document/Avstaemning_REST_API_profil_v_1_2_0_0.xlsx"),
     dataSheetName: "Kravlista REST API profil",
     ruleColumn: "B",
     statusColumn: "E",
@@ -229,6 +234,7 @@ export class ExcelReportProcessor {
             
             // See if the value of the rule column match any reported rule from the result report.
             const status = results[sharedStrings[ruleColumn?.v]]
+            
             if(status) {
                 // If so, update the corresponding result column with the correct status.
                 resultColumn.v = valueMap[status]
