@@ -132,9 +132,39 @@ $ npm start -- --help
 ```
 
 
+**Förklaring av översikt för regelutfall:**
 
+Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsinformationen på stdout. I denna så kommer en sammanställning av det totala regelutfallet att visas.   
+- Verkställda och godkända regler: 
+  - OK = Krav bedömt och hanterat för att möta kravet
+- Verkställda och ej godkända regler
+  - EJ OK = Krav bedömt, men API:et möter inte kravet
+- Ej tillämpade regler
+  - N/A = Krav bedömt men inte applicerbart på API:et
 
-**Förklaring av regelutfall:**
+**Exempel:**
+
+![alt text](document/instructions/images/regelutfall.png)
+
+I exemplet ovan så kan man exempelvis utläsa att kraven för reglerna AME.05 och VER.05 är godkända och det aktuella API:et uppfyller dessa. Vidare kan man också utläsa att kravet för regeln DOK.03 ej är godkänd och det aktuella API:et möter ej kravet. Det finns också information om att reglerna SAK.10 och DOK.01 ej är tillämpade som regler för det aktuella API:et. 
+
+**Förklaring av detaljering för regelutfall:**
+
+Tillsammans med diagnostiseringsinformationen så följer det också en detaöjering av informationen för regelutfallet.
+I denna kan man utläsa följande information:
+
+- Allvarlighetsgrad: Allvaret av problemet som upptäcks av   regeln. De möjliga värdena är error, warning. Dessa värden ska användas och tolkas enligt följande:
+  - Error: Ett uppenbart fel som måste åtgärdas. I REST API-profilen mappas detta värde mot kravtypen SKALL och SKALL INTE.
+  - Warning: Ett möjligt fel. Om det är ett fel måste det åtgärdas. Vissa avvikelser från specifika regler kan tolereras. I REST API-profilen mappas detta värde mot kravtypen BÖR och BÖR INTE.
+ - Område: Aktuellt område i REST API-profilen för regeln
+ - Sökväg: Sökvägen till felet, dvs den JSONPath som pekar på det fältet som denna diagnostik gäller och som orsakade felet.
+ - Omfattning: Omfånget som denna diagnostik gäller.
+  
+**Exempel:**
+
+![alt text](document/instructions/images/regelutfall-2.png)
+
+I exemplet ovan så kan man exempelvis utläsa att kravet för regel DOK.01 ej är godkänd och det aktuella API:et uppfyller  ej detta. Kravet är bedömt att ha allvarlighetsgraden "Error" utifrån att API:et bryter mot ett SKALL/SKALL INTE krav i REST API-profilen.Man kan också återfinna information om vart någonstans i aktuell OpenAPI Specifikation som problemet återfinns. Vidare kan man också utläsa att kravet för regeln DOK.03 ej är godkänd och att det aktuella API:et ej möter  kravet. Kravet är bedömt att ha allvarlighetsgraden "Warning" utifrån att API:et bryter mot ett BÖR/BÖR INTE krav i REST API-profilen.Man kan också återfinna information om vart någonstans i aktuell OpenAPI Specifikation som problemet återfinns. 
 
 
 ## Kända problem
