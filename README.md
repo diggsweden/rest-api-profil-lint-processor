@@ -15,8 +15,6 @@ SPDX-License-Identifier: CC0-1.0
 
 RAP-LP är ett kommandoradsverktyg för att linta OpenAPI v3-definitioner med hjälp av [Spectral](https://github.com/stoplightio/spectral). Verktyget är specifikt utvecklat för att linta OpenAPI-definitioner enligt den svenska REST API-profilens specifikation [REST API-profil](https://dev.dataportal.se/rest-api-profil).
 
-
-
 ## Innehållsförteckning
 
 - [REST API-profil - Lint Processor (RAP-LP)](#rest-api-profil---lint-processor-rap-lp)
@@ -103,43 +101,44 @@ För att spara loggdiagnostik i en fil, lägg till `-d FileName`
 ```bash
 $ npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
 ```
+
 För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, lägg till --dex.
 
 Om en specifik sökväg till avstämningsfilen ska anges, kan denna läggas till. Om ingen sökväg anges, genererar verktyget automatiskt en ny avstämningsfil i den katalog där det körs.
 
 Avstämningsfilen i Excel har ett fast format. Om en egen version av filen ska användas, måste den utpekade resursen hämtas med en kompatibel version av REST API-profilen.
 
-**Exempel utan sökvög till avstämningsfil i Excel**
+**Exempel utan sökväg till avstämningsfil i Excel**
 
 ```bash
 $ npm start -- -f apis/dok-api.yaml --dex
 ```
 
-**Exempel med sökvög till avstämningsfil i Excel**
+**Exempel med sökväg till avstämningsfil i Excel**
 
 ```bash
 $ npm start -- -f apis/dok-api.yaml --dex path-to-excel-file
 ```
-
 
 För att visa aktuell version av verktyget, lägg till `--version`
 
 **Exempel**
 
 ```bash
-$ npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
+$ npm start -- --version
 ```
+
 **Visa hjälp**
 
 ```bash
 $ npm start -- --help
 ```
 
-
 **Förklaring av översikt för regelutfall:**
 
-Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsinformationen på stdout. I denna så kommer en sammanställning av det totala regelutfallet att visas.   
-- Verkställda och godkända regler: 
+Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsinformationen på stdout. I denna så kommer en sammanställning av det totala regelutfallet att visas.
+
+- Verkställda och godkända regler:
   - OK = Krav bedömt och hanterat för att möta kravet
 - Verkställda och ej godkända regler
   - EJ OK = Krav bedömt, men API:et möter inte kravet
@@ -159,10 +158,10 @@ Tillsammans med diagnostiseringsinformationen följer en detaljerad beskrivning 
 - Allvarlighetsgrad: Anger allvaret av problemet som upptäckts av regeln. De möjliga värdena är error och warning, vilka tolkas enligt följande:
   - Error: Ett uppenbart fel som måste åtgärdas. I REST API-profilen motsvarar detta kravtypen SKALL och SKALL INTE.
   - Warning: Ett möjligt fel som kan behöva åtgärdas. Vissa avvikelser från specifika regler kan dock tolereras. I REST API-profilen motsvarar detta kravtypen BÖR och BÖR INTE.
- - Område: Det aktuella området i REST API-profilen som regeln gäller för.
- - Sökväg: Sökvägen till felet, det vill säga den JSONPath som pekar på det fält som diagnostiken avser och som orsakade felet.
- - Omfattning:  Det omfång som denna diagnostik gäller.
-  
+- Område: Det aktuella området i REST API-profilen som regeln gäller för.
+- Sökväg: Sökvägen till felet, det vill säga den JSONPath som pekar på det fält som diagnostiken avser och som orsakade felet.
+- Omfattning: Det omfång som denna diagnostik gäller.
+
 **Exempel:**
 
 ![alt text](document/instructions/images/regelutfall-2.png)
@@ -170,7 +169,6 @@ Tillsammans med diagnostiseringsinformationen följer en detaljerad beskrivning 
 I exemplet ovan framgår det att kravet för regeln DOK.01 inte är godkänt och att det aktuella API:et inte uppfyller detta. Kravet har bedömts ha allvarlighetsgraden Error eftersom API:et bryter mot ett SKALL/SKALL INTE-krav i REST API-profilen. Det finns också information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
 
 Vidare framgår det att kravet för regeln DOK.03 inte är godkänt och att det aktuella API:et inte möter detta krav. Kravet har bedömts ha allvarlighetsgraden Warning eftersom API:et bryter mot ett BÖR/BÖR INTE-krav i REST API-profilen. Även här finns information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
-
 
 ## Kända problem
 
@@ -186,7 +184,7 @@ Om du vill bidra till projektet, vänligen följ instruktionerna i avsnittet [Co
 
 ## Utveckling
 
-- Please contact [Digg - Agency for Digital Government](https://www.digg.se/)
+- Vänligen kontakta [Digg - Agency for Digital Government](https://www.digg.se/)
 
 ## Licens
 
