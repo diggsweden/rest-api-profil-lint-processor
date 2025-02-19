@@ -103,7 +103,11 @@ För att spara loggdiagnostik i en fil, lägg till `-d FileName`
 ```bash
 $ npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
 ```
-För att spara information om regelutfall för diagnostiseringen till en avstämningsgil i Excel, lägg till `--dex` Om man vill ange en specfik sökväg till avstämningsfilen, så kan man lägga till en sökväg. Ifall man väljer att inte ange en sökväg till, så kommer verktyget att generera en ny avstämningsfil relativt är verktyget körs. Avstämningsfilen i Excel har ett fast format och vill man peka ut en egen version av den, så behöver man hämta den utpekade resursen som kommer med kompatibel version av REST API-profilen.
+För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, lägg till --dex.
+
+Om en specifik sökväg till avstämningsfilen ska anges, kan denna läggas till. Om ingen sökväg anges, genererar verktyget automatiskt en ny avstämningsfil i den katalog där det körs.
+
+Avstämningsfilen i Excel har ett fast format. Om en egen version av filen ska användas, måste den utpekade resursen hämtas med en kompatibel version av REST API-profilen.
 
 **Exempel utan sökvög till avstämningsfil i Excel**
 
@@ -146,25 +150,26 @@ Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsi
 
 ![alt text](document/instructions/images/regelutfall.png)
 
-I exemplet ovan så kan man exempelvis utläsa att kraven för reglerna AME.05 och VER.05 är godkända och det aktuella API:et uppfyller dessa. Vidare kan man också utläsa att kravet för regeln DOK.03 ej är godkänd och det aktuella API:et möter ej kravet. Det finns också information om att reglerna SAK.10 och DOK.01 ej är tillämpade som regler för det aktuella API:et. 
+I exemplet ovan framgår det att kraven för reglerna AME.05 och VER.05 är godkända och att det aktuella API:et uppfyller dessa. Däremot är kravet för regeln DOK.03 inte godkänt, vilket innebär att API:et inte möter detta krav. Dessutom framgår det att reglerna SAK.10 och DOK.01 inte är tillämpade för det aktuella API:et.
 
 **Förklaring av detaljering för regelutfall:**
 
-Tillsammans med diagnostiseringsinformationen så följer det också en detaöjering av informationen för regelutfallet.
-I denna kan man utläsa följande information:
+Tillsammans med diagnostiseringsinformationen följer en detaljerad beskrivning av informationen för regelutfallet. I denna beskrivning framgår följande:
 
-- Allvarlighetsgrad: Allvaret av problemet som upptäcks av   regeln. De möjliga värdena är error, warning. Dessa värden ska användas och tolkas enligt följande:
-  - Error: Ett uppenbart fel som måste åtgärdas. I REST API-profilen mappas detta värde mot kravtypen SKALL och SKALL INTE.
-  - Warning: Ett möjligt fel. Om det är ett fel måste det åtgärdas. Vissa avvikelser från specifika regler kan tolereras. I REST API-profilen mappas detta värde mot kravtypen BÖR och BÖR INTE.
- - Område: Aktuellt område i REST API-profilen för regeln
- - Sökväg: Sökvägen till felet, dvs den JSONPath som pekar på det fältet som denna diagnostik gäller och som orsakade felet.
- - Omfattning: Omfånget som denna diagnostik gäller.
+- Allvarlighetsgrad: Anger allvaret av problemet som upptäckts av regeln. De möjliga värdena är error och warning, vilka tolkas enligt följande:
+  - Error: Ett uppenbart fel som måste åtgärdas. I REST API-profilen motsvarar detta kravtypen SKALL och SKALL INTE.
+  - Warning: Ett möjligt fel som kan behöva åtgärdas. Vissa avvikelser från specifika regler kan dock tolereras. I REST API-profilen motsvarar detta kravtypen BÖR och BÖR INTE.
+ - Område: Det aktuella området i REST API-profilen som regeln gäller för.
+ - Sökväg: Sökvägen till felet, det vill säga den JSONPath som pekar på det fält som diagnostiken avser och som orsakade felet.
+ - Omfattning:  Det omfång som denna diagnostik gäller.
   
 **Exempel:**
 
 ![alt text](document/instructions/images/regelutfall-2.png)
 
-I exemplet ovan så kan man exempelvis utläsa att kravet för regel DOK.01 ej är godkänd och det aktuella API:et uppfyller  ej detta. Kravet är bedömt att ha allvarlighetsgraden "Error" utifrån att API:et bryter mot ett SKALL/SKALL INTE krav i REST API-profilen.Man kan också återfinna information om vart någonstans i aktuell OpenAPI Specifikation som problemet återfinns. Vidare kan man också utläsa att kravet för regeln DOK.03 ej är godkänd och att det aktuella API:et ej möter  kravet. Kravet är bedömt att ha allvarlighetsgraden "Warning" utifrån att API:et bryter mot ett BÖR/BÖR INTE krav i REST API-profilen.Man kan också återfinna information om vart någonstans i aktuell OpenAPI Specifikation som problemet återfinns. 
+I exemplet ovan framgår det att kravet för regeln DOK.01 inte är godkänt och att det aktuella API:et inte uppfyller detta. Kravet har bedömts ha allvarlighetsgraden Error eftersom API:et bryter mot ett SKALL/SKALL INTE-krav i REST API-profilen. Det finns också information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
+
+Vidare framgår det att kravet för regeln DOK.03 inte är godkänt och att det aktuella API:et inte möter detta krav. Kravet har bedömts ha allvarlighetsgraden Warning eftersom API:et bryter mot ett BÖR/BÖR INTE-krav i REST API-profilen. Även här finns information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
 
 
 ## Kända problem
