@@ -11,5 +11,4 @@ COPY --chown=node:node ["./","./"]
 
 RUN npm install --omit-dev
 RUN npm install ts-node typescript --omit-dev 
-ENTRYPOINT ["npm start","--"]
-
+ENTRYPOINT ["npm", "start", "--"]
