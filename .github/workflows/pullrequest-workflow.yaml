@@ -36,4 +36,4 @@ jobs:
       packages: read
     if: always()
     needs: [commitlint, misclint, licenselint, dependencyreviewlint]
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test.yaml
