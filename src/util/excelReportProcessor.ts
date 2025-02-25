@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+//
+// SPDX-License-Identifier: EUPL-1.2
+
 import AdmZip from "adm-zip";
 import { XMLBuilder, XMLParser } from "fast-xml-parser";
 import path from "path";

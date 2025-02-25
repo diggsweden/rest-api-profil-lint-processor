@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+//
+// SPDX-License-Identifier: EUPL-1.2
+
 import * as SpectralCore from '@stoplight/spectral-core';
 import { ruleExecutionStatus,RuleExecutionLog,ruleExecutionLogDictionary } from './RuleExecutionStatusModule.ts';
 import { ISpectralDiagnostic } from '@stoplight/spectral-core';

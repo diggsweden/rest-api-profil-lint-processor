@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: EUPL-1.2
+
 FROM cgr.dev/chainguard/node AS packages
 ENV NODE_ENV=staging
 

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+//
+// SPDX-License-Identifier: EUPL-1.2
+
 import { Arq05Base } from "./rulesetUtil.ts";
 import { schema} from "@stoplight/spectral-functions";
 import { DiagnosticSeverity } from "@stoplight/types";

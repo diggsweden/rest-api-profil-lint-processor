@@ -1,6 +1,6 @@
 {
   "name": "@diggsweden/rest-api-profil-lint-processor",
-  "version": "v0.2.8",
+  "version": "0.3.1",
   "main": ".src/app.ts",
   "type": "module",
   "engines": {
@@ -14,7 +14,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "jest",
-    "start": "node --import=./register.js src/app.ts"
+    "start": "node --import=./register.js src/app.ts",
+    "version": "standard-version --skip.commit"
   },
   "directories": {
     "test": "test"
@@ -26,6 +27,7 @@
     "@types/jest": "^29.5.13",
     "@types/node": "^22.7.5",
     "jest": "^29.7.0",
+    "standard-version": "^9.5.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.2.2"
   },
@@ -46,9 +48,10 @@
   },
   "//": [
     "Override transitive dependency due to vulnerability",
-    "[CVE-2024-21534] CWE-94: Improper Control of Generation of Code ('Code Injection')"],
+    "[CVE-2024-21534] CWE-94: Improper Control of Generation of Code ('Code Injection')"
+  ],
   "overrides": {
-   "@stoplight/spectral-core": {
+    "@stoplight/spectral-core": {
       "jsonpath-plus": "10.0.0"
     }
   },

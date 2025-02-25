@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+//
+// SPDX-License-Identifier: EUPL-1.2
+
 import { undefined as undefinedFunc, pattern} from "@stoplight/spectral-functions";
 import { DiagnosticSeverity } from "@stoplight/types";
 import { parsePropertyNames } from "./rulesetUtil.ts";

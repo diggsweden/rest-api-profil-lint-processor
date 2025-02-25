@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: CC0-1.0
+
+version = 1
+
+# configurations
+[[annotations]]
+path = ["tsconfig.json","package.json","package-lock.json"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 diggsweden/rest-api-profil-lint-processor"
+SPDX-License-Identifier = "CC0-1.0"
+
+# images etc
+[[annotations]]
+path = ["document/instructions/images/regelutfall.png","document/instructions/images/regelutfall-2.png"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 diggsweden/rest-api-profil-lint-processor"
+SPDX-License-Identifier = "CC0-1.0"
+
+# documents etc
+[[annotations]]
+path = ["document/Avstaemning_REST_API_profil_v_1_2_0_0.xlsx"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 diggsweden/rest-api-profil-lint-processor"
+SPDX-License-Identifier = "CC0-1.0"

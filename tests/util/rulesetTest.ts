@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+//
+// SPDX-License-Identifier: EUPL-1.2
+
 "use strict";
 /**
  * Usage: Import the ruleClasses that should be loaded in able to run testcases

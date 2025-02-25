@@ -1,7 +1,7 @@
 <!--
-SPDX-FileCopyrightText: 2023 Digg - Agency for Digital Government
+SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
 
-SPDX-License-Identifier: CC0-1.0
+SPDX-License-Identifier: CC-BY-4.0
 -->
 
 # Riktlinjer för bidrag
