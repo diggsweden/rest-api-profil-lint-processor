@@ -19,6 +19,8 @@ permissions:
 jobs:
   commitlint:
     uses: diggsweden/.github/.github/workflows/commit-lint.yml@main
+    with:
+      base-branch: "main"
   dependencyreviewlint:
     uses: diggsweden/.github/.github/workflows/dependency-review.yml@main
   licenselint:
