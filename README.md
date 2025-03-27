@@ -46,7 +46,7 @@ $ npm install
 Använd det här kommandot för att köra applikationen mot en YAML-fil:
 
 ```bash
-$ npm start -- -f Path_to_the_YAML_file
+$ npm start -- -f PATH_TO_THE_YAML_FILE
 ```
 
 **Exempel**
@@ -59,13 +59,14 @@ $ npm start -- -f apis/dok-api.yaml
 
 För att validera mot en specifik kategori av regler, lägg till `-c CategoryName`.
 
+### Validering med utvalda regler
 **Exempel**
 
 ```bash
 $ npm start -- -f apis/dok-api.yaml -c DokRules
 ```
 
-**Tillgängliga kategorier med regler**
+#### Tillgängliga kategorier med regler
 
 - AmeRules
 - ArqRules
@@ -80,20 +81,24 @@ $ npm start -- -f apis/dok-api.yaml -c DokRules
 
 För att spara meddelanden från felloggar, lägg till `-l FileName`.
 
-**Exempel**
 
+### Validering som skriver till en valfri logfil
+
+**Exempel**
 ```bash
 $ npm start -- -f apis/dok-api.yaml -l rap-lp.log
 ```
 
+
+### Validering som skriver till en valfri logfil samt loggar i terminalen
 För att lägga till loggning, lägg till `-a`
 
 **Exempel**
-
 ```bash
 $ npm start -- -f apis/dok-api.yaml -l rap-lp.log -a
 ```
 
+### Validering som sparar loggdiagnostik i en fil
 För att spara loggdiagnostik i en fil, lägg till `-d FileName`
 
 **Exempel**
@@ -101,6 +106,8 @@ För att spara loggdiagnostik i en fil, lägg till `-d FileName`
 ```bash
 $ npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
 ```
+
+### Validering som sparar information om regelutfall i en Excel-fil.
 
 För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, lägg till --dex.
 
@@ -120,6 +127,7 @@ $ npm start -- -f apis/dok-api.yaml --dex
 $ npm start -- -f apis/dok-api.yaml --dex path-to-excel-file
 ```
 
+### Visa information version 
 För att visa aktuell version av verktyget, lägg till `--version`
 
 **Exempel**
@@ -128,13 +136,55 @@ För att visa aktuell version av verktyget, lägg till `--version`
 $ npm start -- --version
 ```
 
-**Visa hjälp**
+### Visa hjälp 
 
 ```bash
 $ npm start -- --help
 ```
 
-**Förklaring av översikt för regelutfall:**
+### Användning via podman/docker 
+
+I en terminal kör:
+```bash 
+$ podman run --rm -it -v $(pwd):/<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:<VERSION X.X.X> -f /<PATH_TO_THE_YAML_FILE>
+```
+* Där \<PATH> motsvarar den path i containern som du vill att nuvarande folder \$(pwd) mountas in i, containern får tillgång till dina filer i \$(pwd).
+* Där \<PATH_TO_THE_YAML_FILE> motsvarar den filen som du vill applicera valideringen på.
+* Där \<VERSION> mostsvarar den version av rest-api-profilen som du vill nyttja.
+
+Exempel
+```bash 
+$ podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
+```
+
+Vid eventuella fel och du inte hittar rap-lp-error.log kan du behöva köra kommandot via containern enligt den alternativa instruktionen nedan. Se till att containern har rättigheter att skriva till den folder som du mountar. 
+
+#### Alternativ att köra ifrån containern:
+1. Starta en podman container:
+    - podman run --rm -it --entrypoint /bin/sh -v $(pwd):/\<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:0.3.0
+2. Kör din validering ifrån containern:
+    - npm start -- -f \<PATH-TO-FILE> -l test.log --dex example.xlsx
+
+Exempel: 
+```bash 
+$ podman run --rm -it --entrypoint /bin/sh -v $(pwd):/apis ghcr.io/diggsweden/rest-api-profil-lint-processor:0.3.0
+
+/app: $ npm start -- -f apis/dot-api.yaml -l test.log --dex example.xlsx
+```
+
+
+Du kan behöva ett Personal Access Token (PAT) för din användare i github för att kunna hämta images från Github Container Registry (GHCR). 
+1. Skapa PAT i github via settings -> developer settings -> tokens -> generate new token.
+    - viktigt att sätta read:packages
+    - spara ned ditt token
+2. Logga in med: 
+    - kör i en terminal: podman login ghcr.io
+    - användarnamn: Ditt github-användarnamn.
+    - lösenord: ditt token från tidigare steg.
+3. Validera enligt tidigare exempel.  
+
+
+### Förklaring av översikt för regelutfall
 
 Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsinformationen på stdout. I denna så kommer en sammanställning av det totala regelutfallet att visas.
 
