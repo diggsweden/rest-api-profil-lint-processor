@@ -29,6 +29,7 @@ declare var AggregateError: {
 const { Spectral, Document } = spectralCore;
 const writeFileAsync = util.promisify(fs.writeFile);
 const appendFileAsync = util.promisify(fs.appendFile);
+let logRaplpErrorFilePath: string | undefined = undefined;
 
 try {
   // Parse command-line arguments using yargs
@@ -58,12 +59,17 @@ try {
     })  
     .option("logDiagnostic", {
       alias: "d",
-      describe: 'Sökväg till fil för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i JSON format.',
+      describe: 'Sökväg till fil för diagnostiseringsinformation från RAP-LP. Om ej specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i JSON format.',
       type: 'string',
     })
     .option("dex", {
-      describe: 'Sökväg till fil för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i Excel format.',
+      describe: 'Sökväg till fil för diagnostiseringsinformation från RAP-LP. Om ej specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i Excel format.',
       type: 'string',
+    })
+    .option("error", {
+      alias: "e",
+      describe: 'Sökväg till fil för loggning av fel som hindrar validering. Om ej specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i Excel format.',
+      type: 'string'
     })
     .argv;
   // Extract arguments from yargs
@@ -71,6 +77,7 @@ try {
   const ruleCategories = argv.categories ? (argv.categories as string).split(",") : undefined;
   const logErrorFilePath = argv.logError as string | undefined;
   const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
+  logRaplpErrorFilePath = argv.e as string | undefined;
   try {
 
     // Import and create rule instances in RAP-LP
@@ -198,15 +205,17 @@ try {
 }
 function logErrorToFile(error: any) {
   const errorMessage = `${new Date().toISOString()} - ${error.stack}\n`;
-  fs.appendFileSync('rap-lp-error.log', errorMessage);
+  const filePath = logRaplpErrorFilePath ? logRaplpErrorFilePath : 'rap-lp-error.log'
+
+  fs.appendFileSync(filePath, errorMessage);
   if (error.errors) {
     const detailedMessage = `${new Date().toISOString()} - ${JSON.stringify(error.errors, null, 2)}\n`;
-    fs.appendFileSync('rap-lp-error.log', detailedMessage);
+    fs.appendFileSync(filePath, detailedMessage);
   }
   if (error instanceof AggregateError) {
     error.errors.forEach((err: any, index: number) => {
       const causeMessage = `Cause ${index + 1}: ${err.stack || err}\n`;
-      fs.appendFileSync('rap-lp-error.log', causeMessage);
+      fs.appendFileSync(filePath, causeMessage);
     });
   }
 }
