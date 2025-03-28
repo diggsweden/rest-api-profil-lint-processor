@@ -82,7 +82,7 @@ $ npm start -- -f apis/dok-api.yaml -c DokRules
 För att spara meddelanden från felloggar, lägg till `-l FileName`.
 
 
-### Validering som skriver till en valfri logfil
+### Validering som skriver resultat till en valfri logfil
 
 **Exempel**
 ```bash
@@ -90,7 +90,7 @@ $ npm start -- -f apis/dok-api.yaml -l rap-lp.log
 ```
 
 
-### Validering som skriver till en valfri logfil samt loggar i terminalen
+### Validering som skriver resultat till en valfri logfil samt loggar i terminalen
 För att lägga till loggning, lägg till `-a`
 
 **Exempel**
@@ -145,33 +145,37 @@ $ npm start -- --help
 ### Användning via podman/docker 
 
 I en terminal kör:
-```bash 
-$ podman run --rm -it -v $(pwd):/<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:<VERSION X.X.X> -f /<PATH_TO_THE_YAML_FILE>
-```
-* Där \<PATH> motsvarar den path i containern som du vill att nuvarande folder \$(pwd) mountas in i, containern får tillgång till dina filer i \$(pwd).
-* Där \<PATH_TO_THE_YAML_FILE> motsvarar den filen som du vill applicera valideringen på.
+  ```bash 
+  $ podman run --rm -it -v $(pwd):/<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:<VERSION X.X.X> -f <PATH>/<YAML_FILE>
+  ```
+* Där \<PATH> motsvarar den path i containern som du vill att nuvarande katalog \$(pwd) mountas in i, containern får tillgång till dina filer i \$(pwd).
+* Där \<YAML_FILE> motsvarar den filen som du vill applicera valideringen på.
 * Där \<VERSION> mostsvarar den version av rest-api-profilen som du vill nyttja.
 
 Exempel
-```bash 
-$ podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
-```
+  ```bash 
+  $ podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
+  ```
 
-Vid eventuella fel och du inte hittar rap-lp-error.log kan du behöva köra kommandot via containern enligt den alternativa instruktionen nedan. Se till att containern har rättigheter att skriva till den folder som du mountar. 
+Vid eventuella fel och du inte hittar rap-lp-error.log kan du behöva köra kommandot via containern enligt den alternativa instruktionen nedan. Se till att containern har rättigheter att skriva till den katalog som du mountar, se [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container).
 
 #### Alternativ att köra ifrån containern:
 1. Starta en podman container:
     - podman run --rm -it --entrypoint /bin/sh -v $(pwd):/\<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:0.3.0
 2. Kör din validering ifrån containern:
-    - npm start -- -f \<PATH-TO-FILE> -l test.log --dex example.xlsx
+    - npm start -- -f \<PATH-TO-FILE>
+3. Lägg på önskade flaggor enligt tidigare exempel. 
 
 Exempel: 
-```bash 
-$ podman run --rm -it --entrypoint /bin/sh -v $(pwd):/apis ghcr.io/diggsweden/rest-api-profil-lint-processor:0.3.0
+  ```bash 
+  $ podman run --rm -it --entrypoint /bin/sh -v $(pwd):/apis ghcr.io/diggsweden/rest-api-profil-lint-processor:0.3.0
 
-/app: $ npm start -- -f apis/dot-api.yaml -l test.log --dex example.xlsx
-```
+  /app: $ npm start -- -f apis/dot-api.yaml -l test.log --dex example.xlsx
+  ```
 
+### Eventuella hinder med podman-kommando
+
+#### Access till registry
 
 Du kan behöva ett Personal Access Token (PAT) för din användare i github för att kunna hämta images från Github Container Registry (GHCR). 
 1. Skapa PAT i github via settings -> developer settings -> tokens -> generate new token.
@@ -182,6 +186,21 @@ Du kan behöva ett Personal Access Token (PAT) för din användare i github för
     - användarnamn: Ditt github-användarnamn.
     - lösenord: ditt token från tidigare steg.
 3. Validera enligt tidigare exempel.  
+
+#### Skrivåtkomst till mount från container
+1. Kolla rättigheter 
+    ```bash 
+    $ ls -ld /path/to/mount
+    ```
+2. För att testa om det är ett åtkomstproblem kan du temporärt prova om det går efter du gett alla skrivrättigheter till den mountade katalogen: 
+    ```bash 
+    $ sudo chmod 777 /path/to/file
+    ```
+3. Beroende på din miljö och vilka möjligheter du har, hantera åtkomstproblemet mer beständigt och återställ tidigare läs- och skrivrättigheter.
+4. Du kan även prova:  
+    ```bash 
+    $ sudo podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
+    ```
 
 
 ### Förklaring av översikt för regelutfall
