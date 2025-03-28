@@ -194,7 +194,7 @@ Du kan behöva ett Personal Access Token (PAT) för din användare i github för
     ```
 2. För att testa om det är ett åtkomstproblem kan du temporärt prova om det går efter du gett alla skrivrättigheter till den mountade katalogen: 
     ```bash 
-    $ sudo chmod 777 /path/to/file
+    $ sudo chmod 777 /path/to/mount
     ```
 3. Beroende på din miljö och vilka möjligheter du har, hantera åtkomstproblemet mer beständigt och återställ tidigare läs- och skrivrättigheter.
 4. Du kan även prova:  
