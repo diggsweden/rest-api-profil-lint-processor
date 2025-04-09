@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
+
+SPDX-License-Identifier: CC0-1.0 
+-->
+
 # RAP-LP Open API Specification Guidelines Version 0.7
 
 RAP-LP (REST API-profil Lint Processor) är ett verktyg som granskar en OpenAPI-specifikation mot den nationella REST API-profilen. Verktyget identifierar syntaxfel och avvikelser från riktlinjer, vilket gör det enklare att snabbt hitta och rätta till problem.

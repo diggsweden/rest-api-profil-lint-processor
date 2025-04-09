@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: CC0-1.0
+
 FROM node:lts-slim AS packages
 ENV NODE_ENV=staging
 
