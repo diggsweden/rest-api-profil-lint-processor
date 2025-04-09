@@ -1,10 +1,10 @@
 {
   "name": "@diggsweden/rest-api-profil-lint-processor",
-  "version": "v0.3.0",
+  "version": "v0.4.7",
   "main": ".src/app.ts",
   "type": "module",
   "engines": {
-    "node": ">=20.17.0 <20.18.0"
+    "node": ">=20.17.0 <=22.14.0"
   },
   "repository": {
     "type": "git",

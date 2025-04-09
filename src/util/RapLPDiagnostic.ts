@@ -79,38 +79,44 @@ class RapLPDiagnostic {
     processDiagnosticInformation(): DiagnosticReport [] {
         const allReports: DiagnosticReport[] = [];
         // Populate the diagnostic reports and add them to the array
-        allReports.push(
-          this.populateDiagnosticRuleInformation(
-            this.diagnosticInformation.executedUniqueRules,
-            "OK",
-            "N/A",
-            "N/A",
-            "Godkända regler - RAP-LP"
-          )
-        );
-        allReports.push(
-          this.populateDiagnosticRuleInformation(
-            this.diagnosticInformation.executedUniqueRulesWithError,
-            "EJ OK",
-            "N/A",
-            "N/A",
-            "Ej Godkända regler - RAP-LP"
-          )
-        );
-        allReports.push(
-          this.populateDiagnosticRuleInformation(
-            this.diagnosticInformation.notApplicableRules,
-            "N/A",
-            "N/A",
-            "N/A",
-            "Ej tillämpade regler - RAP-LP"
-          )
-        );
+        if (this.diagnosticInformation.executedUniqueRules &&
+          this.diagnosticInformation.executedUniqueRules.length > 0) {
+            allReports.push(
+              this.populateDiagnosticRuleInformation(
+                this.diagnosticInformation.executedUniqueRules,
+                "OK",
+                "N/A",
+                "N/A",
+                "Godkända regler - RAP-LP"
+              )
+            );
+        }
+        if (this.diagnosticInformation.executedUniqueRulesWithError &&
+          this.diagnosticInformation.executedUniqueRulesWithError.length > 0) {
+            allReports.push(
+              this.populateDiagnosticRuleInformation(
+                this.diagnosticInformation.executedUniqueRulesWithError,
+                "EJ OK",
+                "N/A",
+                "N/A",
+                "Ej Godkända regler - RAP-LP"
+              )
+            );
+        }
+        if (this.diagnosticInformation.notApplicableRules &&
+          this.diagnosticInformation.notApplicableRules.length > 0) {
+            allReports.push(
+              this.populateDiagnosticRuleInformation(
+                this.diagnosticInformation.notApplicableRules,
+                "N/A",
+                "N/A",
+                "N/A",
+                "Ej tillämpade regler - RAP-LP"
+              )
+            );
+        }
         return allReports;
     }
-
-    
-
     private populateDiagnosticRuleInformation(
         rules: DiagnosticRuleInfo[],
         status: string,

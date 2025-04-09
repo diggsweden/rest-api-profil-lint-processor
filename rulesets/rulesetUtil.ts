@@ -122,7 +122,7 @@ export class Arq05Base extends BaseRuleset {
       super.initializeFormats(['OAS3']);
       this.given = "$.paths.*.*.parameters[?(@.in=='header' && @.schema)]";
       this.message = "Payload data SKALL INTE användas i HTTP-headers";
-      this.severity = DiagnosticSeverity.Warning;
+      this.severity = DiagnosticSeverity.Error;
       this.description = '';
       }
     protected get messageValue(): string {

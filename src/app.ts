@@ -135,15 +135,21 @@ try {
       function padZero(num: number): string {
         return num < 10 ? `0${num}` : `${num}`;
       }
-      if (logDiagnosticFilePath) {
-        let allDiagnosticReports = JSON.stringify(diagnosticReports, null, 2);
-        let logEntry = `${formattedDate}\n${allDiagnosticReports}\n`; // Prepend datestamp to log entry
+      if (logDiagnosticFilePath) { //Check if we gonna construct logData for diagnostic information
+        let logData: any;
+        logData = {
+          timeStamp: formattedDate,
+          result: diagnosticReports
+
+        };
+        let logEntry = JSON.stringify(logData, null, 2) + "\n"; // Properly formatted JSON
         let utf8EncodedContent = Buffer.from(logEntry, 'utf8');
+
         //Log to disc
         await writeFileAsync(logDiagnosticFilePath,utf8EncodedContent);
         console.log(chalk.green(`Skriver diagnostiseringsinformation från RAP-LP till ${logDiagnosticFilePath}`));
       }else {
-        //STDOUT
+        //Log to STDOUT
         if (customDiagnostic.diagnosticInformation.executedUniqueRules!=undefined &&
           customDiagnostic.diagnosticInformation.executedUniqueRules.length>0) {
             console.log(chalk.green("<<<Verkställda och godkända regler - RAP-LP>>>\r"));
@@ -169,24 +175,58 @@ try {
           });
         }
       }
-      if (logErrorFilePath ) {
-        let content = JSON.stringify(result, null, 2);
-        let logEntry = `${formattedDate}\n${content}\n`; // Prepend datestamp to log entry
-        let utf8EncodedContent = Buffer.from(logEntry, 'utf8');
-        if (argv.append) {
-          await appendFileAsync(logErrorFilePath,utf8EncodedContent);
+      if (logErrorFilePath ) { //Check if we gonna construct some logData for logging purpose
+        let content: string;
+        let logData: any;
+
+        if (!result || result.length === 0) { 
+          logData = {
+            timeStamp: formattedDate,
+            message: "Inga valideringsfel förekom."
+          };
+        } else {
+          logData = {
+            timestamp: formattedDate,
+            message: "Valideringsfel upptäcktes. Detaljer följer nedan.",
+            errors: result
+          };
+        }
+        try {
+          if (argv.append) { // Check for appending logging information
+            let existingLogs: any[] = []; 
+      
+            if (fs.existsSync(logErrorFilePath)) { // Does any previous file exists?
+              const fileContent = await fs.promises.readFile(logErrorFilePath, "utf8");
+              try {
+                existingLogs = JSON.parse(fileContent); // Parse json into object
+                if (!Array.isArray(existingLogs)) {
+                  existingLogs = [existingLogs]; // Only one object
+                }
+              } catch {
+                // No JSON-file  → Ignore
+                existingLogs = [];
+              }
+            }
+            existingLogs.push(logData); // Push on stack
+            const updatedContent = JSON.stringify(existingLogs, null, 2);
+            await writeFileAsync(logErrorFilePath, Buffer.from(updatedContent, "utf8"));
+      
+          } else {
+            const content = JSON.stringify([logData], null, 2); // skriv alltid som array
+            await writeFileAsync(logErrorFilePath, Buffer.from(content, "utf8"));
+          }
           console.log(chalk.green(`Skriver inspektion/valideringsinformation från RAP-LP till ${logErrorFilePath}`));
-        }else {
-        //Log to disc
-        await writeFileAsync(logErrorFilePath,utf8EncodedContent);
-        console.log(chalk.green(`Skriver inspektion/valideringsinformation från RAP-LP till ${logErrorFilePath}`));
+        }catch (fileError: any) {
+          logErrorToFile(fileError);
+          console.error(chalk.red("Misslyckades att skriva till loggfilen!"));
         }
       }else {
-      //Verbose error logging goes here with detailed result
-      console.log(chalk.whiteBright('\n<<Regelutfall RAP-LP>> \n'));
-        result.forEach(item => {
-          console.log(formatLintingResult(item));
-        });
+        console.log(chalk.whiteBright('\n<<Regelutfall RAP-LP>>\n'));
+        if (!result || result.length === 0) {
+          console.log(chalk.green("Inga valideringsfel förekom."));
+        } else {
+          result.forEach(item => console.log(formatLintingResult(item)));
+        }
       }
     } catch (spectralError: any) {
       logErrorToFile(spectralError); // Log stack
