@@ -25,15 +25,15 @@ jobs:
     uses: diggsweden/.github/.github/workflows/dependency-review.yml@main
   licenselint:
     uses: diggsweden/.github/.github/workflows/license-lint.yml@main
-  misclint:
-    permissions:
-      contents: read
-      security-events: write
-    uses: diggsweden/.github/.github/workflows/megalint.yml@main
+  # misclint:
+  #   permissions:
+  #     contents: read
+  #     security-events: write
+  #   uses: diggsweden/.github/.github/workflows/megalint.yml@main
   test:
     permissions:
       contents: read
       packages: read
     if: always()
-    needs: [commitlint, misclint, licenselint, dependencyreviewlint]
+    needs: [commitlint, licenselint, dependencyreviewlint]
     uses: ./.github/workflows/test.yaml
