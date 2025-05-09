@@ -6,10 +6,14 @@ SPDX-License-Identifier: CC0-1.0
 
 # REST API-profil - Lint Processor (RAP-LP)
 
-[![GitHub release](https://img.shields.io/github/v/release/diggsweden/rest-api-profil-lint-processor?style=for-the-badge)](#)
-[![GitHub release date](https://img.shields.io/github/release-date/diggsweden/rest-api-profil-lint-processor?style=for-the-badge)](#)
-[![GitHub last commit](https://img.shields.io/github/last-commit/diggsweden/rest-api-profil-lint-processor?style=for-the-badge)](#)
-![GitHub license](https://img.shields.io/github/license/diggsweden/rest-api-profil-lint-processor?style=for-the-badge)
+[![Tag](https://img.shields.io/github/v/tag/diggsweden/rest-api-profil-lint-processor?style=for-the-badge&color=green)](https://github.com/diggsweden/rest-api-profil-lint-processor/tags)
+
+[![License: EUPL 1.2](https://img.shields.io/badge/License-European%20Union%20Public%20Licence%201.2-library?style=for-the-badge&&color=lightblue)](LICENSE)
+[![REUSE](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.reuse.software%2Fstatus%2Fgithub.com%2Fdiggsweden%2Frest-api-profil-lint-processor&query=status&style=for-the-badge&label=REUSE&color=lightblue)](https://api.reuse.software/info/github.com/diggsweden/rest-api-profil-lint-processor)
+
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/diggsweden/rest-api-profil-lint-processor/badge?style=for-the-badge)](https://scorecard.dev/viewer/?uri=github.com/diggsweden/rest-api-profil-lint-processor)
+
+[![License: EUPL 1.2](https://img.shields.io/badge/publiccode.yml-library?style=for-the-badge&&color=orange)](publiccode.yml)
 
 **Beskrivning**:
 
