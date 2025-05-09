@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: EUPL-1.2
 
-openapi: "3.0.0"
+openapi: '3.0.0'
 info:
   version: 1.0.0
   title: AME
@@ -23,8 +23,7 @@ paths:
       summary: Example API with Payload in Headers Allowed
       description: For testing
       operationId: exampleRequest
-      tags:
-        [tag1, tag2]
+      tags: [tag1, tag2]
       requestBody:
         required: true
         content:
@@ -70,10 +69,10 @@ paths:
           content:
             text/plain:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
 components:
   securitySchemes:
-    bearerAuth:     # <-- arbitrary name for the security scheme
+    bearerAuth: # <-- arbitrary name for the security scheme
       type: http
       scheme: bearer
   schemas:
@@ -94,7 +93,7 @@ components:
       type: array
       maxItems: 100
       items:
-        $ref: "#/components/schemas/Pet"
+        $ref: '#/components/schemas/Pet'
     Error:
       type: object
       required:

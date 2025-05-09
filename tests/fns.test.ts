@@ -2,23 +2,23 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { DiagnosticSeverity } from "@stoplight/types";
-import testRule from "./util/helperTest.ts";
+import { DiagnosticSeverity } from '@stoplight/types';
+import testRule from './util/helperTest.ts';
 
-testRule("Fns01", [
+testRule('Fns01', [
   {
-    name: "giltigt testfall",
+    name: 'giltigt testfall',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/foo": {
+        '/foo': {
           get: {
-            description: "Gilitigt testfall av camelCase",
+            description: 'Gilitigt testfall av camelCase',
             parameters: [
               {
-                name: "veryLongName",
-                in: "query",
+                name: 'veryLongName',
+                in: 'query',
                 required: false,
               },
             ],
@@ -29,18 +29,18 @@ testRule("Fns01", [
     errors: [],
   },
   {
-    name: "ogiltigt testfall",
+    name: 'ogiltigt testfall',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/foo": {
+        '/foo': {
           get: {
-            description: "Ogiltigt testfall av CamelCase",
+            description: 'Ogiltigt testfall av CamelCase',
             parameters: [
               {
-                name: "VeryLongName",
-                in: "query",
+                name: 'VeryLongName',
+                in: 'query',
                 required: false,
               },
             ],
@@ -51,25 +51,25 @@ testRule("Fns01", [
     errors: [
       {
         message:
-          "Parameternamn SKALL anges med en konsekvent namnkonvention inom ett API, exempelvis antingen snake_case eller camelCase",
-        path: ["paths", "/foo", "get", "parameters", "0","name"],
+          'Parameternamn SKALL anges med en konsekvent namnkonvention inom ett API, exempelvis antingen snake_case eller camelCase',
+        path: ['paths', '/foo', 'get', 'parameters', '0', 'name'],
         severity: DiagnosticSeverity.Error,
       },
     ],
   },
   {
-    name: "giltigt testfall",
+    name: 'giltigt testfall',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/foo": {
+        '/foo': {
           get: {
-            description: "Gilitigt testfall av snake case",
+            description: 'Gilitigt testfall av snake case',
             parameters: [
               {
-                name: "very_long_name",
-                in: "query",
+                name: 'very_long_name',
+                in: 'query',
                 required: false,
               },
             ],
@@ -80,18 +80,18 @@ testRule("Fns01", [
     errors: [],
   },
   {
-    name: "ogiltigt testfall",
+    name: 'ogiltigt testfall',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/foo": {
+        '/foo': {
           get: {
-            description: "Ogiltigt testfall av snake case",
+            description: 'Ogiltigt testfall av snake case',
             parameters: [
               {
-                name: "very_longName",
-                in: "query",
+                name: 'very_longName',
+                in: 'query',
                 required: false,
               },
             ],
@@ -102,28 +102,28 @@ testRule("Fns01", [
     errors: [
       {
         message:
-          "Parameternamn SKALL anges med en konsekvent namnkonvention inom ett API, exempelvis antingen snake_case eller camelCase",
-        path: ["paths", "/foo", "get", "parameters", "0","name"],
+          'Parameternamn SKALL anges med en konsekvent namnkonvention inom ett API, exempelvis antingen snake_case eller camelCase',
+        path: ['paths', '/foo', 'get', 'parameters', '0', 'name'],
         severity: DiagnosticSeverity.Error,
       },
     ],
-  },  
+  },
 ]);
 
-testRule("Fns03", [
+testRule('Fns03', [
   {
-    name: "giltigt testfall",
+    name: 'giltigt testfall',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/charactercheck": {
+        '/charactercheck': {
           get: {
-            description: "Sökparametrar SKALL starta med en bokstav.",
+            description: 'Sökparametrar SKALL starta med en bokstav.',
             parameters: [
               {
-                name: "veryLongName",
-                in: "query",
+                name: 'veryLongName',
+                in: 'query',
                 required: false,
               },
             ],
@@ -135,18 +135,18 @@ testRule("Fns03", [
   },
 
   {
-    name: "ogiltigt testfall",
+    name: 'ogiltigt testfall',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/charactercheck": {
+        '/charactercheck': {
           get: {
-            description: "Sökparametrar SKALL starta med en bokstav.",
+            description: 'Sökparametrar SKALL starta med en bokstav.',
             parameters: [
               {
-                name: "_VeryLongName",
-                in: "query",
+                name: '_VeryLongName',
+                in: 'query',
                 required: false,
               },
             ],
@@ -156,35 +156,34 @@ testRule("Fns03", [
     },
     errors: [
       {
-        message:
-          "Sökparametrar SKALL starta med en bokstav.",
-        path: ["paths", "/charactercheck", "get", "parameters", "0","name"],
+        message: 'Sökparametrar SKALL starta med en bokstav.',
+        path: ['paths', '/charactercheck', 'get', 'parameters', '0', 'name'],
         severity: DiagnosticSeverity.Error,
       },
     ],
-  }
+  },
 ]);
 
-testRule("Fns09", [
+testRule('Fns09', [
   {
     name: "giltigt testfall - enbart 'limit' utan 'page' eller 'offset' (dvs default värde för 'limit' kan vara vad som helst)",
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/limitcheck": {
+        '/limitcheck': {
           get: {
-            description: "Defaultvärde för limit BÖR vara 20",
+            description: 'Defaultvärde för limit BÖR vara 20',
             parameters: [
               {
-                name: "limit",
-                in: "query",
+                name: 'limit',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 100
-                }
-              }
+                  type: 'integer',
+                  default: 100,
+                },
+              },
             ],
           },
         },
@@ -195,32 +194,31 @@ testRule("Fns09", [
   {
     name: "giltigt testfall - med 'limit' och 'page'",
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/limitcheck": {
+        '/limitcheck': {
           get: {
-            description: "Defaultvärde för limit BÖR vara 20",
+            description: 'Defaultvärde för limit BÖR vara 20',
             parameters: [
               {
-                name: "limit",
-                in: "query",
+                name: 'limit',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 20
-                }
+                  type: 'integer',
+                  default: 20,
+                },
               },
               {
-                name: "page",
-                in: "query",
+                name: 'page',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 1
-                }
-              }
-
+                  type: 'integer',
+                  default: 1,
+                },
+              },
             ],
           },
         },
@@ -231,32 +229,31 @@ testRule("Fns09", [
   {
     name: "ogiltigt testfall - med 'limit' och 'page' där default värde för 'limit' är fel",
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/limitcheck": {
+        '/limitcheck': {
           get: {
-            description: "Defaultvärde för limit BÖR vara 20",
+            description: 'Defaultvärde för limit BÖR vara 20',
             parameters: [
               {
-                name: "limit",
-                in: "query",
+                name: 'limit',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 201
-                }
+                  type: 'integer',
+                  default: 201,
+                },
               },
               {
-                name: "page",
-                in: "query",
+                name: 'page',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 1
-                }
-              }
-
+                  type: 'integer',
+                  default: 1,
+                },
+              },
             ],
           },
         },
@@ -264,54 +261,55 @@ testRule("Fns09", [
     },
     errors: [
       {
-        message: "Defaultvärde för limit BÖR vara 20",
+        message: 'Defaultvärde för limit BÖR vara 20',
         severity: DiagnosticSeverity.Warning,
-      }
+      },
     ],
   },
 ]);
-testRule("Fns05", [
+testRule('Fns05', [
   {
-    name: "giltigt testfall sökparameter BÖR vara frivillig",
+    name: 'giltigt testfall sökparameter BÖR vara frivillig',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/testpath": {
+        '/testpath': {
           get: {
             parameters: [
               {
-                name: "limit",
-                in: "query",
+                name: 'limit',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 100
-                }
-              }
+                  type: 'integer',
+                  default: 100,
+                },
+              },
             ],
           },
         },
-        "/testpasth": {
+        '/testpasth': {
           get: {
             parameters: [
               {
-                name: "limit",
-                in: "query",
+                name: 'limit',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 100
-                }
-              },{
-                name: "q",
-                in: "query",
+                  type: 'integer',
+                  default: 100,
+                },
+              },
+              {
+                name: 'q',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "string",
-                  default: 100
-                }
-              }
+                  type: 'string',
+                  default: 100,
+                },
+              },
             ],
           },
         },
@@ -320,18 +318,18 @@ testRule("Fns05", [
     errors: [],
   },
   {
-    name: "ogiltigt testfall - värde true.",
+    name: 'ogiltigt testfall - värde true.',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/urlsakratecknencheck": {
+        '/urlsakratecknencheck': {
           get: {
-            description: "Sökparametrar BÖR vara frivilliga.",
+            description: 'Sökparametrar BÖR vara frivilliga.',
             parameters: [
               {
-                name: "url@sakra,tecknen+checke*",
-                in: "query",
+                name: 'url@sakra,tecknen+checke*',
+                in: 'query',
                 required: true,
               },
             ],
@@ -341,24 +339,24 @@ testRule("Fns05", [
     },
     errors: [
       {
-        message:"Sökparametrar BÖR vara frivilliga.",
+        message: 'Sökparametrar BÖR vara frivilliga.',
         severity: DiagnosticSeverity.Warning,
       },
     ],
   },
   {
-    name: "ogiltigt testfall - värde 0",
+    name: 'ogiltigt testfall - värde 0',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/urlsakratecknencheck": {
+        '/urlsakratecknencheck': {
           get: {
-            description: "Sökparametrar BÖR vara frivilliga.",
+            description: 'Sökparametrar BÖR vara frivilliga.',
             parameters: [
               {
-                name: "url@sakra,tecknen+checke*",
-                in: "query",
+                name: 'url@sakra,tecknen+checke*',
+                in: 'query',
                 required: 0,
               },
             ],
@@ -368,27 +366,28 @@ testRule("Fns05", [
     },
     errors: [
       {
-        message:"Sökparametrar BÖR vara frivilliga.",
+        message: 'Sökparametrar BÖR vara frivilliga.',
         severity: DiagnosticSeverity.Warning,
       },
     ],
-  }
+  },
 ]);
 
-testRule("Fns06", [
+testRule('Fns06', [
   {
-    name: "giltigt testfall",
+    name: 'giltigt testfall',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/urlsakratecknencheck": {
+        '/urlsakratecknencheck': {
           get: {
-            description: "Sökparametrar BÖR använda tecken som är URL-säkra (tecknen A-Z, a-z, 0-9, '-', '.', '_' samt '~', se vidare i RFC 3986)",
+            description:
+              "Sökparametrar BÖR använda tecken som är URL-säkra (tecknen A-Z, a-z, 0-9, '-', '.', '_' samt '~', se vidare i RFC 3986)",
             parameters: [
               {
-                name: "url_sakra-tecknen.check~",
-                in: "query",
+                name: 'url_sakra-tecknen.check~',
+                in: 'query',
                 required: false,
               },
             ],
@@ -399,18 +398,19 @@ testRule("Fns06", [
     errors: [],
   },
   {
-    name: "ogiltigt testfall",
+    name: 'ogiltigt testfall',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/urlsakratecknencheck": {
+        '/urlsakratecknencheck': {
           get: {
-            description: "Sökparametrar BÖR använda tecken som är URL-säkra (tecknen A-Z, a-z, 0-9, '-', '.', '_' samt '~', se vidare i RFC 3986)",
+            description:
+              "Sökparametrar BÖR använda tecken som är URL-säkra (tecknen A-Z, a-z, 0-9, '-', '.', '_' samt '~', se vidare i RFC 3986)",
             parameters: [
               {
-                name: "url@sakra,tecknen+checke*",
-                in: "query",
+                name: 'url@sakra,tecknen+checke*',
+                in: 'query',
                 required: false,
               },
             ],
@@ -422,32 +422,32 @@ testRule("Fns06", [
       {
         message:
           "Sökparametrar BÖR använda tecken som är URL-säkra (tecknen A-Z, a-z, 0-9, '-', '.', '_' samt '~', se vidare i RFC 3986)",
-        path: ["paths", "/urlsakratecknencheck", "get", "parameters", "0","name"],
+        path: ['paths', '/urlsakratecknencheck', 'get', 'parameters', '0', 'name'],
         severity: DiagnosticSeverity.Warning,
       },
     ],
-  }
+  },
 ]);
 
-testRule("Fns07", [
+testRule('Fns07', [
   {
     name: "giltigt testfall - enbart 'limit' utan 'page' eller 'offset'",
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/testpath": {
+        '/testpath': {
           get: {
             parameters: [
               {
-                name: "limit",
-                in: "query",
+                name: 'limit',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 100
-                }
-              }
+                  type: 'integer',
+                  default: 100,
+                },
+              },
             ],
           },
         },
@@ -458,31 +458,30 @@ testRule("Fns07", [
   {
     name: "giltigt testfall - med 'limit' och 'page'",
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/testpath": {
+        '/testpath': {
           get: {
             parameters: [
               {
-                name: "limit",
-                in: "query",
+                name: 'limit',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 20
-                }
+                  type: 'integer',
+                  default: 20,
+                },
               },
               {
-                name: "page",
-                in: "query",
+                name: 'page',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 1
-                }
-              }
-
+                  type: 'integer',
+                  default: 1,
+                },
+              },
             ],
           },
         },
@@ -493,31 +492,30 @@ testRule("Fns07", [
   {
     name: "giltigt testfall - med 'limit' och 'offset'",
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/testpath": {
+        '/testpath': {
           get: {
             parameters: [
               {
-                name: "limit",
-                in: "query",
+                name: 'limit',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 20
-                }
+                  type: 'integer',
+                  default: 20,
+                },
               },
               {
-                name: "offset",
-                in: "query",
+                name: 'offset',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 1
-                }
-              }
-
+                  type: 'integer',
+                  default: 1,
+                },
+              },
             ],
           },
         },
@@ -528,39 +526,39 @@ testRule("Fns07", [
   {
     name: "ogiltigt testfall - med 'limit', 'offset' och 'page'",
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/testpath": {
+        '/testpath': {
           get: {
             parameters: [
               {
-                name: "limit2",
-                in: "query",
+                name: 'limit2',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 20
-                }
+                  type: 'integer',
+                  default: 20,
+                },
               },
               {
-                name: "offset",
-                in: "query",
+                name: 'offset',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 1
-                }
+                  type: 'integer',
+                  default: 1,
+                },
               },
               {
-                name: "page",
-                in: "query",
+                name: 'page',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 1
-                }
-              }
+                  type: 'integer',
+                  default: 1,
+                },
+              },
             ],
           },
         },
@@ -568,33 +566,34 @@ testRule("Fns07", [
     },
     errors: [
       {
-        message: "Vid användande av paginering, SKALL följande parametrar ingå i request: 'limit' och någon av 'page' eller 'offset'",
-        path: ["paths", "/testpath", "get", "parameters"],
+        message:
+          "Vid användande av paginering, SKALL följande parametrar ingå i request: 'limit' och någon av 'page' eller 'offset'",
+        path: ['paths', '/testpath', 'get', 'parameters'],
         severity: DiagnosticSeverity.Error,
       },
     ],
   },
 ]);
 
-testRule("Fns08", [
+testRule('Fns08', [
   {
     name: "giltigt testfall - enbart 'page', kan ha vilket defaultvärde som helst",
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/testpath": {
+        '/testpath': {
           get: {
             parameters: [
               {
-                name: "page",
-                in: "query",
+                name: 'page',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 2
-                }
-              }
+                  type: 'integer',
+                  default: 2,
+                },
+              },
             ],
           },
         },
@@ -605,31 +604,30 @@ testRule("Fns08", [
   {
     name: "giltigt testfall - 'om 'limit' finns ska 'page' ha defaultvärde 1",
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/testpath": {
+        '/testpath': {
           get: {
             parameters: [
               {
-                name: "limit",
-                in: "query",
+                name: 'limit',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 20
-                }
+                  type: 'integer',
+                  default: 20,
+                },
               },
               {
-                name: "page",
-                in: "query",
+                name: 'page',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 1
-                }
-              }
-
+                  type: 'integer',
+                  default: 1,
+                },
+              },
             ],
           },
         },
@@ -640,31 +638,30 @@ testRule("Fns08", [
   {
     name: "ogiltigt testfall - felaktigt defaultvärde på 'page' när 'limit' finns",
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/testpath": {
+        '/testpath': {
           get: {
             parameters: [
               {
-                name: "page",
-                in: "query",
+                name: 'page',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 2
-                }
+                  type: 'integer',
+                  default: 2,
+                },
               },
               {
-                name: "limit",
-                in: "query",
+                name: 'limit',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 1
-                }
-              }
-
+                  type: 'integer',
+                  default: 1,
+                },
+              },
             ],
           },
         },
@@ -680,30 +677,30 @@ testRule("Fns08", [
   {
     name: "ogiltigt testfall - med 'limit', 'offset' och 'page'",
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/testpath": {
+        '/testpath': {
           get: {
             parameters: [
               {
-                name: "limit",
-                in: "query",
+                name: 'limit',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 20
-                }
+                  type: 'integer',
+                  default: 20,
+                },
               },
               {
-                name: "page",
-                in: "query",
+                name: 'page',
+                in: 'query',
                 required: false,
                 schema: {
-                  type: "integer",
-                  default: 2
-                }
-              }
+                  type: 'integer',
+                  default: 2,
+                },
+              },
             ],
           },
         },

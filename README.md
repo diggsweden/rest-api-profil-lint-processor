@@ -42,7 +42,7 @@ Det enklaste sättet att installera RAP-LP är genom att använda [npm](https://
 2. Installera alla beroenden:
 
 ```bash
-$ npm install
+npm install
 ```
 
 ## Instruktioner för att komma igång snabbt
@@ -50,13 +50,13 @@ $ npm install
 Använd det här kommandot för att köra applikationen mot en YAML-fil:
 
 ```bash
-$ npm start -- -f PATH_TO_THE_YAML_FILE
+npm start -- -f PATH_TO_THE_YAML_FILE
 ```
 
 **Exempel**
 
 ```bash
-$ npm start -- -f apis/dok-api.yaml
+npm start -- -f apis/dok-api.yaml
 ```
 
 ## Användning
@@ -67,7 +67,7 @@ För att validera mot en specifik kategori av regler, lägg till `-c CategoryNam
 **Exempel**
 
 ```bash
-$ npm start -- -f apis/dok-api.yaml -c DokRules
+npm start -- -f apis/dok-api.yaml -c DokRules
 ```
 
 #### Tillgängliga kategorier med regler
@@ -90,7 +90,7 @@ För att spara meddelanden från felloggar, lägg till `-l FileName`.
 
 **Exempel**
 ```bash
-$ npm start -- -f apis/dok-api.yaml -l rap-lp.log
+npm start -- -f apis/dok-api.yaml -l rap-lp.log
 ```
 
 
@@ -99,7 +99,7 @@ För att lägga till loggning, lägg till `-a`
 
 **Exempel**
 ```bash
-$ npm start -- -f apis/dok-api.yaml -l rap-lp.log -a
+npm start -- -f apis/dok-api.yaml -l rap-lp.log -a
 ```
 
 ### Validering som sparar loggdiagnostik i en fil
@@ -108,10 +108,10 @@ För att spara loggdiagnostik i en fil, lägg till `-d FileName`
 **Exempel**
 
 ```bash
-$ npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
+npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
 ```
 
-### Validering som sparar information om regelutfall i en Excel-fil.
+### Validering som sparar information om regelutfall i en Excel-fil
 
 För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, lägg till --dex.
 
@@ -122,56 +122,56 @@ Avstämningsfilen i Excel har ett fast format. Om en egen version av filen ska a
 **Exempel utan sökväg till avstämningsfil i Excel**
 
 ```bash
-$ npm start -- -f apis/dok-api.yaml --dex
+npm start -- -f apis/dok-api.yaml --dex
 ```
 
 **Exempel med sökväg till avstämningsfil i Excel**
 
 ```bash
-$ npm start -- -f apis/dok-api.yaml --dex path-to-excel-file
+npm start -- -f apis/dok-api.yaml --dex path-to-excel-file
 ```
 
-### Visa information version 
+### Visa information version
 För att visa aktuell version av verktyget, lägg till `--version`
 
 **Exempel**
 
 ```bash
-$ npm start -- --version
+npm start -- --version
 ```
 
-### Visa hjälp 
+### Visa hjälp
 
 ```bash
-$ npm start -- --help
+npm start -- --help
 ```
 
-### Användning via podman/docker 
+### Användning via podman/docker
 
 I en terminal kör:
-  ```bash 
-  $ podman run --rm -it -v $(pwd):/<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:<VERSION X.X.X> -f <PATH>/<YAML_FILE>
+  ```bash
+  podman run --rm -it -v $(pwd):/<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:<VERSION X.X.X> -f <PATH>/<YAML_FILE>
   ```
 * Där \<PATH> motsvarar den path i containern som du vill att nuvarande katalog \$(pwd) mountas in i, containern får tillgång till dina filer i \$(pwd).
 * Där \<YAML_FILE> motsvarar den filen som du vill applicera valideringen på.
 * Där \<VERSION> mostsvarar den version av rest-api-profilen som du vill nyttja.
 
 Exempel
-  ```bash 
-  $ podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
+  ```bash
+  podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
   ```
 
 Vid eventuella fel och du inte hittar rap-lp-error.log kan du behöva köra kommandot via containern enligt den alternativa instruktionen nedan. Se till att containern har rättigheter att skriva till den katalog som du mountar, se [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container).
 
-#### Alternativ att köra ifrån containern:
+#### Alternativ att köra ifrån containern
 1. Starta en podman container:
     - podman run --rm -it --entrypoint /bin/sh -v $(pwd):/\<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:0.3.0
 2. Kör din validering ifrån containern:
     - npm start -- -f \<PATH-TO-FILE>
-3. Lägg på önskade flaggor enligt tidigare exempel. 
+3. Lägg på önskade flaggor enligt tidigare exempel.
 
-Exempel: 
-  ```bash 
+Exempel:
+  ```bash
   $ podman run --rm -it --entrypoint /bin/sh -v $(pwd):/apis ghcr.io/diggsweden/rest-api-profil-lint-processor:0.3.0
 
   /app: $ npm start -- -f apis/dot-api.yaml -l test.log --dex example.xlsx
@@ -181,29 +181,29 @@ Exempel:
 
 #### Access till registry
 
-Du kan behöva ett Personal Access Token (PAT) för din användare i github för att kunna hämta images från Github Container Registry (GHCR). 
+Du kan behöva ett Personal Access Token (PAT) för din användare i github för att kunna hämta images från Github Container Registry (GHCR).
 1. Skapa PAT i github via settings -> developer settings -> tokens -> generate new token.
     - viktigt att sätta read:packages
     - spara ned ditt token
-2. Logga in med: 
+2. Logga in med:
     - kör i en terminal: podman login ghcr.io
     - användarnamn: Ditt github-användarnamn.
     - lösenord: ditt token från tidigare steg.
 3. Validera enligt tidigare exempel.  
 
 #### Skrivåtkomst till mount från container
-1. Kolla rättigheter 
-    ```bash 
-    $ ls -ld /path/to/mount
+1. Kolla rättigheter
+    ```bash
+    ls -ld /path/to/mount
     ```
-2. För att testa om det är ett åtkomstproblem kan du temporärt prova om det går efter du gett alla skrivrättigheter till den mountade katalogen: 
-    ```bash 
-    $ sudo chmod 777 /path/to/mount
+2. För att testa om det är ett åtkomstproblem kan du temporärt prova om det går efter du gett alla skrivrättigheter till den mountade katalogen:
+    ```bash
+    sudo chmod 777 /path/to/mount
     ```
 3. Beroende på din miljö och vilka möjligheter du har, hantera åtkomstproblemet mer beständigt och återställ tidigare läs- och skrivrättigheter.
 4. Du kan även prova:  
-    ```bash 
-    $ sudo podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
+    ```bash
+    sudo podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
     ```
 
 ### Riktlinjer och förklaringar
@@ -212,7 +212,7 @@ Vill du veta mer om de specifika reglerna som verktyget tillämpar, se avsnittet
 
 ### Förklaring av översikt för regelutfall
 
-Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsinformationen på stdout. I denna så kommer en sammanställning av det totala regelutfallet att visas. 
+Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsinformationen på stdout. I denna så kommer en sammanställning av det totala regelutfallet att visas.
 
 - Verkställda och godkända regler:
   - OK = Krav bedömt och hanterat för att möta kravet

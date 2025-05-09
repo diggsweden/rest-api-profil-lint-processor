@@ -12,23 +12,23 @@
  *    https://dev.dataportal.se/rest-api-profil
  *
  **************************************************************/
-import yargs from "yargs";
-import * as fs from "node:fs";
-import * as path from "node:path";
-import { join } from "path";
-import Parsers from "@stoplight/spectral-parsers";
-import spectralCore from "@stoplight/spectral-core";
-import { importAndCreateRuleInstances, getRuleModules } from "./util/ruleUtil.ts"; // Import the helper function
+import yargs from 'yargs';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { join } from 'path';
+import Parsers from '@stoplight/spectral-parsers';
+import spectralCore from '@stoplight/spectral-core';
+import { importAndCreateRuleInstances, getRuleModules } from './util/ruleUtil.ts'; // Import the helper function
 import util from 'util';
-import {RapLPCustomSpectral} from "./util/RapLPCustomSpectral.ts";
-import {DiagnosticReport, RapLPDiagnostic} from "./util/RapLPDiagnostic.ts";
-import {AggregateError} from "./util/RapLPCustomErrorInfo.ts";
+import { RapLPCustomSpectral } from './util/RapLPCustomSpectral.ts';
+import { DiagnosticReport, RapLPDiagnostic } from './util/RapLPDiagnostic.ts';
+import { AggregateError } from './util/RapLPCustomErrorInfo.ts';
 import chalk from 'chalk';
-import { ExcelReportProcessor } from "./util/excelReportProcessor.ts";
+import { ExcelReportProcessor } from './util/excelReportProcessor.ts';
 
 declare var AggregateError: {
   prototype: AggregateError;
-  new(errors: any[], message?: string): AggregateError;
+  new (errors: any[], message?: string): AggregateError;
 };
 const { Spectral, Document } = spectralCore;
 const writeFileAsync = util.promisify(fs.writeFile);
@@ -36,81 +36,83 @@ const appendFileAsync = util.promisify(fs.appendFile);
 
 try {
   // Parse command-line arguments using yargs
-  const argv = await yargs(process.argv.slice(2)).version("1.0.0")
-    .option("file", {
-      alias: "f",
-      describe: "Sökväg till OpenAPI specifikation(yaml,json)",
+  const argv = await yargs(process.argv.slice(2))
+    .version('1.0.0')
+    .option('file', {
+      alias: 'f',
+      describe: 'Sökväg till OpenAPI specifikation(yaml,json)',
       demandOption: true,
-      type: "string",
+      type: 'string',
       coerce: (file: string) => path.resolve(file), // convert to absolute path
     })
-    .option("categories", {
-      alias: "c",
-      describe: `Regelkategorier separerade med kommatecken.Tillgängliga kategorier: ${getRuleModules().join(",")}`,
-      type: "string",
-    })
-    .option("logError", {
-      alias: "l",
-      describe: 'Sökväg till fil med information för eventuell felloggningsinformation från RAP-LP. Om ej specificerad, så kommer felet att skrivas ut till stdout.',
+    .option('categories', {
+      alias: 'c',
+      describe: `Regelkategorier separerade med kommatecken.Tillgängliga kategorier: ${getRuleModules().join(',')}`,
       type: 'string',
     })
-    .option("append", {
-      alias: "a",
-      describe: "Utöka loginformationen i filen för felloggningsiformation. Utökda loginformation till befintlig fil för loggning av fel( om specificerad ).",
-      type: "boolean",
+    .option('logError', {
+      alias: 'l',
+      describe:
+        'Sökväg till fil med information för eventuell felloggningsinformation från RAP-LP. Om ej specificerad, så kommer felet att skrivas ut till stdout.',
+      type: 'string',
+    })
+    .option('append', {
+      alias: 'a',
+      describe:
+        'Utöka loginformationen i filen för felloggningsiformation. Utökda loginformation till befintlig fil för loggning av fel( om specificerad ).',
+      type: 'boolean',
       default: false,
-    })  
-    .option("logDiagnostic", {
-      alias: "d",
-      describe: 'Sökväg till fil för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i JSON format.',
+    })
+    .option('logDiagnostic', {
+      alias: 'd',
+      describe:
+        'Sökväg till fil för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i JSON format.',
       type: 'string',
     })
-    .option("dex", {
-      describe: 'Sökväg till fil för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i Excel format.',
+    .option('dex', {
+      describe:
+        'Sökväg till fil för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i Excel format.',
       type: 'string',
-    })
-    .argv;
+    }).argv;
   // Extract arguments from yargs
-  const apiSpecFileName = (argv.file as string) || "";
-  const ruleCategories = argv.categories ? (argv.categories as string).split(",") : undefined;
+  const apiSpecFileName = (argv.file as string) || '';
+  const ruleCategories = argv.categories ? (argv.categories as string).split(',') : undefined;
   const logErrorFilePath = argv.logError as string | undefined;
   const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
   try {
-
     // Import and create rule instances in RAP-LP
     const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
     // Load API specification into a Document object
     const apiSpecDocument = new Document(
-      fs.readFileSync(join(apiSpecFileName), "utf-8").trim(),
+      fs.readFileSync(join(apiSpecFileName), 'utf-8').trim(),
       Parsers.Yaml,
-      apiSpecFileName
+      apiSpecFileName,
     );
     try {
+      /**
+       * CustomSpectral
+       */
+      const customSpectral = new RapLPCustomSpectral();
+      customSpectral.setCategorys(enabledRulesAndCategorys.instanceCategoryMap);
+      customSpectral.setRuleset(enabledRulesAndCategorys.rules);
+      const result = await customSpectral.run(apiSpecDocument);
 
-    /**
-     * CustomSpectral
-     */
-    const customSpectral = new RapLPCustomSpectral();
-    customSpectral.setCategorys(enabledRulesAndCategorys.instanceCategoryMap);
-    customSpectral.setRuleset(enabledRulesAndCategorys.rules);
-    const result = await customSpectral.run(apiSpecDocument);
+      const customDiagnostic = new RapLPDiagnostic();
+      customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.instanceCategoryMap);
+      const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
 
-    const customDiagnostic = new RapLPDiagnostic();
-    customDiagnostic.processRuleExecutionInformation(result,enabledRulesAndCategorys.instanceCategoryMap);
-    const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
-      
-      if(argv.dex != null) {
+      if (argv.dex != null) {
         const reportHandler = new ExcelReportProcessor({
           outputFilePath: argv.dex,
         });
-        reportHandler.generateReportDocument(customDiagnostic)
-      } 
+        reportHandler.generateReportDocument(customDiagnostic);
+      }
 
-    /**
-     * Chalk impl.
-     * @param allvarlighetsgrad
-     * @returns
-     */
+      /**
+       * Chalk impl.
+       * @param allvarlighetsgrad
+       * @returns
+       */
       // Run Spectral on the API specification and log the result
       const colorizeSeverity = (allvarlighetsgrad: string) => {
         switch (allvarlighetsgrad) {
@@ -125,78 +127,87 @@ try {
         }
       };
       const formatLintingResult = (result: any) => {
-        return `allvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${result.krav} \nområde: ${result.område} \nsökväg:[${result.sökväg}] \nomfattning:${JSON.stringify(result.omfattning,null,2)} `;
+        return `allvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${result.krav} \nområde: ${result.område} \nsökväg:[${result.sökväg}] \nomfattning:${JSON.stringify(result.omfattning, null, 2)} `;
       };
       //Check specified option from yargs input
 
-      const currentDate = new Date() //.toISOString(); // Get current date and time in ISO format
+      const currentDate = new Date(); //.toISOString(); // Get current date and time in ISO format
       const formattedDate = `${currentDate.getFullYear()}-${padZero(currentDate.getMonth() + 1)}-${padZero(currentDate.getDate())} ${padZero(currentDate.getHours())}:${padZero(currentDate.getMinutes())}:${padZero(currentDate.getSeconds())}`;
 
       function padZero(num: number): string {
         return num < 10 ? `0${num}` : `${num}`;
       }
-      if (logDiagnosticFilePath) { //Check if we gonna construct logData for diagnostic information
+      if (logDiagnosticFilePath) {
+        //Check if we gonna construct logData for diagnostic information
         let logData: any;
         logData = {
           timeStamp: formattedDate,
-          result: diagnosticReports
-
+          result: diagnosticReports,
         };
-        let logEntry = JSON.stringify(logData, null, 2) + "\n"; // Properly formatted JSON
+        let logEntry = JSON.stringify(logData, null, 2) + '\n'; // Properly formatted JSON
         let utf8EncodedContent = Buffer.from(logEntry, 'utf8');
 
         //Log to disc
-        await writeFileAsync(logDiagnosticFilePath,utf8EncodedContent);
+        await writeFileAsync(logDiagnosticFilePath, utf8EncodedContent);
         console.log(chalk.green(`Skriver diagnostiseringsinformation från RAP-LP till ${logDiagnosticFilePath}`));
-      }else {
+      } else {
         //Log to STDOUT
-        if (customDiagnostic.diagnosticInformation.executedUniqueRules!=undefined &&
-          customDiagnostic.diagnosticInformation.executedUniqueRules.length>0) {
-            console.log(chalk.green("<<<Verkställda och godkända regler - RAP-LP>>>\r"));
-            console.log(chalk.whiteBright("STATUS\tOMRÅDE") + " / " +chalk.whiteBright("IDENTIFIKATIONSNUMMER")) ;
-            customDiagnostic.diagnosticInformation.executedUniqueRules.forEach(item => {
-              console.log(chalk.bgGreen("OK") + "\t" + item.område + " / " + item.id) ;
-            });
+        if (
+          customDiagnostic.diagnosticInformation.executedUniqueRules != undefined &&
+          customDiagnostic.diagnosticInformation.executedUniqueRules.length > 0
+        ) {
+          console.log(chalk.green('<<<Verkställda och godkända regler - RAP-LP>>>\r'));
+          console.log(chalk.whiteBright('STATUS\tOMRÅDE') + ' / ' + chalk.whiteBright('IDENTIFIKATIONSNUMMER'));
+          customDiagnostic.diagnosticInformation.executedUniqueRules.forEach((item) => {
+            console.log(chalk.bgGreen('OK') + '\t' + item.område + ' / ' + item.id);
+          });
         }
-        if (customDiagnostic.diagnosticInformation.executedUniqueRulesWithError!=undefined &&
-          customDiagnostic.diagnosticInformation.executedUniqueRulesWithError.length>0) {
-            console.log(chalk.green("<<<Verkställda och ej godkända regler - RAP-LP>>>\r"));
-            console.log(chalk.whiteBright("STATUS\tOMRÅDE") + " / " + chalk.whiteBright("IDENTIFIKATIONSNUMMER")) ;
-            customDiagnostic.diagnosticInformation.executedUniqueRulesWithError.forEach(item => {
-              console.log(chalk.bgRed("EJ OK") + "\t" + item.område + " / " + item.id) ;
-            });
+        if (
+          customDiagnostic.diagnosticInformation.executedUniqueRulesWithError != undefined &&
+          customDiagnostic.diagnosticInformation.executedUniqueRulesWithError.length > 0
+        ) {
+          console.log(chalk.green('<<<Verkställda och ej godkända regler - RAP-LP>>>\r'));
+          console.log(chalk.whiteBright('STATUS\tOMRÅDE') + ' / ' + chalk.whiteBright('IDENTIFIKATIONSNUMMER'));
+          customDiagnostic.diagnosticInformation.executedUniqueRulesWithError.forEach((item) => {
+            console.log(chalk.bgRed('EJ OK') + '\t' + item.område + ' / ' + item.id);
+          });
         }
-        if (customDiagnostic.diagnosticInformation.notApplicableRules!=undefined &&
-          customDiagnostic.diagnosticInformation.notApplicableRules.length>0) {
-          console.log(chalk.grey("<<<Ej tillämpade regler - RAP-LP>>>\r"));
-          console.log(chalk.whiteBright("STATUS\tOMRÅDE") + " / " + chalk.whiteBright("IDENTIFIKATIONSNUMMER")) ;
-          customDiagnostic.diagnosticInformation.notApplicableRules.forEach(item => {
-            console.log(chalk.bgGrey("N/A") + "\t" + item.område + "/" + item.id);
+        if (
+          customDiagnostic.diagnosticInformation.notApplicableRules != undefined &&
+          customDiagnostic.diagnosticInformation.notApplicableRules.length > 0
+        ) {
+          console.log(chalk.grey('<<<Ej tillämpade regler - RAP-LP>>>\r'));
+          console.log(chalk.whiteBright('STATUS\tOMRÅDE') + ' / ' + chalk.whiteBright('IDENTIFIKATIONSNUMMER'));
+          customDiagnostic.diagnosticInformation.notApplicableRules.forEach((item) => {
+            console.log(chalk.bgGrey('N/A') + '\t' + item.område + '/' + item.id);
           });
         }
       }
-      if (logErrorFilePath ) { //Check if we gonna construct some logData for logging purpose
+      if (logErrorFilePath) {
+        //Check if we gonna construct some logData for logging purpose
         let content: string;
         let logData: any;
 
-        if (!result || result.length === 0) { 
+        if (!result || result.length === 0) {
           logData = {
             timeStamp: formattedDate,
-            message: "Inga valideringsfel förekom."
+            message: 'Inga valideringsfel förekom.',
           };
         } else {
           logData = {
             timestamp: formattedDate,
-            message: "Valideringsfel upptäcktes. Detaljer följer nedan.",
-            errors: result
+            message: 'Valideringsfel upptäcktes. Detaljer följer nedan.',
+            errors: result,
           };
         }
         try {
-          if (argv.append) { // Check for appending logging information
-            let existingLogs: any[] = []; 
-      
-            if (fs.existsSync(logErrorFilePath)) { // Does any previous file exists?
-              const fileContent = await fs.promises.readFile(logErrorFilePath, "utf8");
+          if (argv.append) {
+            // Check for appending logging information
+            let existingLogs: any[] = [];
+
+            if (fs.existsSync(logErrorFilePath)) {
+              // Does any previous file exists?
+              const fileContent = await fs.promises.readFile(logErrorFilePath, 'utf8');
               try {
                 existingLogs = JSON.parse(fileContent); // Parse json into object
                 if (!Array.isArray(existingLogs)) {
@@ -209,36 +220,45 @@ try {
             }
             existingLogs.push(logData); // Push on stack
             const updatedContent = JSON.stringify(existingLogs, null, 2);
-            await writeFileAsync(logErrorFilePath, Buffer.from(updatedContent, "utf8"));
-      
+            await writeFileAsync(logErrorFilePath, Buffer.from(updatedContent, 'utf8'));
           } else {
             const content = JSON.stringify([logData], null, 2); // skriv alltid som array
-            await writeFileAsync(logErrorFilePath, Buffer.from(content, "utf8"));
+            await writeFileAsync(logErrorFilePath, Buffer.from(content, 'utf8'));
           }
           console.log(chalk.green(`Skriver inspektion/valideringsinformation från RAP-LP till ${logErrorFilePath}`));
-        }catch (fileError: any) {
+        } catch (fileError: any) {
           logErrorToFile(fileError);
-          console.error(chalk.red("Misslyckades att skriva till loggfilen!"));
+          console.error(chalk.red('Misslyckades att skriva till loggfilen!'));
         }
-      }else {
+      } else {
         console.log(chalk.whiteBright('\n<<Regelutfall RAP-LP>>\n'));
         if (!result || result.length === 0) {
-          console.log(chalk.green("Inga valideringsfel förekom."));
+          console.log(chalk.green('Inga valideringsfel förekom.'));
         } else {
-          result.forEach(item => console.log(formatLintingResult(item)));
+          result.forEach((item) => console.log(formatLintingResult(item)));
         }
       }
     } catch (spectralError: any) {
       logErrorToFile(spectralError); // Log stack
-      console.error(chalk.red("Ett fel uppstod vid initiering/körning av regelklasser! Undersök felloggen för RAP-LP för mer information om felet"));
+      console.error(
+        chalk.red(
+          'Ett fel uppstod vid initiering/körning av regelklasser! Undersök felloggen för RAP-LP för mer information om felet',
+        ),
+      );
     }
   } catch (initializingError: any) {
     logErrorToFile(initializingError);
-    console.error(chalk.red("Ett fel uppstod vid inläsning av moduler och skapande av regelklasser! Undersök felloggen för RAP-LP för mer information om felet"));
+    console.error(
+      chalk.red(
+        'Ett fel uppstod vid inläsning av moduler och skapande av regelklasser! Undersök felloggen för RAP-LP för mer information om felet',
+      ),
+    );
   }
 } catch (error: any) {
   logErrorToFile(error);
-  console.error(chalk.red("Ett oväntat fel uppstod! Undersök felloggen för RAP-LP för mer information om felet", error.message));
+  console.error(
+    chalk.red('Ett oväntat fel uppstod! Undersök felloggen för RAP-LP för mer information om felet', error.message),
+  );
 }
 function logErrorToFile(error: any) {
   const errorMessage = `${new Date().toISOString()} - ${error.stack}\n`;
@@ -254,4 +274,3 @@ function logErrorToFile(error: any) {
     });
   }
 }
-

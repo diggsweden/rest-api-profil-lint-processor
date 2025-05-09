@@ -6,7 +6,7 @@
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
 
-publiccodeYmlVersion: "0.4.0"
+publiccodeYmlVersion: '0.4.0'
 categories:
   - application-development
   - it-development
@@ -32,14 +32,14 @@ localisation:
 maintenance:
   contacts:
     - name: Fredrik Nordlander
-    - email: "fredrik.nordlander@digg.se"
+    - email: 'fredrik.nordlander@digg.se'
   type: internal
-name: "REST API-profil - Lint Processor (RAP-LP)"
+name: 'REST API-profil - Lint Processor (RAP-LP)'
 platforms:
   - windows
   - mac
   - linux
-releaseDate: "2025-X-X"
-softwareType: "library"
-softwareVersion: "0.0.1"
-url: "https://github.com/diggsweden/rest-api-profil-lint-processor.git"
+releaseDate: '2025-X-X'
+softwareType: 'library'
+softwareVersion: '0.0.1'
+url: 'https://github.com/diggsweden/rest-api-profil-lint-processor.git'

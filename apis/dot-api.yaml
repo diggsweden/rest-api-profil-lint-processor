@@ -2,13 +2,13 @@
 #
 # SPDX-License-Identifier: EUPL-1.2
 
-openapi: "3.0.0"
+openapi: '3.0.0'
 info:
   version: 1.2.0
-  title: API title goes here 
+  title: API title goes here
   description: OpenAPI Specification description goes here
   license:
-    name:  EUPL-1.2 license
+    name: EUPL-1.2 license
 servers:
   - url: https://example.com/myapi/v1
   - url: https://example.com:443/myapi/v2
@@ -37,15 +37,15 @@ paths:
               schema:
                 type: string
           content:
-            application/json:    
+            application/json:
               schema:
-                $ref: "#/components/schemas/Pets"
+                $ref: '#/components/schemas/Pets'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
     post:
       summary: Create a pet
       operationId: createPets
@@ -59,7 +59,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BookingNoteRequest"
+                $ref: '#/components/schemas/BookingNoteRequest'
   /pets/{petId}:
     get:
       summary: Info for a specific pet
@@ -79,13 +79,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Pet"
+                $ref: '#/components/schemas/Pet'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Pet:
@@ -105,7 +105,7 @@ components:
       type: array
       maxItems: 100
       items:
-        $ref: "#/components/schemas/Pet"
+        $ref: '#/components/schemas/Pet'
     Error:
       type: object
       required:
@@ -131,6 +131,6 @@ components:
           format: date-time
           example: '1997-04-01T04:00:09-12:00'
           #example: '1997-04-01T04:00:09-01:30'
-          #example: '1997-04-01T04:00:09+14:00'          
+          #example: '1997-04-01T04:00:09+14:00'
           #example:  '2024-10-23T06:50:16.559Z'
           #example: '2022-12-31T04:00:09.12'

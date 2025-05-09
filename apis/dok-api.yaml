@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: EUPL-1.2
 
-openapi: "3.0.0"
+openapi: '3.0.0'
 info:
   version: 1.0.0
   title: AME
@@ -15,7 +15,7 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 externalDocs:
-  description: "Find out more about the API info text goes here"
+  description: 'Find out more about the API info text goes here'
   url: Url to external documentation
 servers:
   - url: http://petstore.swagger.io/v1
@@ -44,17 +44,17 @@ paths:
               schema:
                 type: string
           content:
-            application/json:    
+            application/json:
               schema:
-                $ref: "#/components/schemas/Pets"
-              examples: ""
+                $ref: '#/components/schemas/Pets'
+              examples: ''
         default:
           description: unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-              example: 
+                $ref: '#/components/schemas/Error'
+              example:
     post:
       summary: Create a pet
       operationId: createPets
@@ -68,18 +68,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
       requestBody:
         content:
           application/json:
-            schema:      # Request body contents
+            schema: # Request body contents
               type: object
               properties:
                 id:
                   type: integer
                 name:
                   type: string
-            examples:   # Sample object
+            examples: # Sample object
               id: 10
               name: Jessica Smith
   /pets/{petId}:
@@ -101,26 +101,26 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Pet"
-              example: ""
+                $ref: '#/components/schemas/Pet'
+              example: ''
         default:
           description: unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
               example:
       requestBody:
         content:
           application/json:
-            schema:      # Request body contents
+            schema: # Request body contents
               type: object
               properties:
                 id:
                   type: integer
                 name:
                   type: string
-            examples:   # Sample object
+            examples: # Sample object
               id: 10
               name: Jessica Smith
 
@@ -143,7 +143,7 @@ components:
       type: array
       maxItems: 100
       items:
-        $ref: "#/components/schemas/Pet"
+        $ref: '#/components/schemas/Pet'
     Error:
       type: object
       required:
@@ -155,4 +155,4 @@ components:
           format: int32
         message:
           type: string
-      example: "Woooo12"
+      example: 'Woooo12'

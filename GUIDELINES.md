@@ -77,8 +77,8 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: SAK.10](#id-sak10)
    - [ID: SAK.18](#id-sak18)
 10. [Område: Förutsättningar](#område-förutsättningar)
-   - [ID: FOR.02](#id-for02)
-   
+- [ID: FOR.02](#id-for02)
+
 
 ## Område: Dokumentation
 

@@ -3,7 +3,5 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 export interface AggregateError extends Error {
-    errors: any[];
-  }
-
-  
+  errors: any[];
+}
