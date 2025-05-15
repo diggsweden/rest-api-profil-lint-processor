@@ -31,15 +31,15 @@ localisation:
   localisationReady: false
 maintenance:
   contacts:
-    - name: Fredrik Nordlander
-    - email: 'fredrik.nordlander@digg.se'
+    - name: Digg OSPO
+    - email: 'raplp-maintenance@digg.se'
   type: internal
 name: 'REST API-profil - Lint Processor (RAP-LP)'
 platforms:
   - windows
   - mac
   - linux
-releaseDate: '2025-X-X'
+releaseDate: '2025-05-17'
 softwareType: 'library'
-softwareVersion: '0.0.1'
+softwareVersion: '1.0.0'
 url: 'https://github.com/diggsweden/rest-api-profil-lint-processor.git'
