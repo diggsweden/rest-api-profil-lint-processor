@@ -5,11 +5,8 @@ This guide outlines core essentials for developing in this project.
 ## Table of Contents
 - [Setup and Configuration](#setup-and-configuration)
   - [IDE Setup](#ide-setup)
-  - [Consuming SNAPSHOTS](#consuming-snapshots-from-maven-central)
 - [Development Workflow](#development-workflow)
   - [Testing and Verification](#testing-format-and-lint)
-  - [Documentation](#documentation)
-  - [Pull Request Process](#pull-request-workflow)
 - [Release Process](#the-release-workflow)
   - [CI Release](#ci-release-process)
   - [Local Release](#local-release-process)
@@ -24,7 +21,6 @@ This guide outlines core essentials for developing in this project.
 
 
 ## Development Workflow
-...
 
 ### Pull Request Workflow
 
