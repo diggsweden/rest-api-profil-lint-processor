@@ -10,7 +10,7 @@
     ":dependencyDashboard",
     ":gitSignOff",
     ":maintainLockFilesWeekly",
-    ":automergeMinor",
+    ":automergePatch",
     ":semanticCommits",
     "npm:unpublishSafe",
     ":rebaseStalePrs",
