@@ -45,23 +45,23 @@
       "description": "Development dependencies",
       "matchManagers": ["npm"],
       "matchDepTypes": ["devDependencies"],
-      "excludePackageNames": ["@stoplight/spectral-formats"],
       "groupName": "dev dependencies",
-      "addLabels": ["dev-deps"]
+      "addLabels": ["dev-deps"],
+      "matchPackageNames": ["!@stoplight/spectral-formats"]
     },
     {
       "description": "Core dependencies",
       "matchManagers": ["npm"],
       "matchDepTypes": ["dependencies"],
-      "excludePackagePatterns": ["^@stoplight/spectral"],
       "groupName": "core dependencies",
-      "addLabels": ["core-deps"]
+      "addLabels": ["core-deps"],
+      "matchPackageNames": ["!/^@stoplight/spectral/"]
     },
     {
       "description": "Spectral dependencies",
       "groupName": "spectral",
-      "matchPackagePatterns": ["^@stoplight/spectral"],
-      "labels": ["spectral"]
+      "labels": ["spectral"],
+      "matchPackageNames": ["/^@stoplight/spectral/"]
     },
     {
       "description": "Node.js engine",
