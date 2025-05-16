@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
 SPDX-License-Identifier: CC0-1.0 
 -->
 
-# RAP-LP Open API Specification Guidelines Version 0.7
+# RAP-LP Open API Specification Guidelines Version 1.0.0
 
 RAP-LP (REST API-profil Lint Processor) är ett verktyg som granskar en OpenAPI-specifikation mot den nationella REST API-profilen. Verktyget identifierar syntaxfel och avvikelser från riktlinjer, vilket gör det enklare att snabbt hitta och rätta till problem.
 
@@ -867,6 +867,7 @@ Regeln förutsätter att definierade query parametrar har tecken som är definie
 **Exempel:**
 
 ![alt text](images/fns06.png)
+
 I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom en av de definierade parametrarna (pageThis) innehåller tecken som ej är URL-säkra.
 
 ---
@@ -889,6 +890,7 @@ Regeln förutsätter att parametern 'limit' ingår om man använder sig av pagin
 **Exempel:**
 
 ![alt text](images/fns07.png)
+
 I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom de reserverade parameternamnenorden 'page' och 'offset' ingår under pathen / persons, men inte det då tvingade reserverade parameternamnet 'limit'. I exemplet så finns det en definierad parameter (mylimit), men den är alltså inte giltig.
 
 ---
