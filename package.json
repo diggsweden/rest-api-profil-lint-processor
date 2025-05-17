@@ -4,7 +4,7 @@
   "main": ".src/app.ts",
   "type": "module",
   "engines": {
-    "node": ">=20.17.0 <=22.15.0"
+    "node": "<=22.15.1"
   },
   "repository": {
     "type": "git",
