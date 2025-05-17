@@ -30,7 +30,7 @@
     "@types/node": "^22.15.17",
     "jest": "^29.7.0",
     "standard-version": "^9.5.0",
-    "ts-jest": "^29.2.5",
+    "ts-jest": "^29.3.2",
     "typescript": "^5.2.2",
     "@openapitools/openapi-generator-cli": "^2.14.0",
     "@types/js-yaml": "^4.0.9",
