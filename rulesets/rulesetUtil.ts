@@ -9,7 +9,7 @@ import { BaseRuleset } from './BaseRuleset.ts';
 
 export class Dok03Base extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.03',
   };
   constructor() {
@@ -23,7 +23,7 @@ export class Dok03Base extends BaseRuleset {
 
 export class Ufn05Base extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'URL Format och namngivning',
+    omrade: 'URL Format och namngivning',
     id: 'UFN.05',
   };
   constructor() {
@@ -38,7 +38,7 @@ export class Ufn05Base extends BaseRuleset {
 
 export class Ufn09Base extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'URL Format och namngivning',
+    omrade: 'URL Format och namngivning',
     id: 'UFN.09',
   };
   constructor() {
@@ -75,7 +75,7 @@ export class Ufn09Base extends BaseRuleset {
 
 export class Dok15Base extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.15',
   };
   constructor() {
@@ -118,7 +118,7 @@ export class Dok15Base extends BaseRuleset {
 }
 export class Arq05Base extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'API Request',
+    omrade: 'API Request',
     id: 'ARQ.05',
   };
   constructor() {

@@ -10,7 +10,7 @@ import { logRuleExecution } from '../src/util/RuleExecutionStatusModule.ts';
 import Format from '@stoplight/spectral-formats';
 
 export class BaseRuleset implements RulesetInterface {
-  static customProperties: CustomProperties = { område: undefined!, id: '' };
+  static customProperties: CustomProperties = { omrade: undefined!, id: '' };
   static getCustomProperties(): CustomProperties {
     return BaseRuleset.customProperties;
   }
