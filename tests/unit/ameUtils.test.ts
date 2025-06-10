@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { isValidApplicationJson } from '../rulesets/util/AmeRulesUtil';
+import { isValidApplicationJson } from '../../rulesets/util/AmeRulesUtil';
 
 describe('ameRulesUtil', () => {
   describe('isValidApplicationJson', () => {

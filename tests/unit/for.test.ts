@@ -1,15 +1,18 @@
-import { DiagnosticSeverity } from "@stoplight/types";
-import testRule from "../util/helperTest.ts";
+// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+//
+// SPDX-License-Identifier: EUPL-1.2
 
+import { DiagnosticSeverity } from '@stoplight/types';
+import testRule from '../util/helperTest.ts';
 
-testRule("For02", [
+testRule('For02', [
   {
-    name: "giltigt testfall - EN GET -förfrågan SKALL INTE acceptera en  body",
+    name: 'giltigt testfall - EN GET -förfrågan SKALL INTE acceptera en  body',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/": {
+        '/': {
           get: {},
         },
       },
@@ -17,19 +20,19 @@ testRule("For02", [
     errors: [],
   },
   {
-    name: "ogiltigt testfall - EN GET -förfrågan SKALL INTE acceptera en body",
+    name: 'ogiltigt testfall - EN GET -förfrågan SKALL INTE acceptera en body',
     document: {
-      openapi: "3.1.0",
-      info: { version: "1.0" },
+      openapi: '3.1.0',
+      info: { version: '1.0' },
       paths: {
-        "/": {
+        '/': {
           get: {
             requestBody: {
-              description: "En GET operation är en fråga och skall inte innehålla något svar",
+              description: 'En GET operation är en fråga och skall inte innehålla något svar',
               content: {
-                "application/json": {
+                'application/json': {
                   schema: {
-                    type: "object",
+                    type: 'object',
                   },
                 },
               },
@@ -40,34 +43,10 @@ testRule("For02", [
     },
     errors: [
       {
-        message: "EN GET -förfrågan SKALL INTE acceptera en body",
-        path: ["paths", "/", "get", "requestBody"],
+        message: 'EN GET -förfrågan SKALL INTE acceptera en body',
+        path: ['paths', '/', 'get', 'requestBody'],
         severity: DiagnosticSeverity.Error,
       },
     ],
-  }  
-  ]);
-  /*
-testRule("For01", [
-    {
-      name: "giltigt testfall",
-      document: {
-        openapi: "3.1.0",
-      },
-      errors: [],
-    },
-    {
-      name: "ogiltigt testfall",
-      document: {
-        swagger: "2.0",
-      },
-      errors: [
-        {
-          message: "Swagger 2-filer är inte tillåtna. Använd OpenAPI >= 3.0",
-          path: ["swagger"],
-          severity: DiagnosticSeverity.Error,
-        },
-      ],
-    },
-  ]);
-  */
+  },
+]);
