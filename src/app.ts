@@ -91,7 +91,7 @@ async function main() {
   .argv;
 
   const mode = argv.mode;
-
+  
   if (mode === 'cli') {
     await execCLI(argv); // Starta CLI-läget
   } else if (mode === 'api') {

@@ -28,7 +28,7 @@ export async function startServer<T extends ApiArgs>(args: T) {
   // Path to your OpenAPI spec
   const apiSpec = path.join(process.cwd(), "openapi.yaml");
 
-  // Initialize OpenAPI Validator middleware
+ // Initialize OpenAPI Validator middleware
   app.use(
     OpenApiValidator.middleware({
       apiSpec, // Path to OpenAPI spec
@@ -37,8 +37,8 @@ export async function startServer<T extends ApiArgs>(args: T) {
     })
   );
 
-  // API Endpoint, t.ex. för att validera en YAML-fil
-  registerValidationRoutes(app);
+ // API Endpoint, t.ex. för att validera en YAML-fil
+    registerValidationRoutes(app);
 
   if (args.enableUrlValidation) {
     registerUrlValidationRoutes(app, args.urlValidationConfigFile);

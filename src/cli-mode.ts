@@ -62,7 +62,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             const reportHandler = new ExcelReportProcessor({
               outputFilePath: argv.dex,
             });
-            reportHandler.generateReportDocument(diagnosticReports)
+            reportHandler.generateReportDocument(customDiagnostic)
           }
 
           /**
@@ -84,7 +84,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
               }
             };
             const formatLintingResult = (result: any) => {
-              return `allvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${result.krav} \nomrade: ${result.omrade} \sokvag:[${result.sokvag}] \nomfattning:${JSON.stringify(result.omfattning,null,2)} `;
+              return `allvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${result.krav} \nområde: ${result.omrade} \nsökväg:[${result.sokvag}] \nomfattning:${JSON.stringify(result.omfattning,null,2)} `;
             };
             //Check specified option from yargs input
       
