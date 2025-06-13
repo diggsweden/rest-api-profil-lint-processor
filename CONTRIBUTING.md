@@ -55,12 +55,25 @@ För att begära en ny funktion:
 För att bidra med kod, dokumentation eller andra förbättringar:
 
 1. Diskutera dina planer i förväg för att säkerställa att de stämmer överens med projektmålen.
-2. Kontrollera listan över öppna ärenden. Tilldela dig själv ett befintligt ärende eller skapa ett nytt.
+2. Kontrollera listan över öppna ärenden, saknas ett ärende för det tänkta bidraget skapar du ett nytt.
+4. Tilldela dig själv ett befintligt ärende genom att kommentera ärendet.
 3. Följ projektkonventioner för tester, kodstil, dokumentation och commit-meddelanden.
 4. Förstå att bidrag kan avslås om de inte överensstämmer med projektets riktlinjer eller mål.
 5. Bekanta dig med [Pull Request-livscykeln](#pull-request-livscykel).
 6. Godkänn "inbound=outbound"-normen: dina bidrag kommer att vara under samma licens som projektet.
 7. [Signera dina commits](#dco---signoff-och-signering-av-en-commit).
+
+Kom igång med "good first issues", de har en begränsad omfattning och en tänkt lösning som redan har diskuterats inom projektet. Lämpligt för nya utvecklare som vill bidra och få bättre förståelse för bidragsprocessen.
+
+Det finns också ärenden taggade med "ready to take", vilket är ärenden som redan har blivit åtminstone delvis lösta i diskussioner, så pass att det är tydligt vad som behöver göras härnäst.
+
+Självklart kan du arbeta med vilket annat ärende du vill – "good first" och "ready to take" ärenden är bara de där omfattning och tidsram ofta är tydligare definierade. Pull requests för andra ärenden, eller helt nya problem, kan ta lite längre tid att granska om de inte passar in i vår nuvarande utvecklingscykel och det finns en risk att någon i teamet redan arbetar på ärendet.
+
+Om du bestämmer dig för att lösa ett ärende, se till att kolla kommentarsfältet för att se om någon redan arbetar på en lösning. Om ingen gör det just nu, lämna gärna en kommentar där du skriver att du har börjat arbeta med det, så att andra inte råkar göra samma jobb.
+
+Om någon har tagit på sig ett ärende men inte följer upp inom en vecka, går det bra att ta över – men lämna ändå en kommentar. Om det inte har varit någon aktivitet på ärendet på 7 till 14 dagar är det rimligt att anta att ingen jobbar på det.
+
+
 
 ## Återkoppling på ärenden och Pull Requests
 
