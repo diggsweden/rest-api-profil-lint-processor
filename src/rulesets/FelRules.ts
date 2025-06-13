@@ -16,7 +16,7 @@ export class Fel01 extends BaseRuleset {
   static ruleMessage = `Om HTTP svarskoderna inte räcker SKALL (FEL.01) API:et beskriva feldetaljer enligt RFC 9457 med dessa ingående attribut; ${Fel01.mandatoryProperties.join(', ')}.`;
 
   static customProperties: CustomProperties = {
-    område: 'Felhantering',
+    omrade: 'Felhantering',
     id: 'FEL.01',
   };
   description = '';
@@ -67,7 +67,7 @@ export class Fel02 extends BaseRuleset {
   static errorMessage =
     'Schemat enligt RFC 9457 bör innehålla de beskrivna attributen i FEL.01 och SKALL (FEL.02) använda mediatypen application/problem+json eller application/problem+xml i svaret.';
   static customProperties: CustomProperties = {
-    område: 'Felhantering',
+    omrade: 'Felhantering',
     id: 'FEL.02',
   };
   description = '';

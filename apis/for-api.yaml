@@ -92,9 +92,9 @@ paths:
         default:
           description: unexpected error
           content:
-            application/json:mor e
-              schema:
-                $ref: "#/components/schemas/Error"
+            application/json:more
+          schema:
+            $ref: "#/components/schemas/Error"
   /pets/petsagain/{petId}:
     get:
       summary: Info for a specific pet
