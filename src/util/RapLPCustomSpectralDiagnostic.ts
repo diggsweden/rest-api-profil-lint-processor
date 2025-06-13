@@ -11,7 +11,7 @@ import { ISpectralDiagnostic } from '@stoplight/spectral-core';
 export interface RapLPCustomSpectralDiagnostic
   extends Omit<ISpectralDiagnostic, 'message' | 'code' | 'severity' | 'path' | 'source' | 'range'> {
   id?: string;
-  område?: string;
+  omrade?: string;
   krav?: string;
   allvarlighetsgrad?: string;
   sökväg?: any;

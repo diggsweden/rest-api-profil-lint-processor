@@ -103,5 +103,3 @@ export { RapLPCustomSpectral };
 interface EnabledRules {
   rules: Record<string, any>;
 }
-
-

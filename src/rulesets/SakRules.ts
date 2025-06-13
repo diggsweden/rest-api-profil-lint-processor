@@ -62,7 +62,7 @@ export class Sak01 extends BaseRuleset {
 }
 export class Sak09 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Säkerhet',
+    omrade: 'Säkerhet',
     id: 'SAK.09',
   };
   description =
@@ -109,7 +109,7 @@ export class Sak09 extends BaseRuleset {
 }
 export class Sak10 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Säkerhet',
+    omrade: 'Säkerhet',
     id: 'SAK.10',
   };
   description =
@@ -207,7 +207,7 @@ export class Sak16 extends SakBaseApiKeyRule {
 }
 export class Sak18 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Säkerhet',
+    omrade: 'Säkerhet',
     id: 'SAK.18',
   };
   description = 'OAuth är ett auktorisationsprotokoll som säkert delegerar behörighet till en annan resurs.';

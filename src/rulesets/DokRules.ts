@@ -68,7 +68,7 @@ export class Dok15ReqBody extends Dok15Base {
 
 export class Dok17 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.17',
   };
   description =
@@ -111,7 +111,7 @@ export class Dok17 extends BaseRuleset {
 
 export class Dok20 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.20',
   };
   given = '$.paths[*][*].responses[*]';
@@ -191,7 +191,7 @@ export class Dok06 extends BaseRuleset {
 }
 export class Dok07 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.07',
   };
   given = '$.info';
@@ -398,7 +398,7 @@ export class Dok11 extends BaseRuleset {
 
 export class Dok19 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.19',
   };
   given = '$.paths[*][*]';
@@ -500,7 +500,7 @@ export class Dok21 extends BaseRuleset {
 }
 export class Dok01 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.01',
   };
   given = '$';
@@ -558,7 +558,7 @@ export class Dok01 extends BaseRuleset {
  */
 export class Dok03Info extends Dok03Base {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.03',
   };
   given = '$.info';
@@ -601,7 +601,7 @@ export class Dok03Info extends Dok03Base {
 
 export class Dok03ContactName extends Dok03Base {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.03',
   };
   message = this.description + '(Contact saknar name)';
@@ -618,7 +618,7 @@ export class Dok03ContactName extends Dok03Base {
 
 export class Dok03ContactEmail extends Dok03Base {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.03',
   };
   message = this.description + '(Contact saknar email)';
@@ -635,7 +635,7 @@ export class Dok03ContactEmail extends Dok03Base {
 
 export class Dok03ContactUrl extends Dok03Base {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.03',
   };
   message = this.description + '(Contact saknar url)';
@@ -652,7 +652,7 @@ export class Dok03ContactUrl extends Dok03Base {
 
 export class Dok03Contact extends Dok03Base {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.03',
   };
   message = this.description + '(Saknar contact objektet)';
@@ -668,7 +668,7 @@ export class Dok03Contact extends Dok03Base {
 
 export class Dok03License extends Dok03Base {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.03',
   };
   message = this.description + '(Saknar license objektet)';
@@ -684,7 +684,7 @@ export class Dok03License extends Dok03Base {
 
 export class Dok03LicenseUrl extends Dok03Base {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.03',
   };
   message = this.description + '(license saknar url)';
@@ -700,7 +700,7 @@ export class Dok03LicenseUrl extends Dok03Base {
 
 export class Dok03LicenseName extends Dok03Base {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.03',
   };
   message = this.description + '(license saknar name)';

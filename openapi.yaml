@@ -1,0 +1,524 @@
+openapi: 3.0.3
+info:
+  title: REST API-profil - Lint Processor - OpenAPI 3.0
+  description: |-
+    This is a description.
+
+    Some useful links:
+    - [REST API-profil - Lint Processor (RAP-LP) repository](https://github.com/diggsweden/rest-api-profil-lint-processor/)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: "test testsson"
+    email: apiteam@swagger.io
+    url: https://github.com/diggsweden/rest-api-profil-lint-processor/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about RAPL-LP
+  url: https://www.dataportal.se/rest-api-profil
+servers:
+  - url: http://localhost:3000/api/v1
+tags:
+  - name: validate
+    description: Everything about your validations
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+paths:
+  /validation/validate:
+    post:
+      tags:
+        - validate
+      summary: Validate your yaml
+      description: Validate your yaml
+      operationId: validateContent
+      requestBody:
+        description: |-
+          Yaml can be sent as a base64 encoded file or a yaml string. 
+
+          ContentType is specifying the type of yaml content being sent
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/YamlContentDto"
+            example:
+              yaml: "<base64encoded file>"
+              categories:
+                - "DokRules"
+                - "UfnRules"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponseDto"
+              example:
+                result:
+                  - id: "AME.04"
+                    omrade: "API Message"
+                    krav: "För fältnamn i request och response body BÖR camelCase eller snake_case notation användas."
+                    allvarlighetsgrad: "WARNING"
+                    sokvag:
+                      - "components"
+                      - "schemas"
+                      - "ValidationResponseDto"
+                      - "properties"
+                      - "report"
+                      - "items"
+                      - "properties"
+                      - "Notering"
+                    omfattning:
+                      start:
+                        character: 0
+                        line: 0
+                      end:
+                        character: 0
+                        line: 0
+                report:
+                  - Notering: "Godkända regler - RAP-LP"
+                    regler:
+                      - id: "UFN.05"
+                        omrade: "URL Format och namngivning"
+                        status: "OK"
+                  - Notering: "Ej Godkända regler - RAP-LP"
+                    regler:
+                      - id: "DOK.03"
+                        omrade: "Dokumentation"
+                        status: "EJ OK"
+                  - Notering: "Ej tillämpade regler - RAP-LP"
+                    regler:
+                      - id: "SAK.09"
+                        omrade: "Säkerhet"
+                        status: "N/A"
+        "400":
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetailsDto"
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 400
+                detail: "Test error"
+                instance: "/example"
+        "500":
+          description: INTERNAL_SERVER_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetailsDto"
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 500
+                detail: "Test error"
+                instance: "/example"
+  /validation/rules:
+    get:
+      tags:
+        - validation-rules
+      summary: Get validation rules
+      description: Get a collection of available validation rules.
+      operationId: getValidationRules
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationRules"
+        "500":
+          description: INTERNAL_SERVER_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetailsDto"
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 500
+                detail: "Test error"
+                instance: "/example"
+  /validation/generate-report:
+      post:
+        tags:
+          - validate
+        summary: Generate status report
+        description: Accepts report data as the request body and returns a generated status report as a downloadable excel file.
+        operationId: generateReport
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - report
+                properties:
+                  report:
+                    type: array
+                    items:
+                      type: object
+                    description: An array of objects representing the data for the report.
+        responses:
+          '200':
+            description: Successful operation
+            content:
+              application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+                schema:
+                  type: string
+                  format: binary
+                example:
+            headers:
+              Content-Disposition:
+                schema:
+                  type: string
+                description: Header to indicate the filename for the downloaded file.
+          '400':
+            description: BAD_REQUEST
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ProblemDetailsDto'
+                example:
+                  type: "about:blank"
+                  title: "Test title"
+                  status: 400
+                  detail: "Test error"
+                  instance: "/example"  
+          '500':
+            description: INTERNAL_SERVER_ERROR
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ProblemDetailsDto'
+                example:
+                  type: "about:blank"
+                  title: "Test title"
+                  status: 500
+                  detail: "Test error"
+                  instance: "/example"
+  /validation/url:
+    post:
+      tags:
+        - validate
+      summary: Validate your yaml from remote url
+      description: Validate your yaml from remote url
+      operationId: validateUrl
+      requestBody:
+        description: |-
+          OpenApi yaml is fetched from remote server and validated on server. 
+          Feature must be enabled explicitly on server.
+
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UrlContentDto"
+            example:
+              url: "http://localhost:8080/q/openapi"
+              categories:
+                - "DokRules"
+                - "UfnRules"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RapLPCustomSpectralDiagnostic"
+              example:
+                - id: "AME.04"
+                  omrade: "API Message"
+                  krav: "För fältnamn i request och response body BÖR camelCase eller snake_case notation användas."
+                  allvarlighetsgrad: "WARNING"
+                  sokvag:
+                    - "components"
+                    - "schemas"
+                  omfattning:
+                    start:
+                      line: 1
+                      character: 5
+                    end:
+                      line: 1
+                      character: 10
+        "400":
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetailsDto"
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 400
+                detail: "Test error"
+                instance: "/example"
+        "409":
+          description: CONFLICT
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetailsDto"
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 409
+                detail: "Test error"
+                instance: "/example"
+        "500":
+          description: INTERNAL_SERVER_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetailsDto"
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 500
+                detail: "Test error"
+                instance: "/example"
+  /api-info:
+    get:
+      tags:
+        - api-info
+      summary: Get info about the api
+      description: Get name, version, release date, links and status.
+      operationId: getApiInfo
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiInfo"
+              example:
+                apiName: "RAP-LP"
+                apiVersion: "0.0.1"
+                apiReleased: "2024-10-10"
+                apiDocumentation: "http://example.digg/docs"
+                apiStatus: "active"
+        "400":
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetailsDto"
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 400
+                detail: "Test error"
+                instance: "/example"
+        "500":
+          description: INTERNAL_SERVER_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetailsDto"
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 500
+                detail: "Test error"
+                instance: "/example"
+
+components:
+  schemas:
+    ValidationRules:
+      type: array
+      description: A list of validation rules.
+      items:
+        type: object
+        properties:
+          rule:
+            type: string
+            description: The name of the validation rule.
+            example: "UfnRules" # Example rule name
+          description:
+            type: string
+            description: Description of the validation rule.
+            example: "URL Format och namngivning" # Example description
+      example: # Example array of rules
+        - rule: "UfnRules"
+          description: "URL Format och namngivning"
+        - rule: "SakRules"
+          description: "Säkerhet"
+        - rule: "VerRules"
+          description: "Versionshantering"
+        - rule: "FnsRules"
+          description: "Filtrering, paginering och sökparametrar"
+        - rule: "ArqRules"
+          description: "API Request"
+        - rule: "DokRules"
+          description: "Dokumentation"
+        - rule: "AmeRules"
+          description: "API Message"
+        - rule: "ForRules"
+          description: "Förutsättningar"
+        - rule: "DotRules"
+          description: "Datum- och tidsformat"
+    YamlContentDto:
+      type: object
+      properties:
+        yaml:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+            example: "DokRules,UfnRules"
+    UrlContentDto:
+      type: object
+      properties:
+        url:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+            example: "DokRules,UfnRules"
+    ProblemDetailsDto:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: "integer"
+        detail:
+          type: string
+        instance:
+          type: string
+    ApiInfo:
+      type: object
+      properties:
+        apiName:
+          type: string
+        apiVersion:
+          type: string
+        apiReleased:
+          type: string
+          format: date
+          example: "2024-10-23"
+        apiDocumentation:
+          type: string
+          format: uri
+        apiStatus:
+          type: string
+    IDiagnostic:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+        relatedInformation:
+          type: array
+          items:
+            $ref: "#/components/schemas/IDiagnosticRelatedInformation"
+    IDiagnosticRelatedInformation:
+      type: object
+      properties:
+        location:
+          $ref: "#/components/schemas/ILocation"
+        message:
+          type: string
+    ILocation:
+      type: object
+      properties:
+        uri:
+          type: string
+          nullable: true
+        range:
+          $ref: "#/components/schemas/IRange"
+    IPosition:
+      type: object
+      properties:
+        line:
+          type: "integer"
+        character:
+          type: "integer"
+    IRange:
+      type: object
+      properties:
+        start:
+          $ref: "#/components/schemas/IPosition"
+        end:
+          $ref: "#/components/schemas/IPosition"
+    RapLPCustomSpectralDiagnosticItem:
+      allOf:
+        - $ref: "#/components/schemas/IDiagnostic"
+        - type: object
+          properties:
+            id:
+              type: string
+              nullable: true
+            omrade:
+              type: string
+              nullable: true
+            krav:
+              type: string
+              nullable: true
+            allvarlighetsgrad:
+              type: string
+              nullable: true
+            sokvag:
+              type: array
+              items:
+                type: string
+              nullable: true
+            omfattning:
+              type: object
+              nullable: true
+      xml:
+        name: order
+    RapLPCustomSpectralDiagnostic:
+      type: array
+      items:
+        $ref: "#/components/schemas/RapLPCustomSpectralDiagnosticItem"
+    ValidationResponseDto:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            $ref: "#/components/schemas/RapLPCustomSpectralDiagnosticItem"
+        report:
+          type: array
+          items:
+            $ref: "#/components/schemas/DiagnosticReport"
+    DiagnosticRuleInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "UFN.05"
+        omrade:
+          type: string
+          example: "URL Format och namngivning"
+    PopulatedDiagnosticRuleInfo:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/DiagnosticRuleInfo"
+        - type: object
+          properties:
+            status:
+              type: string
+              example: "OK"
+    DiagnosticReport:
+      type: object
+      properties:
+        Notering:
+          type: string
+          example: "Godkända regler - RAP-LP"
+        regler:
+          type: array
+          items:
+            $ref: "#/components/schemas/PopulatedDiagnosticRuleInfo"

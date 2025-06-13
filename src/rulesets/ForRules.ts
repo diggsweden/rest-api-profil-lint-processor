@@ -16,7 +16,7 @@ const moduleName: string = 'ForRules.js';
  */
 export class For02 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Förutsättningar',
+    omrade: 'Förutsättningar',
     id: 'FOR.02',
   };
   description = 'EN GET -förfrågan SKALL INTE acceptera en body';
