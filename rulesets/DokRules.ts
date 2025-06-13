@@ -8,6 +8,7 @@ import { truthy, falsy, pattern } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { Dok03Base } from './rulesetUtil.ts';
 import { Dok15Base } from './rulesetUtil.ts';
+import { forEachChild } from 'typescript';
 const moduleName: string = 'DokRules.ts';
 
 export class Dok15Get extends Dok15Base {
@@ -27,7 +28,7 @@ export class Dok15Get extends Dok15Base {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok15Base.customProperties,
+          Dok15Base.customProperties
         );
       },
     },
@@ -51,7 +52,7 @@ export class Dok15ReqBody extends Dok15Base {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok15Base.customProperties,
+          Dok15Base.customProperties
         );
       },
     },
@@ -89,7 +90,7 @@ export class Dok17 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok17.customProperties,
+          Dok17.customProperties
         );
       },
     },
@@ -122,7 +123,7 @@ export class Dok20 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok20.customProperties,
+          Dok20.customProperties
         );
       },
     },
@@ -132,6 +133,68 @@ export class Dok20 extends BaseRuleset {
     super.initializeFormats(['OAS2', 'OAS3']);
   }
   severity = DiagnosticSeverity.Error;
+}
+export class Dok06 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: 'Dokumentation',
+    id: 'DOK.06',
+  };
+  given = '$.info.description';
+  message = 'Dokumentationen BÖR (DOK.06) finnas på både svenska och engelska.';
+  then = [
+    {
+      function: (targetVal: string, _opts: string, paths: string[]) => {
+        const englishWords = ['and', 'it']; //TODO: fler ord
+        const swedishWords = ['och', 'det']; //TODO: fler ord
+
+        let includesEnglish = false;
+        let includesSwedish = false;
+
+        for (const word of englishWords) {
+          if (targetVal.includes(word)) {
+            includesEnglish = true;
+            break;
+          }
+        }
+
+        for (const word of swedishWords) {
+          if (targetVal.includes(word)) {
+            includesSwedish = true;
+            break;
+          }
+        }
+
+        if (!includesEnglish || !includesSwedish) {
+          return [
+            {
+              message: this.message,
+              severity: this.severity,
+            },
+          ];
+        } else {
+          return [];
+        }
+      },
+    },
+    {
+      function: (targetVal: string, _opts: string, paths: string[]) => {
+        this.trackRuleExecutionHandler(
+          JSON.stringify(targetVal, null, 2),
+          _opts,
+          paths,
+          this.severity,
+          this.constructor.name,
+          moduleName,
+          Dok06.customProperties
+        );
+      },
+    },
+  ];
+  constructor() {
+    super();
+    super.initializeFormats(['OAS3']);
+  }
+  severity = DiagnosticSeverity.Warning;
 }
 export class Dok07 extends BaseRuleset {
   static customProperties: CustomProperties = {
@@ -154,7 +217,7 @@ export class Dok07 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok07.customProperties,
+          Dok07.customProperties
         );
       },
     },
@@ -187,7 +250,7 @@ export class Dok19 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok19.customProperties,
+          Dok19.customProperties
         );
       },
     },
@@ -217,7 +280,7 @@ export class Dok01 extends BaseRuleset {
             this.severity,
             this.constructor.name,
             moduleName,
-            Dok01.customProperties,
+            Dok01.customProperties
           );
 
           obj = targetVal['externalDocs'];
@@ -291,7 +354,7 @@ export class Dok03Info extends Dok03Base {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok03Info.customProperties,
+          Dok03Info.customProperties
         );
       },
     },
