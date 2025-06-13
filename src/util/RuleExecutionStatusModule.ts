@@ -28,7 +28,7 @@ export function registerRuleExecutionStatus(
   customProperties: CustomProperties,
   severity: string,
 ) {
-  const key = `${moduleName}:${customProperties.id}:${customProperties.område}:${severity}`;
+  const key = `${moduleName}:${customProperties.id}:${customProperties.omrade}:${severity}`;
   ruleExecutionStatus[key] = true;
 }
 export function logRuleExecution(
@@ -39,7 +39,7 @@ export function logRuleExecution(
   passed: boolean,
   targetVal: string,
 ) {
-  const key = `${moduleName}:${customProperties.id}:${customProperties.område}:${severity}`;
+  const key = `${moduleName}:${customProperties.id}:${customProperties.omrade}:${severity}`;
 
   if (!ruleExecutionLogDictionary[key]) {
     ruleExecutionLogDictionary[key] = [];

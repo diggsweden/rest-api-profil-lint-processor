@@ -10,7 +10,8 @@ module.exports = async () => {
     testEnvironment: 'node',
     "extensionsToTreatAsEsm": [".ts"],
     transform: {
-      '.*': ['ts-jest', {useIsolatedModules: true }]
-    }
+      '^.+\\.ts$': ['ts-jest', { useIsolatedModules: true }], // Move ts-jest config here
+    },
+    testMatch: ['**/tests/unit/**/*.test.ts']
   };
 };

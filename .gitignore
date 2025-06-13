@@ -9,3 +9,6 @@ Avstaemning_REST_API_profil_generated*.xlsx
 .tool-versions
 
 megalinter-reports
+tests/generated
+openapitools.json
+dist
