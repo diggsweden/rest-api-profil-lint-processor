@@ -256,7 +256,7 @@ Om du har frågor, funderingar, buggrapporter etc, vänligen kontakta [Digg - Ag
 
 ## Bidra
 
-Om du vill bidra till projektet, vänligen följ instruktionerna i avsnittet [Contributing](CONTRIBUTING).
+Om du vill bidra till projektet, vänligen följ instruktionerna i avsnittet [Contributing](CONTRIBUTING.md).
 
 ## Utveckling
 
