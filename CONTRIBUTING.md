@@ -56,12 +56,12 @@ För att bidra med kod, dokumentation eller andra förbättringar:
 
 1. Diskutera dina planer i förväg för att säkerställa att de stämmer överens med projektmålen.
 2. Kontrollera listan över öppna ärenden, saknas ett ärende för det tänkta bidraget skapar du ett nytt.
-4. Tilldela dig själv ett befintligt ärende genom att kommentera ärendet.
-3. Följ projektkonventioner för tester, kodstil, dokumentation och commit-meddelanden.
-4. Förstå att bidrag kan avslås om de inte överensstämmer med projektets riktlinjer eller mål.
-5. Bekanta dig med [Pull Request-livscykeln](#pull-request-livscykel).
-6. Godkänn "inbound=outbound"-normen: dina bidrag kommer att vara under samma licens som projektet.
-7. [Signera dina commits](#dco---signoff-och-signering-av-en-commit).
+3. Tilldela dig själv ett befintligt ärende genom att kommentera ärendet.
+4. Följ projektkonventioner för tester, kodstil, dokumentation och commit-meddelanden.
+5. Förstå att bidrag kan avslås om de inte överensstämmer med projektets riktlinjer eller mål.
+6. Bekanta dig med [Pull Request-livscykeln](#pull-request-livscykel).
+7. Godkänn "inbound=outbound"-normen: dina bidrag kommer att vara under samma licens som projektet.
+8. [Signera dina commits](#dco---signoff-och-signering-av-en-commit).
 
 Kom igång med "good first issues", de har en begränsad omfattning och en tänkt lösning som redan har diskuterats inom projektet. Lämpligt för nya utvecklare som vill bidra och få bättre förståelse för bidragsprocessen.
 
