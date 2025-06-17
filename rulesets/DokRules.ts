@@ -8,7 +8,6 @@ import { truthy, falsy, pattern } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { Dok03Base } from './rulesetUtil.ts';
 import { Dok15Base } from './rulesetUtil.ts';
-import { forEachChild } from 'typescript';
 import { commonEnglishWords, commonSwedishWords } from './constants/CommonWords.ts';
 const moduleName: string = 'DokRules.ts';
 
