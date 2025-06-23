@@ -75,6 +75,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
 9. [Område: Säkerhet](#område-säkerhet)
    - [ID: SAK.09](#id-sak09)
    - [ID: SAK.10](#id-sak10)
+   - [ID: SAK.15](#id-sak15)
    - [ID: SAK.18](#id-sak18)
 10. [Område: Förutsättningar](#område-förutsättningar)
 - [ID: FOR.02](#id-for02)
@@ -943,7 +944,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar
 
 ## Område: Säkerhet
 
-**Täckningsgrad: 9%**
+**Täckningsgrad: 11%**
 
 ### ID: SAK.09
 
@@ -988,6 +989,29 @@ Regeln kontrollerar förutsatt att det finns ett securityscheme definierat, att 
 ![alt text](images/sak10.png)
 
 I exemplet ovan så kommer regeln att ge ett positivt utfall eftersom det finns ett securityscheme definerad för bearer. Fältet 'bearerFormat' är valfritt och JWT anger att tokenen följer JWT-standarden
+
+---
+
+### ID: SAK.15
+
+**Krav:** API-nycklar SKALL INTE inkluderas i URL eller querysträngen.
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+$.components.securitySchemes[?(@ && @.type=='apiKey')]
+```
+
+**Förklaring:**
+Regeln kontrollerar, under förutsättning att ett security scheme är definierat, att om typen är 'apiKey', så får värdet för parametern 'in' inte vara 'query.
+
+**Exempel:**
+
+![alt text](images/sak15.png)
+
+I exemplet ovan ger regeln ett negativt utfall, eftersom det definierade säkerhetsschemat 'ApiKeyQuery' har typen 'apiKey' och parametern 'in' är satt till 'query', vilket strider mot regeln.
 
 ---
 

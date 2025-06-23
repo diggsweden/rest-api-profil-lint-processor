@@ -102,7 +102,7 @@ export class Sak15 extends BaseRuleset {
   description = '-';
   message = 'API-nycklar SKALL INTE inkluderas i URL eller querysträngen';
   given =
-    "$..securitySchemes[?(@.type=='apiKey')]";
+    "$.components.securitySchemes[?(@ && @.type=='apiKey')]";
     then = [
       {
         function: (targetVal: any, _opts: any, paths: string[]) => {
@@ -174,4 +174,4 @@ export class Sak18 extends BaseRuleset {
   }
   severity = DiagnosticSeverity.Warning;
 }
-export default { Sak09, Sak10, Sak18 };
+export default { Sak09, Sak10, Sak15, Sak18 };
