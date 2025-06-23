@@ -94,6 +94,50 @@ export class Sak10 extends BaseRuleset {
   }
   severity = DiagnosticSeverity.Error;
 }
+export class Sak15 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: 'Säkerhet',
+    id: 'SAK.15',
+  };
+  description = '-';
+  message = 'API-nycklar SKALL INTE inkluderas i URL eller querysträngen';
+  given =
+    "$..securitySchemes[?(@.type=='apiKey')]";
+    then = [
+      {
+        function: (targetVal: any, _opts: any, paths: string[]) => {
+          const result: any[] = [];
+  
+          if (targetVal.in && targetVal.in.toLowerCase() === 'query') {
+            result.push({
+              message: 'API-nycklar SKALL INTE inkluderas i URL eller querysträngen.',
+              severity: DiagnosticSeverity.Error,
+            });
+          }
+          return result;
+        },
+      },
+      {
+        function: (targetVal: any, _opts: any, paths: string[]) => {
+          this.trackRuleExecutionHandler(
+            JSON.stringify(targetVal, null, 2),
+            _opts,
+            paths,
+            this.severity,
+            this.constructor.name,
+            moduleName,
+            Sak15.customProperties,
+          );
+        },
+      },
+    ];
+    constructor() {
+    super();
+    super.initializeFormats(['OAS3']);
+  }
+  severity = DiagnosticSeverity.Error;
+  
+}
 export class Sak18 extends BaseRuleset {
   static customProperties: CustomProperties = {
     område: 'Säkerhet',

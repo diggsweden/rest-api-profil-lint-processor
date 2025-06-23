@@ -45,6 +45,7 @@ const ruleTypes = [
   UfnRules.Ufn09InPathParameters,
   SakRules.Sak09,
   SakRules.Sak10,
+  SakRules.Sak15,
   SakRules.Sak18,
   VerRules.Ver05,
   VerRules.Ver06,

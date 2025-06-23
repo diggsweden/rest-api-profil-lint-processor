@@ -115,6 +115,12 @@ components:
           scopes:
             write:pets: modify pets in your account
             read:pets: read your pets
+    ApiKeyQuery:
+      type: apiKey
+      in: query
+      name: api_key
+
+
   schemas:
     Error:
       type: object
