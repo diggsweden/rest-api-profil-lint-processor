@@ -115,7 +115,8 @@ components:
           scopes:
             write:pets: modify pets in your account
             read:pets: read your pets
-    ApiKeyQuery:
+    #Test for invalid types in security schemes
+    ApiKeyQuery: 
       type: apiKey
       in: query
       name: api_key
