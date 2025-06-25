@@ -197,7 +197,7 @@ export class Ame05 extends BaseRuleset {
     id: 'AME.05',
   };
   description = 'Inom ett API SKALL namnsättningen vara konsekvent, dvs blanda inte camelCase och snake_case.';
-  message = 'Inom ett API SKALL namnsättningen vara konsekvent, dvs blanda inte camelCase och snake_case. ';
+  message = 'Inom ett API SKALL namnsättningen vara konsekvent, dvs blanda inte camelCase och snake_case.';
   given = '$.components.schemas';
   then = [
     {
