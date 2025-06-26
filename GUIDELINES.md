@@ -1,7 +1,7 @@
 <!--
 SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
 
-SPDX-License-Identifier: CC0-1.0 
+SPDX-License-Identifier: CC0-1.0
 -->
 
 # RAP-LP Open API Specification Guidelines Version 1.0.0
@@ -13,7 +13,6 @@ Verktyget analyserar OpenAPI-specifikationen och kontrollerar att API:et följer
 Utöver reglerna från REST API-profilen innehåller RAP-LP även ett regelområde benämnt **Förutsättningar**. Detta område omfattar tilläggsregler som inte ingår i profilen, men som baseras på etablerad god praxis för API-design. Reglerna i Förutsättningar kan hjälpa till att ytterligare höja kvaliteten på API-specifikationen genom att identifiera förbättringsområden som inte täcks av den nationella profilen.
 
 Den första versionen av RAP-LP är kompatibel med REST API-profil version 1.2.0, och varje ny version av verktyget kommer att ange vilken version av profilen den är avsedd att stödja.
-
 
 ## Regelstruktur
 
@@ -33,6 +32,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
 1. [Område: Dokumentation](#område-dokumentation)
    - [ID: DOK.01](#id-dok01)
    - [ID: DOK.03](#id-dok03)
+   - [ID: DOK.06](#id-dok06)
    - [ID: DOK.07](#id-dok07)
    - [ID: DOK.15](#id-dok15)
    - [ID: DOK.17](#id-dok17)
@@ -79,8 +79,8 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: SAK.16](#id-sak16)
    - [ID: SAK.18](#id-sak18)
 10. [Område: Förutsättningar](#område-förutsättningar)
-- [ID: FOR.02](#id-for02)
 
+- [ID: FOR.02](#id-for02)
 
 ## Område: Dokumentation
 
@@ -1063,6 +1063,7 @@ Regeln kontrollerar, förutsatt att typen av säkerhetsschema är ett oauth2, at
 I exemplet ovan så kommer regeln att ge ett negativt utfall eftersom clientCredentials fälten tokenUrl samt refreshUrl är specificerat med http.
 
 ---
+
 ## Område: Förutsättningar
 
 **Täckningsgrad: 100%**
