@@ -336,7 +336,7 @@ I exemplet ovan, så exemplifieras regeln med att oavsett typ av operation, unde
 
 ### ID: RES.02
 
-**Krav:** Primärnycklar eller personligt identifierbar information (personnummer, etc.) BÖR INTE exponeras. Om detta är svårt att uppnå är det troligt att API:et behöver abstraheras ytterligare från den underliggande datakällan.
+**Krav:** Primärnycklar eller personligt identifierbar information (personnummer, etc.) BÖR INTE exponeras.
 
 **Typ:** BÖR
 
@@ -347,7 +347,7 @@ $.paths[*].*.parameters[*]
 ```
 
 **Förklaring:**
-Regeln kontrollerar att parametrar av typerna query och pathparametrar inte använder följande namn:
+Regeln kontrollerar att parametrar av typerna query och path inte använder följande namn:
 
 - pnr
 - personalidentitynumber

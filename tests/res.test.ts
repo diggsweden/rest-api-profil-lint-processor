@@ -26,7 +26,7 @@ testRule('Res02', [
     },
     errors: [
       {
-        message: 'Resurser bör inte innehålla personnummer',
+        message: 'Primärnycklar eller personligt identifierbar information (personnummer, etc.) BÖR INTE exponeras.',
         severity: DiagnosticSeverity.Warning,
       },
     ],
@@ -71,7 +71,7 @@ testRule('Res02', [
     },
     errors: [
       {
-        message: 'Resurser bör inte innehålla personnummer',
+        message: 'Primärnycklar eller personligt identifierbar information (personnummer, etc.) BÖR INTE exponeras.',
         severity: DiagnosticSeverity.Warning,
       },
     ],
