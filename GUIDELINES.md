@@ -1,7 +1,7 @@
 <!--
 SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
 
-SPDX-License-Identifier: CC0-1.0 
+SPDX-License-Identifier: CC0-1.0
 -->
 
 # RAP-LP Open API Specification Guidelines Version 1.0.0
@@ -13,7 +13,6 @@ Verktyget analyserar OpenAPI-specifikationen och kontrollerar att API:et följer
 Utöver reglerna från REST API-profilen innehåller RAP-LP även ett regelområde benämnt **Förutsättningar**. Detta område omfattar tilläggsregler som inte ingår i profilen, men som baseras på etablerad god praxis för API-design. Reglerna i Förutsättningar kan hjälpa till att ytterligare höja kvaliteten på API-specifikationen genom att identifiera förbättringsområden som inte täcks av den nationella profilen.
 
 Den första versionen av RAP-LP är kompatibel med REST API-profil version 1.2.0, och varje ny version av verktyget kommer att ange vilken version av profilen den är avsedd att stödja.
-
 
 ## Regelstruktur
 
@@ -41,30 +40,32 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
 2. [Område: Datum- och tidsformat](#område-datum--och-tidsformat)
    - [ID: DOT.01](#id-dot01)
    - [ID: DOT.04](#id-dot04)
-3. [Område: URL Format och namngivning](#område-url-format-och-namngivning)
+3. [Område: Resurser](#område-resurser)
+   - [ID: RES.02](#id-res02)
+4. [Område: URL Format och namngivning](#område-url-format-och-namngivning)
    - [ID: UFN.01](#id-ufn01)
    - [ID: UFN.02](#id-ufn02)
    - [ID: UFN.05](#id-ufn05)
    - [ID: UFN.07](#id-ufn07)
    - [ID: UFN.08](#id-ufn08)
    - [ID: UFN.09](#id-ufn09)
-4. [Område: API Message](#område-api-message)
+5. [Område: API Message](#område-api-message)
    - [ID: AME.01](#id-ame01)
    - [ID: AME.02](#id-ame02)
    - [ID: AME.04](#id-ame04)
    - [ID: AME.05](#id-ame05)
    - [ID: AME.07](#id-ame07)
-5. [Område: API Request](#område-api-request)
+6. [Område: API Request](#område-api-request)
    - [ID: ARQ.01](#id-arq01)
    - [ID: ARQ.03](#id-arq03)
    - [ID: ARQ.05](#id-arq05)
-6. [Område: Felhantering](#område-felhantering)
+7. [Område: Felhantering](#område-felhantering)
    - [ID: FEL.01](#id-fel01)
    - [ID: FEL.02](#id-fel02)
-7. [Område: Versionhantering](#område-versionhantering)
+8. [Område: Versionhantering](#område-versionhantering)
    - [ID: VER.05](#id-ver05)
    - [ID: VER.06](#id-ver06)
-8. [Område: Filtrering, paginering och sökparametrar](#område-filtrering-paginering-och-sökparametrar)
+9. [Område: Filtrering, paginering och sökparametrar](#område-filtrering-paginering-och-sökparametrar)
    - [ID: FNS.01](#id-fns01)
    - [ID: FNS.03](#id-fns03)
    - [ID: FNS.05](#id-fns05)
@@ -72,13 +73,13 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: FNS.07](#id-fns07)
    - [ID: FNS.08](#id-fns08)
    - [ID: FNS.09](#id-fns09)
-9. [Område: Säkerhet](#område-säkerhet)
-   - [ID: SAK.09](#id-sak09)
-   - [ID: SAK.10](#id-sak10)
-   - [ID: SAK.18](#id-sak18)
-10. [Område: Förutsättningar](#område-förutsättningar)
-- [ID: FOR.02](#id-for02)
+10. [Område: Säkerhet](#område-säkerhet)
+    - [ID: SAK.09](#id-sak09)
+    - [ID: SAK.10](#id-sak10)
+    - [ID: SAK.18](#id-sak18)
+11. [Område: Förutsättningar](#område-förutsättningar)
 
+- [ID: FOR.02](#id-for02)
 
 ## Område: Dokumentation
 
@@ -326,6 +327,38 @@ Regeln söker efter förekomster av fält som beskrivs som datumfält och har fo
 ![alt text](images/dot4.png)
 
 I exemplet ovan, så exemplifieras regeln med att oavsett typ av operation, undersöka om det finns en förekomst av fältet examples under i detta fall attributeten ” postedDate och postedTime ”. Ifall man refererar en schema definition med hjälp av nyckelordet $ref, så ignoreras övriga element på aktuell nivå. Detta innebär att om det finns ett exempel fält på schema nivå så ”overridar” den ett ev. ”inline” exempelfält.
+
+---
+
+## Område: Resurser
+
+**Täckningsgrad: 17%**
+
+### ID: RES.02
+
+**Krav:** Primärnycklar eller personligt identifierbar information (personnummer, etc.) BÖR INTE exponeras. Om detta är svårt att uppnå är det troligt att API:et behöver abstraheras ytterligare från den underliggande datakällan.
+
+**Typ:** BÖR
+
+**JSON Path Plus-uttryck:**
+
+```
+$.paths[*].*.parameters[*]
+```
+
+**Förklaring:**
+Regeln kontrollerar att parametrar av typerna query och pathparametrar inte använder följande namn:
+
+- pnr
+- personalidentitynumber
+- personnummer
+- personnr
+- ssn
+- socialsecuritynumber
+
+**Exempel:**
+
+![alt text](images/dot1.png)
 
 ---
 
@@ -1013,6 +1046,7 @@ Regeln kontrollerar, förutsatt att typen av säkerhetsschema är ett oauth2, at
 I exemplet ovan så kommer regeln att ge ett negativt utfall eftersom clientCredentials fälten tokenUrl samt refreshUrl är specificerat med http.
 
 ---
+
 ## Område: Förutsättningar
 
 **Täckningsgrad: 100%**
