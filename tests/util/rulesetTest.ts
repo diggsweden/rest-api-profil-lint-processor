@@ -16,6 +16,7 @@ import * as AmeRules from '../../rulesets/AmeRules.ts';
 import * as ForRules from '../../rulesets/ForRules.ts';
 import * as DotRules from '../../rulesets/DotRules.ts';
 import * as FelRules from '../../rulesets/FelRules.ts';
+import * as ResRules from '../../rulesets/ResRules.ts';
 
 const ruleInstances: Record<string, any> = {};
 
@@ -80,6 +81,7 @@ const ruleTypes = [
   DokRules.Dok03License,
   DokRules.Dok03LicenseName,
   DokRules.Dok03LicenseUrl,
+  ResRules.Res02,
 ];
 ruleTypes.forEach((RuleClass) => {
   const instance = new RuleClass();
