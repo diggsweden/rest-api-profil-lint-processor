@@ -44,7 +44,7 @@ export class Res02 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Res02.customProperties
+          Res02.customProperties,
         );
       },
     },
