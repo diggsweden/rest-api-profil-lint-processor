@@ -5,6 +5,7 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
 import { BaseRuleset } from './BaseRuleset.ts';
+import { personalIdentityNumberFieldNames } from './constants/ResConstants.ts';
 
 const moduleName: string = 'ResRules.ts';
 
@@ -20,16 +21,8 @@ export class Res02 extends BaseRuleset {
   then = [
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {
-        const forbiddenKeys = [
-          'pnr',
-          'personalIdentityNumber',
-          'personnummer',
-          'personnr',
-          'ssn',
-          'socialSecurityNumber',
-        ];
         if (targetVal.in == 'query' || targetVal.in == 'path') {
-          if (forbiddenKeys.includes(targetVal.name)) {
+          if (personalIdentityNumberFieldNames.includes(targetVal.name)) {
             return [
               {
                 message: this.message,
