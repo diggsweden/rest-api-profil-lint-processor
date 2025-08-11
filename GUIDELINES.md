@@ -358,7 +358,7 @@ Regeln kontrollerar att parametrar av typerna query och pathparametrar inte anv√
 
 **Exempel:**
 
-![alt text](images/dot1.png)
+![alt text](images/res02.png)
 
 ---
 
