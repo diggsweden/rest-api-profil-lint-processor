@@ -15,14 +15,16 @@ export class Res02 extends BaseRuleset {
     id: 'RES.02',
   };
   description =
-    'Primärnycklar eller personligt identifierbar information (personnummer, etc.) BÖR INTE (RES.02) exponeras. Om detta är svårt att uppnå är det troligt att API:et behöver abstraheras ytterligare från den underliggande datakällan. ';
+    'Primärnycklar eller personligt identifierbar information (personnummer, etc.) BÖR INTE exponeras. Om detta är svårt att uppnå är det troligt att API:et behöver abstraheras ytterligare från den underliggande datakällan. ';
   message = 'Resurser bör inte innehålla personnummer ';
   given = '$.paths[*].*.parameters[*]';
   then = [
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {
         if (targetVal.in == 'query' || targetVal.in == 'path') {
-          if (personalIdentityNumberFieldNames.includes(targetVal.name)) {
+          const lowerCaseTargetVal = targetVal.toLowerCase();
+          const containsPersonalIdentityNumber = personalIdentityNumberFieldNames.includes(lowerCaseTargetVal);
+          if (containsPersonalIdentityNumber) {
             return [
               {
                 message: this.message,
