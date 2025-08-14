@@ -153,6 +153,7 @@ export class Dok06 extends BaseRuleset {
             {
               message: this.message,
               severity: this.severity,
+              paths: paths,
             },
           ];
         } else {
