@@ -27,6 +27,7 @@ export class Res02 extends BaseRuleset {
               {
                 message: this.message,
                 severity: this.severity,
+                paths: paths,
               },
             ];
           }
