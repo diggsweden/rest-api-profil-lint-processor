@@ -83,6 +83,7 @@ const ruleTypes = [
   DokRules.Dok03LicenseName,
   DokRules.Dok03LicenseUrl,
   ResRules.Res02,
+  ResRules.Res06,
 ];
 ruleTypes.forEach((RuleClass) => {
   const instance = new RuleClass();
