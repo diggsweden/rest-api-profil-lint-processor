@@ -46,6 +46,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: DOT.04](#id-dot04)
 3. [Område: Resurser](#område-resurser)
    - [ID: RES.02](#id-res02)
+   - [ID: RES.06](#id-res06)
 4. [Område: URL Format och namngivning](#område-url-format-och-namngivning)
    - [ID: UFN.01](#id-ufn01)
    - [ID: UFN.02](#id-ufn02)
@@ -454,7 +455,7 @@ I exemplet ovan, så exemplifieras regeln med att oavsett typ av operation, unde
 
 ## Område: Resurser
 
-**Täckningsgrad: 17%**
+**Täckningsgrad: 33%**
 
 ### ID: RES.02
 
@@ -486,6 +487,33 @@ _Exemplet ovan är giltigt då namnet på parametern inte är ett av ovanståend
 
 ---
 
+### ID: RES.06
+
+**Krav:** Resurser SKALL följa den namnsättningskonvention som beskrivs för URL:er, det vill säga att resurser anges med gemener, använder endast alfanumeriska tecken och bindestreck för att separera eventuella ord.
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+$.paths[*]~
+```
+
+**Förklaring:**
+Regeln kontrollerar att resurser anges i alfanumeriska tecken (ej versaler), och bindestreck för att separera eventuella ord. Undantag görs för path-parametrar som skrivs inom måsvingar ({}), då dessa ofta skrivs i camelCase.
+
+**Exempel:**
+
+![Exempelbild på en resurs med en underresurs i en OpenAPI Description](images/res06-1.png)
+
+_Varje resurs och underresurs (separerade med /) kontrolleras enskilt._
+
+![Exempelbild på en resurs innehållande en path-parameter i en OpenAPI Description](images/res06-2.png)
+
+_Path-parametrar undantas från regeln._
+
+---
+
 ## Område: URL Format och namngivning
 
 **Täckningsgrad: 54%**
@@ -511,6 +539,8 @@ Regeln söker efter 1-n förekomster av fältet `Url` under Serverobjektet, samt
 **Exempel:**
 
 ## ![alt text](images/ufn1-2.png)
+
+---
 
 ### ID: UFN.02
 
