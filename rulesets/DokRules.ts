@@ -220,7 +220,7 @@ export class Dok08 extends BaseRuleset {
     id: 'DOK.08',
   };
   given = '$';
-  message = 'Ett API:s servicenivå SKALL (DOK.08) finnas tydligt beskriven i dokumentationen.';
+  message = 'Ett API:s servicenivå SKALL finnas tydligt beskriven i dokumentationen.';
   then = [
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {

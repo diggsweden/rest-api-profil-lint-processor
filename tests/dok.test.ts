@@ -226,7 +226,7 @@ testRule('Dok08', [
     },
     errors: [
       {
-        message: 'Ett API:s servicenivå SKALL (DOK.08) finnas tydligt beskriven i dokumentationen.',
+        message: 'Ett API:s servicenivå SKALL finnas tydligt beskriven i dokumentationen.',
         severity: DiagnosticSeverity.Error,
       },
     ],
@@ -259,7 +259,7 @@ testRule('Dok08', [
     },
     errors: [
       {
-        message: 'Ett API:s servicenivå SKALL (DOK.08) finnas tydligt beskriven i dokumentationen.',
+        message: 'Ett API:s servicenivå SKALL finnas tydligt beskriven i dokumentationen.',
         severity: DiagnosticSeverity.Error,
       },
     ],
@@ -278,7 +278,7 @@ testRule('Dok08', [
     },
     errors: [
       {
-        message: 'Ett API:s servicenivå SKALL (DOK.08) finnas tydligt beskriven i dokumentationen.',
+        message: 'Ett API:s servicenivå SKALL finnas tydligt beskriven i dokumentationen.',
         severity: DiagnosticSeverity.Error,
       },
     ],
@@ -296,7 +296,7 @@ testRule('Dok08', [
     },
     errors: [
       {
-        message: 'Ett API:s servicenivå SKALL (DOK.08) finnas tydligt beskriven i dokumentationen.',
+        message: 'Ett API:s servicenivå SKALL finnas tydligt beskriven i dokumentationen.',
         severity: DiagnosticSeverity.Error,
       },
     ],
@@ -311,7 +311,7 @@ testRule('Dok08', [
     },
     errors: [
       {
-        message: 'Ett API:s servicenivå SKALL (DOK.08) finnas tydligt beskriven i dokumentationen.',
+        message: 'Ett API:s servicenivå SKALL finnas tydligt beskriven i dokumentationen.',
         severity: DiagnosticSeverity.Error,
       },
     ],
