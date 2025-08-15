@@ -34,6 +34,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: DOK.03](#id-dok03)
    - [ID: DOK.06](#id-dok06)
    - [ID: DOK.07](#id-dok07)
+   - [ID: DOK.08](#id-dok08)
    - [ID: DOK.15](#id-dok15)
    - [ID: DOK.17](#id-dok17)
    - [ID: DOK.19](#id-dok19)
@@ -79,8 +80,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: SAK.16](#id-sak16)
    - [ID: SAK.18](#id-sak18)
 10. [Område: Förutsättningar](#område-förutsättningar)
-
-- [ID: FOR.02](#id-for02)
+    - [ID: FOR.02](#id-for02)
 
 ## Område: Dokumentation
 
@@ -200,6 +200,46 @@ Regeln förutsätter att det finns en förekomst av objektet `info` med underlig
 **Exempel:**
 
 ![alt text](images/dok7.png)
+
+---
+
+### ID: DOK.08
+
+**Krav:** Ett API:s servicenivå SKALL finnas tydligt beskriven i dokumentationen.
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+$
+```
+
+**Förklaring:**
+Regeln förutsätter att det finns en förekomst av minst ett av objekten `info.termsOfService`, `info.x-sla` eller `externalDocs` med följande strukturer:
+
+- info
+
+  - termsOfService
+
+- info
+
+  - x-sla
+    - availability
+    - responseTime
+    - support
+
+- externalDocs
+  - description
+  - url
+
+`externalDocs.description` måste innehålla texten _service level agreement_ och `externalDocs.url` måste vara en giltig URL.
+
+**Exempel:**
+
+![Exempelbild på ovan nämnda objekts placering i en OpenAPI Description](images/dok8.png)
+
+_Ett av objekten räcker för att uppfylla regeln._
 
 ---
 
