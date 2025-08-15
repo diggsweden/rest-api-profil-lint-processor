@@ -6,6 +6,6 @@
   "printWidth": 120,
   "htmlWhitespaceSensitivity": "ignore",
   "bracketSameLine": false,
-  "vueIndentScriptAndStyle": true
+  "vueIndentScriptAndStyle": true,
+  "trailingComma": "all"
 }
-
