@@ -185,6 +185,138 @@ testRule('Dok07', [
     ],
   },
 ]);
+testRule('Dok08', [
+  {
+    name: 'giltigt testfall - info.termsOfService finns',
+    document: {
+      openapi: '3.1.0',
+      info: {
+        version: '1.0',
+        termsOfService: 'https://url-till-servicelevel-agreement.com/api-sla',
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - info.x-sla finns med samtliga tre fält',
+    document: {
+      openapi: '3.1.0',
+      info: {
+        version: '1.0',
+        'x-sla': {
+          availability: 'test',
+          responseTime: 24,
+          support: '24/7',
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall - info.x-sla finns men ett fält saknas',
+    document: {
+      openapi: '3.1.0',
+      info: {
+        version: '1.0',
+        'x-sla': {
+          availability: 'test',
+          responseTime: 24,
+        },
+      },
+    },
+    errors: [
+      {
+        message: 'Ett API:s servicenivå SKALL (DOK.08) finnas tydligt beskriven i dokumentationen.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'giltigt testfall - externalDocs finns med giltig url och description',
+    document: {
+      openapi: '3.1.0',
+      info: {
+        version: '1.0',
+      },
+      externalDocs: {
+        description: 'Text som innehåller service level agreement',
+        url: 'https://sla.se',
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall - externalDocs finns men description saknar "service level agreement"',
+    document: {
+      openapi: '3.1.0',
+      info: {
+        version: '1.0',
+      },
+      externalDocs: {
+        description: 'Text som inte innehåller vad den ska',
+        url: 'https://sla.se',
+      },
+    },
+    errors: [
+      {
+        message: 'Ett API:s servicenivå SKALL (DOK.08) finnas tydligt beskriven i dokumentationen.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - externalDocs finns men url:en är ogiltig',
+    document: {
+      openapi: '3.1.0',
+      info: {
+        version: '1.0',
+      },
+      externalDocs: {
+        description: 'Text som innehåller service level agreement',
+        url: 'ftp:/sla.se',
+      },
+    },
+    errors: [
+      {
+        message: 'Ett API:s servicenivå SKALL (DOK.08) finnas tydligt beskriven i dokumentationen.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - externalDocs finns men ett fält saknas',
+    document: {
+      openapi: '3.1.0',
+      info: {
+        version: '1.0',
+      },
+      externalDocs: {
+        description: 'Text som innehåller service level agreement',
+      },
+    },
+    errors: [
+      {
+        message: 'Ett API:s servicenivå SKALL (DOK.08) finnas tydligt beskriven i dokumentationen.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - SLA saknas helt',
+    document: {
+      openapi: '3.1.0',
+      info: {
+        version: '1.0',
+      },
+    },
+    errors: [
+      {
+        message: 'Ett API:s servicenivå SKALL (DOK.08) finnas tydligt beskriven i dokumentationen.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+]);
 testRule('Dok17', [
   {
     name: 'giltigt testfall',
