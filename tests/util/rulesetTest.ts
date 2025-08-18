@@ -43,6 +43,7 @@ const ruleTypes = [
   UfnRules.Ufn09Path,
   UfnRules.Ufn09Server,
   UfnRules.Ufn09InPathParameters,
+  SakRules.Sak01,
   SakRules.Sak09,
   SakRules.Sak10,
   SakRules.Sak15,

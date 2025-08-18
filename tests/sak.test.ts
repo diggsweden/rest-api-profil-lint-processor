@@ -5,6 +5,67 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import testRule from './util/helperTest.ts';
 
+testRule('Sak01', [
+  {
+    name: 'giltigt testfall - två servrar finns med korrekta url:er',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [
+        {
+          url: 'https://server-1.se',
+        },
+        {
+          url: 'https://server-2.se',
+        },
+      ],
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall - två servrar finns med en inkorrekt url',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [
+        {
+          url: 'https://server-1.se',
+        },
+        {
+          url: 'http://server-2.se',
+        },
+      ],
+    },
+    errors: [
+      {
+        message: 'All transport SKALL ske över HTTPS med minst TLS 1.2.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - två servrar finns men en url saknas',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [
+        {
+          description: 'En server',
+        },
+        {
+          description: 'En till server',
+          url: 'http://server-2.se',
+        },
+      ],
+    },
+    errors: [
+      {
+        message: 'All transport SKALL ske över HTTPS med minst TLS 1.2.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+]);
 testRule('Sak09', [
   {
     name: 'giltigt testfall',
