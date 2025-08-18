@@ -317,6 +317,60 @@ testRule('Dok08', [
     ],
   },
 ]);
+testRule('Dok09', [
+  {
+    name: 'giltigt testfall - info.description innehåller keyword',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0', description: 'något om limits' },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - externalDocs.description innehåller keyword',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      externalDocs: { description: 'något om begränsningar' },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - info.x-limitations är definierad',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0', 'x-limitations': 'behöver bara existera utan keywords' },
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall - samtliga fält saknas',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+    },
+    errors: [
+      {
+        message: 'Kända problem och begränsningar SKALL finnas tydlig beskrivna i dokumentationen.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - fält finns men saknar samtliga keywords',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0', description: 'test' },
+      externalDocs: { description: 'test' },
+    },
+    errors: [
+      {
+        message: 'Kända problem och begränsningar SKALL finnas tydlig beskrivna i dokumentationen.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+]);
 testRule('Dok17', [
   {
     name: 'giltigt testfall',
