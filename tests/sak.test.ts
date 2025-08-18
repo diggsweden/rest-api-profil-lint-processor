@@ -147,6 +147,46 @@ testRule('Sak15', [
     ],
   },
 ]);
+testRule('Sak16', [
+  {
+    name: 'giltigt testfall',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      components: {
+        securitySchemes: {
+          ApiKeyQuery: {
+            type: 'apiKey',
+            in: 'header',
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      components: {
+        securitySchemes: {
+          ApiKeyQuery: {
+            type: 'apiKey',
+            in: 'query',
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message: 'API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas av klienten eller servern i okrypterat format av webbläsaren eller serverapplikationen.',
+        path: ['components', 'securitySchemes', 'ApiKeyQuery'],
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+]);
 testRule('Sak18', [
   {
     name: 'giltigt testfall',

@@ -6,6 +6,7 @@ import { enumeration, truthy, falsy, undefined as undefinedFunc, pattern, schema
 import { DiagnosticSeverity } from '@stoplight/types';
 import { BaseRuleset } from './BaseRuleset.ts';
 import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
+import { SakBaseApiKeyRule } from './rulesetUtil.ts';
 //import Format from "@stoplight/spectral-formats";
 
 const moduleName: string = 'SakRules.ts';
@@ -138,6 +139,41 @@ export class Sak15 extends BaseRuleset {
   severity = DiagnosticSeverity.Error;
   
 }
+/**
+ * 
+ */
+export class Sak16 extends SakBaseApiKeyRule {
+  static customProperties: CustomProperties = {
+    område: 'Säkerhet',
+    id: 'SAK.16',
+  };
+  constructor() {
+    super();
+  }
+  description =
+  'API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas i okrypterat format.';
+  message = 'API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas av klienten eller servern i okrypterat format av webbläsaren eller serverapplikationen.';
+  severity = DiagnosticSeverity.Error;  
+
+  protected getCustomProperties(): CustomProperties {
+    return Sak16.customProperties;
+  }
+  protected getModuleName(): string {
+    return moduleName;
+  }
+  protected validate(targetVal: any): any[] {
+
+    console.log('Validating SAK16:', JSON.stringify(targetVal, null, 2));
+    const result: any[] = [];
+    if (targetVal.in?.toLowerCase() !== 'header') {
+      result.push({
+        message: this.message,
+        severity: this.severity,
+      });
+    }
+    return result;    
+  }
+}
 export class Sak18 extends BaseRuleset {
   static customProperties: CustomProperties = {
     område: 'Säkerhet',
@@ -174,4 +210,4 @@ export class Sak18 extends BaseRuleset {
   }
   severity = DiagnosticSeverity.Warning;
 }
-export default { Sak09, Sak10, Sak15, Sak18 };
+export default { Sak09, Sak10, Sak15, Sak16, Sak18 };

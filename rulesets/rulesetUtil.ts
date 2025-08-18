@@ -7,6 +7,41 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
 import { BaseRuleset } from './BaseRuleset.ts';
 
+export abstract class SakBaseApiKeyRule extends BaseRuleset {
+
+  protected constructor() {
+    super();
+    super.initializeFormats(['OAS3']);
+  }
+  given = "$.components.securitySchemes[?(@ && @.type=='apiKey')]";
+
+  protected abstract validate(targetVal: any): any[];
+  protected abstract getCustomProperties(): CustomProperties;
+  protected abstract getModuleName(): string;
+
+  then = [
+    {
+      function: (targetVal: any, _opts: any, paths: string[]) => {
+
+        const result = this.validate(targetVal);
+        console.log("MOduleName: " + this.getModuleName());
+        //console.log("CustomProperties: " + JSON.stringify((this.constructor as typeof BaseRuleset).getCustomProperties(),null,2));
+
+        this.trackRuleExecutionHandler(
+          JSON.stringify(targetVal, null, 2),
+          _opts,
+          paths,
+          this.severity,
+          this.constructor.name,
+          this.getModuleName(),
+          this.getCustomProperties(),
+        );
+        return result;
+      },
+    },
+  ];
+}
+
 export class Dok03Base extends BaseRuleset {
   static customProperties: CustomProperties = {
     område: 'Dokumentation',

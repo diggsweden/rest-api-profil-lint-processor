@@ -120,6 +120,11 @@ components:
       type: apiKey
       in: query
       name: api_key
+    #Test for invalid types in security schemes
+    ApiKeyQuery2: 
+      type: apiKey
+      in: header
+      name: api_key2
 
 
   schemas:
