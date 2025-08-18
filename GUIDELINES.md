@@ -76,6 +76,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: SAK.09](#id-sak09)
    - [ID: SAK.10](#id-sak10)
    - [ID: SAK.15](#id-sak15)
+   - [ID: SAK.16](#id-sak16)
    - [ID: SAK.18](#id-sak18)
 10. [Område: Förutsättningar](#område-förutsättningar)
 - [ID: FOR.02](#id-for02)
@@ -1012,6 +1013,31 @@ Regeln kontrollerar, under förutsättning att ett security scheme är definiera
 ![alt text](images/sak15.png)
 
 I exemplet ovan ger regeln ett negativt utfall, eftersom det definierade säkerhetsschemat 'ApiKeyQuery' har typen 'apiKey' och parametern 'in' är satt till 'query', vilket strider mot regeln.
+
+---
+
+---
+
+### ID: SAK.16
+
+**Krav:** API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas av klienten eller servern i okrypterat format av webbläsaren eller serverapplikationen.
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+$.components.securitySchemes[?(@ && @.type=='apiKey')]
+```
+
+**Förklaring:**
+Regeln kontrollerar, under förutsättning att ett security scheme är definierat, att om typen är 'apiKey', så får värdet för parametern 'in' endast vara satt till 'header'.
+
+**Exempel:**
+
+![alt text](images/sak16.png)
+
+I exemplet ovan ger regeln ett positivt utfall, eftersom det definierade säkerhetsschemat 'ApiKeyQuery' har typen 'apiKey' och parametern 'in' är satt till 'header', vilket är i linje med regeln.
 
 ---
 

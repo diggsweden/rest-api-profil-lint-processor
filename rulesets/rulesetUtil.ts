@@ -7,6 +7,9 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
 import { BaseRuleset } from './BaseRuleset.ts';
 
+/**
+ * Base class for handling security rules when apiKeys is defined
+ */
 export abstract class SakBaseApiKeyRule extends BaseRuleset {
 
   protected constructor() {
@@ -24,9 +27,6 @@ export abstract class SakBaseApiKeyRule extends BaseRuleset {
       function: (targetVal: any, _opts: any, paths: string[]) => {
 
         const result = this.validate(targetVal);
-        console.log("MOduleName: " + this.getModuleName());
-        //console.log("CustomProperties: " + JSON.stringify((this.constructor as typeof BaseRuleset).getCustomProperties(),null,2));
-
         this.trackRuleExecutionHandler(
           JSON.stringify(targetVal, null, 2),
           _opts,

@@ -163,7 +163,6 @@ export class Sak16 extends SakBaseApiKeyRule {
   }
   protected validate(targetVal: any): any[] {
 
-    console.log('Validating SAK16:', JSON.stringify(targetVal, null, 2));
     const result: any[] = [];
     if (targetVal.in?.toLowerCase() !== 'header') {
       result.push({
