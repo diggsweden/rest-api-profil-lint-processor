@@ -115,6 +115,13 @@ components:
           scopes:
             write:pets: modify pets in your account
             read:pets: read your pets
+    #Test for invalid types in security schemes
+    ApiKeyQuery: 
+      type: apiKey
+      in: query
+      name: api_key
+
+
   schemas:
     Error:
       type: object

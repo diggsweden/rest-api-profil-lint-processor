@@ -4,18 +4,9 @@
 
 import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
 import { BaseRuleset } from './BaseRuleset.ts';
-import {
-  enumeration,
-  truthy,
-  falsy,
-  undefined as undefinedFunc,
-  pattern,
-  schema,
-  defined,
-} from '@stoplight/spectral-functions';
+import { truthy, falsy, pattern } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { Dok03Base } from './rulesetUtil.ts';
-import path from 'path';
 import { Dok15Base } from './rulesetUtil.ts';
 const moduleName: string = 'DokRules.ts';
 
