@@ -1060,7 +1060,7 @@ Regeln förutsätter att varje server har en giltig url specifierad och använde
 
 ![Exempelbild på hur servrar anges på ett korrekt sätt i en OpenAPI Description](images/sak01.png)
 
-_Exemplet ovan är giltigt då samtliga servrar innehåller en giltig `url` och använder https._
+_Exemplet ovan är giltigt då samtliga servrar innehåller en giltig `url` och använder HTTPS._
 
 ---
 
