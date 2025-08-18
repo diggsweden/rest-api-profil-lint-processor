@@ -11,6 +11,55 @@ import { SakBaseApiKeyRule } from './rulesetUtil.ts';
 
 const moduleName: string = 'SakRules.ts';
 
+export class Sak01 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: 'Säkerhet',
+    id: 'SAK.01',
+  };
+  message = 'All transport SKALL ske över HTTPS med minst TLS 1.2.';
+  given = '$.servers';
+  then = [
+    {
+      function: (targetVal: any, _opts: string, paths: string[]) => {
+        const urlPattern = new RegExp(
+          '^https://((localhost|\\d{1,3}(\\.\\d{1,3}){3})|([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,})(:\\d+)?(\\/\\S*)?$',
+        );
+
+        const valid = targetVal.every((server) => urlPattern.test(server.url));
+
+        if (valid) {
+          return [];
+        }
+
+        return [
+          {
+            message: this.message,
+            severity: this.severity,
+            paths: paths,
+          },
+        ];
+      },
+    },
+    {
+      function: (targetVal: string, _opts: string, paths: string[]) => {
+        this.trackRuleExecutionHandler(
+          JSON.stringify(targetVal, null, 2),
+          _opts,
+          paths,
+          this.severity,
+          this.constructor.name,
+          moduleName,
+          Sak01.customProperties,
+        );
+      },
+    },
+  ];
+  constructor() {
+    super();
+    super.initializeFormats(['OAS3']);
+  }
+  severity = DiagnosticSeverity.Error;
+}
 export class Sak09 extends BaseRuleset {
   static customProperties: CustomProperties = {
     område: 'Säkerhet',
@@ -96,7 +145,7 @@ export class Sak10 extends BaseRuleset {
   severity = DiagnosticSeverity.Error;
 }
 export class Sak15 extends SakBaseApiKeyRule {
-   static customProperties: CustomProperties = {
+  static customProperties: CustomProperties = {
     område: 'Säkerhet',
     id: 'SAK.15',
   };
@@ -114,7 +163,7 @@ export class Sak15 extends SakBaseApiKeyRule {
         severity: this.severity,
       });
     }
-    return result;    
+    return result;
   }
   protected getCustomProperties(): CustomProperties {
     return Sak15.customProperties;
@@ -122,11 +171,9 @@ export class Sak15 extends SakBaseApiKeyRule {
   protected getModuleName(): string {
     return moduleName;
   }
-
-  
 }
 /**
- * 
+ *
  */
 export class Sak16 extends SakBaseApiKeyRule {
   static customProperties: CustomProperties = {
@@ -136,10 +183,10 @@ export class Sak16 extends SakBaseApiKeyRule {
   constructor() {
     super();
   }
-  description =
-  'API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas i okrypterat format.';
-  message = 'API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas av klienten eller servern i okrypterat format av webbläsaren eller serverapplikationen.';
-  severity = DiagnosticSeverity.Error;  
+  description = 'API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas i okrypterat format.';
+  message =
+    'API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas av klienten eller servern i okrypterat format av webbläsaren eller serverapplikationen.';
+  severity = DiagnosticSeverity.Error;
 
   protected getCustomProperties(): CustomProperties {
     return Sak16.customProperties;
@@ -148,7 +195,6 @@ export class Sak16 extends SakBaseApiKeyRule {
     return moduleName;
   }
   protected validate(targetVal: any): any[] {
-
     const result: any[] = [];
     if (targetVal.in?.toLowerCase() !== 'header') {
       result.push({
@@ -156,7 +202,7 @@ export class Sak16 extends SakBaseApiKeyRule {
         severity: this.severity,
       });
     }
-    return result;    
+    return result;
   }
 }
 export class Sak18 extends BaseRuleset {
