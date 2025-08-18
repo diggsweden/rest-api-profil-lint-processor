@@ -75,6 +75,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: FNS.08](#id-fns08)
    - [ID: FNS.09](#id-fns09)
 9. [Område: Säkerhet](#område-säkerhet)
+   - [ID: SAK.01](#id-sak01)
    - [ID: SAK.09](#id-sak09)
    - [ID: SAK.10](#id-sak10)
    - [ID: SAK.15](#id-sak15)
@@ -1039,6 +1040,29 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar
 ## Område: Säkerhet
 
 **Täckningsgrad: 14%**
+
+### ID: SAK.01
+
+**Krav:** All transport SKALL ske över HTTPS med minst TLS 1.2.
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+$.servers
+```
+
+**Förklaring:**
+Regeln förutsätter att varje server har en giltig url specifierad och använder HTTPS-protokollet.
+
+**Exempel:**
+
+![Exempelbild på hur servrar anges på ett korrekt sätt i en OpenAPI Description](images/sak01.png)
+
+_Exemplet ovan är giltigt då samtliga servrar innehåller en giltig `url` och använder https._
+
+---
 
 ### ID: SAK.09
 
