@@ -45,7 +45,7 @@ export class Arq05NestedStructure extends Arq05Base {
 }
 export class Arq05StringBinary extends Arq05Base {
   description =
-    'Om en header förväntas innehålla data med ovanliga MIME-typer kan det indikera en okonventionell användning av headers.';
+    'Om en header förväntas innehålla data med ovanliga MIME-typer, kan det indikera en okonventionell användning av headers.';
   message = '[' + super.messageValue + '] ' + this.description;
   then = [
     {
