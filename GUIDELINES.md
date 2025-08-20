@@ -8,7 +8,7 @@ SPDX-License-Identifier: CC0-1.0
 
 RAP-LP (REST API-profil Lint Processor) är ett verktyg som granskar en OpenAPI-specifikation mot den nationella REST API-profilen. Verktyget identifierar syntaxfel och avvikelser från riktlinjer, vilket gör det enklare att snabbt hitta och rätta till problem.
 
-Verktyget analyserar OpenAPI-specifikationen och kontrollerar att API:et följer specifika designregler kopplade till REST API-profilen. Varje regel pekar på en specifik del av OpenAPI-specifikationen med ett JSON Path Plus-uttryck, och kontrollerar om värdena följer de fastställda reglerna. Om avvikelser hittas returneras ett eller flera felmeddelanden.
+Verktyget analyserar OpenAPI-specifikationen och kontrollerar att API:et fögit ljer specifika designregler kopplade till REST API-profilen. Varje regel pekar på en specifik del av OpenAPI-specifikationen med ett JSON Path Plus-uttryck, och kontrollerar om värdena följer de fastställda reglerna. Om avvikelser hittas returneras ett eller flera felmeddelanden.
 
 Utöver reglerna från REST API-profilen innehåller RAP-LP även ett regelområde benämnt **Förutsättningar**. Detta område omfattar tilläggsregler som inte ingår i profilen, men som baseras på etablerad god praxis för API-design. Reglerna i Förutsättningar kan hjälpa till att ytterligare höja kvaliteten på API-specifikationen genom att identifiera förbättringsområden som inte täcks av den nationella profilen.
 
@@ -35,6 +35,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: DOK.06](#id-dok06)
    - [ID: DOK.07](#id-dok07)
    - [ID: DOK.08](#id-dok08)
+   - [ID: DOK.09](#id-dok09)
    - [ID: DOK.15](#id-dok15)
    - [ID: DOK.17](#id-dok17)
    - [ID: DOK.19](#id-dok19)
@@ -203,6 +204,8 @@ Regeln förutsätter att det finns en förekomst av objektet `info` med underlig
 
 ---
 
+<<<<<<< HEAD
+
 ### ID: DOK.08
 
 **Krav:** Ett API:s servicenivå SKALL finnas tydligt beskriven i dokumentationen.
@@ -237,6 +240,29 @@ Regeln förutsätter att det finns en förekomst av minst ett av objekten `info.
 ![Exempelbild på ovan nämnda objekts placering i en OpenAPI Description](images/dok8.png)
 
 _Ett av objekten räcker för att uppfylla regeln._
+
+---
+
+### ID: DOK.09
+
+**Krav:** Kända problem och begränsningar SKALL finnas tydlig beskrivna i dokumentationen.
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+$
+```
+
+**Förklaring:**
+Regeln förutsätter att det finns en förekomst av något av objekten `info.description` och `externalDocs.description`, och att de innehåller någon av strängarna "limit", "begränsning" eller "problem". Alternativt så räcker det om det finns en förekomst av `info.x-limitations`.
+
+**Exempel:**
+
+![Exempelbild på ovan nämnda objekts placering i en OpenAPI Description](images/dok9.png)
+
+_Ett av objekten räcker för att uppfylla regeln, men "limit", "begränsning" eller "problem" behöver nämnas i `description`-fälten för att de ska räknas._
 
 ---
 
