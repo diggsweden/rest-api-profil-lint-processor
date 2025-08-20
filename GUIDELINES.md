@@ -221,9 +221,6 @@ Regeln förutsätter att det finns en förekomst av minst ett av objekten `info.
 - info
 
   - termsOfService
-
-- info
-
   - x-sla
     - availability
     - responseTime
@@ -233,7 +230,7 @@ Regeln förutsätter att det finns en förekomst av minst ett av objekten `info.
   - description
   - url
 
-`externalDocs.description` måste innehålla texten _service level agreement_ och `externalDocs.url` måste vara en giltig URL.
+`externalDocs.description` måste innehålla texten "service level agreement" och `externalDocs.url` måste vara en giltig URL.
 
 **Exempel:**
 
