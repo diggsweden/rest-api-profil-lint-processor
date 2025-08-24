@@ -48,7 +48,7 @@ store_exit_code() {
 lint_and_format() {
   export MEGALINTER_DEF_WORKSPACE='/repo'
   print_header 'LINTER HEALTH (MEGALINTER)'
-  podman run --rm --volume "$(pwd)":/repo -e MEGALINTER_CONFIG='development/megalinter.yml' -e DEFAULT_WORKSPACE=${MEGALINTER_DEF_WORKSPACE} -e LOG_LEVEL=INFO ghcr.io/oxsecurity/megalinter-javascript:v8.7.0
+  podman run --rm --volume "$(pwd)":/repo -e MEGALINTER_CONFIG='development/megalinter.yml' -e DEFAULT_WORKSPACE=${MEGALINTER_DEF_WORKSPACE} -e LOG_LEVEL=INFO ghcr.io/oxsecurity/megalinter-javascript:v8.8.0
   store_exit_code "$?" "Lint" "${MISSING} ${RED}Lint check failed, see logs (std out and/or ./megalinter-reports) and fix problems.${NC}\n" "${GREEN}${CHECKMARK}${CHECKMARK} Lint check passed${NC}\n"
   printf '\n\n'
 }
@@ -67,6 +67,13 @@ commit() {
     store_exit_code "$?" "Commit" "${MISSING} ${RED}Commit check failed, see logs (std out) and fix problems.${NC}\n" "${GREEN}${CHECKMARK}${CHECKMARK} Commit check passed${NC}\n"
   fi
 
+  printf '\n\n'
+}
+
+license() {
+  print_header 'LICENSE HEALTH (REUSE)'
+  podman run --rm --volume "$(pwd)":/data docker.io/fsfe/reuse:5.0.2-debian lint
+  store_exit_code "$?" "License" "${MISSING} ${RED}License check failed, see logs and fix problems.${NC}\n" "${GREEN}${CHECKMARK}${CHECKMARK} License check passed${NC}\n"
   printf '\n\n'
 }
 
@@ -98,5 +105,6 @@ is_command_available 'npm' 'https://nodejs.org/'
 
 lint_and_format
 commit
+license
 
 check_exit_codes
