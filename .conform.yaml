@@ -19,3 +19,4 @@ policies:
       conventional:
         types: ['chore', 'build', 'docs', 'ci', 'perf', 'refactor', 'style', 'test', 'release']
         scopes: ['.*']
+        descriptionLength: 92
