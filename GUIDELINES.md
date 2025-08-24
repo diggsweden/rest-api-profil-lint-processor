@@ -945,7 +945,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar
 
 ## Område: Säkerhet
 
-**Täckningsgrad: 11%**
+**Täckningsgrad: 14%**
 
 ### ID: SAK.09
 
