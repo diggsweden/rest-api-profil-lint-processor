@@ -270,7 +270,7 @@ export class Dok08 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok07.customProperties,
+          Dok08.customProperties,
         );
       },
     },
