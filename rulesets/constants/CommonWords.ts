@@ -13,6 +13,7 @@ export const commonEnglishWords = [
   'on',
   'with',
   'but',
+  'a',
   'of',
   'has',
   'if',
