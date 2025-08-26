@@ -97,7 +97,7 @@ testRule('Dok06', [
     },
     errors: [
       {
-        message: 'Dokumentationen BÖR finnas på både svenska och engelska.',
+        message: 'Dokumentationen BÖR (DOK.06) finnas på både svenska och engelska.',
         severity: DiagnosticSeverity.Warning,
       },
     ],
@@ -110,7 +110,7 @@ testRule('Dok06', [
     },
     errors: [
       {
-        message: 'Dokumentationen BÖR finnas på både svenska och engelska.',
+        message: 'Dokumentationen BÖR (DOK.06) finnas på både svenska och engelska.',
         severity: DiagnosticSeverity.Warning,
       },
     ],
@@ -123,7 +123,7 @@ testRule('Dok06', [
     },
     errors: [
       {
-        message: 'Dokumentationen BÖR finnas på både svenska och engelska.',
+        message: 'Dokumentationen BÖR (DOK.06) finnas på både svenska och engelska.',
         severity: DiagnosticSeverity.Warning,
       },
     ],

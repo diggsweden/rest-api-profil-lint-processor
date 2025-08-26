@@ -140,7 +140,7 @@ export class Dok06 extends BaseRuleset {
     id: 'DOK.06',
   };
   given = '$.info.description';
-  message = 'Dokumentationen BÖR finnas på både svenska och engelska.';
+  message = 'Dokumentationen BÖR (DOK.06) finnas på både svenska och engelska.';
   then = [
     {
       function: (targetVal: string, _opts: string, paths: string[]) => {
