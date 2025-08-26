@@ -169,13 +169,7 @@ Regeln förutsätter att det finns en förekomst av objektet `info` med underlig
 
 **Exempel:**
 
-![Exempelbild som visar att pipesymbolen kan användas för att skriva beskrivningen över flera rader i en OpenAPI Description](images/dok6-1.png)
-
-_Pipesymbolen kan med fördel användas när beskrivningen sträcker sig över flera rader eller stycken._
-
-![Exempelbild som visar att större än-tecknet kan använndas för att skriva beskrivningen över flera rader i en OpenAPI Description](images/dok6-2.png)
-
-_Större än-tecknet kan också användas när beskrivningen sträcker sig över flera rader eller stycken._
+![Exempelbild som visar var description ska finnas i en OpenAPI Description](images/dok6.png)
 
 ---
 
