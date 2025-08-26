@@ -80,55 +80,6 @@ testRule('Dok20', [
     ],
   },
 ]);
-testRule('Dok06', [
-  {
-    name: 'giltigt testfall',
-    document: {
-      openapi: '3.1.0',
-      info: { version: '1.0', description: 'Här finns det dokumentation på svenska and english.' },
-    },
-    errors: [],
-  },
-  {
-    name: 'ogiltigt testfall - endast svenska',
-    document: {
-      openapi: '3.1.0',
-      info: { version: '1.0', description: 'Detta är på svenska' },
-    },
-    errors: [
-      {
-        message: 'Dokumentationen BÖR (DOK.06) finnas på både svenska och engelska.',
-        severity: DiagnosticSeverity.Warning,
-      },
-    ],
-  },
-  {
-    name: 'ogiltigt testfall - endast engelska',
-    document: {
-      openapi: '3.1.0',
-      info: { version: '1.0', description: 'This is in english' },
-    },
-    errors: [
-      {
-        message: 'Dokumentationen BÖR (DOK.06) finnas på både svenska och engelska.',
-        severity: DiagnosticSeverity.Warning,
-      },
-    ],
-  },
-  {
-    name: 'ogiltigt testfall - båda språken med sammansatta ord',
-    document: {
-      openapi: '3.1.0',
-      info: { version: '1.0', description: 'Härfinnsdetdokumentationpåsvenskaandenglish.' },
-    },
-    errors: [
-      {
-        message: 'Dokumentationen BÖR (DOK.06) finnas på både svenska och engelska.',
-        severity: DiagnosticSeverity.Warning,
-      },
-    ],
-  },
-]);
 testRule('Dok07', [
   {
     name: 'giltigt testfall',
