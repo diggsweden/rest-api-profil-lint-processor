@@ -162,14 +162,14 @@ $.info.description
 **Förklaring:**
 Regeln förutsätter att det finns en förekomst av objektet `info` med underliggande struktur:
 
-- info
+- Info
   - description
 
-`description` förväntas dessutom innehålla dokumentation på både svenska och engelska. Detta görs i nuläget genom att försöka matcha enskilda ord mot de som finns i [ordlistorna.](rulesets/constants/CommonWords.ts)
+Description förväntas dessutom innehålla dokumentation på både svenska och engelska. Detta görs i nuläget genom att försöka matcha enskilda ord mot de i [ordlistorna.](rulesets/constants/CommonWords.ts)
 
 **Exempel:**
 
-![Exempelbild som visar var description ska finnas i en OpenAPI Description](images/dok6.png)
+![alt text](images/dok6.png)
 
 ---
 
