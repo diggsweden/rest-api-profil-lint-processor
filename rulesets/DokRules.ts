@@ -9,7 +9,6 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { Dok03Base } from './rulesetUtil.ts';
 import { Dok15Base } from './rulesetUtil.ts';
 import { forEachChild } from 'typescript';
-import { commonEnglishWords, commonSwedishWords } from './constants/CommonWords.ts';
 const moduleName: string = 'DokRules.ts';
 
 export class Dok15Get extends Dok15Base {
@@ -145,10 +144,27 @@ export class Dok06 extends BaseRuleset {
   then = [
     {
       function: (targetVal: string, _opts: string, paths: string[]) => {
-        const containsEnglish = commonEnglishWords.some((word) => new RegExp(`\\b${word}\\b`).test(targetVal));
-        const containsSwedish = commonSwedishWords.some((word) => new RegExp(`\\b${word}\\b`).test(targetVal));
+        const englishWords = ['and', 'it']; //TODO: fler ord
+        const swedishWords = ['och', 'det']; //TODO: fler ord
 
-        if (!containsEnglish || !containsSwedish) {
+        let includesEnglish = false;
+        let includesSwedish = false;
+
+        for (const word of englishWords) {
+          if (targetVal.includes(word)) {
+            includesEnglish = true;
+            break;
+          }
+        }
+
+        for (const word of swedishWords) {
+          if (targetVal.includes(word)) {
+            includesSwedish = true;
+            break;
+          }
+        }
+
+        if (!includesEnglish || !includesSwedish) {
           return [
             {
               message: this.message,
