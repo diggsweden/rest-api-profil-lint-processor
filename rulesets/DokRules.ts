@@ -144,10 +144,9 @@ export class Dok06 extends BaseRuleset {
   then = [
     {
       function: (targetVal: string, _opts: string, paths: string[]) => {
-        const lowerCaseDescriptionList = targetVal.toLowerCase().match(/[a-zåäö]+/gi) || [];
-
-        const containsEnglish = lowerCaseDescriptionList.some((word) => commonEnglishWords.includes(word));
-        const containsSwedish = lowerCaseDescriptionList.some((word) => commonSwedishWords.includes(word));
+        const lowerCaseTargetVal = targetVal.toLowerCase();
+        const containsEnglish = commonEnglishWords.some((word) => new RegExp(`\\b${word}\\b`).test(lowerCaseTargetVal));
+        const containsSwedish = commonSwedishWords.some((word) => new RegExp(`\\b${word}\\b`).test(lowerCaseTargetVal));
 
         if (!containsEnglish || !containsSwedish) {
           return [
