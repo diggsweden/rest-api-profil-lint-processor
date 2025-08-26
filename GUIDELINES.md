@@ -147,32 +147,6 @@ Regeln förutsätter att det finns en förekomst av objektet `info` med underlig
 
 ---
 
-### ID: DOK.06
-
-**Krav:** Dokumentationen BÖR finnas på både svenska och engelska.
-
-**Typ:** BÖR
-
-**JSON Path Plus-uttryck:**
-
-```
-$.info.description
-```
-
-**Förklaring:**
-Regeln förutsätter att det finns en förekomst av objektet `info` med underliggande struktur:
-
-- Info
-  - description
-
-Description förväntas dessutom innehålla dokumentation på både svenska och engelska. Detta görs i nuläget genom att försöka matcha enskilda ord mot de i [ordlistorna.](rulesets/constants/CommonWords.ts)
-
-**Exempel:**
-
-![alt text](images/dok6.png)
-
----
-
 ### ID: DOK.07
 
 **Krav:** Dokumentationen av ett API BÖR innehålla övergripande information om API:et.
