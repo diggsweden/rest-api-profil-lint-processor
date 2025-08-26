@@ -225,7 +225,7 @@ export class Dok08 extends BaseRuleset {
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {
         const isValidUrl = (url: string): boolean => {
-          const urlPattern = new RegExp('^(https?://)?(www.)?([a-zA-Z0-9-]+.)+[a-zA-Z]{2,}(/S*)?$');
+          const urlPattern = new RegExp('^(https?:\\/\\/)?(www\\.)?([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}(\\/\\S*)?$');
           return urlPattern.test(url);
         };
 
