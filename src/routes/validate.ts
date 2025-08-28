@@ -11,7 +11,7 @@ import { importAndCreateRuleInstances } from "../util/ruleUtil.ts";
 import { ApiInfo } from "../model/ApiInfo.ts";
 import { validationRules } from "../model/validationRules.ts";
 import { ExcelReportProcessor } from "../util/excelReportProcessor.ts"
-import {DiagnosticReport } from "../util/RapLPDiagnostic.ts";
+import {DiagnosticReport, RapLPDiagnostic } from "../util/RapLPDiagnostic.ts";
 
 export const registerValidationRoutes = (app: Express) => {
   // Route for raw content upload.
@@ -62,8 +62,15 @@ export const registerValidationRoutes = (app: Express) => {
     const reportHandler = new ExcelReportProcessor();
     let buffer: Buffer;
 
+    const ruleCategories = data.categories && data.categories.length > 0 ?  data.categories: undefined;
+
+
+    const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
+    const customDiagnostic = new RapLPDiagnostic();
+    customDiagnostic.processRuleExecutionInformation(data.report,enabledRulesAndCategorys.instanceCategoryMap);
+
     try {
-        buffer = reportHandler.generateReportDocumentBuffer(data.report);
+        buffer = reportHandler.generateReportDocumentBuffer(customDiagnostic);
     } catch (error) {
         console.error("Error generating report buffer:", error);
         return res.status(500).json({ error: 'Failed to generate report.' });
