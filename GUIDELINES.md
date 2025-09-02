@@ -204,8 +204,6 @@ Regeln förutsätter att det finns en förekomst av objektet `info` med underlig
 
 ---
 
-<<<<<<< HEAD
-
 ### ID: DOK.08
 
 **Krav:** Ett API:s servicenivå SKALL finnas tydligt beskriven i dokumentationen.

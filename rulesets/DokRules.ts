@@ -296,26 +296,21 @@ export class Dok09 extends BaseRuleset {
   then = [
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {
-        const limitsMentioned = (description: string): boolean => {
+        const includesLimitTerm = (description: string): boolean => {
           if (description) {
-            const lowerCaseDescription = description.toLowerCase();
-            if (
-              description.includes('limit') ||
-              description.includes('begränsning') ||
-              description.includes('problem')
-            ) {
-              return true;
-            }
+            const limitTerms = ['limit', 'begränsning', 'problem'];
+            return limitTerms.some((term) => description.includes(term));
+          } else {
+            return false;
           }
-          return false;
         };
 
         const externalDocs = targetVal?.externalDocs;
         const info = targetVal?.info;
         if (
           info?.['x-limitations'] ||
-          limitsMentioned(info?.description) ||
-          limitsMentioned(externalDocs?.description)
+          includesLimitTerm(info?.description?.toLowerCase()) ||
+          includesLimitTerm(externalDocs?.description?.toLowerCase())
         ) {
           return [];
         }
