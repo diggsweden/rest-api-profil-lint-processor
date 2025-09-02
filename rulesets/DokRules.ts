@@ -233,12 +233,17 @@ export class Dok08 extends BaseRuleset {
           return !!(sla?.availability && sla?.responseTime && sla?.support);
         };
 
+        const includesSlaTerm = (description: string): boolean => {
+          const slaTerms = ['service level agreement', 'sla'];
+          return slaTerms.some((term) => description.includes(term));
+        };
+
         if (targetVal?.info?.termsOfService) {
           return [];
         }
 
-        const sla = targetVal?.info?.['x-sla'];
-        if (sla && hasValidSlaFields(sla)) {
+        const customSlaField = targetVal?.info?.['x-sla'];
+        if (customSlaField && hasValidSlaFields(customSlaField)) {
           return [];
         }
 
@@ -247,7 +252,7 @@ export class Dok08 extends BaseRuleset {
           externalDocs?.description &&
           externalDocs?.url &&
           isValidUrl(externalDocs.url) &&
-          externalDocs.description.toLowerCase().includes('service level agreement')
+          includesSlaTerm(externalDocs.description.toLowerCase())
         ) {
           return [];
         }
