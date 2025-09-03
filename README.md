@@ -24,7 +24,6 @@ RAP-LP är ett kommandoradsverktyg för att linta OpenAPI v3-definitioner med hj
 - [REST API-profil - Lint Processor (RAP-LP)](#rest-api-profil---lint-processor-rap-lp)
   - [Innehållsförteckning](#innehållsförteckning)
   - [Installation och krav](#installation-och-krav)
-  - [Instruktioner för att komma igång snabbt](#instruktioner-för-att-komma-igång-snabbt)
   - [Användning](#användning)
   - [Begränsningar](#begränsningar)
   - [Support](#support)
@@ -45,21 +44,22 @@ Det enklaste sättet att installera RAP-LP är genom att använda [npm](https://
 npm install
 ```
 
-## Instruktioner för att komma igång snabbt
+## Användning
 
+Applikationen kan köras i två olika lägen, antingen via ett [Command-line interface](#cli-command-line-interface-läge) eller via ett [Application programming interface](#api-application-programming-interface-läge).
+
+### CLI (Command-Line Interface) läge
 Använd det här kommandot för att köra applikationen mot en YAML-fil:
 
 ```bash
-npm start -- -f PATH_TO_THE_YAML_FILE
+npm start -- -m cli -f PATH_TO_THE_YAML_FILE
 ```
 
 **Exempel**
 
 ```bash
-npm start -- -f apis/dok-api.yaml
+npm start -- -m cli -f apis/dok-api.yaml
 ```
-
-## Användning
 
 För att validera mot en specifik kategori av regler, lägg till `-c CategoryName`.
 
@@ -67,7 +67,7 @@ För att validera mot en specifik kategori av regler, lägg till `-c CategoryNam
 **Exempel**
 
 ```bash
-npm start -- -f apis/dok-api.yaml -c DokRules
+npm start -- -m cli -f apis/dok-api.yaml -c DokRules
 ```
 
 #### Tillgängliga kategorier med regler
@@ -90,7 +90,7 @@ För att spara meddelanden från felloggar, lägg till `-l FileName`.
 
 **Exempel**
 ```bash
-npm start -- -f apis/dok-api.yaml -l rap-lp.log
+npm start -- -m cli -f apis/dok-api.yaml -l rap-lp.log
 ```
 
 
@@ -99,7 +99,7 @@ För att lägga till loggning, lägg till `-a`
 
 **Exempel**
 ```bash
-npm start -- -f apis/dok-api.yaml -l rap-lp.log -a
+npm start -- -m cli -f apis/dok-api.yaml -l rap-lp.log -a
 ```
 
 ### Validering som sparar loggdiagnostik i en fil
@@ -108,7 +108,7 @@ För att spara loggdiagnostik i en fil, lägg till `-d FileName`
 **Exempel**
 
 ```bash
-npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
+npm start -- -m cli -f apis/dok-api.yaml -d logDiagnostic.log
 ```
 
 ### Validering som sparar information om regelutfall i en Excel-fil
@@ -122,13 +122,13 @@ Avstämningsfilen i Excel har ett fast format. Om en egen version av filen ska a
 **Exempel utan sökväg till avstämningsfil i Excel**
 
 ```bash
-npm start -- -f apis/dok-api.yaml --dex
+npm start -- -m cli -f apis/dok-api.yaml --dex
 ```
 
 **Exempel med sökväg till avstämningsfil i Excel**
 
 ```bash
-npm start -- -f apis/dok-api.yaml --dex path-to-excel-file
+npm start -- -m cli -f apis/dok-api.yaml --dex path-to-excel-file
 ```
 
 ### Visa information version
@@ -150,7 +150,7 @@ npm start -- --help
 
 I en terminal kör:
   ```bash
-  podman run --rm -it -v $(pwd):/<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:<VERSION X.X.X> -f <PATH>/<YAML_FILE>
+  podman run --rm -it -v $(pwd):/<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:<VERSION X.X.X> -m cli -f <PATH>/<YAML_FILE>
   ```
 * Där \<PATH> motsvarar den path i containern som du vill att nuvarande katalog \$(pwd) mountas in i, containern får tillgång till dina filer i \$(pwd).
 * Där \<YAML_FILE> motsvarar den filen som du vill applicera valideringen på.
@@ -158,7 +158,7 @@ I en terminal kör:
 
 Exempel
   ```bash
-  podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
+  podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -m cli -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
   ```
 
 Vid eventuella fel och du inte hittar rap-lp-error.log kan du behöva köra kommandot via containern enligt den alternativa instruktionen nedan. Se till att containern har rättigheter att skriva till den katalog som du mountar, se [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container).
@@ -174,7 +174,7 @@ Exempel:
   ```bash
   $ podman run --rm -it --entrypoint /bin/sh -v $(pwd):/apis ghcr.io/diggsweden/rest-api-profil-lint-processor:0.3.0
 
-  /app: $ npm start -- -f apis/dot-api.yaml -l test.log --dex example.xlsx
+  /app: $ npm start -- -m cli -f apis/dot-api.yaml -l test.log --dex example.xlsx
   ```
 
 ### Eventuella hinder med podman-kommando
@@ -205,6 +205,77 @@ Du kan behöva ett Personal Access Token (PAT) för din användare i github för
     ```bash
     sudo podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
     ```
+
+### API (Application programming interface) läge
+```bash
+npm start -- -m api
+```
+
+Validera mot en endpoint: 
+```bash
+POST http://localhost:3000/api/v1/validation/validate
+```
+
+Request body - application/json`
+```bash
+{
+  "yaml": "<base64encoded file>",
+  "categories": [
+    "CATEGORY1",
+    "CATEGORY2"
+  ]
+}
+```
+
+Använd detta kommando för att validera en yaml-fil via terminalen, här kan du även validera mot specifika [kategorier](#tillgängliga-kategorier-med-regler):
+```bash
+curl -X POST http://localhost:3000/api/v1/validation/validate \
+    -H "Content-Type: application/json" \
+    -d "{\"yaml\": \"$(base64 -w 0 Path_to_the_YAML_file)\", \"categories\": [\"CATEGORY1\", \"CATEGORY2\"]}"
+```
+Exempel
+```bash
+curl -X POST http://localhost:3000/api/v1/validation/validate \
+    -H "Content-Type: application/json" \
+    -d "{\"yaml\": \"$(base64 -w 0 apis/dok-api.yaml)\", \"categories\": [\"DokRules\", \"UfnRules\"]}"
+```
+
+Det går också att validera via en url istället för en fil men då behöver API-läget startas med en extra flagga för att låsa upp möjligheten att nyttja endpointen:
+```bash
+npm start -- -m api --enableUrlValidation
+```
+
+Använd detta kommando för att validera en yaml-fil baserat på en url via terminalen, även här kan man skicka med kategorier för valideringen. Se tidigare kommando:
+```bash
+curl -sS -X POST http://localhost:3000/api/v1/validation/url \      
+  -H "Content-Type: application/json" \
+  -d '{"url":"<URL_TO_YAML_FILE>"}' | jq 
+```
+
+Exempel: 
+```bash
+curl -sS -X POST http://localhost:3000/api/v1/validation/url \      
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://testurl.com/q/openapi"}' | jq 
+```
+
+#### Ladda ned information om regelutfall som en Excel-fil via api-läge
+
+För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, använd resultatet från tidigare validering som "result" nedan:
+```bash
+curl -X POST http://localhost:5173/api/validation/generate-report \
+  -H "Content-Type: application/json" \
+  -o avstamningsfil.xlsx \
+  -d '{
+    "result": [],
+    "categories": []
+  }'
+
+```
+
+
+Avstämningsfilen i Excel har ett fast format. Om en egen version av filen ska användas, måste den utpekade resursen hämtas med en kompatibel version av REST API-profilen.
+
 
 ### Riktlinjer och förklaringar
 Vill du veta mer om de specifika reglerna som verktyget tillämpar, se avsnittet [GUIDELINES](GUIDELINES.md) för detaljer.
