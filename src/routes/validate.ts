@@ -55,8 +55,8 @@ export const registerValidationRoutes = (app: Express) => {
     try {
       const data = req.body;
 
-    if (!data || !data.report || !Array.isArray(data.report)) {
-      return res.status(400).json({ error: 'Invalid data format. Expected an object with a "report" array.' });
+    if (!data || !data.result || !Array.isArray(data.result)) {
+      return res.status(400).json({ error: 'Invalid data format. Expected an object with a "result" array.' });
     }
     
     const reportHandler = new ExcelReportProcessor();
@@ -67,7 +67,7 @@ export const registerValidationRoutes = (app: Express) => {
 
     const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
     const customDiagnostic = new RapLPDiagnostic();
-    customDiagnostic.processRuleExecutionInformation(data.report,enabledRulesAndCategorys.instanceCategoryMap);
+    customDiagnostic.processRuleExecutionInformation(data.result,enabledRulesAndCategorys.instanceCategoryMap);
 
     try {
         buffer = reportHandler.generateReportDocumentBuffer(customDiagnostic);
