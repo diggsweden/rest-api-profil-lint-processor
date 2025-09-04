@@ -52,7 +52,6 @@ export async function processApiSpec(
   );
   const diagnosticReports: DiagnosticReport[] =
     customDiagnostic.processDiagnosticInformation();
-
   return { result, report: diagnosticReports };
 }
 
