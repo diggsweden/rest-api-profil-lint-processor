@@ -149,7 +149,7 @@ paths:
         tags:
           - validate
         summary: Generate status report
-        description: Accepts report data as the request body and returns a generated status report as a downloadable excel file.
+        description: Accepts result data as the request body and returns a generated status report as a downloadable excel file.
         operationId: generateReport
         requestBody:
           required: true
@@ -158,13 +158,13 @@ paths:
               schema:
                 type: object
                 required:
-                  - report
+                  - result
                 properties:
-                  report:
+                  result:
                     type: array
                     items:
-                      type: object
-                    description: An array of objects representing the data for the report.
+                      $ref: '#/components/schemas/RapLPCustomSpectralDiagnosticItem'
+                    description: An array of result items used to generate the Excel report.
         responses:
           '200':
             description: Successful operation
@@ -231,7 +231,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RapLPCustomSpectralDiagnostic"
+                $ref: "#/components/schemas/ValidationResponseDto"
               example:
                 - id: "AME.04"
                   omrade: "API Message"
@@ -391,7 +391,7 @@ components:
         title:
           type: string
         status:
-          type: "integer"
+          type: integer
         detail:
           type: string
         instance:
@@ -483,6 +483,67 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/RapLPCustomSpectralDiagnosticItem"
+    DiagnosticRuleInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "UFN.05"
+        omrade:
+          type: string
+          example: "URL Format och namngivning"
+      required:
+        - id
+        - omrade
+
+    PopulatedDiagnosticRuleInfo:
+      allOf:
+        - $ref: '#/components/schemas/DiagnosticRuleInfo'
+        - type: object
+          properties:
+            status:
+              type: string
+              example: "OK"
+          required:
+            - status
+
+    DiagnosticReport:
+      type: object
+      properties:
+        Notering:
+          type: string
+          example: "Godkända regler - RAP-LP"
+        regler:
+          type: array
+          items:
+            $ref: '#/components/schemas/PopulatedDiagnosticRuleInfo'
+      required:
+        - Notering
+        - regler
+
+    DiagnosticRuleinfoSet:
+      type: object
+      # additionalProperties: false
+      properties:
+        notApplicableRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiagnosticRuleInfo'
+        executedUniqueRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiagnosticRuleInfo'
+        executedUniqueRulesWithError:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiagnosticRuleInfo'
+
+    RapLPDiagnostic:
+      type: object
+      properties:
+        _ruleSets:
+          $ref: '#/components/schemas/DiagnosticRuleinfoSet'
+
     ValidationResponseDto:
       type: object
       properties:
@@ -494,31 +555,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DiagnosticReport"
-    DiagnosticRuleInfo:
-      type: object
-      properties:
-        id:
-          type: string
-          example: "UFN.05"
-        omrade:
-          type: string
-          example: "URL Format och namngivning"
-    PopulatedDiagnosticRuleInfo:
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/DiagnosticRuleInfo"
-        - type: object
-          properties:
-            status:
-              type: string
-              example: "OK"
-    DiagnosticReport:
-      type: object
-      properties:
-        Notering:
-          type: string
-          example: "Godkända regler - RAP-LP"
-        regler:
-          type: array
-          items:
-            $ref: "#/components/schemas/PopulatedDiagnosticRuleInfo"
+      required:
+        - result
+        - report
+
