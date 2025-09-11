@@ -8,14 +8,17 @@ name: RAP-LP project Workflow
 on: # yamllint disable-line rule:truthy
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v*.*.*"
 jobs:
+  # Skapar en release tag som är stabil.
   publish-package:
+    if: ${{ github.ref_name =~ '^v[0-9]+\.[0-9]+\.[0-9]+$' }}
     uses: ./.github/workflows/publish-package.yaml
     permissions:
       contents: read
       packages: write
   publish-image:
+    if: ${{ github.ref_name =~ '^v[0-9]+\.[0-9]+\.[0-9]+$' }}
     uses: ./.github/workflows/publish-image.yaml
     permissions:
       contents: read

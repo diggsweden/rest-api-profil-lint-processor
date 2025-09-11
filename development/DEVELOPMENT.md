@@ -58,5 +58,37 @@ If any checks fail in the CI pipeline:
 5. Verify all checks pass in the updated PR
 
 ## The Release Workflow
+There is a workflow for publishing images and packages either as a pre-release version or as a stable version.
 
+### Pre-release
+Annotate the pre-release tag with suffix and a version, use suffixes:
+- alpha → early test version, often unstable.
+- beta → more tested, but still pre-release.
+- rc → close to completion, stable release candidate.
+
+X can be replaced with any sequence of digits consisting of the numbers 0-9.
+```
+git tag vX.X.X-SUFFIX.X
+git push origin vX.X.X-SUFFIX.X
+```
+
+Example:
+
+```
+git tag v1.6.0-rc.1
+git push origin v1.6.0-rc.1
+```
+
+### Stable release
+
+```
+git tag v.X.X.X
+git push origin vX.X.X
+```
+
+Example:
+```
+git tag v.1.0.0
+git push origin v1.0.0
+```
 ...
