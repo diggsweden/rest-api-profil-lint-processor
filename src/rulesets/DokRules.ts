@@ -11,6 +11,65 @@ import { Dok15Base } from './rulesetUtil.js';
 import { commonEnglishWords, commonSwedishWords } from './constants/CommonWords.js';
 const moduleName: string = 'DokRules.js';
 
+/**
+ * Complement rule to AME01 that manifest that payloads should either be JSON or YAML
+ * TODO: This rule perhaps should have severity.error instead of warn, in order to make sense between AME/DOK.18
+ */
+export class Dok18 extends BaseRuleset {
+
+  static customProperties: CustomProperties = {
+    område: 'Dokumentation',
+    id: 'DOK.18',
+  };
+  /**
+   * Use double wildcars(according to Spectral)in order to fetch both endpoints and methods 
+   */
+  given = [
+    '$.paths.*.*.responses.*.content',
+    '$.paths.*.*.requestBody.content',
+  ];
+  message = 'API specifikationen BÖR beskrivas med antingen JSON eller YAML.';
+
+  then = [
+    {
+      function: (targetVal: any, _opts: string, paths: string[]) => {
+        
+        const valid: boolean = Object.keys(targetVal ?? {}).some(
+          (property) =>
+            property.toLowerCase() === 'application/json' ||
+            property.toLowerCase() === 'application/yaml',
+        );
+        if (!valid) {
+          return [
+            {
+              message: this.message,
+              severity: this.severity,
+            },
+          ];
+        }
+        return [];
+      }
+    },
+    {
+      function: (targetVal: string, _opts: string, paths: string[]) => {
+        this.trackRuleExecutionHandler(
+          JSON.stringify(targetVal, null, 2),
+          _opts,
+          paths,
+          this.severity,
+          this.constructor.name,
+          moduleName,
+          Dok18.customProperties,
+        );
+      },
+    }
+  ];
+  constructor() {
+    super();
+    super.initializeFormats(['OAS3','OAS2']);
+  }
+  severity = DiagnosticSeverity.Warning;
+}
 export class Dok15Get extends Dok15Base {
   given = '$.paths[*][*].responses[*].content.application/json';
   then = [
@@ -654,4 +713,5 @@ export default {
   Dok03ContactUrl,
   Dok03LicenseUrl,
   Dok03LicenseName,
+  Dok18 
 };

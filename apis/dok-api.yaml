@@ -5,7 +5,7 @@
 openapi: '3.0.0'
 info:
   version: 1.0.0
-  title: AME
+  title: DOK
   description: >
     När dokumentationen består av flera stycken kan också större än-tecknet användas.
     Då ersätts radbrytningar med mellanslag.
@@ -23,7 +23,7 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 externalDocs:
   description: 'Find out more about the API info text goes here'
-  url: Url to external documentation
+  url: https://valid-url-example.com
 servers:
   - url: http://petstore.swagger.io/v1
 paths:
@@ -54,7 +54,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pets'
-              examples: ''
+              example:
+              - id: 3
+                name: Pamela
+              - id: 4
+                name: Christa
         default:
           description: unexpected error
           content:
@@ -86,9 +90,11 @@ paths:
                   type: integer
                 name:
                   type: string
-            examples: # Sample object
-              id: 10
-              name: Jessica Smith
+              example:
+              - id: 5
+                name: Karen
+              - id: 6
+                name: Tess
   /pets/{petId}:
     get:
       summary: Info for a specific pet
@@ -117,20 +123,96 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
+  /items:
+    get:
+      summary: Get items
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/yaml:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+              example:
+              - id: 11
+                name: Ted
+              - id: 12
+                name: Fred
+
+  /items2:
+    post:
+      summary: Create item
       requestBody:
+        required: true
         content:
           application/json:
-            schema: # Request body contents
+            schema:
               type: object
               properties:
                 id:
-                  type: integer
+                  type: string
                 name:
                   type: string
-            examples: # Sample object
-              id: 10
-              name: Jessica Smith
+              example:
+              - id: 15
+                name: Herbert
+              - id: 16
+                name: Nils
 
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+  /items3:
+    get:
+      summary: Get items
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+              example:
+              - id: 17
+                name: Pete
+              - id: 18
+                name: Tom
+  /items4:
+    post:
+      summary: Create item
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: string                    
+              example:
+              - id: 19
+                name: thing1
+              - id: 20
+                name: thing2
 components:
   schemas:
     Pet:

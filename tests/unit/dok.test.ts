@@ -5,6 +5,89 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import testRule from '../util/helperTest.js';
 
+testRule('Dok18', [
+  {
+    name: 'giltigt testfall',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [{ url: 'https://example.com/my-api/v1' }],
+      paths: {
+        '/item1': {
+          get: {
+            description: 'Giltigt testfall av test för giltigt format av API specifikationen',
+            responses: {
+              '200': {
+                description: 'Godkänt svar',
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        id: {
+                          type: 'string',
+                        },
+                        name: {
+                          type: 'string',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [{ url: 'https://example.com/my-api/v1' }],
+      paths: {
+        '/Dettacase': {
+          get: {
+            description: 'Ogiltigt testfall av CamelCase',
+            parameters: [
+              {
+                name: 'Very_LongName',
+                in: 'path',
+                required: false,
+              },
+            ],
+            responses: {
+              '200': {
+                description: '',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        code: 'Dok20',
+        message: 'Förväntade returkoder och felkoder SKALL vara fullständigt dokumenterade.',
+        path: ['paths', '/Dettacase', 'get', 'responses', '200', 'description'],
+        severity: DiagnosticSeverity.Error,
+        range: {
+          start: {
+            line: 0,
+            character: 276,
+          },
+          end: {
+            line: 0,
+            character: 278,
+          },
+        },
+      },
+    ],
+  },
+]);
 testRule('Dok20', [
   {
     name: 'giltigt testfall',
