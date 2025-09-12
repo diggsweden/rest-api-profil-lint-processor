@@ -25,6 +25,7 @@ RAP-LP är ett kommandoradsverktyg för att linta OpenAPI v3-definitioner med hj
   - [Innehållsförteckning](#innehållsförteckning)
   - [Installation och krav](#installation-och-krav)
   - [Instruktioner för att komma igång snabbt](#instruktioner-för-att-komma-igång-snabbt)
+  - [Versioner](#versioner)
   - [Användning](#användning)
   - [Begränsningar](#begränsningar)
   - [Support](#support)
@@ -38,7 +39,7 @@ RAP-LP är ett kommandoradsverktyg för att linta OpenAPI v3-definitioner med hj
 
 Det enklaste sättet att installera RAP-LP är genom att använda [npm](https://www.npmjs.com/):
 
-1. Klona ned projektet
+1. Klona ned projektet från senaste release, gärna via latest release tag.
 2. Installera alla beroenden:
 
 ```bash
@@ -58,6 +59,11 @@ npm start -- -f PATH_TO_THE_YAML_FILE
 ```bash
 npm start -- -f apis/dok-api.yaml
 ```
+
+## Versioner
+Senaste release tag ska alltid vara stabil och testad, vilket gör den till den föredragna versionen för att nyttja verktyget.
+
+Main och pre-releaser används med reservation för att all funktionalitet inte är garanterat stabil och testad.
 
 ## Användning
 

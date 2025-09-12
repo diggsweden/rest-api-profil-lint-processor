@@ -89,7 +89,7 @@ För icke-triviala bidrag, vänligen diskutera med projektteamet först.
 
 Vi använder [Fork-and-Pull-modellen](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/getting-started/about-collaborative-development-models#fork-and-pull-model):
 
-1. Forka repositoriet.
+1. Forka repositoriet från senaste release-tag.
 2. Skapa en ämnesgren från din forks huvudgren.
 3. Pusha dina ändringar till ämnesgrenen i din fork.
 4. Öppna en ny pull request till huvudprojektet.
