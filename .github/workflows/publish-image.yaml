@@ -79,8 +79,6 @@ jobs:
             # Lägg semver-varianter
             type=semver,pattern={{version}},priority=2
             type=semver,pattern={{major}}.{{minor}}.{{patch}},priority=3
-            type=semver,pattern={{major}}.{{minor}},priority=4
-            type=semver,pattern={{major}},priority=5
             # Spårbar byggtagg
             type=raw,value=${{ env.IMAGE_NAME }}-{{tag}}-{{date 'YYYYMMDD'}}-{{sha}},priority=32
 
