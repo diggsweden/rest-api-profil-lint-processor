@@ -81,6 +81,8 @@ git push origin v1.6.0-rc.1
 
 ### Stable release
 
+Checkout main, pull the latest changes and tag the latest main commit.
+
 ```
 git tag v.X.X.X
 git push origin vX.X.X
@@ -91,4 +93,4 @@ Example:
 git tag v.1.0.0
 git push origin v1.0.0
 ```
-...
+

@@ -60,11 +60,8 @@ jobs:
           flavor: |
             latest=false
           tags: |
-            # Exakta taggen, t.ex. v1.0.1-alpha.1
             type=semver,pattern={{version}},priority=2
-            # (valfritt) utan 'v'-prefix
             type=raw,value={{version}},pattern={{version}},prefix=,priority=3
-            # Spårbar byggtagg
             type=raw,value=${{ env.IMAGE_NAME }}-{{tag}}-{{date 'YYYYMMDD'}}-{{sha}},priority=32
 
       - name: Extract metadata (stable)
@@ -76,10 +73,8 @@ jobs:
           flavor: |
             latest=true
           tags: |
-            # Lägg semver-varianter
             type=semver,pattern={{version}},priority=2
             type=semver,pattern={{major}}.{{minor}}.{{patch}},priority=3
-            # Spårbar byggtagg
             type=raw,value=${{ env.IMAGE_NAME }}-{{tag}}-{{date 'YYYYMMDD'}}-{{sha}},priority=32
 
       - name: Build and push image

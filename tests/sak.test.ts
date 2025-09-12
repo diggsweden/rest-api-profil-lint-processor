@@ -241,7 +241,8 @@ testRule('Sak16', [
     },
     errors: [
       {
-        message: 'API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas av klienten eller servern i okrypterat format av webbläsaren eller serverapplikationen.',
+        message:
+          'API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas av klienten eller servern i okrypterat format av webbläsaren eller serverapplikationen.',
         path: ['components', 'securitySchemes', 'ApiKeyQuery'],
         severity: DiagnosticSeverity.Error,
       },

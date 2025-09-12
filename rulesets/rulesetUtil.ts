@@ -11,7 +11,6 @@ import { BaseRuleset } from './BaseRuleset.ts';
  * Base class for handling security rules when apiKeys is defined
  */
 export abstract class SakBaseApiKeyRule extends BaseRuleset {
-
   protected constructor() {
     super();
     super.initializeFormats(['OAS3']);
@@ -25,7 +24,6 @@ export abstract class SakBaseApiKeyRule extends BaseRuleset {
   then = [
     {
       function: (targetVal: any, _opts: any, paths: string[]) => {
-
         const result = this.validate(targetVal);
         this.trackRuleExecutionHandler(
           JSON.stringify(targetVal, null, 2),

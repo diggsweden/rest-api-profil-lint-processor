@@ -13,13 +13,14 @@ on: # yamllint disable-line rule:truthy
 jobs:
   gate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       ok: ${{ steps.chk.outputs.ok }}
     steps:
       - id: chk
         shell: bash
         run: |
-          # Validate strict semver tag: vX.Y.Z
           if [[ "${GITHUB_REF_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "ok=true" >> "$GITHUB_OUTPUT"
           else
