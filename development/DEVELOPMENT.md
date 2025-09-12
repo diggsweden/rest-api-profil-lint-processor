@@ -1,96 +1,127 @@
-# Development Guide
+# Utvecklingsguide
 
-This guide outlines core essentials for developing in this project.
+Denna guide beskriver de viktigaste grunderna för utveckling i detta projekt.
 
-## Table of Contents
-- [Setup and Configuration](#setup-and-configuration)
-  - [IDE Setup](#ide-setup)
-- [Development Workflow](#development-workflow)
-  - [Testing and Verification](#testing-format-and-lint)
-- [Release Process](#the-release-workflow)
-  - [CI Release](#ci-release-process)
-  - [Local Release](#local-release-process)
-  - [Troubleshooting](#troubleshooting)
+## Innehållsförteckning
+- [Installation och konfiguration](#installation-och-konfiguration)
+  - [IDE-inställningar](#ide-inställningar)
+- [Utvecklingsflöde](#utvecklingsflöde)
+  - [Testning och verifiering](#testning-och-verifiering)
+- [Releaseprocess](#releaseprocess)
+  - [CI-release](#ci-release)
+  - [Lokal release](#lokal-release)
+  - [Felsökning](#felsökning)
 
-## Setup and Configuration
+## Installation och konfiguration
 
-### IDE Setup
+### IDE-inställningar
 
 #### VSCode
 
 
 
-## Development Workflow
+## Utvecklingsflöde
 
-### Pull Request Workflow
+### Pull Request-flöde
 
-When submitting a PR, CI will automatically run several checks. To avoid surprises, run these checks locally first.
+När du skickar in en PR kommer CI automatiskt att köra flera kontroller. För att undvika överraskningar bör du köra dessa kontroller lokalt först.
 
-#### Prerequisites
+#### Förutsättningar
 - [Podman](https://podman.io/)
 
-#### Running Code Quality Checks Locally
+#### Köra kvalitetskontroller lokalt
 
-1. Run the quality check script:
+1. Kör kvalitetskontrollscriptet:
    ```shell
    ./development/code_quality.sh
    ```
-2. Fix any identified issues
-3. Update your PR with fixes
-4. Verify CI passes in the updated PR
+2. Åtgärda eventuella problem
+3. Uppdatera din PR med fixarna
+4. Verifiera att CI passerar i den uppdaterade PR:en
 
-#### Quality Check Details
+#### Detaljer för kvalitetskontroller
 
-- **Linting with megalinter**: BASH, Markdown, YAML, Typescript, GitHub Actions, security scanning
-- **License Compliance**: REUSE tool ensures proper copyright information
-- **Commit Structure**: Conform checks commit messages for changelog generation
-- **Dependency Analysis**: Scans for vulnerabilities, outdated packages, and license issues
-- **OpenSSF Scorecard**: Validates security best practices
+- **Lintning med megalinter**: BASH, Markdown, YAML, Typescript, GitHub Actions, säkerhetsskanning
+- **Licensöverensstämmelse**: REUSE-verktyget säkerställer korrekt copyright-information
+- **Commit-struktur**: Conform kontrollerar commit-meddelanden för changelog-generering
+- **Beroendeanalys**: Skannar efter sårbarheter, utdaterade paket och licensproblem
+- **OpenSSF Scorecard**: Validerar säkerhetsbästa praxis
 
-#### Handling Failed Checks
+#### Hantering av misslyckade kontroller
 
-If any checks fail in the CI pipeline:
+Om några kontroller misslyckas i CI-pipelinen:
 
-1. Review the CI error logs
-2. Run checks locally to reproduce the issues
-3. Make necessary fixes in your local environment
-4. Update your Pull Request
-5. Verify all checks pass in the updated PR
+1. Granska CI-fel-loggarna
+2. Kör kontrollerna lokalt för att återskapa problemen
+3. Gör nödvändiga fixar i din lokala miljö
+4. Uppdatera din Pull Request
+5. Verifiera att alla kontroller passerar i den uppdaterade PR:en
 
-## The Release Workflow
-There is a workflow for publishing images and packages either as a pre-release version or as a stable version.
+## Releaseprocess
+Det finns ett arbetsflöde för att publicera images och paket antingen som en pre-release-version eller som en stabil release.
 
 ### Pre-release
-Annotate the pre-release tag with suffix and a version, use suffixes:
-- alpha → early test version, often unstable.
-- beta → more tested, but still pre-release.
-- rc → close to completion, stable release candidate.
+Annotera pre-release-taggen med suffix och en version, använd suffix:
+- alpha → tidig testversion, ofta instabil
+- beta → mer testad, men fortfarande pre-release
+- rc → nära färdigställande, stabil release candidate
 
-X can be replaced with any sequence of digits consisting of the numbers 0-9.
+X kan ersättas med vilken siffersekvens som helst bestående av 0–9.
+
+***Säkerställ att tagg-versionen matchar versionen i package.json och package-lock.json.***
+
 ```
-git tag vX.X.X-SUFFIX.X
+git checkout <branch>
+git pull origin <branch>
+git tag -s -a vX.X.X-SUFFIX.x -m "vX.X.X-SUFFIX.X"
 git push origin vX.X.X-SUFFIX.X
 ```
 
-Example:
+Exempel:
 
 ```
-git tag v1.6.0-rc.1
-git push origin v1.6.0-rc.1
+git tag -s -a v1.0.3-alpha.1 -m "v1.0.3-alpha.1"
+git push origin v1.0.3-alpha.1
 ```
 
-### Stable release
+### Stabil release
+Checka ut main, hämta senaste ändringarna och tagga senaste commit på main.
+
+***Säkerställ att tagg-versionen matchar versionen i package.json och package-lock.json.***
 
 Checkout main, pull the latest changes and tag the latest main commit.
 
 ```
-git tag v.X.X.X
+git checkout <branch>
+git pull origin <branch>
+git tag -s -a vX.X.X -m "vX.X.X"
 git push origin vX.X.X
 ```
 
-Example:
+Exempel:
 ```
-git tag v.1.0.0
+git tag -s -a v1.0.0 -m "v1.0.0"
 git push origin v1.0.0
 ```
 
+***På grund av projektbegränsningar är pre- och stabila releaser från main endast möjliga för admins!***
+
+### Släpp stabil version på GitHub
+1. Öppna [releases](https://github.com/diggsweden/rest-api-profil-lint-processor/releases) på GitHub.
+2. "Draft a new release"
+3. Välj vilken tagg som ska släppas
+4. Lägg till en release-titel – vX.X.X
+5. Lägg till en beskrivning eller generera release notes och rensa bort onödiga commits från beskrivningen
+6. Markera som senaste release
+7. Publicera releasen
+
+### Testa och verifiera release
+Efter varje release, pre- eller stabil, bör funktionaliteten testas och verifieras.
+
+Detta kan göras via stickprov av följande funktioner:
+
+#### Test av image
+Kör följande kommandon med den version av verktyget du vill testa – [använd podman/docker](../README.md#användning-via-podmandocker)
+
+### Test av npm-paket
+...
