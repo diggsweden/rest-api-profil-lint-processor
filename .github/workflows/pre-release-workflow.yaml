@@ -8,22 +8,21 @@ name: RAP-LP Pre-release
 on:
   push:
     tags:
-      - 'v*.*.*-*'  # t.ex. v1.2.3-rc.1
+      - 'v*.*.*-alpha.*'
+      - 'v*.*.*-beta.*'
+      - 'v*.*.*-rc.*'
 
 jobs:
-  # Skapar en pre-release tag som matchar rc, beta eller alpha.
-  # Exempel: v1.2.3-rc.1, v1.2.3-beta.2, v1.2.3-alpha.5
   publish-package:
-    if: ${{ github.ref_type == 'tag' && github.ref_name matches '^v[0-9]+\.[0-9]+\.[0-9]+-(alpha|beta|rc)\.[0-9]+$' }}
     uses: ./.github/workflows/publish-package.yaml
     permissions:
       contents: read
       packages: write
 
   publish-image:
-    if: ${{ github.ref_type == 'tag' && github.ref_name matches '^v[0-9]+\.[0-9]+\.[0-9]+-(alpha|beta|rc)\.[0-9]+$' }}
     needs: publish-package
     uses: ./.github/workflows/publish-image.yaml
     permissions:
       contents: read
       packages: write
+

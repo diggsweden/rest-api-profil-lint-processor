@@ -11,18 +11,34 @@ on: # yamllint disable-line rule:truthy
       - "v*.*.*"
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      ok: ${{ steps.chk.outputs.ok }}
+    steps:
+      - id: chk
+        shell: bash
+        run: |
+          # Validate strict semver tag: vX.Y.Z
+          if [[ "${GITHUB_REF_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+
   # Skapar en release tag som är stabil.
   publish-package:
-    if: ${{ github.ref_type == 'tag' && github.ref_name matches '^v[0-9]+\.[0-9]+\.[0-9]+$' }}
+    needs: gate
+    if: needs.gate.outputs.ok == 'true'
     uses: ./.github/workflows/publish-package.yaml
     permissions:
       contents: read
       packages: write
 
   publish-image:
-    if: ${{ github.ref_type == 'tag' && github.ref_name matches '^v[0-9]+\.[0-9]+\.[0-9]+$' }}
+    needs: [gate, publish-package]
+    if: needs.gate.outputs.ok == 'true'
     uses: ./.github/workflows/publish-image.yaml
     permissions:
       contents: read
       packages: write
-
