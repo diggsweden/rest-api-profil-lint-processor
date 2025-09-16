@@ -4,12 +4,12 @@
 
 import { undefined as undefinedFunc, pattern } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { parsePropertyNames } from './rulesetUtil.ts';
-import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
-import { BaseRuleset } from './BaseRuleset.ts';
-import { isValidApplicationJson } from './util/AmeRulesUtil.ts';
+import { parsePropertyNames } from './rulesetUtil.js';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
+import { BaseRuleset } from './BaseRuleset.js';
+import { isValidApplicationJson } from './util/AmeRulesUtil.js';
 
-const moduleName: string = 'AmeRules.ts';
+const moduleName: string = 'AmeRules.js';
 
 enum CasingType {
   snake = 'snake',

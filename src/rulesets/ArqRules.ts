@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { Arq05Base } from './rulesetUtil.ts';
+import { Arq05Base } from './rulesetUtil.js';
 import { schema } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
-import { BaseRuleset } from './BaseRuleset.ts';
-import { isValidApplicationJson } from './rulesetUtil.ts';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
+import { BaseRuleset } from './BaseRuleset.js';
+import { isValidApplicationJson } from './rulesetUtil.js';
 
-const moduleName: string = 'ArqRules.ts';
+const moduleName: string = 'ArqRules.js';
 
 export class Arq05NestedStructure extends Arq05Base {
   description = 'Om en header använder nästlade strukturer, är en requestbody mer lämplig.';

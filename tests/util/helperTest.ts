@@ -5,7 +5,7 @@
 import { IRuleResult, Spectral, Document, Ruleset, RulesetDefinition } from '@stoplight/spectral-core';
 import { httpAndFileResolver } from '@stoplight/spectral-ref-resolver';
 //import {describe, expect, it} from '@jest/globals';
-import allRules from './rulesetTest.ts';
+import allRules from './rulesetTest.js';
 export type RuleName = keyof typeof allRules.rules;
 
 type Scenario = ReadonlyArray<

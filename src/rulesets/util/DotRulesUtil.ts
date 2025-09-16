@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { BaseRuleset } from '../BaseRuleset.ts';
-import { Property } from '../rulesetUtil.ts';
-import { CustomProperties } from '../../ruleinterface/CustomProperties.ts';
+import { BaseRuleset } from '../BaseRuleset.js';
+import { Property } from '../rulesetUtil.js';
+import { CustomProperties } from '../../ruleinterface/CustomProperties.js';
 
 /**
  * interface describing propertyes collected and validated

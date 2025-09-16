@@ -1,13 +1,10 @@
-/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
-module.exports = async () => {
-  return {
-    preset: 'ts-jest/presets/default-esm',
-    testPathIgnorePatterns: ['util'],
-    testEnvironment: 'node',
-    "extensionsToTreatAsEsm": [".ts"],
-    transform: {
-      '^.+\\.ts$': ['ts-jest', { useESM: true }], // ts-jest config moved here
-    },
+// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+//
+// SPDX-License-Identifier: EUPL-1.2
+const base = require('./jest.config.cjs');
+
+/** @type {import('jest').Config} */
+module.exports = {
+  ...base,
     testMatch: ['**/tests/integration/**/*.test.ts']
-  };
 };

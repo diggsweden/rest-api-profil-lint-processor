@@ -1,19 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
+    "target": "ES2020",
+    "outDir": "dist",
     "declaration": true,
     "declarationMap": true,
-    "emitDeclarationOnly": true,
     "sourceMap": true,
-    "outDir": "dist",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
     "strict": true,
-    "noImplicitAny": false
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+
   },
   "include": ["src"]
 }

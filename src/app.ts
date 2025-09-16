@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
 //
 // SPDX-License-Identifier: EUPL-1.2
@@ -15,10 +16,10 @@
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { execCLI } from './cli-mode.ts';
-import { startServer } from './api-mode.ts';
+import { execCLI } from './cli-mode.js';
+import { startServer } from './api-mode.js';
 import * as path from "node:path";
-import { getRuleModules } from "./util/ruleUtil.ts";
+import { getRuleModules } from "./util/ruleUtil.js";
 
 async function main() {
     const argv = await yargs(hideBin(process.argv)).version("1.2.0")

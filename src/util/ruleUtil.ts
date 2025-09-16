@@ -2,9 +2,10 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { RuleCategoryError } from "./RapLPBaseApiErrorHandling.ts";
-
-// ruleUtil.ts
+import { RuleCategoryError } from "./RapLPBaseApiErrorHandling.js";
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 interface CustomSchema {
   id: string;
   krav: string;
@@ -55,23 +56,50 @@ export async function importAndCreateRuleInstances(
    * @param category Defined category as an parameter
    * @returns Promise - resolve to exported content of the specified module.
    */
-  async function importRuleModule(category: string): Promise<any> {
-    try {
-      // import the module based on the provided category
-      const ruleModule = await import(`../../rulesets/${category}.ts`);
-      //Extract values (exports) from imported ruleModule in RAP-LP
-      const values = Object.values(ruleModule);
-      if (values.length > 0) {
+
+async function importRuleModule(category: string): Promise<any> {
+  // This file is src/util/ruleUtil.ts -> dist/util/ruleUtil.js after build
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  // Candidate directories where rules might live (ordered by preference)
+  const dirCandidates = [
+    // When compiled: dist/util/../rulesets => dist/rulesets
+    path.resolve(__dirname, '../rulesets'),
+    // When running tests from dist but rules still in src:
+    path.resolve(__dirname, '../../src/rulesets'),
+    // Fallbacks if code is executed from project root
+    path.resolve(process.cwd(), 'dist/rulesets'),
+    path.resolve(process.cwd(), 'src/rulesets'),
+    path.resolve(process.cwd(), 'rulesets'),
+  ];
+
+  // Try JS first (compiled), then TS (source). Also allow mjs/cjs just in case.
+  const extCandidates = ['.js', '.mjs', '.cjs', '.ts'];
+
+  // Find the first existing file
+  for (const dir of dirCandidates) {
+    for (const ext of extCandidates) {
+      const candidate = path.join(dir, `${category}${ext}`);
+      if (fs.existsSync(candidate)) {
+        const url = pathToFileURL(candidate).href;
+        const mod = await import(url);
+        const values = Object.values(mod);
+        if (values.length === 0) {
+          throw new Error(`inga exporterade typer hittade i modulen för kategori ${category}`);
+        }
         return values as any;
-      } else {
-        //No exports from loaded ruleModule is found for the category
-        throw new Error(`inga exporterade typer hittade i modulen för kategori ${category}`);
       }
-    } catch (error: any) {
-      //Saftey check in case of error when loading module[s]
-      throw new Error(`Fel vid importering av regler för kategori ${category}:, category ${error.message}`);
     }
   }
+
+  // Nothing matched → nice error
+  const tried = dirCandidates
+    .flatMap(d => extCandidates.map(ext => path.relative(process.cwd(), path.join(d, `${category}${ext}`))))
+    .join(', ');
+  throw new Error(`Fel vid importering av regler för kategori ${category}: kunde inte hitta någon av: ${tried}`);
+}
+
   /**
    *
    * @param categories Defined categoeries to be loaded

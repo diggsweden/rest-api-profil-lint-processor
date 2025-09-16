@@ -1,7 +1,10 @@
 {
   "name": "@diggsweden/rest-api-profil-lint-processor",
   "version": "v1.0.0",
-  "main": ".src/app.ts",
+  "main": "./dist/app.js",
+  "bin": {
+    "rest-api-profil-lint-processor": "./dist/app.js"
+  },
   "type": "module",
   "engines": {
     "node": "<=22.15.1"
@@ -16,7 +19,8 @@
     "pretest": "openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o tests/generated",
     "test": "jest",
     "test:integration": "node --experimental-vm-modules ./node_modules/.bin/jest --config jest.integration.config.cjs ",
-    "start": "node --import=./register.js src/app.ts",
+    "prepare": "npm run build",
+    "start": "node ./dist/app.js",
     "version": "standard-version --skip.commit"
   },
   "directories": {
@@ -33,7 +37,7 @@
     "jest": "^29.7.0",
     "standard-version": "^9.5.0",
     "supertest": "^7.0.0",
-    "ts-jest": "^29.3.2",
+    "ts-jest": "^29.4.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.2.2"
   },

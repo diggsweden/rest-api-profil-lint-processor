@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
-import { BaseRuleset } from './BaseRuleset.ts';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
+import { BaseRuleset } from './BaseRuleset.js';
 import {
   enumeration,
   truthy,
@@ -14,10 +14,10 @@ import {
   defined,
 } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { Dok03Base } from './rulesetUtil.ts';
+import { Dok03Base } from './rulesetUtil.js';
 import path from 'path';
-import { Dok15Base } from './rulesetUtil.ts';
-const moduleName: string = 'DokRules.ts';
+import { Dok15Base } from './rulesetUtil.js';
+const moduleName: string = 'DokRules.js';
 
 export class Dok15Get extends Dok15Base {
   given = '$.paths[*][*].responses[*].content.application/json';
