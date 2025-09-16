@@ -36,6 +36,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: DOK.07](#id-dok07)
    - [ID: DOK.08](#id-dok08)
    - [ID: DOK.09](#id-dok09)
+   - [ID: DOK.11](#id-dok11)
    - [ID: DOK.15](#id-dok15)
    - [ID: DOK.17](#id-dok17)
    - [ID: DOK.19](#id-dok19)
@@ -264,6 +265,30 @@ Regeln förutsätter att det finns en förekomst av något av objekten `info.des
 ![Exempelbild på ovan nämnda objekts placering i en OpenAPI Description](images/dok9.png)
 
 _Ett av objekten räcker för att uppfylla regeln, men "limit", "begränsning" eller "problem" behöver nämnas i `description`-fälten för att de ska räknas._
+
+---
+
+### ID: DOK.11
+
+**Krav:** Avsikten och beteendet hos API:et SKALL beskrivas så utförligt och tydligt som möjligt.
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+$.info
+```
+
+**Förklaring:**
+Regeln förutsätter att det finns en förekomst av fältet `description` under objektet `info`.
+Beskrivningen måste finnas och får endast vara en icke-tom textsträng som inte enbart består av blanksteg.
+
+**Exempel:**
+
+![Exempelbild på hur en korrekt description kan se ut](images/dok11.png)
+
+_Exemplet ovan är giltigt då description finns, och innehåller en textsträng som inte enbart består av blanksteg._
 
 ---
 
