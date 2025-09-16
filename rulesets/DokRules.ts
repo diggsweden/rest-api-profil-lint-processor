@@ -28,7 +28,7 @@ export class Dok15Get extends Dok15Base {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok15Base.customProperties
+          Dok15Base.customProperties,
         );
       },
     },
@@ -52,7 +52,7 @@ export class Dok15ReqBody extends Dok15Base {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok15Base.customProperties
+          Dok15Base.customProperties,
         );
       },
     },
@@ -90,7 +90,7 @@ export class Dok17 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok17.customProperties
+          Dok17.customProperties,
         );
       },
     },
@@ -123,7 +123,7 @@ export class Dok20 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok20.customProperties
+          Dok20.customProperties,
         );
       },
     },
@@ -171,7 +171,7 @@ export class Dok06 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok06.customProperties
+          Dok06.customProperties,
         );
       },
     },
@@ -203,7 +203,7 @@ export class Dok07 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok07.customProperties
+          Dok07.customProperties,
         );
       },
     },
@@ -275,7 +275,7 @@ export class Dok08 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok08.customProperties
+          Dok08.customProperties,
         );
       },
     },
@@ -333,7 +333,7 @@ export class Dok09 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok09.customProperties
+          Dok09.customProperties,
         );
       },
     },
@@ -377,7 +377,7 @@ export class Dok11 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok11.customProperties
+          Dok11.customProperties,
         );
       },
     },
@@ -411,7 +411,7 @@ export class Dok19 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok19.customProperties
+          Dok19.customProperties,
         );
       },
     },
@@ -441,7 +441,7 @@ export class Dok01 extends BaseRuleset {
             this.severity,
             this.constructor.name,
             moduleName,
-            Dok01.customProperties
+            Dok01.customProperties,
           );
 
           obj = targetVal['externalDocs'];
@@ -515,7 +515,7 @@ export class Dok03Info extends Dok03Base {
           this.severity,
           this.constructor.name,
           moduleName,
-          Dok03Info.customProperties
+          Dok03Info.customProperties,
         );
       },
     },
