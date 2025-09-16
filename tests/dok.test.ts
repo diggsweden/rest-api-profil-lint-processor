@@ -371,6 +371,66 @@ testRule('Dok09', [
     ],
   },
 ]);
+
+testRule('Dok11', [
+  {
+    name: 'giltigt testfall',
+    document: {
+      openapi: '3.1.0',
+      info: {
+        version: '1.0',
+        description: 'When the documentation consists of multiple paragraphs, the greater-than operator can be used.',
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall - description saknas',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+    },
+    errors: [
+      {
+        message: 'Avsikten och beteendet hos API:et SKALL beskrivas så utförligt och tydligt som möjligt.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - description finns, men innehåller endast blanksteg',
+    document: {
+      openapi: '3.1.0',
+      info: {
+        version: '1.0',
+        description: '  ',
+      },
+    },
+    errors: [
+      {
+        message: 'Avsikten och beteendet hos API:et SKALL beskrivas så utförligt och tydligt som möjligt.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - description finns, men är tom',
+    document: {
+      openapi: '3.1.0',
+      info: {
+        version: '1.0',
+        description: '',
+      },
+    },
+    errors: [
+      {
+        message: 'Avsikten och beteendet hos API:et SKALL beskrivas så utförligt och tydligt som möjligt.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+]);
+
 testRule('Dok17', [
   {
     name: 'giltigt testfall',

@@ -72,6 +72,7 @@ const ruleTypes = [
   DotRules.Dot04,
   DokRules.Dok19,
   DokRules.Dok01,
+  DokRules.Dok11,
   DokRules.Dok17,
   DokRules.Dok03Info,
   DokRules.Dok03ContactName,
