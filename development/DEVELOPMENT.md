@@ -72,7 +72,7 @@ X kan ersättas med vilken siffersekvens som helst bestående av 0–9.
 
 ```
 git checkout <branch>
-git pull origin <branch>
+git pull
 git tag -s -a vX.X.X-SUFFIX.x -m "vX.X.X-SUFFIX.X"
 git push origin vX.X.X-SUFFIX.X
 ```
@@ -93,7 +93,7 @@ Checkout main, pull the latest changes and tag the latest main commit.
 
 ```
 git checkout <branch>
-git pull origin <branch>
+git pull
 git tag -s -a vX.X.X -m "vX.X.X"
 git push origin vX.X.X
 ```
