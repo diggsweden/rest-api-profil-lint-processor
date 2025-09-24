@@ -3,12 +3,16 @@
   "version": "v1.0.0",
   "main": "./dist/app.js",
   "bin": {
-    "rest-api-profil-lint-processor": "./dist/app.js"
+    "raplp": "dist/cli.js"
   },
   "type": "module",
   "engines": {
     "node": "<=22.15.1"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:diggsweden/rest-api-profil-lint-processor"
@@ -20,7 +24,7 @@
     "test": "jest",
     "test:integration": "node --experimental-vm-modules ./node_modules/.bin/jest --config jest.integration.config.cjs ",
     "prepare": "npm run build",
-    "start": "node ./dist/app.js",
+    "start": "node --import=./register.js src/app.ts",
     "version": "standard-version --skip.commit"
   },
   "directories": {
