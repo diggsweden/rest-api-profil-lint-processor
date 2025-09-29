@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+---
+name: Release Workflow
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"      # Stable releases
+      - "v[0-9]+.[0-9]+.[0-9]+-*"    # Pre-releases (alpha, beta, rc, etc.)
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+      actions: read
+      security-events: write
+      attestations: write  # Required for SBOM attestation
+    secrets: inherit
+    uses: diggsweden/.github/.github/workflows/release-orchestrator.yml@main
+    with:
+      projectType: npm
+      releaseType: stable
+      
+      # Version and changelog - same as issuer-poc
+      skipVersionBump: false
+      changelogConfig: ".github-templates/gitcliff-templates/keepachangelog.toml"
+      
+      # NPM publishing
+      skipArtifactPublish: false
+      artifactRegistry: github  # Change to 'npmjs' when ready for public registry
+      
+      # Container image
+      skipContainerPublish: false
+      containerRegistry: ghcr.io
+      containerPlatforms: "linux/amd64"  # Add linux/arm64 if needed
+      containerEnableSLSA: true
+      containerfile: Containerfile
+      
+      # GitHub Release
+      skipGitHubRelease: false
+      useJReleaser: false  # Use GitHub CLI for NPM projects
+      generateSBOM: true
+      signArtifacts: true
+      attachArtifacts: ""  # NPM package is in registry, not attached to release
+      
+      # Node.js configuration
+      nodeVersion: "22.x"
