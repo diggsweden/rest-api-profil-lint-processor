@@ -27,6 +27,8 @@ const ruleModules = [
   'ForRules',
   'DotRules',
   'FelRules',
+  'ResRules',
+  'MogRules',
 ];
 /**
  *
