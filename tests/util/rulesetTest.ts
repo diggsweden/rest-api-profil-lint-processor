@@ -17,6 +17,7 @@ import * as ForRules from '../../src/rulesets/ForRules.js';
 import * as DotRules from '../../src/rulesets/DotRules.js';
 import * as FelRules from '../../src/rulesets/FelRules.js';
 import * as ResRules from '../../src/rulesets/ResRules.js';
+import * as MogRules from '../../src/rulesets/MogRules.js';
 
 const ruleInstances: Record<string, any> = {};
 
@@ -84,6 +85,7 @@ const ruleTypes = [
   DokRules.Dok03LicenseUrl,
   ResRules.Res02,
   ResRules.Res06,
+  MogRules.Mog01,
 ];
 ruleTypes.forEach((RuleClass) => {
   const instance = new RuleClass();
