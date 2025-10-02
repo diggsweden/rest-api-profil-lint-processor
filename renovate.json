@@ -23,6 +23,8 @@
   "vulnerabilityAlerts": {
     "labels": ["security", "dependencies"]
   },
+  "timezone": "Europe/Stockholm",
+  "automergeSchedule": ["0 9-21 * * 6"],
   "packageRules": [
     {
       "matchManagers": ["github-actions"],
