@@ -7,6 +7,7 @@ import { XMLBuilder, XMLParser } from 'fast-xml-parser';
 import path from 'path';
 import { RapLPDiagnostic } from './RapLPDiagnostic.js';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 interface ExcelTemplateConfig {
   reportTemplatePath: string;
@@ -16,13 +17,27 @@ interface ExcelTemplateConfig {
   outputFilePath: string;
 }
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const TEMPLATE = 'Avstaemning_REST_API_profil_v_1_2_0_0.xlsx';
+const candidates = [
+  path.resolve(__dirname, '../document', TEMPLATE),
+  path.resolve(__dirname, '../../document', TEMPLATE),
+];
+
+function resolveTemplatePath() {
+  for (const p of candidates) if (fs.existsSync(p)) return p;
+  throw new Error('Hittar inte Excel-mallen. Testade:\n  - ' + candidates.join('\n  - '));
+}
+
 /**
  * Mapped to actual Excel template for corresponding version of the Swedish REST API-profile
  * This integration is intended to facilitate reconciliation against the respective requirements
  * and to provide an overview of how an API meets this REST API profile.
  */
 const DEFAULT_CONFIG: ExcelTemplateConfig = {
-  reportTemplatePath: path.resolve(process.cwd(), 'document/Avstaemning_REST_API_profil_v_1_2_0_0.xlsx'),
+  reportTemplatePath: resolveTemplatePath(),
   dataSheetName: 'Kravlista REST API profil',
   ruleColumn: 'B',
   statusColumn: 'E',
@@ -119,12 +134,9 @@ export class ExcelReportProcessor {
       [res.id]: 'N/A',
     }));
 
-    return [...okRules, ...nokRules, ...naRules].reduce(
-      (res, curr) => {
-        return { ...res, ...curr };
-      },
-      {} as Record<string, 'OK' | 'NOK' | 'N/A'>,
-    );
+    return [...okRules, ...nokRules, ...naRules].reduce((res, curr) => {
+      return { ...res, ...curr };
+    }, {} as Record<string, 'OK' | 'NOK' | 'N/A'>);
   }
 
   /**
@@ -195,16 +207,13 @@ export class ExcelReportProcessor {
    *  @returns A Map with each value from the values list as key and its corresponding index from sharedStrings as value.
    */
   private indexMapOf(values: string[], sharedStrings: string[]): Record<string, number> {
-    return values.reduce(
-      (res, curr) => {
-        const indx = sharedStrings.findIndex((v) => v === curr);
-        if (indx >= 0) {
-          return { ...res, [curr]: indx };
-        }
-        return res;
-      },
-      {} as Record<string, number>,
-    );
+    return values.reduce((res, curr) => {
+      const indx = sharedStrings.findIndex((v) => v === curr);
+      if (indx >= 0) {
+        return { ...res, [curr]: indx };
+      }
+      return res;
+    }, {} as Record<string, number>);
   }
 
   /**

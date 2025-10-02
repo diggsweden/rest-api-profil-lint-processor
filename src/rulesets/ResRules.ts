@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import { DiagnosticSeverity } from '@stoplight/types';
-import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
-import { BaseRuleset } from './BaseRuleset.ts';
-import { personalIdentityNumberFieldNames } from './constants/ResConstants.ts';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
+import { BaseRuleset } from './BaseRuleset.js';
+import { personalIdentityNumberFieldNames } from './constants/ResConstants.js';
 
-const moduleName: string = 'ResRules.ts';
+const moduleName: string = 'ResRules.js';
 
 export class Res02 extends BaseRuleset {
   static customProperties: CustomProperties = {

@@ -4,12 +4,12 @@
 
 import { enumeration, truthy, falsy, undefined as undefinedFunc, pattern, schema } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { BaseRuleset } from './BaseRuleset.ts';
-import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
-import { SakBaseApiKeyRule } from './rulesetUtil.ts';
+import { BaseRuleset } from './BaseRuleset.js';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
+import { SakBaseApiKeyRule } from './rulesetUtil.js';
 //import Format from "@stoplight/spectral-formats";
 
-const moduleName: string = 'SakRules.ts';
+const moduleName: string = 'SakRules.js';
 
 export class Sak01 extends BaseRuleset {
   static customProperties: CustomProperties = {

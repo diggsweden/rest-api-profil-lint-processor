@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import { DiagnosticSeverity } from '@stoplight/types';
-import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
-import { parseProperties, Property } from './rulesetUtil.ts';
-import { DotRuleBase, DotStateExecutionLog } from './util/DotRulesUtil.ts';
-import { BaseRuleset } from './BaseRuleset.ts';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
+import { parseProperties, Property } from './rulesetUtil.js';
+import { DotRuleBase, DotStateExecutionLog } from './util/DotRulesUtil.js';
+import { BaseRuleset } from './BaseRuleset.js';
 
-const moduleName: string = 'DotRules.ts';
+const moduleName: string = 'DotRules.js';
 
 export class Dot02 extends DotRuleBase {
   static customProperties: CustomProperties = {

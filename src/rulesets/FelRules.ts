@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import { DiagnosticSeverity } from '@stoplight/types';
-import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
-import { BaseRuleset } from './BaseRuleset.ts';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
+import { BaseRuleset } from './BaseRuleset.js';
 
-const moduleName: string = 'FelRules.ts';
+const moduleName: string = 'FelRules.js';
 
 /**
  * Module contains classes with functions that are needed for category felhantering

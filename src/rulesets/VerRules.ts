@@ -4,9 +4,9 @@
 
 import { enumeration, truthy, falsy, undefined as undefinedFunc, pattern, schema } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { BaseRuleset } from './BaseRuleset.ts';
-import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
-const moduleName: string = 'VerRules.ts';
+import { BaseRuleset } from './BaseRuleset.js';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
+const moduleName: string = 'VerRules.js';
 
 export class Ver06 extends BaseRuleset {
   static customProperties: CustomProperties = {

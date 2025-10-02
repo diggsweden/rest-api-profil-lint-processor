@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import * as SpectralCore from '@stoplight/spectral-core';
-import { ruleExecutionStatus, RuleExecutionLog, ruleExecutionLogDictionary } from './RuleExecutionStatusModule.ts';
+import { ruleExecutionStatus, RuleExecutionLog, ruleExecutionLogDictionary } from './RuleExecutionStatusModule.js';
 import { ISpectralDiagnostic } from '@stoplight/spectral-core';
 import spectralCore from '@stoplight/spectral-core';
 const { Spectral, Document } = spectralCore;
-import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.ts';
+import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.js';
 
 class RapLPCustomSpectral {
   private spectral: SpectralCore.Spectral;

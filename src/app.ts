@@ -18,13 +18,13 @@ import * as path from 'node:path';
 import { join } from 'path';
 import Parsers from '@stoplight/spectral-parsers';
 import spectralCore from '@stoplight/spectral-core';
-import { importAndCreateRuleInstances, getRuleModules } from './util/ruleUtil.ts'; // Import the helper function
+import { importAndCreateRuleInstances, getRuleModules } from './util/ruleUtil.js'; // Import the helper function
 import util from 'util';
-import { RapLPCustomSpectral } from './util/RapLPCustomSpectral.ts';
-import { DiagnosticReport, RapLPDiagnostic } from './util/RapLPDiagnostic.ts';
-import { AggregateError } from './util/RapLPCustomErrorInfo.ts';
+import { RapLPCustomSpectral } from './util/RapLPCustomSpectral.js';
+import { DiagnosticReport, RapLPDiagnostic } from './util/RapLPDiagnostic.js';
+import { AggregateError } from './util/RapLPCustomErrorInfo.js';
 import chalk from 'chalk';
-import { ExcelReportProcessor } from './util/excelReportProcessor.ts';
+import { ExcelReportProcessor } from './util/excelReportProcessor.js';
 
 declare var AggregateError: {
   prototype: AggregateError;

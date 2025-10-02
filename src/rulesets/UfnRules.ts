@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { Ufn09Base, Ufn05Base } from './rulesetUtil.ts';
-import { BaseRuleset } from './BaseRuleset.ts';
+import { Ufn09Base, Ufn05Base } from './rulesetUtil.js';
+import { BaseRuleset } from './BaseRuleset.js';
 import {
   enumeration,
   truthy,
@@ -15,9 +15,9 @@ import {
   alphabetical,
 } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import Format from '@stoplight/spectral-formats';
-const moduleName: string = 'UfnRules.ts';
+const moduleName: string = 'UfnRules.js';
 
 export class Ufn01 extends BaseRuleset {
   static customProperties: CustomProperties = {

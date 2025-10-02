@@ -4,12 +4,12 @@
 
 import { falsy, undefined as undefinedFunc } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
-import { BaseRuleset } from './BaseRuleset.ts';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
+import { BaseRuleset } from './BaseRuleset.js';
 import Format from '@stoplight/spectral-formats';
-import { CustomFormats } from './util/CustomOasVersion.ts';
+import { CustomFormats } from './util/CustomOasVersion.js';
 
-const moduleName: string = 'ForRules.ts';
+const moduleName: string = 'ForRules.js';
 
 /**
  * Module contains classes with functions that are need

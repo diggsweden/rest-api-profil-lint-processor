@@ -6,17 +6,17 @@
 /**
  * Usage: Import the ruleClasses that should be loaded in able to run testcases
  */
-import * as UfnRules from '../../rulesets/UfnRules.ts';
-import * as SakRules from '../../rulesets/SakRules.ts';
-import * as VerRules from '../../rulesets/VerRules.ts';
-import * as FnsRules from '../../rulesets/FnsRules.ts';
-import * as ArqRules from '../../rulesets/ArqRules.ts';
-import * as DokRules from '../../rulesets/DokRules.ts';
-import * as AmeRules from '../../rulesets/AmeRules.ts';
-import * as ForRules from '../../rulesets/ForRules.ts';
-import * as DotRules from '../../rulesets/DotRules.ts';
-import * as FelRules from '../../rulesets/FelRules.ts';
-import * as ResRules from '../../rulesets/ResRules.ts';
+import * as UfnRules from '../../src/rulesets/UfnRules.js';
+import * as SakRules from '../../src/rulesets/SakRules.js';
+import * as VerRules from '../../src/rulesets/VerRules.js';
+import * as FnsRules from '../../src/rulesets/FnsRules.js';
+import * as ArqRules from '../../src/rulesets/ArqRules.js';
+import * as DokRules from '../../src/rulesets/DokRules.js';
+import * as AmeRules from '../../src/rulesets/AmeRules.js';
+import * as ForRules from '../../src/rulesets/ForRules.js';
+import * as DotRules from '../../src/rulesets/DotRules.js';
+import * as FelRules from '../../src/rulesets/FelRules.js';
+import * as ResRules from '../../src/rulesets/ResRules.js';
 
 const ruleInstances: Record<string, any> = {};
 

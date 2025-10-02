@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import { DiagnosticSeverity } from '@stoplight/types';
-import testRule from './util/helperTest.ts';
+import testRule from '../util/helperTest.js';
 
 testRule('Dot02', [
   {

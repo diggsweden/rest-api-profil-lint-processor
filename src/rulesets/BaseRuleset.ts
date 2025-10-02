@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { RulesetInterface } from '../ruleinterface/RuleInterface.ts';
-import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
-import { CustomFormatType } from './util/CustomOasVersion.ts';
+import { RulesetInterface } from '../ruleinterface/RuleInterface.js';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
+import { CustomFormatType } from './util/CustomOasVersion.js';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { logRuleExecution } from '../src/util/RuleExecutionStatusModule.ts';
+import { logRuleExecution } from '../util/RuleExecutionStatusModule.js';
 import Format from '@stoplight/spectral-formats';
 
 export class BaseRuleset implements RulesetInterface {

@@ -4,8 +4,8 @@
 
 import { enumeration, truthy, falsy, undefined as undefinedFunc, pattern, schema } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { CustomProperties } from '../ruleinterface/CustomProperties.ts';
-import { BaseRuleset } from './BaseRuleset.ts';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
+import { BaseRuleset } from './BaseRuleset.js';
 
 /**
  * Base class for handling security rules when apiKeys is defined
@@ -76,7 +76,7 @@ export class Ufn09Base extends BaseRuleset {
   };
   constructor() {
     super();
-    let moduleName: string = 'UfnRules.ts';
+    let moduleName: string = 'UfnRules.js';
     this.message =
       "Blanksteg ' ' och understreck '_' SKALL INTE användas i URL:er med undantag av parameter-delen (gäller alltså URL-elementen Scheme, Authority och Path samt API-elementen protokoll, domännamn, api, version, resurs och identifierare).";
     this.severity = DiagnosticSeverity.Error;

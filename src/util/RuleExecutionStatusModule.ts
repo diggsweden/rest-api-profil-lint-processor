@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { CustomProperties } from '../../ruleinterface/CustomProperties.ts';
+import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 
 interface RuleExecutionInfo {
   moduleName: string;

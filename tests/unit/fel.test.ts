@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import { DiagnosticSeverity } from '@stoplight/types';
-import testRule from './util/helperTest.ts';
-import { Fel01, Fel02 } from '../rulesets/FelRules.ts';
+import testRule from '../util/helperTest.js';
+import { Fel01, Fel02 } from '../../src/rulesets/FelRules.js';
 
 testRule('Fel01', [
   {

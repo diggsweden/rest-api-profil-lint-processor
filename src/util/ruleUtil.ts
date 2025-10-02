@@ -56,7 +56,7 @@ export async function importAndCreateRuleInstances(
   async function importRuleModule(category: string): Promise<any> {
     try {
       // import the module based on the provided category
-      const ruleModule = await import(`../../rulesets/${category}.ts`);
+      const ruleModule = await import(`../rulesets/${category}.js`);
       //Extract values (exports) from imported ruleModule in RAP-LP
       const values = Object.values(ruleModule);
       if (values.length > 0) {

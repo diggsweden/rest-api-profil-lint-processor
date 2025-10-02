@@ -1,19 +1,32 @@
 {
   "name": "@diggsweden/rest-api-profil-lint-processor",
-  "version": "v1.0.3-alpha.1",
-  "main": ".src/app.ts",
+  "version": "v1.0.0",
+  "main": "./dist/app.js",
+  "bin": {
+    "raplp": "dist/cli.js"
+  },
   "type": "module",
   "engines": {
     "node": "<=22.15.1"
   },
+    "files": [
+    "dist",
+    "README.md",
+    "GUIDELINES.md",
+    "document/**"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:diggsweden/rest-api-profil-lint-processor"
   },
   "description": "A command-line tool to lint OpenAPI v3 definitions using Spectral",
   "scripts": {
+    "clean": "rm -rf dist",
     "build": "tsc -p tsconfig.json",
     "test": "jest",
+    "test:integration": "node --experimental-vm-modules ./node_modules/.bin/jest --config jest.integration.config.cjs ",
+    "prepare": "npm run clean && npm run build",
+    "prepack": "npm run clean && npm run build",
     "start": "node --import=./register.js src/app.ts"
   },
   "directories": {
@@ -28,7 +41,8 @@
     "jest": "^30.0.4",
     "standard-version": "^9.5.0",
     "ts-jest": "^29.4.1",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
     "@stoplight/spectral-core": "^1.19.5",
@@ -42,7 +56,6 @@
     "fast-xml-parser": "^4.5.0",
     "js-yaml": "^4.1.0",
     "path": "^0.12.7",
-    "ts-node": "^10.9.2",
     "yargs": "^17.7.2"
   },
   "//": [
