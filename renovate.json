@@ -18,7 +18,7 @@
     "mergeConfidence:all-badges"
   ],
   "commitMessageLowerCase": "auto",
-  "minimumReleaseAge": "4 days",
+  "minimumReleaseAge": "7 days",
   "labels": ["dependencies"],
   "vulnerabilityAlerts": {
     "labels": ["security", "dependencies"]
