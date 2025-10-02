@@ -73,8 +73,6 @@ Om du bestämmer dig för att lösa ett ärende, se till att kolla kommentarsfä
 
 Om någon har tagit på sig ett ärende men inte följer upp inom en vecka, går det bra att ta över – men lämna ändå en kommentar. Om det inte har varit någon aktivitet på ärendet på 7 till 14 dagar är det rimligt att anta att ingen jobbar på det.
 
-
-
 ## Återkoppling på ärenden och Pull Requests
 
 Projektunderhållare kommer att göra sitt bästa för att granska och svara på ärenden inom fem arbetsdagar.
@@ -134,10 +132,9 @@ För säkerhetssårbarheter, följ riktlinjerna i vår [Säkerhetsinformation](S
 - Håll dokumentationen lättläst.
 - Använd punktlistor för tydlighet.
 - Var koncis och länka till externa resurser vid behov.
-- Använd brittisk engelska (t.ex. "colour" istället för "color").
 - Följ [en-mening-per-rad](https://sembr.org/)-principen i Markdown eller AsciiDoc.
 
-Engelska är det primära språket, med översättningar på bästa möjliga sätt.
+Svenska är det primära språket
 
 ## FOSS-standarder
 
