@@ -205,14 +205,30 @@ paths:
         '201':
           description: Created
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string                    
               example:
               - id: 19
                 name: thing1
-              - id: 20
-                name: thing2
+  /items5:
+    get:
+      summary: Get items
+      responses:
+        '200':
+          description: error response
+          content:
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+              example:
+              - id: 17
+                name: Pete
+              - id: 18
+                name: Tom
 components:
   schemas:
     Pet:

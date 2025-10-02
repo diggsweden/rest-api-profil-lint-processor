@@ -83,6 +83,7 @@ const ruleTypes = [
   DokRules.Dok03License,
   DokRules.Dok03LicenseName,
   DokRules.Dok03LicenseUrl,
+  DokRules.Dok18,
   ResRules.Res02,
   ResRules.Res06,
   MogRules.Mog01,

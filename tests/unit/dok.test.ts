@@ -49,19 +49,27 @@ testRule('Dok18', [
       info: { version: '1.0' },
       servers: [{ url: 'https://example.com/my-api/v1' }],
       paths: {
-        '/Dettacase': {
+        '/item2': {
           get: {
-            description: 'Ogiltigt testfall av CamelCase',
-            parameters: [
-              {
-                name: 'Very_LongName',
-                in: 'path',
-                required: false,
-              },
-            ],
+            description: 'Ogiltigt testfall av test för giltigt format av API specifikationen',
             responses: {
               '200': {
-                description: '',
+                description: 'Ej godkänt svar',
+                content: {
+                  'application/xml': {
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        id: {
+                          type: 'string',
+                        },
+                        name: {
+                          type: 'string',
+                        },
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -70,20 +78,40 @@ testRule('Dok18', [
     },
     errors: [
       {
-        code: 'Dok20',
-        message: 'Förväntade returkoder och felkoder SKALL vara fullständigt dokumenterade.',
-        path: ['paths', '/Dettacase', 'get', 'responses', '200', 'description'],
-        severity: DiagnosticSeverity.Error,
-        range: {
-          start: {
-            line: 0,
-            character: 276,
-          },
-          end: {
-            line: 0,
-            character: 278,
+        code: 'Dok18',
+        message: 'API specifikationen BÖR beskrivas med antingen JSON eller YAML.',
+        path: ['paths', '/item2', 'get', 'responses', '200', 'content'],
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [{ url: 'https://example.com/my-api/v1' }],
+      paths: {
+        '/item3': {
+          post: {
+            requestBody: {
+              content: {
+                'text/plain': {
+                  example1: 'example1',
+                },
+              },
+            },
+            responses: {},
           },
         },
+      },
+    },
+    errors: [
+      {
+        code: 'Dok18',
+        message: 'API specifikationen BÖR beskrivas med antingen JSON eller YAML.',
+        path: ['paths', '/item3', 'post', 'requestBody','content'],
+        severity: DiagnosticSeverity.Warning,
       },
     ],
   },

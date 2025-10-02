@@ -39,6 +39,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: DOK.11](#id-dok11)
    - [ID: DOK.15](#id-dok15)
    - [ID: DOK.17](#id-dok17)
+   - [ID: DOK.18](#id-dok18)
    - [ID: DOK.19](#id-dok19)
    - [ID: DOK.20](#id-dok20)
 2. [Område: Datum- och tidsformat](#område-datum--och-tidsformat)
@@ -354,6 +355,31 @@ I exemplet ovan, så exemplifieras regeln med ett godkänd värde på versionen 
 ![alt text](images/dok17-2.png)
 
 I exemplet ovan, så exemplifieras regeln det med ett icke godkänt värde på versionen av OpenAPI specification.
+
+---
+
+### ID: DOK.18
+
+**Krav:** API specifikationen BÖR beskrivas med antingen JSON eller YAML.
+
+**Typ:** BÖR
+
+**JSON Path Plus-uttryck:**
+
+```
+$.paths.*.*.responses.*.content'
+$.paths.*.*.requestBody.content'
+```
+
+**Förklaring:**
+
+Regeln förutsätter att API-specifikationen beskrivs med antingen JSON eller YAM där den regeln letar upp alla content objekt under både requestBody och responses. Om det inte är dem, så returnerar regeln ett fel i form av en varning. 
+
+**Exempel:**
+
+![alt text](images/dok18.png)
+
+I exemplet ovan, så exemplifieras regeln med ett ej godkänd värde på content objekten under objektet requestBody samt under objetet responses, eftersom värdet på dessa är satt till: 'text/plain' och inte  någon av de godkända typerna 'application/yaml' eller application/json.
 
 ---
 
