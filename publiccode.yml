@@ -20,7 +20,10 @@ description:
       - Missing attributes check
       - Detect missing or misconfigured attributes in specifications
     longDescription: |
-      REST API-profil - Lint Processor is a command-line tool to lint OpenAPI v3 definitions of the swedish rest api-profile specification using Spectral.
+      RAP-LP (REST API Profile Lint Processor) is a tool that reviews an OpenAPI specification against the national REST API Profile. The tool identifies syntax errors and deviations from the guidelines, making it easier to quickly find and correct issues.
+      The tool analyzes the OpenAPI specification and checks that the API follows specific design rules associated with the REST API Profile. Each rule points to a specific part of the OpenAPI specification using a JSON Path Plus expression and verifies whether the values comply with the established rules. If deviations are found, one or more error messages are returned.
+      In addition to the rules from the REST API Profile, RAP-LP also includes a rule area called Prerequisites. This area encompasses additional rules not included in the profile but based on established best practices for API design. The rules in Prerequisites can help further improve the quality of the API specification by identifying areas for improvement not covered by the national profile.
+      The first version of RAP-LP is compatible with REST API Profile version 1.2.0, and each new version of the tool will specify which version of the profile it is intended to support.
     shortDescription: A linting tool for the swedish rest api-profile specification
 developmentStatus: beta
 legal:
@@ -31,8 +34,7 @@ localisation:
   localisationReady: false
 maintenance:
   contacts:
-    - name: Digg OSPO
-    - email: 'raplp-maintenance@digg.se'
+    - name: raplp-maintenance@digg.se
   type: internal
 name: 'REST API-profil - Lint Processor (RAP-LP)'
 platforms:
