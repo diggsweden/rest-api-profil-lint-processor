@@ -1,0 +1,32 @@
+# Release Workflow Dev
+# 
+# This workflow triggers the dev release orchestrator for development and feature branches.
+# It creates dev-tagged artifacts and container images for testing.
+#
+# Triggers:
+# - Push to dev/* or feat/* branches  
+# - Manual workflow dispatch
+#
+# Created artifacts:
+# - Maven/NPM packages with -dev versions (e.g., 1.2.4-dev.1)
+# - Container images with dev tags
+# - See release summary for full details
+
+name: Release Workflow Dev
+
+on:
+  push:
+    branches:
+      - 'dev/**'
+      - 'feat/**'
+  workflow_dispatch:
+
+jobs:
+  dev-release:
+    permissions:
+      contents: write         # Read code and create version bump commits
+      packages: write         # Push dev images to ghcr.io
+    uses: diggsweden/reusable-ci/.github/workflows/release-dev-orchestrator.yml@v1
+    with:
+      projectType: npm
+    secrets: inherit

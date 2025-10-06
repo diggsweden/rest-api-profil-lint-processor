@@ -14,8 +14,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "jest",
-    "start": "node --import=./register.js src/app.ts",
-    "version": "standard-version --skip.commit"
+    "start": "node --import=./register.js src/app.ts"
   },
   "directories": {
     "test": "test"
