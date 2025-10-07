@@ -22,7 +22,7 @@
   "description": "A command-line tool to lint OpenAPI v3 definitions using Spectral",
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "tsc -p tsconfig.json",
+    "build": "npm run clean && tsc -p tsconfig.json",
     "test": "jest",
     "test:integration": "node --experimental-vm-modules ./node_modules/.bin/jest --config jest.integration.config.cjs ",
     "prepare": "npm run clean && npm run build",
@@ -41,8 +41,7 @@
     "jest": "^30.0.4",
     "standard-version": "^9.5.0",
     "ts-jest": "^29.4.1",
-    "typescript": "^5.9.2",
-    "ts-node": "^10.9.2"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "@stoplight/spectral-core": "^1.19.5",
@@ -56,7 +55,8 @@
     "fast-xml-parser": "^4.5.0",
     "js-yaml": "^4.1.0",
     "path": "^0.12.7",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "ts-node": "^10.9.2"
   },
   "//": [
     "Override transitive dependency due to vulnerability",
