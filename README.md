@@ -51,7 +51,7 @@ npm install
 Använd det här kommandot för att köra applikationen mot en YAML-fil:
 
 ```bash
-npm start -- -f PATH_TO_THE_YAML_FILE
+npm start -- -f <PATH>/<YAML_FILE>
 ```
 
 **Exempel**
@@ -67,7 +67,7 @@ Main och pre-releaser används med reservation för att all funktionalitet inte 
 
 ## Användning
 
-För att validera mot en specifik kategori av regler, lägg till `-c CategoryName`.
+För att validera mot en specifik kategori av regler, lägg till `-c <CategoryName>`.
 
 ### Validering med utvalda regler
 **Exempel**
@@ -89,7 +89,7 @@ npm start -- -f apis/dok-api.yaml -c DokRules
 - UfnRules
 - VerRules
 
-För att spara meddelanden från felloggar, lägg till `-l FileName`.
+För att spara meddelanden från felloggar, lägg till `-l <FILE>`.
 
 
 ### Validering som skriver resultat till en valfri logfil
@@ -109,7 +109,7 @@ npm start -- -f apis/dok-api.yaml -l rap-lp.log -a
 ```
 
 ### Validering som sparar loggdiagnostik i en fil
-För att spara loggdiagnostik i en fil, lägg till `-d FileName`
+För att spara loggdiagnostik i en fil, lägg till `-d <FILE>`
 
 **Exempel**
 
@@ -134,7 +134,7 @@ npm start -- -f apis/dok-api.yaml --dex
 **Exempel med sökväg till avstämningsfil i Excel**
 
 ```bash
-npm start -- -f apis/dok-api.yaml --dex path-to-excel-file
+npm start -- -f apis/dok-api.yaml --dex <PATH>
 ```
 
 ### Visa information version
@@ -152,7 +152,31 @@ npm start -- --version
 npm start -- --help
 ```
 
+### Testa mot publicerat npm paket
+> OBS se till så att .npmrc verkligen är konfigurerat mot @diggsweden:registry=https://npm.pkg.github.com
+
+För att köra mot ett **publicerat** paket istället för lokala byggen, se [npm paket](https://github.com/diggsweden/rest-api-profil-lint-processor/pkgs/npm/rest-api-profil-lint-processor) för version och använd:
+
+
+```bash
+npm login --registry=https://npm.pkg.github.com
+# username: ditt GitHub-användarnamn
+# password: GitHub PAT med read:packages
+```
+
+> Om du saknar inloggning med GitHub PAT, se [Access till registry](#access-till-registry)
+
+Kör sedan: 
+```bash
+# npx @diggsweden/rest-api-profil-lint-processor@1.0.0 -f openapi-test.yaml -l rap-lp.log -d avstamning.xlsx
+npx @diggsweden/rest-api-profil-lint-processor@1.0.0 -f <PATH>/<YAML_FILE>
+``` 
+
+---
+
 ### Användning via podman/docker
+
+> För alla kommandon bör ***podman*** kunna ersättas med ***docker*** om så önskas.
 
 I en terminal kör:
   ```bash
@@ -164,7 +188,7 @@ I en terminal kör:
 
 Exempel
   ```bash
-  podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
+  podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/rap-lp.log --dex example/avstamning.xlsx
   ```
 
 Vid eventuella fel och du inte hittar rap-lp-error.log kan du behöva köra kommandot via containern enligt den alternativa instruktionen nedan. Se till att containern har rättigheter att skriva till den katalog som du mountar, se [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container).
@@ -180,7 +204,7 @@ Exempel:
   ```bash
   $ podman run --rm -it --entrypoint /bin/sh -v $(pwd):/apis ghcr.io/diggsweden/rest-api-profil-lint-processor:0.3.0
 
-  /app: $ npm start -- -f apis/dot-api.yaml -l test.log --dex example.xlsx
+  /app: $ npm start -- -f apis/dot-api.yaml -l rap-lp.log --dex example.xlsx
   ```
 
 ### Eventuella hinder med podman-kommando
@@ -209,7 +233,7 @@ Du kan behöva ett Personal Access Token (PAT) för din användare i github för
 3. Beroende på din miljö och vilka möjligheter du har, hantera åtkomstproblemet mer beständigt och återställ tidigare läs- och skrivrättigheter.
 4. Du kan även prova:  
     ```bash
-    sudo podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
+    sudo podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/rap-lp.log --dex example/avstamning.xlsx
     ```
 
 ### Riktlinjer och förklaringar

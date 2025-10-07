@@ -24,7 +24,8 @@ Denna guide beskriver de viktigaste grunderna för utveckling i detta projekt.
 
 ### Pull Request-flöde
 
-När du skickar in en PR kommer CI automatiskt att köra flera kontroller. För att undvika överraskningar bör du köra dessa kontroller lokalt först.
+När du skickar in en PR kommer CI automatiskt att köra flera kontroller.<br/>
+För att undvika överraskningar bör du köra dessa kontroller lokalt först.
 
 #### Förutsättningar
 - [Podman](https://podman.io/)
@@ -58,9 +59,26 @@ Om några kontroller misslyckas i CI-pipelinen:
 5. Verifiera att alla kontroller passerar i den uppdaterade PR:en
 
 ## Releaseprocess
-Det finns ett arbetsflöde för att publicera images och paket antingen som en pre-release-version eller som en stabil release.
+Det finns två olika workflows för att göra en ny release, antingen för en feature under utveckling eller för produktion.
 
-### Pre-release
+- [Utveckling](../.github/workflows/release-dev-workflow.yml)
+- [Produktion](../.github/workflows/release-workflow.yml)
+
+För varje ny release kommer det bland annat att det byggas en docker image och ett npm paket som kan hämtas hem och köras. <br>
+Projektets releaser bygger på en gemensam struktur för DiggSweden vilken innefattar säkerhetsrutiner, automatiserade releaser och kvalitetskontroller. <br>
+För mer information se [Reusable CI/CD Workflows](https://github.com/diggsweden/reusable-ci?tab=readme-ov-file#reusable-cicd-workflows).
+
+### Release för utveckling
+Genom att pusha till en branch med prefix **dev/** eller **feat/** skapas en utvecklingsrelease vilket möjliggör tester av paket och images innan produktion.
+
+> **Utvecklingsreleaser kommer ***INTE*** generera och uppdatera changelog, release notes eller göra en ny release i GitHub.**
+
+### Release för produktion
+Vid release till produktion kan man välja om man vill släppa det som en pre-release version eller som en stabil version.
+
+> **Produktionsreleaser kommer automatiskt generera och uppdatera changelog, release notes och göra en ny release i GitHub.**
+
+#### Pre-release
 Annotera pre-release-taggen med suffix och en version, använd suffix:
 - alpha → tidig testversion, ofta instabil
 - beta → mer testad, men fortfarande pre-release
@@ -84,12 +102,10 @@ git tag -s -a v1.0.3-alpha.1 -m "v1.0.3-alpha.1"
 git push origin v1.0.3-alpha.1
 ```
 
-### Stabil release
+#### Stabil release
 Checka ut main, hämta senaste ändringarna och tagga senaste commit på main.
 
 ***Säkerställ att tagg-versionen matchar versionen i package.json och package-lock.json.***
-
-Checkout main, pull the latest changes and tag the latest main commit.
 
 ```
 git checkout <branch>
@@ -106,22 +122,19 @@ git push origin v1.0.0
 
 ***På grund av projektbegränsningar är pre- och stabila releaser från main endast möjliga för admins!***
 
-### Släpp stabil version på GitHub
-1. Öppna [releases](https://github.com/diggsweden/rest-api-profil-lint-processor/releases) på GitHub.
-2. "Draft a new release"
-3. Välj vilken tagg som ska släppas
-4. Lägg till en release-titel – vX.X.X
-5. Lägg till en beskrivning eller generera release notes och rensa bort onödiga commits från beskrivningen
-6. Markera som senaste release
-7. Publicera releasen
-
 ### Testa och verifiera release
 Efter varje release, pre- eller stabil, bör funktionaliteten testas och verifieras.
 
-Detta kan göras via stickprov av följande funktioner:
-
 #### Test av image
 Kör följande kommandon med den version av verktyget du vill testa – [använd podman/docker](../README.md#användning-via-podmandocker)
+```bash
+# EXEMPEL: podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/rap-lp.log --dex example/avstamning.xlsx
+podman run --rm -it -v $(pwd):/<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:<VERSION X.X.X> -f <PATH>/<YAML_FILE>
+```
+#### Test av npm-paket
+Kör följande kommandon med den version av verktyget du vill testa – [använd node](../README.md#användning)
+```bash
+# EXEMPEL: npx @diggsweden/rest-api-profil-lint-processor@1.0.0 -f openapi-test.yaml -l rap-lp.log -d avstamning.xlsx
+npx @diggsweden/rest-api-profil-lint-processor@1.0.0 -f <PATH>/<YAML_FILE>
+```
 
-### Test av npm-paket
-...
