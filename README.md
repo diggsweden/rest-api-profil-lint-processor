@@ -17,7 +17,8 @@ SPDX-License-Identifier: CC0-1.0
 
 **Beskrivning**:
 
-RAP-LP är ett kommandoradsverktyg för att linta OpenAPI v3-definitioner med hjälp av [Spectral](https://github.com/stoplightio/spectral). Verktyget är specifikt utvecklat för att linta OpenAPI-definitioner enligt den svenska REST API-profilens specifikation [REST API-profil](https://dev.dataportal.se/rest-api-profil).
+RAP-LP är ett kommandoradsverktyg för att linta OpenAPI v3-definitioner med hjälp av [Spectral](https://github.com/stoplightio/spectral).<br>
+Verktyget är specifikt utvecklat för att linta OpenAPI-definitioner enligt den svenska REST API-profilens specifikation [REST API-profil](https://dev.dataportal.se/rest-api-profil).
 
 ## Innehållsförteckning
 
@@ -121,9 +122,10 @@ npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
 
 För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, lägg till --dex.
 
-Om en specifik sökväg till avstämningsfilen ska anges, kan denna läggas till. Om ingen sökväg anges, genererar verktyget automatiskt en ny avstämningsfil i den katalog där det körs.
+Om en specifik sökväg till avstämningsfilen ska anges, kan denna läggas till.<br>
+Om ingen sökväg anges, genererar verktyget automatiskt en ny avstämningsfil i den katalog där det körs.
 
-Avstämningsfilen i Excel har ett fast format. Om en egen version av filen ska användas, måste den utpekade resursen hämtas med en kompatibel version av REST API-profilen.
+Avstämningsfilen i Excel har ett fast format, om en egen version av filen ska användas måste den utpekade resursen hämtas med en kompatibel version av REST API-profilen.
 
 **Exempel utan sökväg till avstämningsfil i Excel**
 
@@ -191,7 +193,8 @@ Exempel
   podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/rap-lp.log --dex example/avstamning.xlsx
   ```
 
-Vid eventuella fel och du inte hittar rap-lp-error.log kan du behöva köra kommandot via containern enligt den alternativa instruktionen nedan. Se till att containern har rättigheter att skriva till den katalog som du mountar, se [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container).
+Vid eventuella fel och du inte hittar rap-lp-error.log kan du behöva köra kommandot via containern enligt den alternativa instruktionen nedan.<br>
+Se till att containern har rättigheter att skriva till den katalog som du mountar, se [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container).
 
 #### Alternativ att köra ifrån containern
 1. Starta en podman container:
@@ -242,7 +245,8 @@ Vill du veta mer om de specifika reglerna som verktyget tillämpar, se avsnittet
 
 ### Förklaring av översikt för regelutfall
 
-Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsinformationen på stdout. I denna så kommer en sammanställning av det totala regelutfallet att visas.
+Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsinformationen på stdout.<br>
+I denna så kommer en sammanställning av det totala regelutfallet att visas.
 
 - Verkställda och godkända regler:
   - OK = Krav bedömt och hanterat för att möta kravet
@@ -255,7 +259,9 @@ Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsi
 
 ![alt text](document/instructions/images/regelutfall.png)
 
-I exemplet ovan framgår det att kraven för reglerna AME.05 och VER.05 är godkända och att det aktuella API:et uppfyller dessa. Däremot är kravet för regeln DOK.03 inte godkänt, vilket innebär att API:et inte möter detta krav. Dessutom framgår det att reglerna SAK.10 och DOK.01 inte är tillämpade för det aktuella API:et.
+I exemplet ovan framgår det att kraven för reglerna AME.05 och VER.05 är godkända och att det aktuella API:et uppfyller dessa.<br>
+Däremot är kravet för regeln DOK.03 inte godkänt, vilket innebär att API:et inte möter detta krav.<br>
+Dessutom framgår det att reglerna SAK.10 och DOK.01 inte är tillämpade för det aktuella API:et.
 
 **Förklaring av detaljering för regelutfall:**
 
@@ -272,9 +278,13 @@ Tillsammans med diagnostiseringsinformationen följer en detaljerad beskrivning 
 
 ![alt text](document/instructions/images/regelutfall-2.png)
 
-I exemplet ovan framgår det att kravet för regeln DOK.01 inte är godkänt och att det aktuella API:et inte uppfyller detta. Kravet har bedömts ha allvarlighetsgraden Error eftersom API:et bryter mot ett SKALL/SKALL INTE-krav i REST API-profilen. Det finns också information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
+I exemplet ovan framgår det att kravet för regeln DOK.01 inte är godkänt och att det aktuella API:et inte uppfyller detta.<br>
+Kravet har bedömts ha allvarlighetsgraden Error eftersom API:et bryter mot ett SKALL/SKALL INTE-krav i REST API-profilen.<br>
+Det finns också information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
 
-Vidare framgår det att kravet för regeln DOK.03 inte är godkänt och att det aktuella API:et inte möter detta krav. Kravet har bedömts ha allvarlighetsgraden Warning eftersom API:et bryter mot ett BÖR/BÖR INTE-krav i REST API-profilen. Även här finns information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
+Vidare framgår det att kravet för regeln DOK.03 inte är godkänt och att det aktuella API:et inte möter detta krav.<br>
+Kravet har bedömts ha allvarlighetsgraden Warning eftersom API:et bryter mot ett BÖR/BÖR INTE-krav i REST API-profilen.<br>
+Även här finns information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
 
 ## Begränsningar
 
