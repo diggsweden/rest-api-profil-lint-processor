@@ -143,7 +143,7 @@ Efter varje release, pre- eller stabil, bör funktionaliteten testas och verifie
 ### Testa mot publicerat npm paket
 Kör följande kommando mot den version av verktyget som ska testas: 
 ```bash
-npx @diggsweden/rest-api-profil-lint-processor@latest -f openapi.yaml -l raplp.log --dex avstamning.xlsx
+npx @diggsweden/rest-api-profil-lint-processor@<version> -f openapi.yaml -l raplp.log --dex avstamning.xlsx
 ``` 
 
 ---
@@ -151,14 +151,14 @@ npx @diggsweden/rest-api-profil-lint-processor@latest -f openapi.yaml -l raplp.l
 #### Test av image med podman/docker
 Kör följande kommandon med den version av verktyget som ska testas:
 ```bash
-podman run -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:latest -f /data/openapi.yaml -l /data/raplp.log --dex /data/avstamning.xlsx
+podman run -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml -l /data/raplp.log --dex /data/avstamning.xlsx
 ```
 
 > För alla kommandon bör ***podman*** kunna ersättas med ***docker*** om så önskas.
 
 I en terminal kör:
   ```bash
-  podman run --rm -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:latest -f /data/openapi.yaml
+  podman run --rm -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml
   ```
 * Där data motsvarar den katalog i containern som du vill att nuvarande katalog \$(pwd) mountas in i, containern får tillgång till dina filer i \$(pwd).
 * Där `openapi.yaml` motsvarar den filen som du vill applicera valideringen på.
@@ -171,7 +171,7 @@ I en terminal kör:
 
 Exempel
   ```bash
-  podman run --rm -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:latest -f /data/openapi.yaml -l /data/raplp.log --dex /data/avstamning.xlsx
+  podman run --rm -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml -l /data/raplp.log --dex /data/avstamning.xlsx
   ```
 
 Vid eventuella fel och du inte hittar rap-lp-error.log kan du behöva köra kommandot via containern enligt den alternativa instruktionen nedan.<br>
@@ -180,7 +180,7 @@ Se till att containern har rättigheter att skriva till den katalog som du mount
 #### Alternativ att köra ifrån containern
 1. Starta en podman container:
     ```bash
-    podman run --rm -it --entrypoint /bin/sh -v $(pwd):/app/data ghcr.io/diggsweden/rest-api-profil-lint-processor:latest
+    podman run --rm -it --entrypoint /bin/sh -v $(pwd):/app/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version>
     ```
 2. Kör din validering ifrån containern:
     ```bash
@@ -190,7 +190,7 @@ Se till att containern har rättigheter att skriva till den katalog som du mount
 
 Exempel:
 ```bash
-podman run --rm -it --entrypoint /bin/sh -v $(pwd):/app/data ghcr.io/diggsweden/rest-api-profil-lint-processor:latest
+podman run --rm -it --entrypoint /bin/sh -v $(pwd):/app/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version>
 
 /app: npm start -- -f data/openapi.yaml -l data/raplp.log --dex data/avstamning.xlsx # skriver till din nuvarande katalog
 ```
@@ -213,6 +213,6 @@ Du kan behöva ett Personal Access Token (PAT) för din användare i github för
 3. Beroende på din miljö och vilka möjligheter du har, hantera åtkomstproblemet mer beständigt och återställ tidigare läs- och skrivrättigheter.
 4. Du kan även prova:  
     ```bash
-    sudo podman run -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:latest -f /data/openapi.yaml -l /data/raplp.log --dex /data/avstamning.xlsx
+    sudo podman run -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml -l /data/raplp.log --dex /data/avstamning.xlsx
     ```
 

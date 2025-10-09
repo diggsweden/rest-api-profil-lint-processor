@@ -53,9 +53,11 @@ npm login --registry=https://npm.pkg.github.com
 
 > Om du saknar inloggning med GitHub Personal access token (PAT), se [FAQ](#hur-skapar-jag-ett-github-personal-access-token-pat).
 
+> Notera: Att `<version>` byts ut mot önskad version av verktyget, oftast senaste release tag. För mer information se [versioner](#versioner).
+
 #### Installera globalt med npm:
 ```bash
-npm i -g @diggsweden/rest-api-profil-lint-processor@latest
+npm i -g @diggsweden/rest-api-profil-lint-processor@<version>
 raplp -f openapi.yaml
 ```
 
@@ -64,7 +66,7 @@ raplp -f openapi.yaml
 Installera och lägg som `devDependencies`:
 
 ```
-npm i --save-dev @diggsweden/rest-api-profil-lint-processor@latest
+npm i --save-dev @diggsweden/rest-api-profil-lint-processor@<version>
 ```
 
 Lägg till ett [`npm run` script](https://docs.npmjs.com/cli/run-script) i din `package.json` med rätt sökväg till filen du vill validera:
@@ -82,19 +84,19 @@ Nu kan du använda `npm run lint-processor`.
 ### NPX
 Kör utan installation och package.json:
 ```bash
-npx @diggsweden/rest-api-profil-lint-processor@latest -f openapi.yaml
+npx @diggsweden/rest-api-profil-lint-processor@<version> -f openapi.yaml
 ```
 
 ### Podman
 Kör med podman:
 ```bash
-podman run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:latest -f /data/openapi.yaml
+podman run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml
 ```
 
 ### Docker
 Kör med docker:
 ```bash
-docker run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:latest -f /data/openapi.yaml
+docker run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml
 ```
 > Notera: Sökvägar kan hanteras olika beroende på miljö:
 > - Podman (Linux/macOS/WSL): -v $(pwd):/app/example
@@ -295,7 +297,8 @@ podman login ghcr.io
 
 ## Bidra
 
-Om du vill bidra till projektet, vänligen följ instruktionerna i avsnittet [Contributing](CONTRIBUTING.md).
+Om du vill bidra till projektet, vänligen följ instruktionerna i avsnittet [Contributing](CONTRIBUTING.md).<br>
+För utvecklare finns det mer information i avsnittet [Development](development/DEVELOPMENT.md).
 
 ## Utveckling
 
