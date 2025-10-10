@@ -8,8 +8,6 @@ Denna guide beskriver de viktigaste grunderna för utveckling i detta projekt.
 - [Utvecklingsflöde](#utvecklingsflöde)
   -[Pull Request-flöde](#pull-request-flöde)
 - [Releaseprocess](#releaseprocess)
-  - [Utveckling](#release-för-utveckling)
-  - [Produktion](#release-för-produktion)
 - [Testa och verifiera](#testa-och-verifiera)
 - [Eventuella hinder](#eventuella-hinder)
 
@@ -74,68 +72,7 @@ Om några kontroller misslyckas i CI-pipelinen:
 5. Verifiera att alla kontroller passerar i den uppdaterade PR:en
 
 ## Releaseprocess
-Det finns två olika workflows för att göra en ny release, antingen för en feature under utveckling eller för produktion.
-
-- [Utveckling](../.github/workflows/release-dev-workflow.yml)
-- [Produktion](../.github/workflows/release-workflow.yml)
-
-För varje ny release kommer det bland annat att det byggas en docker image och ett npm paket som kan hämtas hem och köras. <br>
-Projektets releaser bygger på en gemensam struktur för DiggSweden vilken innefattar säkerhetsrutiner, automatiserade releaser och kvalitetskontroller. <br>
-För mer information se [Reusable CI/CD Workflows](https://github.com/diggsweden/reusable-ci?tab=readme-ov-file#reusable-cicd-workflows).
-
-### Release för utveckling
-Genom att pusha till en branch med prefix **dev/** eller **feat/** skapas en utvecklingsrelease vilket möjliggör tester av paket och images innan produktion.
-
-> **Utvecklingsreleaser kommer ***INTE*** generera och uppdatera changelog, release notes eller göra en ny release i GitHub.**
-
-### Release för produktion
-Vid release till produktion kan man välja om man vill släppa det som en pre-release version eller som en stabil version.
-
-> **Produktionsreleaser kommer automatiskt generera och uppdatera changelog, release notes och göra en ny release i GitHub.**
-
-#### Pre-release
-Annotera pre-release-taggen med suffix och en version, använd suffix:
-- alpha → tidig testversion, ofta instabil
-- beta → mer testad, men fortfarande pre-release
-- rc → nära färdigställande, stabil release candidate
-
-X kan ersättas med vilken siffersekvens som helst bestående av 0–9.
-
-***Säkerställ att tagg-versionen matchar versionen i package.json och package-lock.json.***
-
-```
-git checkout <branch>
-git pull
-git tag -s -a vX.X.X-SUFFIX.x -m "vX.X.X-SUFFIX.X"
-git push origin vX.X.X-SUFFIX.X
-```
-
-Exempel:
-
-```
-git tag -s -a v1.0.3-alpha.1 -m "v1.0.3-alpha.1"
-git push origin v1.0.3-alpha.1
-```
-
-#### Stabil release
-Checka ut main, hämta senaste ändringarna och tagga senaste commit på main.
-
-***Säkerställ att tagg-versionen matchar versionen i package.json och package-lock.json.***
-
-```
-git checkout <branch>
-git pull
-git tag -s -a vX.X.X -m "vX.X.X"
-git push origin vX.X.X
-```
-
-Exempel:
-```
-git tag -s -a v1.0.0 -m "v1.0.0"
-git push origin v1.0.0
-```
-
-***På grund av projektbegränsningar är pre- och stabila releaser från main endast möjliga för admins!***
+Releaseprocessen hanteras automatiskt av maintainer-teamet via intern dokumentation. 
 
 ## Testa och verifiera
 Efter varje release, pre- eller stabil, bör funktionaliteten testas och verifieras.

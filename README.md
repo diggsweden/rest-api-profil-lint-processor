@@ -42,15 +42,7 @@ Förutsätter att det finns en `openapi.yaml` att validera i den aktuella katalo
 
 ### NPM
 > Notera: Att GitHub Packages (npm) kräver authentisering.<br>
-> Projektets `.npmrc` bör vara konfigurerat mot rätt registry - `@diggsweden:registry=https://npm.pkg.github.com`
-
-
-```bash
-npm login --registry=https://npm.pkg.github.com
-# username: ditt GitHub-användarnamn
-# password: GitHub PAT med read:packages
-```
-
+> Projektets `.npmrc` bör vara konfigurerat mot rätt registry - `@diggsweden:registry=https://npm.pkg.github.com`<br>
 > Om du saknar inloggning med GitHub Personal access token (PAT), se [FAQ](#hur-skapar-jag-ett-github-personal-access-token-pat).
 
 > Notera: Att `<version>` byts ut mot önskad version av verktyget, oftast senaste release tag. För mer information se [versioner](#versioner).
@@ -87,6 +79,8 @@ Kör utan installation och package.json:
 npx @diggsweden/rest-api-profil-lint-processor@<version> -f openapi.yaml
 ```
 
+> Notera: Att npx laddar ned paketet till en tillfällig cache-mapp om det inte redan finns en version i node_modules/.bin
+
 ### Podman
 Kör med podman:
 ```bash
@@ -114,8 +108,24 @@ npm start -- -f openapi.yaml
 > Notera: Att alla kommandon lokalt körs med `npm start --`.
 
 ## Versioner
-Senaste release tag ska alltid vara stabil och testad, vilket gör den till den föredragna versionen för att nyttja verktyget.<br>
-Main och pre-releaser används med reservation för att all funktionalitet inte är garanterat stabil och testad.
+Main-branchen, feature-brancher, pre-release- och testversioner används med reservation för att de kan innehålla funktionalitet som inte är garanterad att den är testad på samma sätt som en stabil version. 
+
+**Stabila versioner**<br>
+[Release](https://github.com/diggsweden/rest-api-profil-lint-processor/releases) ska alltid vara stabil och testad, vilket gör den till den föredragna versionen för att nyttja verktyget.<br>
+Dessa versioner är taggade med `vX.X.X` utan något suffix.
+
+**Pre-release- och testversioner**<br>
+Pre-release-versioner är taggade med följande suffix:
+- alpha → tidig testversion, ofta instabil
+- beta → mer testad, men fortfarande pre-release
+- rc → nära färdigställande, stabil release candidate
+
+Rena testversioner är taggade med `vX.X.X-dev` följt av namnet på den branchen.<br>
+Dessa versioner är byggda för att testa funktionalitet som är under utveckling.
+
+Alla versioner av verktyget hittar du här:
+- [Container Image](https://github.com/diggsweden/rest-api-profil-lint-processor/pkgs/container/rest-api-profil-lint-processor)
+- [NPM Package](https://github.com/diggsweden/rest-api-profil-lint-processor/pkgs/npm/rest-api-profil-lint-processor)
 
 ## Användning
 Här beskrivs vilka användningsområden verktyget har med diverse flaggor som kan sättas för att nyttja verktygets funktionalitet.
@@ -161,6 +171,7 @@ raplp -f openapi.yaml -c DokRules,AmeRules,SakRules
 - FelRules
 - FnsRules
 - ForRules
+- ResRules
 - SakRules
 - UfnRules
 - VerRules
