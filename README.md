@@ -42,7 +42,7 @@ Förutsätter att det finns en `openapi.yaml` att validera i den aktuella katalo
 
 ### NPM
 > Notera: Att GitHub Packages (npm) kräver authentisering.<br>
-> Projektets `.npmrc` bör vara konfigurerat mot rätt registry - `@diggsweden:registry=https://npm.pkg.github.com`<br>
+> Konfigurera `.npmrc` mot rätt registry och scope, antingen globalt eller lokalt för enskilda projekt - `@diggsweden:registry=https://npm.pkg.github.com`<br>
 > Om du saknar inloggning med GitHub Personal access token (PAT), se [FAQ](#hur-skapar-jag-ett-github-personal-access-token-pat).
 
 > Notera: Att `<version>` byts ut mot önskad version av verktyget, oftast senaste release tag. För mer information se [versioner](#versioner).
@@ -52,6 +52,7 @@ Förutsätter att det finns en `openapi.yaml` att validera i den aktuella katalo
 npm i -g @diggsweden/rest-api-profil-lint-processor@<version>
 raplp -f openapi.yaml
 ```
+> Notera: Att en omstart av terminal kan behövas för att `raplp` ska kunna användas som kommando.  
 
 #### Installera lokalt som `npm run` script
 
