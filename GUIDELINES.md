@@ -93,7 +93,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
 
 ## Område: Dokumentation
 
-**Täckningsgrad: 46%**
+**Täckningsgrad: 52%**
 
 ### ID: DOK.01
 
