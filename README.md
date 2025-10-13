@@ -17,63 +17,150 @@ SPDX-License-Identifier: CC0-1.0
 
 **Beskrivning**:
 
-RAP-LP är ett kommandoradsverktyg för att linta OpenAPI v3-definitioner med hjälp av [Spectral](https://github.com/stoplightio/spectral). Verktyget är specifikt utvecklat för att linta OpenAPI-definitioner enligt den svenska REST API-profilens specifikation [REST API-profil](https://dev.dataportal.se/rest-api-profil).
+RAP-LP är ett kommandoradsverktyg för att linta OpenAPI v3-definitioner med hjälp av [Spectral](https://github.com/stoplightio/spectral).<br>
+Verktyget är specifikt utvecklat för att linta OpenAPI-definitioner enligt den svenska REST API-profilens specifikation [REST API-profil](https://dev.dataportal.se/rest-api-profil).
 
 ## Innehållsförteckning
 
 - [REST API-profil - Lint Processor (RAP-LP)](#rest-api-profil---lint-processor-rap-lp)
   - [Innehållsförteckning](#innehållsförteckning)
-  - [Installation och krav](#installation-och-krav)
   - [Instruktioner för att komma igång snabbt](#instruktioner-för-att-komma-igång-snabbt)
   - [Versioner](#versioner)
   - [Användning](#användning)
   - [Begränsningar](#begränsningar)
   - [Support](#support)
+  - [FAQ](#faq)
   - [Bidra](#bidra)
   - [Utveckling](#utveckling)
   - [Licens](#licens)
   - [Underhållare](#underhållare)
   - [Krediter och referenser](#krediter-och-referenser)
 
-## Installation och krav
+## Instruktioner för att komma igång snabbt
 
-Det enklaste sättet att installera RAP-LP är genom att använda [npm](https://www.npmjs.com/):
+Förutsätter att det finns en `openapi.yaml` att validera i den aktuella katalogen och beroende på hur man önskar att nyttja verktyget måste det finns installerade versioner av `Node.js`,`npm`, `Podman` eller `Docker`.
 
-1. Klona ned projektet från senaste release, gärna via latest release tag.
+### NPM
+> Notera: Att GitHub Packages (npm) kräver authentisering.<br>
+> Konfigurera `.npmrc` mot rätt registry och scope, antingen globalt eller lokalt för enskilda projekt - `@diggsweden:registry=https://npm.pkg.github.com`<br>
+> Om du saknar inloggning med GitHub Personal access token (PAT), se [FAQ](#hur-skapar-jag-ett-github-personal-access-token-pat).
+
+> Notera: Att `<version>` byts ut mot önskad version av verktyget, oftast senaste release tag. För mer information se [versioner](#versioner).
+
+#### Installera globalt med npm:
+```bash
+npm i -g @diggsweden/rest-api-profil-lint-processor@<version>
+raplp -f openapi.yaml
+```
+> Notera: Att en omstart av terminal kan behövas för att `raplp` ska kunna användas som kommando.  
+
+#### Installera lokalt som `npm run` script
+
+Installera och lägg som `devDependencies`:
+
+```
+npm i --save-dev @diggsweden/rest-api-profil-lint-processor@<version>
+```
+
+Lägg till ett [`npm run` script](https://docs.npmjs.com/cli/run-script) i din `package.json` med rätt sökväg till filen du vill validera:
+
+```json
+{
+  "scripts": {
+    "lint-processor": "raplp -f openapi.yaml"
+  }
+}
+```
+
+Nu kan du använda `npm run lint-processor`.
+
+### NPX
+Kör utan installation och package.json:
+```bash
+npx @diggsweden/rest-api-profil-lint-processor@<version> -f openapi.yaml
+```
+
+> Notera: Att npx laddar ned paketet till en tillfällig cache-mapp om det inte redan finns en version i node_modules/.bin
+
+### Podman
+Kör med podman:
+```bash
+podman run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml
+```
+
+### Docker
+Kör med docker:
+```bash
+docker run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml
+```
+> Notera: Sökvägar kan hanteras olika beroende på miljö:
+> - Podman (Linux/macOS/WSL): -v $(pwd):/app/example
+> - Docker (PowerShell): -v "${PWD}:/app/example"
+> - Docker (CMD): -v %cd%:/app/example
+
+### Bygga från källkod
+1. Klona ned projektet, gärna från senaste release tag.
 2. Installera alla beroenden:
 
 ```bash
 npm install
+npm start -- -f openapi.yaml
 ```
-
-## Instruktioner för att komma igång snabbt
-
-Använd det här kommandot för att köra applikationen mot en YAML-fil:
-
-```bash
-npm start -- -f PATH_TO_THE_YAML_FILE
-```
-
-**Exempel**
-
-```bash
-npm start -- -f apis/dok-api.yaml
-```
+> Notera: Att alla kommandon lokalt körs med `npm start --`.
 
 ## Versioner
-Senaste release tag ska alltid vara stabil och testad, vilket gör den till den föredragna versionen för att nyttja verktyget.
+Main-branchen, feature-brancher, pre-release- och testversioner används med reservation för att de kan innehålla funktionalitet som inte är garanterad att den är testad på samma sätt som en stabil version. 
 
-Main och pre-releaser används med reservation för att all funktionalitet inte är garanterat stabil och testad.
+**Stabila versioner**<br>
+[Release](https://github.com/diggsweden/rest-api-profil-lint-processor/releases) ska alltid vara stabil och testad, vilket gör den till den föredragna versionen för att nyttja verktyget.<br>
+Dessa versioner är taggade med `vX.X.X` utan något suffix.
+
+**Pre-release- och testversioner**<br>
+Pre-release-versioner är taggade med följande suffix:
+- alpha → tidig testversion, ofta instabil
+- beta → mer testad, men fortfarande pre-release
+- rc → nära färdigställande, stabil release candidate
+
+Rena testversioner är taggade med `vX.X.X-dev` följt av namnet på den branchen.<br>
+Dessa versioner är byggda för att testa funktionalitet som är under utveckling.
+
+Alla versioner av verktyget hittar du här:
+- [Container Image](https://github.com/diggsweden/rest-api-profil-lint-processor/pkgs/container/rest-api-profil-lint-processor)
+- [NPM Package](https://github.com/diggsweden/rest-api-profil-lint-processor/pkgs/npm/rest-api-profil-lint-processor)
 
 ## Användning
+Här beskrivs vilka användningsområden verktyget har med diverse flaggor som kan sättas för att nyttja verktygets funktionalitet.
 
-För att validera mot en specifik kategori av regler, lägg till `-c CategoryName`.
+### Tillgängliga flaggor
+
+| Flagga | Beskrivning | Typ | Standard | Obligatorisk |
+|---|---|---|---|---|
+| `-f, --file` | Sökväg till OpenAPI-specifikation (YAML/JSON). | string | – | Ja |
+| `-c, --categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `UfnRules, SakRules, VerRules, FnsRules, ArqRules, DokRules, AmeRules, ForRules, DotRules, FelRules`. | string | – | Nej |
+| `-l, --logError` | Sökväg till fil för felloggning från RAP-LP. Om inte angiven skrivs loggen till stdout. | string | stdout (om ej satt) | Nej |
+| `-a, --append` | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används). | boolean | `false` | Nej |
+| `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format. | string | – | Nej |
+| `--dex` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format. | string | – | Nej |
+
+
+> Notera: Att `raplp` i alla kommandon nedan ersätts med respektive miljös sätt att köra verktyget (npm, docker eller podman).
+
+### Validering med alla regler
+För att validera en openapi-definition med verktyget, lägg till `-f <YAML_FILE>`
+```bash
+raplp -f openapi.yaml
+```
 
 ### Validering med utvalda regler
-**Exempel**
+För att validera mot en specifik kategori av regler, lägg till `-c <CategoryName>`.<br>
+>Notera: Att du kan lägga till flera regler som en kommaseparerad lista.
 
 ```bash
-npm start -- -f apis/dok-api.yaml -c DokRules
+# Validera mot en specifik regel
+raplp -f openapi.yaml -c DokRules
+
+# Validera mot flera regler
+raplp -f openapi.yaml -c DokRules,AmeRules,SakRules
 ```
 
 #### Tillgängliga kategorier med regler
@@ -85,132 +172,62 @@ npm start -- -f apis/dok-api.yaml -c DokRules
 - FelRules
 - FnsRules
 - ForRules
+- ResRules
 - SakRules
 - UfnRules
 - VerRules
 
-För att spara meddelanden från felloggar, lägg till `-l FileName`.
-
-
-### Validering som skriver resultat till en valfri logfil
-
-**Exempel**
+### Validering som skriver felmeddelanden till en valfri loggfil
+För att skriva felmeddelanden till en valfri loggfil, lägg till `-l <FILE>`
 ```bash
-npm start -- -f apis/dok-api.yaml -l rap-lp.log
+raplp -f openapi.yaml -l raplp.log
 ```
+> Notera: Att varje körning skriver över den tidigare loggfilen.
 
-
-### Validering som skriver resultat till en valfri logfil samt loggar i terminalen
-För att lägga till loggning, lägg till `-a`
-
-**Exempel**
+För att lägga till loggning i samma fil, lägg till `-a`
 ```bash
-npm start -- -f apis/dok-api.yaml -l rap-lp.log -a
+raplp -f openapi.yaml -l raplp.log -a
 ```
 
 ### Validering som sparar loggdiagnostik i en fil
-För att spara loggdiagnostik i en fil, lägg till `-d FileName`
-
-**Exempel**
+För att spara loggdiagnostik i en fil, lägg till `-d <FILE>`
 
 ```bash
-npm start -- -f apis/dok-api.yaml -d logDiagnostic.log
+raplp -f openapi.yaml -d logDiagnostic.log
 ```
 
 ### Validering som sparar information om regelutfall i en Excel-fil
 
-För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, lägg till --dex.
+För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, lägg till `--dex`.<br>
+Om en specifik sökväg till avstämningsfilen ska anges, kan denna läggas till.<br>
+Om ingen sökväg anges, genererar verktyget automatiskt en ny avstämningsfil i den katalog där det körs.
 
-Om en specifik sökväg till avstämningsfilen ska anges, kan denna läggas till. Om ingen sökväg anges, genererar verktyget automatiskt en ny avstämningsfil i den katalog där det körs.
-
-Avstämningsfilen i Excel har ett fast format. Om en egen version av filen ska användas, måste den utpekade resursen hämtas med en kompatibel version av REST API-profilen.
+[Avstämningsfilen](document/Avstaemning_REST_API_profil_v_1_2_0_0.xlsx) i Excel har ett fast format, om en egen version av filen ska användas måste den utpekade resursen hämtas med en kompatibel version av REST API-profilen.
 
 **Exempel utan sökväg till avstämningsfil i Excel**
 
 ```bash
-npm start -- -f apis/dok-api.yaml --dex
+raplp -f openapi.yaml --dex
 ```
 
 **Exempel med sökväg till avstämningsfil i Excel**
 
 ```bash
-npm start -- -f apis/dok-api.yaml --dex path-to-excel-file
+raplp -f openapi.yaml --dex <PATH>
 ```
 
 ### Visa information version
 För att visa aktuell version av verktyget, lägg till `--version`
 
-**Exempel**
-
 ```bash
-npm start -- --version
+raplp --version
 ```
 
 ### Visa hjälp
 
 ```bash
-npm start -- --help
+raplp --help
 ```
-
-### Användning via podman/docker
-
-I en terminal kör:
-  ```bash
-  podman run --rm -it -v $(pwd):/<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:<VERSION X.X.X> -f <PATH>/<YAML_FILE>
-  ```
-* Där \<PATH> motsvarar den path i containern som du vill att nuvarande katalog \$(pwd) mountas in i, containern får tillgång till dina filer i \$(pwd).
-* Där \<YAML_FILE> motsvarar den filen som du vill applicera valideringen på.
-* Där \<VERSION> mostsvarar den version av rest-api-profilen som du vill nyttja.
-
-Exempel
-  ```bash
-  podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
-  ```
-
-Vid eventuella fel och du inte hittar rap-lp-error.log kan du behöva köra kommandot via containern enligt den alternativa instruktionen nedan. Se till att containern har rättigheter att skriva till den katalog som du mountar, se [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container).
-
-#### Alternativ att köra ifrån containern
-1. Starta en podman container:
-    - podman run --rm -it --entrypoint /bin/sh -v $(pwd):/\<PATH> ghcr.io/diggsweden/rest-api-profil-lint-processor:0.3.0
-2. Kör din validering ifrån containern:
-    - npm start -- -f \<PATH-TO-FILE>
-3. Lägg på önskade flaggor enligt tidigare exempel.
-
-Exempel:
-  ```bash
-  $ podman run --rm -it --entrypoint /bin/sh -v $(pwd):/apis ghcr.io/diggsweden/rest-api-profil-lint-processor:0.3.0
-
-  /app: $ npm start -- -f apis/dot-api.yaml -l test.log --dex example.xlsx
-  ```
-
-### Eventuella hinder med podman-kommando
-
-#### Access till registry
-
-Du kan behöva ett Personal Access Token (PAT) för din användare i github för att kunna hämta images från Github Container Registry (GHCR).
-1. Skapa PAT i github via settings -> developer settings -> tokens -> generate new token.
-    - viktigt att sätta read:packages
-    - spara ned ditt token
-2. Logga in med:
-    - kör i en terminal: podman login ghcr.io
-    - användarnamn: Ditt github-användarnamn.
-    - lösenord: ditt token från tidigare steg.
-3. Validera enligt tidigare exempel.  
-
-#### Skrivåtkomst till mount från container
-1. Kolla rättigheter
-    ```bash
-    ls -ld /path/to/mount
-    ```
-2. För att testa om det är ett åtkomstproblem kan du temporärt prova om det går efter du gett alla skrivrättigheter till den mountade katalogen:
-    ```bash
-    sudo chmod 777 /path/to/mount
-    ```
-3. Beroende på din miljö och vilka möjligheter du har, hantera åtkomstproblemet mer beständigt och återställ tidigare läs- och skrivrättigheter.
-4. Du kan även prova:  
-    ```bash
-    sudo podman run -it -v $(pwd):/app/example ghcr.io/diggsweden/rest-api-profil-lint-processor:1.0.0 -f example/dot-api.yaml -l example/test.log --dex example/avstamning.xlsx
-    ```
 
 ### Riktlinjer och förklaringar
 Vill du veta mer om de specifika reglerna som verktyget tillämpar, se avsnittet [GUIDELINES](GUIDELINES.md) för detaljer.
@@ -218,7 +235,8 @@ Vill du veta mer om de specifika reglerna som verktyget tillämpar, se avsnittet
 
 ### Förklaring av översikt för regelutfall
 
-Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsinformationen på stdout. I denna så kommer en sammanställning av det totala regelutfallet att visas.
+Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsinformationen på stdout.<br>
+I denna så kommer en sammanställning av det totala regelutfallet att visas.
 
 - Verkställda och godkända regler:
   - OK = Krav bedömt och hanterat för att möta kravet
@@ -231,7 +249,9 @@ Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsi
 
 ![alt text](document/instructions/images/regelutfall.png)
 
-I exemplet ovan framgår det att kraven för reglerna AME.05 och VER.05 är godkända och att det aktuella API:et uppfyller dessa. Däremot är kravet för regeln DOK.03 inte godkänt, vilket innebär att API:et inte möter detta krav. Dessutom framgår det att reglerna SAK.10 och DOK.01 inte är tillämpade för det aktuella API:et.
+I exemplet ovan framgår det att kraven för reglerna AME.05 och VER.05 är godkända och att det aktuella API:et uppfyller dessa.<br>
+Däremot är kravet för regeln DOK.03 inte godkänt, vilket innebär att API:et inte möter detta krav.<br>
+Dessutom framgår det att reglerna SAK.10 och DOK.01 inte är tillämpade för det aktuella API:et.
 
 **Förklaring av detaljering för regelutfall:**
 
@@ -248,9 +268,13 @@ Tillsammans med diagnostiseringsinformationen följer en detaljerad beskrivning 
 
 ![alt text](document/instructions/images/regelutfall-2.png)
 
-I exemplet ovan framgår det att kravet för regeln DOK.01 inte är godkänt och att det aktuella API:et inte uppfyller detta. Kravet har bedömts ha allvarlighetsgraden Error eftersom API:et bryter mot ett SKALL/SKALL INTE-krav i REST API-profilen. Det finns också information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
+I exemplet ovan framgår det att kravet för regeln DOK.01 inte är godkänt och att det aktuella API:et inte uppfyller detta.<br>
+Kravet har bedömts ha allvarlighetsgraden Error eftersom API:et bryter mot ett SKALL/SKALL INTE-krav i REST API-profilen.<br>
+Det finns också information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
 
-Vidare framgår det att kravet för regeln DOK.03 inte är godkänt och att det aktuella API:et inte möter detta krav. Kravet har bedömts ha allvarlighetsgraden Warning eftersom API:et bryter mot ett BÖR/BÖR INTE-krav i REST API-profilen. Även här finns information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
+Vidare framgår det att kravet för regeln DOK.03 inte är godkänt och att det aktuella API:et inte möter detta krav.<br>
+Kravet har bedömts ha allvarlighetsgraden Warning eftersom API:et bryter mot ett BÖR/BÖR INTE-krav i REST API-profilen.<br>
+Även här finns information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
 
 ## Begränsningar
 
@@ -260,9 +284,29 @@ Vidare framgår det att kravet för regeln DOK.03 inte är godkänt och att det 
 
 Om du har frågor, funderingar, buggrapporter etc, vänligen kontakta [Digg - Agency for Digital Government](https://www.digg.se/)
 
+## FAQ
+### Hur skapar jag ett GitHub Personal Access Token (PAT)?
+1. Gå till GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token → Generate new token (classic).
+2. Sätt en beskrivning för ditt token under `Note` och ett utgångsdatum under `Expiration` (ha utgångsdatum!).
+3. Select scopes → read:packages
+4. Skapa token → kopiera värdet direkt (visas bara en gång).
+
+```bash
+npm login --registry=https://npm.pkg.github.com
+# username: ditt GitHub-användarnamn
+# password: GitHub PAT med read:packages
+```
+
+```bash
+podman login ghcr.io
+# username: ditt GitHub-användarnamn
+# password: GitHub PAT med read:packages
+```
+
 ## Bidra
 
-Om du vill bidra till projektet, vänligen följ instruktionerna i avsnittet [Contributing](CONTRIBUTING.md).
+Om du vill bidra till projektet, vänligen följ instruktionerna i avsnittet [Contributing](CONTRIBUTING.md).<br>
+För utvecklare finns det mer information i avsnittet [Development](development/DEVELOPMENT.md).
 
 ## Utveckling
 

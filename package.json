@@ -21,12 +21,11 @@
   },
   "description": "A command-line tool to lint OpenAPI v3 definitions using Spectral",
   "scripts": {
-    "clean": "rm -rf dist",
-    "build": "npm run clean && tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json",
     "test": "jest",
     "test:integration": "node --experimental-vm-modules ./node_modules/.bin/jest --config jest.integration.config.cjs ",
-    "prepare": "npm run clean && npm run build",
-    "prepack": "npm run clean && npm run build",
+    "prepare": "npm run build",
+    "prepack": "npm run build",
     "start": "node --import=./register.js src/app.ts"
   },
   "directories": {

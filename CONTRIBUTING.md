@@ -134,7 +134,7 @@ För säkerhetssårbarheter, följ riktlinjerna i vår [Säkerhetsinformation](S
 - Var koncis och länka till externa resurser vid behov.
 - Följ [en-mening-per-rad](https://sembr.org/)-principen i Markdown eller AsciiDoc.
 
-Svenska är det primära språket
+Svenska är det primära språket.
 
 ## FOSS-standarder
 
