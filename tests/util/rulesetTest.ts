@@ -86,6 +86,7 @@ const ruleTypes = [
   ResRules.Res02,
   ResRules.Res06,
   MogRules.Mog01,
+  MogRules.Mog02,
 ];
 ruleTypes.forEach((RuleClass) => {
   const instance = new RuleClass();
