@@ -24,8 +24,14 @@
     "labels": ["security", "dependencies"]
   },
   "timezone": "Europe/Stockholm",
+  "platformAutomerge": false,
   "automergeSchedule": ["0 9-21 * * 6"],
   "packageRules": [
+    {
+      "description": "Automerge endast patch",
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
     {
       "matchManagers": ["github-actions"],
       "addLabels": ["actions"],
