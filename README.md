@@ -285,14 +285,10 @@ Om du har frågor, funderingar, buggrapporter etc, vänligen kontakta [Digg - Ag
 
 ## FAQ
 ### Hur skapar jag ett GitHub Personal Access Token (PAT)?
-1. Gå till GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token.
-2. Sätt Name och Expiration (ha utgångsdatum!).
-3. Resource owner: välj din org/användare som äger paketen.
-4. Repository access: välj relevanta repo(n).
-5. Permissions:
-    - För GHCR (containers): Packages → Read (lägg även Write om du ska pusha).
-    - För npm.pkg.github.com (npm-paket): Packages → Read och se till att tokenet har åtkomst till det repo där paketet bor.
-6. Skapa token → kopiera värdet direkt (visas bara en gång).
+1. Gå till GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token → Generate new token (classic).
+2. Sätt en beskrivning för ditt token under `Note` och ett utgångsdatum under `Expiration` (ha utgångsdatum!).
+3. Select scopes → read:packages
+4. Skapa token → kopiera värdet direkt (visas bara en gång).
 
 ```bash
 npm login --registry=https://npm.pkg.github.com
