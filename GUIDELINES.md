@@ -54,38 +54,40 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: UFN.07](#id-ufn07)
    - [ID: UFN.08](#id-ufn08)
    - [ID: UFN.09](#id-ufn09)
-5. [Område: API Message](#område-api-message)
+5. [Område: Mognad](#område-mognad)
+   - [ID: MOG.01](#id-mod01)
+6. [Område: API Message](#område-api-message)
    - [ID: AME.01](#id-ame01)
    - [ID: AME.02](#id-ame02)
    - [ID: AME.04](#id-ame04)
    - [ID: AME.05](#id-ame05)
    - [ID: AME.07](#id-ame07)
-6. [Område: API Request](#område-api-request)
+7. [Område: API Request](#område-api-request)
    - [ID: ARQ.01](#id-arq01)
    - [ID: ARQ.03](#id-arq03)
    - [ID: ARQ.05](#id-arq05)
-7. [Område: Felhantering](#område-felhantering)
+8. [Område: Felhantering](#område-felhantering)
    - [ID: FEL.01](#id-fel01)
    - [ID: FEL.02](#id-fel02)
-8. [Område: Versionhantering](#område-versionhantering)
+9. [Område: Versionhantering](#område-versionhantering)
    - [ID: VER.05](#id-ver05)
    - [ID: VER.06](#id-ver06)
-9. [Område: Filtrering, paginering och sökparametrar](#område-filtrering-paginering-och-sökparametrar)
-   - [ID: FNS.01](#id-fns01)
-   - [ID: FNS.03](#id-fns03)
-   - [ID: FNS.05](#id-fns05)
-   - [ID: FNS.06](#id-fns06)
-   - [ID: FNS.07](#id-fns07)
-   - [ID: FNS.08](#id-fns08)
-   - [ID: FNS.09](#id-fns09)
-10. [Område: Säkerhet](#område-säkerhet)
+10. [Område: Filtrering, paginering och sökparametrar](#område-filtrering-paginering-och-sökparametrar)
+    - [ID: FNS.01](#id-fns01)
+    - [ID: FNS.03](#id-fns03)
+    - [ID: FNS.05](#id-fns05)
+    - [ID: FNS.06](#id-fns06)
+    - [ID: FNS.07](#id-fns07)
+    - [ID: FNS.08](#id-fns08)
+    - [ID: FNS.09](#id-fns09)
+11. [Område: Säkerhet](#område-säkerhet)
     - [ID: SAK.01](#id-sak01)
     - [ID: SAK.09](#id-sak09)
     - [ID: SAK.10](#id-sak10)
     - [ID: SAK.15](#id-sak15)
     - [ID: SAK.16](#id-sak16)
     - [ID: SAK.18](#id-sak18)
-11. [Område: Förutsättningar](#område-förutsättningar)
+12. [Område: Förutsättningar](#område-förutsättningar)
     - [ID: FOR.02](#id-for02)
 
 ## Område: Dokumentation
@@ -662,6 +664,33 @@ Regeln verifierar att blanksteg ' ' och understreck '\_' inte används i URL:ern
 ![alt text](images/ufn9.png)
 
 I exemplet ovan, så utgör fältet `url` under serverobjektet, samt objektet `paths` med underliggande konstruktion av parameter av typen ”path” föremål för kontroll.
+
+---
+
+## Område: Mognad
+
+**Täckningsgrad: 33%**
+
+### ID: MOG.01
+
+**Krav:** Alla API:er SKALL designas för att uppnå nivå 2 enligt Richardson Maturity Model.
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+$.paths[*]
+```
+
+**Förklaring:**
+Regeln går igenom alla paths och kontrollerar så att minst en av metoderna GET, POST, PUT, DELETE eller PATCH finns definerade per path.
+
+**Exempel:**
+
+![Exempelbild på en resurs med en GET-metod definierad i en OpenAPI description.](images/mog01.png)
+
+_Exemplet ovan är giltigt då `GET` är en av metoderna som listades ovan._
 
 ---
 
