@@ -1,10 +1,10 @@
-import { RapLPCustomSpectral } from "./RapLPCustomSpectral.ts";
+import { RapLPCustomSpectral } from "./RapLPCustomSpectral.js";
 import { Document } from "@stoplight/spectral-core";
 import Parsers from "@stoplight/spectral-parsers";
-import { ERROR_TYPE, RapLPBaseApiError } from "./RapLPBaseApiErrorHandling.ts";
-import { DiagnosticReport, RapLPDiagnostic } from "../util/RapLPDiagnostic.ts";
+import { ERROR_TYPE, RapLPBaseApiError } from "./RapLPBaseApiErrorHandling.js";
+import { DiagnosticReport, RapLPDiagnostic } from "../util/RapLPDiagnostic.js";
 import yaml from "js-yaml";
-import { ValidationResponseDto } from "../model/ValidationResponseDto.ts";
+import { ValidationResponseDto } from "../model/ValidationResponseDto.js";
 
 export const validateYamlInput = (input: string): input is string => {
   try {

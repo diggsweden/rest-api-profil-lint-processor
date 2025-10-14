@@ -5,13 +5,13 @@ import {
   decodeBase64String,
   processApiSpec,
   validateYamlInput,
-} from "../util/apiUtil.ts";
-import { YamlContentDto } from "../model/YamlContentDto.ts";
-import { importAndCreateRuleInstances } from "../util/ruleUtil.ts";
-import { ApiInfo } from "../model/ApiInfo.ts";
-import { validationRules } from "../model/validationRules.ts";
-import { ExcelReportProcessor } from "../util/excelReportProcessor.ts"
-import {DiagnosticReport, RapLPDiagnostic } from "../util/RapLPDiagnostic.ts";
+} from "../util/apiUtil.js";
+import { YamlContentDto } from "../model/YamlContentDto.js";
+import { importAndCreateRuleInstances } from "../util/ruleUtil.js";
+import { ApiInfo } from "../model/ApiInfo.js";
+import { validationRules } from "../model/validationRules.js";
+import { ExcelReportProcessor } from "../util/excelReportProcessor.js"
+import {DiagnosticReport, RapLPDiagnostic } from "../util/RapLPDiagnostic.js";
 
 export const registerValidationRoutes = (app: Express) => {
   // Route for raw content upload.
