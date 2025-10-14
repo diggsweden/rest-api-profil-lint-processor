@@ -82,7 +82,7 @@ async function main() {
       }
 
       if (argv.mode === 'api') {
-        const apiForbiddenArgs = new Set(['f', 'd', 'l', 'c', 'dex']);
+        const apiForbiddenArgs = new Set(['f', 'c', 'dex']);
         const hasForbiddenArgs = Object.keys(argv).filter(
           (k) => apiForbiddenArgs.has(k) && Object.prototype.hasOwnProperty.call(argv, k),
         );
