@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { RuleCategoryError } from "./RapLPBaseApiErrorHandling.ts";
+import { RuleCategoryError } from "./RapLPBaseApiErrorHandling.js";
 
 // ruleUtil.ts
 interface CustomSchema {

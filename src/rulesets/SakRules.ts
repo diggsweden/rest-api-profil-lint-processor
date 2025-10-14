@@ -13,7 +13,7 @@ const moduleName: string = 'SakRules.js';
 
 export class Sak01 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Säkerhet',
+    omrade: 'Säkerhet',
     id: 'SAK.01',
   };
   message = 'All transport SKALL ske över HTTPS med minst TLS 1.2.';
@@ -146,7 +146,7 @@ export class Sak10 extends BaseRuleset {
 }
 export class Sak15 extends SakBaseApiKeyRule {
   static customProperties: CustomProperties = {
-    område: 'Säkerhet',
+    omrade: 'Säkerhet',
     id: 'SAK.15',
   };
   constructor() {
@@ -177,7 +177,7 @@ export class Sak15 extends SakBaseApiKeyRule {
  */
 export class Sak16 extends SakBaseApiKeyRule {
   static customProperties: CustomProperties = {
-    område: 'Säkerhet',
+    omrade: 'Säkerhet',
     id: 'SAK.16',
   };
   constructor() {
