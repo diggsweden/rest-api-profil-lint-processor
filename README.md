@@ -137,71 +137,38 @@ npm start -- -f openapi.yaml
 
 > Notera: Att alla kommandon lokalt körs med `npm start --`.
 
-### API (Application programming interface) läge
+### Server
+
+Verktyget kan även köras som en lokal HTTP-server genom att ange [API-läge](#api-application-programming-interface). I detta läge kan funktionaliteten anropas via HTTP i stället för CLI-flaggor.
+
+Starta servern:
+
 ```bash
 npm start -- -m api
 ```
 
-Validera mot en endpoint: 
-```bash
-POST http://localhost:3000/api/v1/validation/validate
-```
+Validera en fil via terminalen:
 
-Request body - application/json`
-```bash
-{
-  "yaml": "<base64encoded file>",
-  "categories": [
-    "CATEGORY1",
-    "CATEGORY2"
-  ]
-}
-```
-
-Använd detta kommando för att validera en yaml-fil via terminalen, här kan du även validera mot specifika [kategorier](#tillgängliga-kategorier-med-regler):
 ```bash
 curl -X POST http://localhost:3000/api/v1/validation/validate \
     -H "Content-Type: application/json" \
-    -d "{\"yaml\": \"$(base64 -w 0 Path_to_the_YAML_file)\", \"categories\": [\"CATEGORY1\", \"CATEGORY2\"]}"
-```
-Exempel
-```bash
-curl -X POST http://localhost:3000/api/v1/validation/validate \
-    -H "Content-Type: application/json" \
-    -d "{\"yaml\": \"$(base64 -w 0 apis/dok-api.yaml)\", \"categories\": [\"DokRules\", \"UfnRules\"]}"
+    -d "{\"yaml\": \"$(base64 -w 0 openapi.yaml)\"}"
 ```
 
 Det går också att validera via en url istället för en fil men då behöver API-läget startas med en extra flagga för att låsa upp möjligheten att nyttja endpointen:
+
 ```bash
 npm start -- -m api --enableUrlValidation
 ```
 
-Använd detta kommando för att validera en yaml-fil baserat på en url via terminalen, även här kan man skicka med kategorier för valideringen. Se tidigare kommando:
+Validera en fil från en url via terminalen:
+
 ```bash
-curl -sS -X POST http://localhost:3000/api/v1/validation/url \      
-  -H "Content-Type: application/json" \
-  -d '{"url":"<URL_TO_YAML_FILE>"}' | jq 
-```
-
-Exempel: 
-```bash
-curl -sS -X POST http://localhost:3000/api/v1/validation/url \      
-  -H "Content-Type: application/json" \
-  -d '{"url":"https://testurl.com/q/openapi"}' | jq 
-```
-
-#### Ladda ned information om regelutfall som en Excel-fil via api-läge
-
-För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, använd resultatet från tidigare validering som "result" nedan:
-```bash
-curl -X POST http://localhost:5173/api/validation/generate-report \
-  -H "Content-Type: application/json" \
-  -o avstamningsfil.xlsx \
-  -d '{
-    "result": [],
-    "categories": []
-  }'
-
+  curl -sS -X POST http://localhost:3000/api/v1/validation/url \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{"url":"https://testurl.com/q/openapi"}' \
+| jq
 ```
 
 ## Versioner
@@ -233,14 +200,14 @@ Här beskrivs vilka användningsområden verktyget har med diverse flaggor som k
 
 ### Tillgängliga flaggor
 
-| Flagga                | Beskrivning                                                                                                                                                               | Typ     | Standard            | Obligatorisk |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------- | ------------ |
-| `-f, --file`          | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                            | string  | –                   | Ja           |
-| `-c, --categories`    | Regelkategorier separerade med kommatecken. Tillgängliga: `UfnRules, SakRules, VerRules, FnsRules, ArqRules, DokRules, AmeRules, ForRules, DotRules, FelRules, MogRules`. | string  | –                   | Nej          |
-| `-l, --logError`      | Sökväg till fil för felloggning från RAP-LP. Om inte angiven skrivs loggen till stdout.                                                                                   | string  | stdout (om ej satt) | Nej          |
-| `-a, --append`        | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används).                                                                                               | boolean | `false`             | Nej          |
-| `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format.                                                                                                | string  | –                   | Nej          |
-| `--dex`               | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format.                                                                                               | string  | –                   | Nej          |
+| Flagga                | Beskrivning                                                                                                                                                     | Typ     | Standard            | Obligatorisk |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------- | ------------ |
+| `-f, --file`          | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                  | string  | –                   | Ja           |
+| `-c, --categories`    | Regelkategorier separerade med kommatecken. Tillgängliga: `UfnRules, SakRules, VerRules, FnsRules, ArqRules, DokRules, AmeRules, ForRules, DotRules, FelRules`. | string  | –                   | Nej          |
+| `-l, --logError`      | Sökväg till fil för felloggning från RAP-LP. Om inte angiven skrivs loggen till stdout.                                                                         | string  | stdout (om ej satt) | Nej          |
+| `-a, --append`        | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används).                                                                                     | boolean | `false`             | Nej          |
+| `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format.                                                                                      | string  | –                   | Nej          |
+| `--dex`               | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format.                                                                                     | string  | –                   | Nej          |
 
 > Notera: Att `raplp` i alla kommandon nedan ersätts med respektive miljös sätt att köra verktyget (npm, docker eller podman).
 
@@ -337,6 +304,87 @@ raplp --version
 
 ```bash
 raplp --help
+```
+
+### API-läge
+
+Verktyget kan även köras som en lokal HTTP-server, via API (Applikation Programming Interface). I detta läge kan funktionaliteten anropas via HTTP i stället för CLI-flaggor.
+
+För att starta servern, kör:
+
+```bash
+npm start -- -m api
+```
+
+Validera mot en endpoint:
+
+```bash
+POST http://localhost:3000/api/v1/validation/validate
+```
+
+Request body - application/json`
+
+```bash
+{
+  "yaml": "<base64encoded file>",
+  "categories": [
+    "CATEGORY1",
+    "CATEGORY2"
+  ]
+}
+```
+
+Använd detta kommando för att validera en yaml-fil via terminalen, här kan du även validera mot specifika [kategorier](#tillgängliga-kategorier-med-regler):
+
+```bash
+curl -X POST http://localhost:3000/api/v1/validation/validate \
+    -H "Content-Type: application/json" \
+    -d "{\"yaml\": \"$(base64 -w 0 Path_to_the_YAML_file)\", \"categories\": [\"CATEGORY1\", \"CATEGORY2\"]}"
+```
+
+Exempel
+
+```bash
+curl -X POST http://localhost:3000/api/v1/validation/validate \
+    -H "Content-Type: application/json" \
+    -d "{\"yaml\": \"$(base64 -w 0 openapi.yaml)\", \"categories\": [\"DokRules\", \"UfnRules\"]}"
+```
+
+Det går också att validera via en url istället för en fil men då behöver API-läget startas med en extra flagga för att låsa upp möjligheten att nyttja endpointen:
+
+```bash
+npm start -- -m api --enableUrlValidation
+```
+
+Använd detta kommando för att validera en yaml-fil baserat på en url via terminalen, även här kan man skicka med kategorier för valideringen. Se tidigare kommando:
+
+```bash
+curl -sS -X POST http://localhost:3000/api/v1/validation/url \
+  -H "Content-Type: application/json" \
+  -d '{"url":"<URL_TO_YAML_FILE>"}' | jq
+```
+
+Exempel:
+
+```bash
+curl -sS -X POST http://localhost:3000/api/v1/validation/url \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://testurl.com/q/openapi.yaml"}' | jq
+```
+
+#### Ladda ned information om regelutfall som en Excel-fil via api-läge
+
+För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, använd resultatet från tidigare validering som "result" nedan:
+
+```bash
+curl -X POST http://localhost:5173/api/validation/generate-report \
+  -H "Content-Type: application/json" \
+  -o avstamningsfil.xlsx \
+  -d '{
+    "result": [],
+    "categories": []
+  }'
+
 ```
 
 ### Riktlinjer och förklaringar
