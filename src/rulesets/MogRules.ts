@@ -10,7 +10,7 @@ const moduleName: string = 'MogRules.ts';
 
 export class Mog01 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Mognad',
+    omrade: 'Mognad',
     id: 'MOG.01',
   };
   message = 'Alla API:er SKALL designas för att uppnå nivå 2 enligt Richardson Maturity Model. ';

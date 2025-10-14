@@ -136,7 +136,7 @@ export class Dok20 extends BaseRuleset {
 }
 export class Dok06 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.06',
   };
   given = '$.info.description';
@@ -216,7 +216,7 @@ export class Dok07 extends BaseRuleset {
 }
 export class Dok08 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.08',
   };
   given = '$';
@@ -288,7 +288,7 @@ export class Dok08 extends BaseRuleset {
 }
 export class Dok09 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.09',
   };
   given = '$';
@@ -347,7 +347,7 @@ export class Dok09 extends BaseRuleset {
 
 export class Dok11 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.11',
   };
   given = '$.info';
