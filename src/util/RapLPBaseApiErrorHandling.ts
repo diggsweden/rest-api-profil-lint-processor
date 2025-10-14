@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ProblemDetailsDTO } from "../model/ProblemDetailsDto.ts";
+import { ProblemDetailsDTO } from "../model/ProblemDetailsDto.js";
 
 /**
  * Extended error class with errorType that will be used as HTTP error codes in custom error handler.

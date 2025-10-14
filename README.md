@@ -137,6 +137,73 @@ npm start -- -f openapi.yaml
 
 > Notera: Att alla kommandon lokalt körs med `npm start --`.
 
+### API (Application programming interface) läge
+```bash
+npm start -- -m api
+```
+
+Validera mot en endpoint: 
+```bash
+POST http://localhost:3000/api/v1/validation/validate
+```
+
+Request body - application/json`
+```bash
+{
+  "yaml": "<base64encoded file>",
+  "categories": [
+    "CATEGORY1",
+    "CATEGORY2"
+  ]
+}
+```
+
+Använd detta kommando för att validera en yaml-fil via terminalen, här kan du även validera mot specifika [kategorier](#tillgängliga-kategorier-med-regler):
+```bash
+curl -X POST http://localhost:3000/api/v1/validation/validate \
+    -H "Content-Type: application/json" \
+    -d "{\"yaml\": \"$(base64 -w 0 Path_to_the_YAML_file)\", \"categories\": [\"CATEGORY1\", \"CATEGORY2\"]}"
+```
+Exempel
+```bash
+curl -X POST http://localhost:3000/api/v1/validation/validate \
+    -H "Content-Type: application/json" \
+    -d "{\"yaml\": \"$(base64 -w 0 apis/dok-api.yaml)\", \"categories\": [\"DokRules\", \"UfnRules\"]}"
+```
+
+Det går också att validera via en url istället för en fil men då behöver API-läget startas med en extra flagga för att låsa upp möjligheten att nyttja endpointen:
+```bash
+npm start -- -m api --enableUrlValidation
+```
+
+Använd detta kommando för att validera en yaml-fil baserat på en url via terminalen, även här kan man skicka med kategorier för valideringen. Se tidigare kommando:
+```bash
+curl -sS -X POST http://localhost:3000/api/v1/validation/url \      
+  -H "Content-Type: application/json" \
+  -d '{"url":"<URL_TO_YAML_FILE>"}' | jq 
+```
+
+Exempel: 
+```bash
+curl -sS -X POST http://localhost:3000/api/v1/validation/url \      
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://testurl.com/q/openapi"}' | jq 
+```
+
+#### Ladda ned information om regelutfall som en Excel-fil via api-läge
+
+För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, använd resultatet från tidigare validering som "result" nedan:
+```bash
+curl -X POST http://localhost:5173/api/validation/generate-report \
+  -H "Content-Type: application/json" \
+  -o avstamningsfil.xlsx \
+  -d '{
+    "result": [],
+    "categories": []
+  }'
+
+```
+
 ## Versioner
 
 Main-branchen, feature-brancher, pre-release- och testversioner används med reservation för att de kan innehålla funktionalitet som inte är garanterad att den är testad på samma sätt som en stabil version.
