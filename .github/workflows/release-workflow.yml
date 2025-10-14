@@ -2,9 +2,8 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-# Description:
-# This workflow handles automated releases using the unified release system
-# from diggsweden/.github for NPM packages.
+# Release Workflow for rest-api-profil-lint-processor
+# Uses the unified release orchestrator for NPM packages
 ---
 name: Release
 
@@ -25,41 +24,16 @@ permissions:
 
 jobs:
   release:
-    name: Release
-    if: startsWith(github.ref, 'refs/tags/v')  # Only run for version tags
+    uses: diggsweden/reusable-ci/.github/workflows/release-orchestrator.yml@v2
     permissions:
-      contents: write  # Create GitHub releases, push changelog commits
-      packages: write  # Publish NPM package to GitHub registry, push to ghcr.io
-      id-token: write  # Generate OIDC token for package provenance and SLSA
-      actions: read    # Required for SLSA provenance generation
+      contents: write         # Create GitHub releases, push changelog commits
+      packages: write         # Publish to GitHub Packages
+      id-token: write         # Generate OIDC token for SLSA provenance
+      attestations: write     # Attach SBOM attestations
       security-events: write  # Upload container vulnerability scan results
-      attestations: write     # Attach SBOM attestation to container images
-      issues: write           # Close issues and add release comments
-    uses: diggsweden/reusable-ci/.github/workflows/release-orchestrator.yml@v1
+      actions: read           # Required for SLSA provenance
+    secrets: inherit
     with:
-      # Project configuration
-      projectType: npm  # Build system (reads version from package.json)
-      branch: main      # Base branch for changelog generation
-      
-      # Artifact publisher configuration
-      artifactPublisher: npm-app-github  # Publish to GitHub NPM registry
-      # Uses default Node version (22.x)
-      
-      # Container builder configuration
-      containerBuilder: containerimage-ghcr  # Build Docker image and push to ghcr.io
-      # Defaults: linux/amd64, SLSA provenance, SBOM generation enabled
-      
-      # NPM specific - files to commit when version changes
-      file_pattern: "CHANGELOG.md package.json package-lock.json"
-      
-      # Changelog configuration
-      changelogCreator: git-cliff  # Generate from conventional commits
-      # Uses default changelog format
-      
-      # Release publisher configuration
-      releasePublisher: github-cli         # GitHub CLI better for NPM than JReleaser
-      release.generatesbom: true           # Include SBOM in release assets
-      release.signartifacts: true          # GPG sign all release artifacts
-      
-      # Release type auto-detected from tag (v1.0.0 = stable, v1.0.0-beta = prerelease)
-    secrets: inherit  # Use org-level NPM_TOKEN and GPG keys if available
+      artifacts-config: .github/artifacts.yml
+      file-pattern: "CHANGELOG.md package.json package-lock.json"
+      release-publisher: github-cli
