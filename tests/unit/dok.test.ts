@@ -371,7 +371,99 @@ testRule('Dok09', [
     ],
   },
 ]);
-
+testRule('Dok10', [
+  {
+    name: 'giltigt testfall - resurs är inte deprecated',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/pets': {
+          get: {
+            deprecated: false,
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall - resurs är deprecated men saknar datum',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/pets': {
+          get: {
+            deprecated: true,
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message: 'Om det är känt SKALL tidpunkt för när API:et tas ur bruk anges i dokumentationen.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - resurs är deprecated, och beskrivning och x-deprecationDate innehåller inga datum',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/pets': {
+          get: {
+            description: 'Beskrivning som inte innehåller några datum',
+            'x-deprecationDate': 'Inga datum här heller',
+            deprecated: true,
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message: 'Om det är känt SKALL tidpunkt för när API:et tas ur bruk anges i dokumentationen.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'giltigt testfall - resurs är deprecated och description innehåller ett datum',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/pets': {
+          get: {
+            description: 'En beskrivning med mer text än endast datum, även om datumet 2025-01-01 är det relevanta',
+            'x-deprecationDate': 'Inga datum här',
+            deprecated: true,
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - resurs är deprecated och x-deprecationDate innehåller ett datum',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/pets': {
+          get: {
+            description: 'En beskrivning som inte innehåller några datum',
+            'x-deprecationDate': '1 jan 2025',
+            deprecated: true,
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+]);
 testRule('Dok11', [
   {
     name: 'giltigt testfall',
