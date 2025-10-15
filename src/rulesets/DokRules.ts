@@ -9,6 +9,7 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { Dok03Base } from './rulesetUtil.js';
 import { Dok15Base } from './rulesetUtil.js';
 import { commonEnglishWords, commonSwedishWords } from './constants/CommonWords.js';
+import * as chrono from 'chrono-node';
 const moduleName: string = 'DokRules.js';
 
 export class Dok15Get extends Dok15Base {
@@ -344,7 +345,91 @@ export class Dok09 extends BaseRuleset {
   }
   severity = DiagnosticSeverity.Error;
 }
+export class Dok10 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: 'Dokumentation',
+    id: 'DOK.10',
+  };
+  given = '$.paths[*][*]';
+  message = 'Om det är känt SKALL tidpunkt för när API:et tas ur bruk anges i dokumentationen.';
+  then = [
+    {
+      function: (targetVal: any, _opts: string, paths: string[]) => {
+        const deprecated = targetVal?.deprecated;
 
+        if (!deprecated) {
+          return [];
+        }
+
+        const translateToEnglish = (text: string): string => {
+          return text
+            .replace(/\bjan(uari)?\b/gi, 'January')
+            .replace(/\bfeb(ruari)?\b/gi, 'February')
+            .replace(/\bmar(s)?\b/gi, 'March')
+            .replace(/\bapr(il)?\b/gi, 'April')
+            .replace(/\bmaj\b/gi, 'May')
+            .replace(/\bjun(i)?\b/gi, 'June')
+            .replace(/\bjul(i)?\b/gi, 'July')
+            .replace(/\baug(usti)?\b/gi, 'August')
+            .replace(/\bsep(tember)?\b/gi, 'September')
+            .replace(/\bokt(ober)?\b/gi, 'October')
+            .replace(/\bnov(ember)?\b/gi, 'November')
+            .replace(/\bdec(ember)?\b/gi, 'December')
+            .replace(/\bidag\b/gi, 'today')
+            .replace(/\bimorgon\b/gi, 'tomorrow')
+            .replace(/\b(igår|i går)\b/gi, 'yesterday')
+            .replace(/\bnästa\b/gi, 'next');
+        };
+
+        const containsDate = (input: string): boolean => {
+          if (typeof input !== 'string') {
+            return false;
+          }
+          const translatedInput = translateToEnglish(input);
+          const results = chrono.parseDate(translatedInput);
+          if (results != null) {
+            return true;
+          } else {
+            return false;
+          }
+        };
+
+        let description = targetVal?.description;
+        let deprecationDate = targetVal?.['x-deprecationDate'];
+
+        if (containsDate(description) || containsDate(deprecationDate)) {
+          return [];
+        }
+
+        return [
+          {
+            message: this.message,
+            severity: this.severity,
+            paths: paths,
+          },
+        ];
+      },
+    },
+    {
+      function: (targetVal: string, _opts: string, paths: string[]) => {
+        this.trackRuleExecutionHandler(
+          JSON.stringify(targetVal, null, 2),
+          _opts,
+          paths,
+          this.severity,
+          this.constructor.name,
+          moduleName,
+          Dok10.customProperties,
+        );
+      },
+    },
+  ];
+  constructor() {
+    super();
+    super.initializeFormats(['OAS2', 'OAS3']);
+  }
+  severity = DiagnosticSeverity.Error;
+}
 export class Dok11 extends BaseRuleset {
   static customProperties: CustomProperties = {
     område: 'Dokumentation',
