@@ -4,7 +4,7 @@
 
 import * as chrono from 'chrono-node';
 
-export const translateToEnglish = (text: string): string => {
+export const translateMonthsToEnglish = (text: string): string => {
   return text
     .replace(/\bjan(uari)?\b/gi, 'January')
     .replace(/\bfeb(ruari)?\b/gi, 'February')
@@ -17,18 +17,14 @@ export const translateToEnglish = (text: string): string => {
     .replace(/\bsep(tember)?\b/gi, 'September')
     .replace(/\bokt(ober)?\b/gi, 'October')
     .replace(/\bnov(ember)?\b/gi, 'November')
-    .replace(/\bdec(ember)?\b/gi, 'December')
-    .replace(/\bidag\b/gi, 'today')
-    .replace(/\bimorgon\b/gi, 'tomorrow')
-    .replace(/\b(igår|i går)\b/gi, 'yesterday')
-    .replace(/\bnästa\b/gi, 'next');
+    .replace(/\bdec(ember)?\b/gi, 'December');
 };
 
 export const containsDate = (input: string): boolean => {
   if (typeof input !== 'string') {
     return false;
   }
-  const translatedInput = translateToEnglish(input);
+  const translatedInput = translateMonthsToEnglish(input);
   const results = chrono.parseDate(translatedInput);
   if (results != null) {
     return true;
