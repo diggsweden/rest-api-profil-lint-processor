@@ -12,7 +12,7 @@
     ":maintainLockFilesWeekly",
     ":automergePatch",
     ":semanticCommits",
-    "npm:unpublishSafe",
+    "security:minimumReleaseAgeNpm",
     ":rebaseStalePrs",
     ":semanticCommitTypeAll(chore)",
     "mergeConfidence:all-badges"
