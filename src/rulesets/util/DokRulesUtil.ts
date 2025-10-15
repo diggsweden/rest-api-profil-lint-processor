@@ -25,7 +25,7 @@ export const containsDate = (input: string): boolean => {
     return false;
   }
   const translatedInput = translateMonthsToEnglish(input);
-  const results = chrono.parseDate(translatedInput);
+  const results = chrono.strict.parseDate(translatedInput);
   if (results != null) {
     return true;
   } else {
