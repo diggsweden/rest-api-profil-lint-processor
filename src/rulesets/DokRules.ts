@@ -9,7 +9,6 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { Dok03Base } from './rulesetUtil.js';
 import { Dok15Base } from './rulesetUtil.js';
 import { commonEnglishWords, commonSwedishWords } from './constants/CommonWords.js';
-import * as chrono from 'chrono-node';
 import { containsDate } from './util/DokRulesUtil.js';
 const moduleName: string = 'DokRules.js';
 
