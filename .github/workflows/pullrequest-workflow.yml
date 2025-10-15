@@ -25,7 +25,7 @@ jobs:
       packages: read         # Access private NPM packages from GitHub registry
       security-events: write # Upload ESLint/security findings to GitHub Security tab
     with:
-      projectType: npm
+      project-type: npm
       # MegaLinter is disabled for this project
       linters.megalint: false  # Skip MegaLinter
       linters.publiccodelint: true
