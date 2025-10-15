@@ -160,7 +160,9 @@ export class ExcelReportProcessor {
    */
   private enableFullCalcOnLoad(workbook): void {
     workbook.workbook.calcPr['@_fullCalcOnLoad'] = '1';
-    this.zip.updateFile('xl/workbook.xml', this.builder.build(workbook));
+    const xmlString = this.builder.build(workbook);
+    const xmlBuffer = Buffer.from(xmlString, 'utf8');
+    this.zip.updateFile('xl/workbook.xml', xmlBuffer);
   }
 
   /**
@@ -251,7 +253,10 @@ export class ExcelReportProcessor {
         resultColumn.v = valueMap[status];
       }
     });
-    this.zip.updateFile(sheetPath, this.builder.build(sheet));
+
+      const xmlString = this.builder.build(sheet);
+      const xmlBuffer = Buffer.from(xmlString, 'utf8');
+      this.zip.updateFile(sheetPath, xmlBuffer);
   }
 
   /**
