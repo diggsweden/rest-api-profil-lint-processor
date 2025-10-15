@@ -36,6 +36,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: DOK.07](#id-dok07)
    - [ID: DOK.08](#id-dok08)
    - [ID: DOK.09](#id-dok09)
+   - [ID: DOK.10](#id-dok10)
    - [ID: DOK.11](#id-dok11)
    - [ID: DOK.15](#id-dok15)
    - [ID: DOK.17](#id-dok17)
@@ -92,7 +93,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
 
 ## Område: Dokumentation
 
-**Täckningsgrad: 46%**
+**Täckningsgrad: 50%**
 
 ### ID: DOK.01
 
@@ -268,6 +269,29 @@ Regeln förutsätter att det finns en förekomst av något av objekten `info.des
 ![Exempelbild på ovan nämnda objekts placering i en OpenAPI Description](images/dok9.png)
 
 _Ett av objekten räcker för att uppfylla regeln, men "limit", "begränsning" eller "problem" behöver nämnas i `description`-fälten för att de ska räknas._
+
+---
+
+### ID: DOK.10
+
+**Krav:** Om det är känt SKALL tidpunkt för när API:et tas ur bruk anges i dokumentationen.
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+$.paths[*][*]
+```
+
+**Förklaring:**
+Om en resurs innehåller attributet `deprecated` med värde `true`, så behöver det även finnas en förekomst av antingen `description` eller `x-deprecationDate` innehållandes ett datum. Datum kontrolleras genom en översättning till engelska av vissa keywords (t.ex. månadernas namn) och biblioteket [Chrono (v2)](https://www.npmjs.com/package/chrono-node).
+
+**Exempel:**
+
+![Exempelbild på en deprecated resurs som har ett datum för att tas ur bruk satt](images/dok10.png)
+
+_Det är tillräckligt om antingen description eller x-deprecationDate innehåller ett datum._
 
 ---
 
