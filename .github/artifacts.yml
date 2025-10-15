@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# Artifacts Configuration for rest-api-profil-lint-processor
+# NPM CLI application with container
+# Package tarballs will be attached to GitHub Release as assets
+
+artifacts:
+  - name: raplp
+    project-type: npm
+    working-directory: .
+    build-type: application
+    config:
+      node-version: 22
+
+# Container builds from source (no artifact dependency)
+# Containerfile copies source code and runs npm install
+containers:
+  - name: raplp
+    container-file: Containerfile
+    context: .
+    platforms: linux/amd64,linux/arm64
+    registry: ghcr.io
