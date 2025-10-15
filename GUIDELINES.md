@@ -55,7 +55,8 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: UFN.08](#id-ufn08)
    - [ID: UFN.09](#id-ufn09)
 5. [Område: Mognad](#område-mognad)
-   - [ID: MOG.01](#id-mod01)
+   - [ID: MOG.01](#id-mog01)
+   - [ID: MOG.02](#id-mog02)
 6. [Område: API Message](#område-api-message)
    - [ID: AME.01](#id-ame01)
    - [ID: AME.02](#id-ame02)
@@ -669,7 +670,7 @@ I exemplet ovan, så utgör fältet `url` under serverobjektet, samt objektet `p
 
 ## Område: Mognad
 
-**Täckningsgrad: 66%**
+**Täckningsgrad: 33%**
 
 ### ID: MOG.01
 
@@ -691,33 +692,6 @@ Regeln går igenom alla paths och kontrollerar så att minst en av metoderna GET
 ![Exempelbild på en resurs med en GET-metod definierad i en OpenAPI description.](images/mog01.png)
 
 _Exemplet ovan är giltigt då `GET` är en av metoderna som listades ovan._
-
----
-
-### ID: MOG.02
-
-**Krav:** Alla API:er BÖR samtidigt designas för att uppnå nivå 3 enligt Richardson Maturity Model.
-
-**Typ:** BÖR
-
-**JSON Path Plus-uttryck:**
-
-```
-$.paths
-```
-
-**Förklaring:**
-Regeln går igenom alla paths och kontrollerar följande:
-
-1. att de är minst två till antalet
-2. att varje path innehåller minst två metoder
-3. att varje path innehåller minst en av metoderna GET, POST, PUT, DELETE eller PATCH
-
-**Exempel:**
-
-![Exempelbild på en resurs som innehåller allt som krävs för att uppfylla regeln.](images/mog02.png)
-
-_Exemplet ovan är giltigt då det uppfyller samtliga krav._
 
 ---
 
