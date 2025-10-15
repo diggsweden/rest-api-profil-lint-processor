@@ -130,7 +130,7 @@ testRule('Mog02', [
     errors: [],
   },
   {
-    name: 'giltigt testfall - innehåller endast en resurs',
+    name: 'ogiltigt testfall - innehåller endast en resurs',
     document: {
       openapi: '3.1.0',
       info: { version: '1.0.0' },
