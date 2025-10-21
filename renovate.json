@@ -1,29 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "osvVulnerabilityAlerts": true,
-  "dependencyDashboardOSVVulnerabilitySummary": "all",
   "extends": [
-    "config:best-practices",
-    "workarounds:all",
-    "security:openssf-scorecard",
-    ":configMigration",
-    ":dependencyDashboard",
-    ":gitSignOff",
-    ":maintainLockFilesWeekly",
-    ":automergePatch",
-    ":semanticCommits",
-    "security:minimumReleaseAgeNpm",
-    ":rebaseStalePrs",
-    ":semanticCommitTypeAll(chore)",
-    "mergeConfidence:all-badges"
+    "local>diggsweden/.github:renovate-base",
+    ":maintainLockFilesWeekly"
   ],
-  "commitMessageLowerCase": "auto",
-  "minimumReleaseAge": "7 days",
-  "labels": ["dependencies"],
-  "vulnerabilityAlerts": {
-    "labels": ["security", "dependencies"]
-  },
-  "timezone": "Europe/Stockholm",
+  "enabledManagers": [
+    "github-actions",
+    "npm"
+  ],
   "platformAutomerge": false,
   "automergeSchedule": ["0 9-21 * * 6"],
   "packageRules": [
@@ -31,17 +15,6 @@
       "description": "Automerge endast patch",
       "matchUpdateTypes": ["patch"],
       "automerge": true
-    },
-    {
-      "matchManagers": ["github-actions"],
-      "addLabels": ["actions"],
-      "pinDigests": true,
-      "groupName": "github actions"
-    },
-    {
-      "matchManagers": ["github-actions"],
-      "matchPackageNames": ["slsa-framework/slsa-github-generator"],
-      "pinDigests": false
     },
     {
       "description": "Node.js dependencies - Major updates",
