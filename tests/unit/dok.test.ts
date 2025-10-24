@@ -455,6 +455,7 @@ testRule('Dok17', [
     ],
   },
 ]);
+
 testRule('Dok19', [
   {
     name: 'giltigt testfall',
@@ -466,6 +467,7 @@ testRule('Dok19', [
         '/thiscase': {
           operation: {
             description: 'description field test',
+            summary: 'summary field test',
             responses: {
               '200': {
                 description: 'test',
@@ -487,7 +489,7 @@ testRule('Dok19', [
         '/thiscase': {
           operation: {
             //description: "dfadfa",
-            //summery: "",
+            //summary: "",
             responses: {
               '200': {
                 description: '',

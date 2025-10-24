@@ -105,7 +105,15 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
 
 ```
 $
-```
+```> npx jest tests/dok.test.ts
+No tests found, exiting with code 1
+Run with `--passWithNoTests` to exit with code 0
+In /home/mirellefalstad/workspaces/rap-lp/rest-api-profil-lint-processor
+  112 files checked.
+  testMatch: **/tests/unit/**/*.test.ts - 13 matches
+  testPathIgnorePatterns: /node_modules/ - 112 matches
+  testRegex:  - 0 matches
+Pattern: tests/dok.test.ts - 0 matches
 
 **Förklaring:**
 
@@ -371,13 +379,13 @@ $.paths[*][*]
 ```
 
 **Förklaring:**
-Regeln förutsätter att det finns en förekomst av objektet `Paths`. Regeln undersöker vidare om det finns förekomster av fältet `description` oavsett om det är en GET, POST, PUT, PATCH eller en DELETE operation.
+Regeln förutsätter att objektet `paths` förekommer. Den kontrollerar att fälten `description` och `summary` finns för varje GET-, POST-, PUT-, PATCH- eller DELETE-operation.
 
 **Exempel:**
 
-![alt text](images/dok19.png)
+![Exempel på en OpenAPI-specifikation där varje operation under olika endpoints (GET, POST, PUT, DELETE) har markerats med röd ram kring fälten summary och description. Bilden illustrerar vilka delar av API-specifikationen som regeln DOK.19 validerar.](images/dok19.png)
 
-I exemplet ovan, så exemplifieras regeln med en två get samt en post operation, där regeln undersöker om det finns en förekomst av fältet description.
+_I exemplet ovan illustreras regeln med flera operationer, där DOK.19 kontrollerar att fälten description och summary är ifyllda._
 
 ---
 
