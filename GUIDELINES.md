@@ -670,7 +670,7 @@ I exemplet ovan, så utgör fältet `url` under serverobjektet, samt objektet `p
 
 ## Område: Mognad
 
-**Täckningsgrad: 33%**
+**Täckningsgrad: 66%**
 
 ### ID: MOG.01
 
@@ -689,9 +689,36 @@ Regeln går igenom alla paths och kontrollerar så att minst en av metoderna GET
 
 **Exempel:**
 
-![Exempelbild på en resurs med en GET-metod definierad i en OpenAPI description.](images/mog01.png)
+![Exempelbild på en resurs med en GET-metod definierad i en OpenAPI description](images/mog01.png)
 
 _Exemplet ovan är giltigt då `GET` är en av metoderna som listades ovan._
+
+---
+
+### ID: MOG.02
+
+**Krav:** Alla API:er BÖR designas för att uppnå nivå 3 enligt Richardson Maturity Model.
+
+**Typ:** BÖR
+
+**JSON Path Plus-uttryck:**
+
+```
+$.paths
+```
+
+**Förklaring:**
+Regeln går igenom varje path och kontrollerar att:
+
+- de är minst två till antalet
+- de innhåller minst två metoder vardera
+- minst en av metoderna GET, POST, PUT, DELETE eller PATCH finns definerade per path
+
+**Exempel:**
+
+![Exempelbild på två resurser med två metoder definierade vardera i en OpenAPI description](images/mog02.png)
+
+_Exemplet är giltigt då det uppfyller samtliga krav i punktlistan ovan._
 
 ---
 

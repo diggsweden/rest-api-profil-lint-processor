@@ -62,7 +62,7 @@ export class Mog02 extends BaseRuleset {
     område: 'Mognad',
     id: 'MOG.02',
   };
-  message = 'Alla API:er BÖR samtidigt designas för att uppnå nivå 3 enligt Richardson Maturity Model. ';
+  message = 'Alla API:er BÖR designas för att uppnå nivå 3 enligt Richardson Maturity Model. ';
   given = '$.paths';
   then = [
     {

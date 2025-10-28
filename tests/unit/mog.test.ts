@@ -155,7 +155,7 @@ testRule('Mog02', [
     },
     errors: [
       {
-        message: 'Alla API:er BÖR samtidigt designas för att uppnå nivå 3 enligt Richardson Maturity Model.',
+        message: 'Alla API:er BÖR designas för att uppnå nivå 3 enligt Richardson Maturity Model.',
         severity: DiagnosticSeverity.Warning,
       },
     ],
@@ -205,7 +205,7 @@ testRule('Mog02', [
     },
     errors: [
       {
-        message: 'Alla API:er BÖR samtidigt designas för att uppnå nivå 3 enligt Richardson Maturity Model.',
+        message: 'Alla API:er BÖR designas för att uppnå nivå 3 enligt Richardson Maturity Model.',
         severity: DiagnosticSeverity.Warning,
       },
     ],
@@ -248,7 +248,7 @@ testRule('Mog02', [
     },
     errors: [
       {
-        message: 'Alla API:er BÖR samtidigt designas för att uppnå nivå 3 enligt Richardson Maturity Model.',
+        message: 'Alla API:er BÖR designas för att uppnå nivå 3 enligt Richardson Maturity Model.',
         severity: DiagnosticSeverity.Warning,
       },
     ],
