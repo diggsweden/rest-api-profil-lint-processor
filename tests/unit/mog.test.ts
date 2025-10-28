@@ -80,3 +80,177 @@ testRule('Mog01', [
     errors: [],
   },
 ]);
+testRule('Mog02', [
+  {
+    name: 'giltigt testfall - innehåller två resurser med två metoder vardera, samt minst en av GET, POST, PUT, DELETE eller PATCH per resurs',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0.0' },
+      paths: {
+        '/pets': {
+          get: {
+            responses: {
+              200: {
+                description: 'OK',
+              },
+            },
+          },
+          head: {
+            responses: {
+              '200': {
+                description: 'Resource exists',
+              },
+              '404': {
+                description: 'Resource not found',
+              },
+            },
+          },
+        },
+        '/pets/{petId}': {
+          get: {
+            responses: {
+              200: {
+                description: 'OK',
+              },
+              404: {
+                description: 'Not found',
+              },
+            },
+          },
+          options: {
+            responses: {
+              '204': {
+                description: 'Supported methods',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall - innehåller endast en resurs',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0.0' },
+      paths: {
+        '/pets': {
+          get: {
+            responses: {
+              200: {
+                description: 'OK',
+              },
+            },
+          },
+          post: {
+            responses: {
+              201: {
+                description: 'Created',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message: 'Alla API:er BÖR designas för att uppnå nivå 3 enligt Richardson Maturity Model.',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - GET, POST, PUT, DELETE och PATCH saknas i ena resursen',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0.0' },
+      paths: {
+        '/pets': {
+          get: {
+            responses: {
+              200: {
+                description: 'OK',
+              },
+            },
+          },
+          post: {
+            responses: {
+              201: {
+                description: 'Created',
+              },
+            },
+          },
+        },
+        '/pets/{petId}': {
+          options: {
+            responses: {
+              '204': {
+                description: 'Supported methods',
+              },
+            },
+          },
+          head: {
+            responses: {
+              '200': {
+                description: 'Resource exists',
+              },
+              '404': {
+                description: 'Resource not found',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message: 'Alla API:er BÖR designas för att uppnå nivå 3 enligt Richardson Maturity Model.',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - ena resursen innehåller endast en metod',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0.0' },
+      paths: {
+        '/pets': {
+          get: {
+            responses: {
+              200: {
+                description: 'OK',
+              },
+            },
+          },
+          post: {
+            responses: {
+              201: {
+                description: 'Created',
+              },
+            },
+          },
+        },
+        '/pets/{petId}': {
+          get: {
+            responses: {
+              200: {
+                description: 'OK',
+              },
+              404: {
+                description: 'Not found',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message: 'Alla API:er BÖR designas för att uppnå nivå 3 enligt Richardson Maturity Model.',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
+]);

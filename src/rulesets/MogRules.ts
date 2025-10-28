@@ -5,6 +5,7 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
+import { countEndpoints, endPointsAreValid } from './util/MogRulesUtil.js';
 
 const moduleName: string = 'MogRules.ts';
 
@@ -56,4 +57,47 @@ export class Mog01 extends BaseRuleset {
   }
 }
 
-export default { Mog01 };
+export class Mog02 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: 'Mognad',
+    id: 'MOG.02',
+  };
+  message = 'Alla API:er BÖR designas för att uppnå nivå 3 enligt Richardson Maturity Model. ';
+  given = '$.paths';
+  then = [
+    {
+      function: (targetVal: any, _opts: string, paths: string[]) => {
+        if (countEndpoints(targetVal) < 2 || !endPointsAreValid(targetVal)) {
+          return [
+            {
+              message: this.message,
+              severity: this.severity,
+              paths: paths,
+            },
+          ];
+        }
+        return [];
+      },
+    },
+    {
+      function: (targetVal: string, _opts: string, paths: string[]) => {
+        this.trackRuleExecutionHandler(
+          JSON.stringify(targetVal, null, 2),
+          _opts,
+          paths,
+          this.severity,
+          this.constructor.name,
+          moduleName,
+          Mog02.customProperties,
+        );
+      },
+    },
+  ];
+  severity = DiagnosticSeverity.Warning;
+  constructor() {
+    super();
+    super.initializeFormats(['OAS3']);
+  }
+}
+
+export default { Mog01, Mog02 };

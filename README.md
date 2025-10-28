@@ -1,12 +1,12 @@
 <!--
 SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
 
-SPDX-License-Identifier: CC0-1.0 
+SPDX-License-Identifier: CC0-1.0
 -->
 
 # REST API-profil - Lint Processor (RAP-LP)
-[![Tag](https://img.shields.io/github/v/tag/diggsweden/rest-api-profil-lint-processor?style=for-the-badge&sort=semver&filter=%21*-*&color=green)](https://github.com/diggsweden/rest-api-profil-lint-processor/tags)
 
+[![Tag](https://img.shields.io/github/v/tag/diggsweden/rest-api-profil-lint-processor?style=for-the-badge&sort=semver&filter=%21*-*&color=green)](https://github.com/diggsweden/rest-api-profil-lint-processor/tags)
 
 [![License: EUPL 1.2](https://img.shields.io/badge/License-European%20Union%20Public%20Licence%201.2-library?style=for-the-badge&&color=lightblue)](LICENSE)
 [![REUSE](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.reuse.software%2Fstatus%2Fgithub.com%2Fdiggsweden%2Frest-api-profil-lint-processor&query=status&style=for-the-badge&label=REUSE&color=lightblue)](https://api.reuse.software/info/github.com/diggsweden/rest-api-profil-lint-processor)
@@ -41,6 +41,7 @@ Verktyget är specifikt utvecklat för att linta OpenAPI-definitioner enligt den
 Förutsätter att det finns en `openapi.yaml` att validera i den aktuella katalogen och beroende på hur man önskar att nyttja verktyget måste det finns installerade versioner av `Node.js`,`npm`, `Podman` eller `Docker`.
 
 ### NPM
+
 > Notera: Att GitHub Packages (npm) kräver authentisering.<br>
 > Konfigurera `.npmrc` mot rätt registry och scope, antingen globalt eller lokalt för enskilda projekt - `@diggsweden:registry=https://npm.pkg.github.com`<br>
 > Om du saknar inloggning med GitHub Personal access token (PAT), se [FAQ](#hur-skapar-jag-ett-github-personal-access-token-pat).
@@ -48,11 +49,13 @@ Förutsätter att det finns en `openapi.yaml` att validera i den aktuella katalo
 > Notera: Att `<version>` byts ut mot önskad version av verktyget, oftast senaste release tag. För mer information se [versioner](#versioner).
 
 #### Installera globalt med npm:
+
 ```bash
 npm i -g @diggsweden/rest-api-profil-lint-processor@<version>
 raplp -f openapi.yaml
 ```
-> Notera: Att en omstart av terminal kan behövas för att `raplp` ska kunna användas som kommando.  
+
+> Notera: Att en omstart av terminal kan behövas för att `raplp` ska kunna användas som kommando.
 
 #### Installera lokalt som `npm run` script
 
@@ -75,7 +78,9 @@ Lägg till ett [`npm run` script](https://docs.npmjs.com/cli/run-script) i din `
 Nu kan du använda `npm run lint-processor`.
 
 ### NPX
+
 Kör utan installation och package.json:
+
 ```bash
 npx @diggsweden/rest-api-profil-lint-processor@<version> -f openapi.yaml
 ```
@@ -83,22 +88,29 @@ npx @diggsweden/rest-api-profil-lint-processor@<version> -f openapi.yaml
 > Notera: Att npx laddar ned paketet till en tillfällig cache-mapp om det inte redan finns en version i node_modules/.bin
 
 ### Podman
+
 Kör med podman:
+
 ```bash
 podman run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml
 ```
 
 ### Docker
+
 Kör med docker:
+
 ```bash
 docker run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml
 ```
+
 > Notera: Sökvägar kan hanteras olika beroende på miljö:
+>
 > - Podman (Linux/macOS/WSL): -v $(pwd):/app/example
 > - Docker (PowerShell): -v "${PWD}:/app/example"
 > - Docker (CMD): -v %cd%:/app/example
 
 ### Bygga från källkod
+
 1. Klona ned projektet, gärna från senaste release tag.
 2. Installera alla beroenden:
 
@@ -106,10 +118,12 @@ docker run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processo
 npm install
 npm start -- -f openapi.yaml
 ```
+
 > Notera: Att alla kommandon lokalt körs med `npm start --`.
 
 ## Versioner
-Main-branchen, feature-brancher, pre-release- och testversioner används med reservation för att de kan innehålla funktionalitet som inte är garanterad att den är testad på samma sätt som en stabil version. 
+
+Main-branchen, feature-brancher, pre-release- och testversioner används med reservation för att de kan innehålla funktionalitet som inte är garanterad att den är testad på samma sätt som en stabil version.
 
 **Stabila versioner**<br>
 [Release](https://github.com/diggsweden/rest-api-profil-lint-processor/releases) ska alltid vara stabil och testad, vilket gör den till den föredragna versionen för att nyttja verktyget.<br>
@@ -117,6 +131,7 @@ Dessa versioner är taggade med `vX.X.X` utan något suffix.
 
 **Pre-release- och testversioner**<br>
 Pre-release-versioner är taggade med följande suffix:
+
 - alpha → tidig testversion, ofta instabil
 - beta → mer testad, men fortfarande pre-release
 - rc → nära färdigställande, stabil release candidate
@@ -125,35 +140,40 @@ Rena testversioner är taggade med `vX.X.X-dev` följt av namnet på den branche
 Dessa versioner är byggda för att testa funktionalitet som är under utveckling.
 
 Alla versioner av verktyget hittar du här:
+
 - [Container Image](https://github.com/diggsweden/rest-api-profil-lint-processor/pkgs/container/rest-api-profil-lint-processor)
 - [NPM Package](https://github.com/diggsweden/rest-api-profil-lint-processor/pkgs/npm/rest-api-profil-lint-processor)
 
 ## Användning
+
 Här beskrivs vilka användningsområden verktyget har med diverse flaggor som kan sättas för att nyttja verktygets funktionalitet.
 
 ### Tillgängliga flaggor
 
-| Flagga | Beskrivning | Typ | Standard | Obligatorisk |
-|---|---|---|---|---|
-| `-f, --file` | Sökväg till OpenAPI-specifikation (YAML/JSON). | string | – | Ja |
-| `-c, --categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `UfnRules, SakRules, VerRules, FnsRules, ArqRules, DokRules, AmeRules, ForRules, DotRules, FelRules`. | string | – | Nej |
-| `-l, --logError` | Sökväg till fil för felloggning från RAP-LP. Om inte angiven skrivs loggen till stdout. | string | stdout (om ej satt) | Nej |
-| `-a, --append` | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används). | boolean | `false` | Nej |
-| `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format. | string | – | Nej |
-| `--dex` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format. | string | – | Nej |
-
+| Flagga                | Beskrivning                                                                                                                                                               | Typ     | Standard            | Obligatorisk |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------- | ------------ |
+| `-f, --file`          | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                            | string  | –                   | Ja           |
+| `-c, --categories`    | Regelkategorier separerade med kommatecken. Tillgängliga: `UfnRules, SakRules, VerRules, FnsRules, ArqRules, DokRules, AmeRules, ForRules, DotRules, FelRules, MogRules`. | string  | –                   | Nej          |
+| `-l, --logError`      | Sökväg till fil för felloggning från RAP-LP. Om inte angiven skrivs loggen till stdout.                                                                                   | string  | stdout (om ej satt) | Nej          |
+| `-a, --append`        | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används).                                                                                               | boolean | `false`             | Nej          |
+| `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format.                                                                                                | string  | –                   | Nej          |
+| `--dex`               | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format.                                                                                               | string  | –                   | Nej          |
 
 > Notera: Att `raplp` i alla kommandon nedan ersätts med respektive miljös sätt att köra verktyget (npm, docker eller podman).
 
 ### Validering med alla regler
+
 För att validera en openapi-definition med verktyget, lägg till `-f <YAML_FILE>`
+
 ```bash
 raplp -f openapi.yaml
 ```
 
 ### Validering med utvalda regler
+
 För att validera mot en specifik kategori av regler, lägg till `-c <CategoryName>`.<br>
->Notera: Att du kan lägga till flera regler som en kommaseparerad lista.
+
+> Notera: Att du kan lägga till flera regler som en kommaseparerad lista.
 
 ```bash
 # Validera mot en specifik regel
@@ -172,24 +192,30 @@ raplp -f openapi.yaml -c DokRules,AmeRules,SakRules
 - FelRules
 - FnsRules
 - ForRules
+- MogRules
 - ResRules
 - SakRules
 - UfnRules
 - VerRules
 
 ### Validering som skriver felmeddelanden till en valfri loggfil
+
 För att skriva felmeddelanden till en valfri loggfil, lägg till `-l <FILE>`
+
 ```bash
 raplp -f openapi.yaml -l raplp.log
 ```
+
 > Notera: Att varje körning skriver över den tidigare loggfilen.
 
 För att lägga till loggning i samma fil, lägg till `-a`
+
 ```bash
 raplp -f openapi.yaml -l raplp.log -a
 ```
 
 ### Validering som sparar loggdiagnostik i en fil
+
 För att spara loggdiagnostik i en fil, lägg till `-d <FILE>`
 
 ```bash
@@ -217,6 +243,7 @@ raplp -f openapi.yaml --dex <PATH>
 ```
 
 ### Visa information version
+
 För att visa aktuell version av verktyget, lägg till `--version`
 
 ```bash
@@ -230,8 +257,8 @@ raplp --help
 ```
 
 ### Riktlinjer och förklaringar
-Vill du veta mer om de specifika reglerna som verktyget tillämpar, se avsnittet [GUIDELINES](GUIDELINES.md) för detaljer.
 
+Vill du veta mer om de specifika reglerna som verktyget tillämpar, se avsnittet [GUIDELINES](GUIDELINES.md) för detaljer.
 
 ### Förklaring av översikt för regelutfall
 
@@ -285,7 +312,9 @@ Kravet har bedömts ha allvarlighetsgraden Warning eftersom API:et bryter mot et
 Om du har frågor, funderingar, buggrapporter etc, vänligen kontakta [Digg - Agency for Digital Government](https://www.digg.se/)
 
 ## FAQ
+
 ### Hur skapar jag ett GitHub Personal Access Token (PAT)?
+
 1. Gå till GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token → Generate new token (classic).
 2. Sätt en beskrivning för ditt token under `Note` och ett utgångsdatum under `Expiration` (ha utgångsdatum!).
 3. Select scopes → read:packages
