@@ -670,7 +670,7 @@ I exemplet ovan, så utgör fältet `url` under serverobjektet, samt objektet `p
 
 ## Område: Mognad
 
-**Täckningsgrad: 66%**
+**Täckningsgrad: 67%**
 
 ### ID: MOG.01
 
