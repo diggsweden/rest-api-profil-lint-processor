@@ -105,15 +105,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
 
 ```
 $
-```> npx jest tests/dok.test.ts
-No tests found, exiting with code 1
-Run with `--passWithNoTests` to exit with code 0
-In /home/mirellefalstad/workspaces/rap-lp/rest-api-profil-lint-processor
-  112 files checked.
-  testMatch: **/tests/unit/**/*.test.ts - 13 matches
-  testPathIgnorePatterns: /node_modules/ - 112 matches
-  testRegex:  - 0 matches
-Pattern: tests/dok.test.ts - 0 matches
+```
 
 **Förklaring:**
 
