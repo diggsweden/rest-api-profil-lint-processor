@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
+//
+// SPDX-License-Identifier: EUPL-1.2
+
 import * as fs from 'node:fs';
 import { join } from 'path';
 import Parsers from '@stoplight/spectral-parsers';
@@ -164,9 +168,11 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         } else {
           //Verbose error logging goes here with detailed result
           console.log(chalk.whiteBright('\n<<Regelutfall RAP-LP>> \n'));
-          result.forEach((item) => {
-            console.log(formatLintingResult(item));
-          });
+          result
+            .sort((a, b) => a.omrade.localeCompare(b.omrade, 'sv') || a.id.localeCompare(b.id, 'sv'))
+            .forEach((item) => {
+              console.log(formatLintingResult(item));
+            });
         }
       } catch (spectralError: any) {
         logErrorToFile(spectralError); // Log stack
