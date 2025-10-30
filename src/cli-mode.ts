@@ -169,7 +169,13 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           //Verbose error logging goes here with detailed result
           console.log(chalk.whiteBright('\n<<Regelutfall RAP-LP>> \n'));
           result
-            .sort((a, b) => a.omrade.localeCompare(b.omrade, 'sv') || a.id.localeCompare(b.id, 'sv'))
+            .sort((a, b) => {
+              const omradeA = a.omrade ?? '';
+              const omradeB = b.omrade ?? '';
+              const idA = a.id ?? '';
+              const idB = b.id ?? '';
+              return omradeA.localeCompare(omradeB, 'sv') || idA.localeCompare(idB, 'sv');
+            })
             .forEach((item) => {
               console.log(formatLintingResult(item));
             });
