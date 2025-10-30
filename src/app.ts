@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 //
 // SPDX-License-Identifier: EUPL-1.2
 
@@ -81,12 +81,12 @@ async function main() {
         return true;
       }
 
-      if(argv.mode === 'api') { 
+      if (argv.mode === 'api') {
         const apiForbiddenArgs = new Set(['f', 'c', 'dex']);
         const hasForbiddenArgs = Object.keys(argv).filter(
           (k) => apiForbiddenArgs.has(k) && Object.prototype.hasOwnProperty.call(argv, k),
         );
-        
+
         if (hasForbiddenArgs.length > 0) {
           throw new Error('I API-läge är endast --enableUrlValidation och --urlValidationConfigFile tillåtna. ');
         }

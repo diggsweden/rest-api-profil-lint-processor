@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 
 SPDX-License-Identifier: CC-BY-4.0
 -->

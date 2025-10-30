@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+# SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government 
 #
 # SPDX-License-Identifier: CC0-1.0
 
@@ -8,7 +8,7 @@ version = 1
 [[annotations]]
 path = ["CHANGELOG.md","tsconfig.json","package.json","package-lock.json"]
 precedence = "aggregate"
-SPDX-FileCopyrightText = "2025 diggsweden/rest-api-profil-lint-processor"
+SPDX-FileCopyrightText = "2025 Digg - Agency for Digital Government "
 SPDX-License-Identifier = "CC0-1.0"
 
 # images etc
@@ -84,12 +84,12 @@ path = [
     "**/*/code_quality.sh",
     "images/ver6.png"]
 precedence = "aggregate"
-SPDX-FileCopyrightText = "2025 diggsweden/rest-api-profil-lint-processor"
+SPDX-FileCopyrightText = "2025 Digg - Agency for Digital Government "
 SPDX-License-Identifier = "CC0-1.0"
 
 # documents etc
 [[annotations]]
 path = ["document/Avstaemning_REST_API_profil_v_1_2_0_0.xlsx", "document/Avstaemning_REST_API_profil_v_1_1_0_0.xlsx", "openapi.yaml"]
 precedence = "aggregate"
-SPDX-FileCopyrightText = "2025 diggsweden/rest-api-profil-lint-processor"
+SPDX-FileCopyrightText = "2025 Digg - Agency for Digital Government "
 SPDX-License-Identifier = "CC0-1.0"

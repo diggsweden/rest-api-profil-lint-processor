@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 //
 // SPDX-License-Identifier: EUPL-1.2
 
@@ -32,7 +32,7 @@ export class Ufn01 extends BaseRuleset {
       function: pattern,
       functionOptions: {
         match:
-          '^(?<protocol>^[^\/]*:\/\/)+(?<host>(?<=:\/\/)[^\/]+\/)+(?<api>(?<=\/)[^\/]+?\/)(?<version>(?<=\/)v+[0-9]+)+(?<end>\/$|$)',
+          '^(?<protocol>^[^/]*://)+(?<host>(?<=://)[^/]+/)+(?<api>(?<=/)[^/]+?/)(?<version>(?<=/)v+[0-9]+)+(?<end>/$|$)',
       },
     },
     {

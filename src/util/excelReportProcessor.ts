@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 //
 // SPDX-License-Identifier: EUPL-1.2
 
@@ -118,19 +118,19 @@ export class ExcelReportProcessor {
 
   public generateReportDocumentBuffer(result: RapLPDiagnostic): Buffer {
     try {
-        this.generateReportDocument(result);
-        let reportDocumentBuffer = this.zip.toBuffer();
+      this.generateReportDocument(result);
+      let reportDocumentBuffer = this.zip.toBuffer();
 
-        if (!reportDocumentBuffer || reportDocumentBuffer.length === 0) {
-            throw new Error("Generated buffer is empty or invalid.");
-        }
+      if (!reportDocumentBuffer || reportDocumentBuffer.length === 0) {
+        throw new Error('Generated buffer is empty or invalid.');
+      }
 
-        return reportDocumentBuffer;
+      return reportDocumentBuffer;
     } catch (error) {
-        console.error("Error generating report document buffer:", error);
-        throw new Error("Failed to generate the report document buffer.");
+      console.error('Error generating report document buffer:', error);
+      throw new Error('Failed to generate the report document buffer.');
     }
-}
+  }
 
   /**
    * Utility function to map the Diagnostic report into basic components.
@@ -270,9 +270,9 @@ export class ExcelReportProcessor {
       }
     });
 
-      const xmlString = this.builder.build(sheet);
-      const xmlBuffer = Buffer.from(xmlString, 'utf8');
-      this.zip.updateFile(sheetPath, xmlBuffer);
+    const xmlString = this.builder.build(sheet);
+    const xmlBuffer = Buffer.from(xmlString, 'utf8');
+    this.zip.updateFile(sheetPath, xmlBuffer);
   }
 
   /**

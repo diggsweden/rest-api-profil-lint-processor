@@ -8,7 +8,6 @@ import { ValidateApi } from '../generated/apis/index.js';
 import { Configuration } from '../generated/runtime.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import request from 'supertest';
 import { YamlContentDto } from '../../src/model/YamlContentDto.js';
 
 // Emulate __dirname in ES Modules
