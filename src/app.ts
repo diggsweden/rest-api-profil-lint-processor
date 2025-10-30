@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 //
 // SPDX-License-Identifier: EUPL-1.2
 
@@ -127,12 +127,20 @@ try {
         }
       };
       const formatLintingResult = (result: any) => {
-        return `allvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${result.krav} \nområde: ${result.område} \nsökväg:[${result.sökväg}] \nomfattning:${JSON.stringify(result.omfattning, null, 2)} `;
+        return `allvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${
+          result.krav
+        } \nområde: ${result.område} \nsökväg:[${result.sökväg}] \nomfattning:${JSON.stringify(
+          result.omfattning,
+          null,
+          2,
+        )} `;
       };
       //Check specified option from yargs input
 
       const currentDate = new Date(); //.toISOString(); // Get current date and time in ISO format
-      const formattedDate = `${currentDate.getFullYear()}-${padZero(currentDate.getMonth() + 1)}-${padZero(currentDate.getDate())} ${padZero(currentDate.getHours())}:${padZero(currentDate.getMinutes())}:${padZero(currentDate.getSeconds())}`;
+      const formattedDate = `${currentDate.getFullYear()}-${padZero(currentDate.getMonth() + 1)}-${padZero(
+        currentDate.getDate(),
+      )} ${padZero(currentDate.getHours())}:${padZero(currentDate.getMinutes())}:${padZero(currentDate.getSeconds())}`;
 
       function padZero(num: number): string {
         return num < 10 ? `0${num}` : `${num}`;

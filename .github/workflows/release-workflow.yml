@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+# SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 #
 # SPDX-License-Identifier: CC0-1.0
 
@@ -10,30 +10,30 @@ name: Release
 on:
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"              # Stable: v1.0.0
-      - "v[0-9]+.[0-9]+.[0-9]+-alpha*"       # Alpha: v1.0.0-alpha.1
-      - "v[0-9]+.[0-9]+.[0-9]+-beta*"        # Beta: v1.0.0-beta.1
-      - "v[0-9]+.[0-9]+.[0-9]+-rc*"          # RC: v1.0.0-rc.1
+      - 'v[0-9]+.[0-9]+.[0-9]+' # Stable: v1.0.0
+      - 'v[0-9]+.[0-9]+.[0-9]+-alpha*' # Alpha: v1.0.0-alpha.1
+      - 'v[0-9]+.[0-9]+.[0-9]+-beta*' # Beta: v1.0.0-beta.1
+      - 'v[0-9]+.[0-9]+.[0-9]+-rc*' # RC: v1.0.0-rc.1
 
 concurrency:
   group: release-${{ github.ref }}
-  cancel-in-progress: false  # Queue releases, don't cancel partial releases
+  cancel-in-progress: false # Queue releases, don't cancel partial releases
 
 permissions:
-  contents: read  # Best Security practice. Jobs only get read as base, and then permissions are added as needed
+  contents: read # Best Security practice. Jobs only get read as base, and then permissions are added as needed
 
 jobs:
   release:
     uses: diggsweden/reusable-ci/.github/workflows/release-orchestrator.yml@1a7dcd9c5257495ebf141e4e4b4bac438a8aae56 # v2.0.0
     permissions:
-      contents: write         # Create GitHub releases, push changelog commits
-      packages: write         # Publish to GitHub Packages
-      id-token: write         # Generate OIDC token for SLSA provenance
-      attestations: write     # Attach SBOM attestations
-      security-events: write  # Upload container vulnerability scan results
-      actions: read           # Required for SLSA provenance
+      contents: write # Create GitHub releases, push changelog commits
+      packages: write # Publish to GitHub Packages
+      id-token: write # Generate OIDC token for SLSA provenance
+      attestations: write # Attach SBOM attestations
+      security-events: write # Upload container vulnerability scan results
+      actions: read # Required for SLSA provenance
     secrets: inherit
     with:
       artifacts-config: .github/artifacts.yml
-      file-pattern: "CHANGELOG.md package.json package-lock.json"
+      file-pattern: 'CHANGELOG.md package.json package-lock.json'
       release-publisher: github-cli

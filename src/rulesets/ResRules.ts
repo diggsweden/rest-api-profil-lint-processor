@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 //
 // SPDX-License-Identifier: EUPL-1.2
 
@@ -102,7 +102,7 @@ export class Res06 extends BaseRuleset {
           this.severity,
           this.constructor.name,
           moduleName,
-          Res06.customProperties
+          Res06.customProperties,
         );
       },
     },
