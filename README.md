@@ -110,16 +110,18 @@ docker run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processo
 > - Docker (CMD): -v %cd%:/app/example
 
 #### Alternativ att köra ifrån containern med podman/docker
+
 1. Starta en podman/docker container:
-    ```bash
-    podman run --rm -it --entrypoint /bin/sh -v $(pwd):/app/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version>
-    ```
+   ```bash
+   podman run --rm -it --entrypoint /bin/sh -v $(pwd):/app/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version>
+   ```
 2. Kör din validering ifrån containern:
-    ```bash
-    npm start -- -f /data/openapi.yaml
-    ```
+   ```bash
+   npm start -- -f /data/openapi.yaml
+   ```
 
 > Notera: Att det kan uppstå problem vid körningar med podman och docker i kombination med [flaggor](#tillgängliga-flaggor) som sparar information till filer. Användarens skrivrättigheter kan göra att filer inte dyker upp som önskat. Filerna kan finnas i containern men dyker inte i den mountade katalogen som specificerats. Se [FAQ](#skrivåtkomst-till-mount-från-container) för mer information.
+
 ### Bygga från källkod
 
 1. Klona ned projektet, gärna från senaste release tag.
@@ -344,24 +346,31 @@ podman login ghcr.io
 ```
 
 ### Skrivåtkomst till mount från container
+
 Vid körningar med podman och docker i kombination med flaggor som sparar information till filer kan det uppstå problem kring skrivrättigheter som gör att filer inte dyker upp som önskat. Filerna kan finnas i containern men dyker inte i den mountade katalogen som specificerats.
 
 Se till att containern har rättigheter att skriva till den katalog som du mountar.
 
 1. Kolla rättigheter
-    ```bash
-    ls -ld /path/to/mount
-    ```
-2. För att testa om det är ett åtkomstproblem kan du temporärt prova om det går efter du gett alla skrivrättigheter till den mountade katalogen:
-    ```bash
-    sudo chmod 777 /path/to/mount
-    ```
-3. Beroende på din miljö och vilka möjligheter du har, hantera åtkomstproblemet mer beständigt och återställ tidigare läs- och skrivrättigheter.
-4. Du kan även prova:  
-    ```bash
-    sudo podman run -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml -l /data/raplp.log --dex /data/avstamning.xlsx
-    ```
-    
+   ```bash
+   ls -ld /path/to/mount
+   ```
+2. Prova köra som `root user`
+
+   ```bash
+   podman run -it -v $(pwd):/data --user root ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml -l /data/raplp.log --dex /data/avstamning.xlsx
+   ```
+
+3. För att testa om det är ett åtkomstproblem kan du temporärt prova om det går efter du gett alla skrivrättigheter till den mountade katalogen:
+   ```bash
+   sudo chmod 777 /path/to/mount
+   ```
+4. Beroende på din miljö och vilka möjligheter du har, hantera åtkomstproblemet mer beständigt och återställ tidigare läs- och skrivrättigheter.
+5. Du kan även prova:
+   ```bash
+   sudo podman run -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml -l /data/raplp.log --dex /data/avstamning.xlsx
+   ```
+
 ## Bidra
 
 Om du vill bidra till projektet, vänligen följ instruktionerna i avsnittet [Contributing](CONTRIBUTING.md).<br>
