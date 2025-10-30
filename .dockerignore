@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+#
+# SPDX-License-Identifier: CC0-1.0
+
+node_modules
+dist
+.git
+.gitignore
+.vscode
+coverage
+*.log
+.env
+.DS_Store
