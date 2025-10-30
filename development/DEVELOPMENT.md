@@ -3,13 +3,14 @@
 Denna guide beskriver de viktigaste grunderna för utveckling i detta projekt.
 
 ## Innehållsförteckning
-- [Installation](#installation-och-konfiguration)
-- [Förutsättningar](#förutsättningar)
-- [Utvecklingsflöde](#utvecklingsflöde)
-  -[Pull Request-flöde](#pull-request-flöde)
-- [Releaseprocess](#releaseprocess)
-- [Testa och verifiera](#testa-och-verifiera)
-- [Eventuella hinder](#eventuella-hinder)
+* [Installation](#installation-och-konfiguration)
+* [Förutsättningar](#förutsättningar)
+* [Utvecklingsflöde](#utvecklingsflöde)
+  * [Utveckla](#utveckla)
+  * [Pull Request-flöde](#pull-request-flöde)
+* [Releaseprocess](#releaseprocess)
+* [Testa och verifiera](#testa-och-verifiera)
+* [Eventuella hinder](#eventuella-hinder)
 
 ## Installation
 1. Klona ned projektet, gärna från senaste release tag.
@@ -97,7 +98,7 @@ I en terminal kör:
   ```bash
   podman run --rm -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml
   ```
-* Där data motsvarar den katalog i containern som du vill att nuvarande katalog \$(pwd) mountas in i, containern får tillgång till dina filer i \$(pwd).
+* Där data motsvarar den katalog i containern som du vill att nuvarande katalog `\$(pwd)` mountas in i, containern får tillgång till dina filer i `\$(pwd)`.
 * Där `openapi.yaml` motsvarar den filen som du vill applicera valideringen på.
 * Där \<VERSION> motsvarar den version av rest-api-profilen som du vill nyttja.
 
@@ -139,17 +140,6 @@ podman run --rm -it --entrypoint /bin/sh -v $(pwd):/app/data ghcr.io/diggsweden/
 Du kan behöva ett Personal Access Token (PAT) för din användare i github för att kunna hämta images från Github Container Registry (GHCR) och Github Packages, se [FAQ i readme](../README.md/#hur-skapar-jag-ett-github-personal-access-token-pat).
 
 #### Skrivåtkomst till mount från container
-1. Kolla rättigheter
-    ```bash
-    ls -ld /path/to/mount
-    ```
-2. För att testa om det är ett åtkomstproblem kan du temporärt prova om det går efter du gett alla skrivrättigheter till den mountade katalogen:
-    ```bash
-    sudo chmod 777 /path/to/mount
-    ```
-3. Beroende på din miljö och vilka möjligheter du har, hantera åtkomstproblemet mer beständigt och återställ tidigare läs- och skrivrättigheter.
-4. Du kan även prova:  
-    ```bash
-    sudo podman run -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml -l /data/raplp.log --dex /data/avstamning.xlsx
-    ```
+Vid körningar med podman och docker i kombination med flaggor som sparar information till filer kan det uppstå problem kring skrivrättigheter som gör att filer inte dyker upp som önskat. Filerna kan finnas i containern men dyker inte i den mountade katalogen som specificerats. Se [FAQ i readme](../README.md/#skrivåtkomst-till-mount-från-container).
+
 
