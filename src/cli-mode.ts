@@ -123,7 +123,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             console.log(chalk.green('<<<Verkställda och godkända regler - RAP-LP>>>\r'));
             console.log(chalk.whiteBright('STATUS\tOMRÅDE') + ' / ' + chalk.whiteBright('IDENTIFIKATIONSNUMMER'));
             customDiagnostic.diagnosticInformation.executedUniqueRules
-              .sort((a, b) => a.omrade.localeCompare(b.omrade, 'sv') || a.id.localeCompare(b.id, 'sv'))
+              .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
                 console.log(chalk.bgGreen('OK') + '\t' + item.omrade + ' / ' + item.id);
               });
@@ -135,7 +135,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             console.log(chalk.green('<<<Verkställda och ej godkända regler - RAP-LP>>>\r'));
             console.log(chalk.whiteBright('STATUS\tOMRÅDE') + ' / ' + chalk.whiteBright('IDENTIFIKATIONSNUMMER'));
             customDiagnostic.diagnosticInformation.executedUniqueRulesWithError
-              .sort((a, b) => a.omrade.localeCompare(b.omrade, 'sv') || a.id.localeCompare(b.id, 'sv'))
+              .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
                 console.log(chalk.bgRed('EJ OK') + '\t' + item.omrade + ' / ' + item.id);
               });
@@ -147,7 +147,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             console.log(chalk.grey('<<<Ej tillämpade regler - RAP-LP>>>\r'));
             console.log(chalk.whiteBright('STATUS\tOMRÅDE') + ' / ' + chalk.whiteBright('IDENTIFIKATIONSNUMMER'));
             customDiagnostic.diagnosticInformation.notApplicableRules
-              .sort((a, b) => a.omrade.localeCompare(b.omrade, 'sv') || a.id.localeCompare(b.id, 'sv'))
+              .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
                 console.log(chalk.bgGrey('N/A') + '\t' + item.omrade + '/' + item.id);
               });
@@ -170,11 +170,9 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           console.log(chalk.whiteBright('\n<<Regelutfall RAP-LP>> \n'));
           result
             .sort((a, b) => {
-              const omradeA = a.omrade ?? '';
-              const omradeB = b.omrade ?? '';
               const idA = a.id ?? '';
               const idB = b.id ?? '';
-              return omradeA.localeCompare(omradeB, 'sv') || idA.localeCompare(idB, 'sv');
+              return idA.localeCompare(idB, 'sv');
             })
             .forEach((item) => {
               console.log(formatLintingResult(item));
