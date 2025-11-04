@@ -1,21 +1,21 @@
-import { Document } from "@stoplight/spectral-core";
-import Parsers from "@stoplight/spectral-parsers";
-import { Express } from "express";
-import {
-  decodeBase64String,
-  processApiSpec,
-  validateYamlInput,
-} from "../util/apiUtil.js";
-import { YamlContentDto } from "../model/YamlContentDto.js";
-import { importAndCreateRuleInstances } from "../util/ruleUtil.js";
-import { ApiInfo } from "../model/ApiInfo.js";
-import { validationRules } from "../model/validationRules.js";
-import { ExcelReportProcessor } from "../util/excelReportProcessor.js"
-import {DiagnosticReport, RapLPDiagnostic } from "../util/RapLPDiagnostic.js";
+// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
+//
+// SPDX-License-Identifier: EUPL-1.2
+
+import { Document } from '@stoplight/spectral-core';
+import Parsers from '@stoplight/spectral-parsers';
+import { Express } from 'express';
+import { decodeBase64String, processApiSpec, validateYamlInput } from '../util/apiUtil.js';
+import { YamlContentDto } from '../model/YamlContentDto.js';
+import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
+import { ApiInfo } from '../model/ApiInfo.js';
+import { validationRules } from '../model/validationRules.js';
+import { ExcelReportProcessor } from '../util/excelReportProcessor.js';
+import { DiagnosticReport, RapLPDiagnostic } from '../util/RapLPDiagnostic.js';
 
 export const registerValidationRoutes = (app: Express) => {
   // Route for raw content upload.
-  app.post("/api/v1/validation/validate", async (req, res, next) => {
+  app.post('/api/v1/validation/validate', async (req, res, next) => {
     try {
       const yamlContent: YamlContentDto = req.body;
 
@@ -24,7 +24,7 @@ export const registerValidationRoutes = (app: Express) => {
 
       validateYamlInput(yamlContentString);
 
-      const apiSpecDocument = new Document(yamlContentString, Parsers.Yaml, "");
+      const apiSpecDocument = new Document(yamlContentString, Parsers.Yaml, '');
 
       const rules = await importAndCreateRuleInstances(yamlContent.categories);
 
@@ -35,54 +35,46 @@ export const registerValidationRoutes = (app: Express) => {
     }
   });
 
-  app.get("/api/v1/validation/rules", (req, res) => {
+  app.get('/api/v1/validation/rules', (req, res) => {
     res.send(validationRules);
   });
 
-  app.get("/api/v1/api-info", async (req, res, next) => {
+  app.get('/api/v1/api-info', async (req, res, next) => {
     res.send(
-      new ApiInfo(
-        "RAP-LP",
-        "1.0.11",
-        new Date().toDateString(),
-        "http://example.digg.se/RAP-LP-docs",
-        "development"
-      )
+      new ApiInfo('RAP-LP', '1.0.11', new Date().toDateString(), 'http://example.digg.se/RAP-LP-docs', 'development'),
     );
   });
 
-  app.post("/api/v1/validation/generate-report", async (req, res, next): Promise<any> => {
+  app.post('/api/v1/validation/generate-report', async (req, res, next): Promise<any> => {
     try {
       const data = req.body;
 
-    if (!data || !data.result || !Array.isArray(data.result)) {
-      return res.status(400).json({ error: 'Invalid data format. Expected an object with a "result" array.' });
-    }
-    
-    const reportHandler = new ExcelReportProcessor();
-    let buffer: Buffer;
+      if (!data || !data.result || !Array.isArray(data.result)) {
+        return res.status(400).json({ error: 'Invalid data format. Expected an object with a "result" array.' });
+      }
 
-    const ruleCategories = data.categories && data.categories.length > 0 ?  data.categories: undefined;
+      const reportHandler = new ExcelReportProcessor();
+      let buffer: Buffer;
 
+      const ruleCategories = data.categories && data.categories.length > 0 ? data.categories : undefined;
 
-    const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
-    const customDiagnostic = new RapLPDiagnostic();
-    customDiagnostic.processRuleExecutionInformation(data.result,enabledRulesAndCategorys.instanceCategoryMap);
-    const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
+      const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
+      const customDiagnostic = new RapLPDiagnostic();
+      customDiagnostic.processRuleExecutionInformation(data.result, enabledRulesAndCategorys.instanceCategoryMap);
+      const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
 
-    try {
+      try {
         buffer = reportHandler.generateReportDocumentBuffer(customDiagnostic);
-    } catch (error) {
-        console.error("Error generating report buffer:", error);
+      } catch (error) {
+        console.error('Error generating report buffer:', error);
         return res.status(500).json({ error: 'Failed to generate report.' });
-    }
-  
-    res.setHeader('Content-Disposition', 'attachment; filename="avstamningsfil.xlsx"');
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.send(buffer)
+      }
 
+      res.setHeader('Content-Disposition', 'attachment; filename="avstamningsfil.xlsx"');
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.send(buffer);
     } catch (e) {
-      next(e)
+      next(e);
     }
   });
 };
