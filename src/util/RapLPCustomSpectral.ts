@@ -6,7 +6,7 @@ import * as SpectralCore from '@stoplight/spectral-core';
 import { ISpectralDiagnostic } from '@stoplight/spectral-core';
 import spectralCore from '@stoplight/spectral-core';
 const { Spectral, Document } = spectralCore;
-import { RapLPCustomSpectralDiagnostic} from './RapLPCustomSpectralDiagnostic.js';
+import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.js';
 
 class RapLPCustomSpectral {
   private spectral: SpectralCore.Spectral;
@@ -29,6 +29,7 @@ class RapLPCustomSpectral {
   }
   async run(document: any): Promise<RapLPCustomSpectralDiagnostic[]> {
     const spectralResults = await this.spectral.run(document);
+    const modifiedResults = this.modifyResults(spectralResults);
     return this.modifyResults(spectralResults);
   }
   async runSemanticValidation(document: any): Promise<ISpectralDiagnostic[]> {
@@ -66,6 +67,7 @@ class RapLPCustomSpectral {
   private mapResultToCustom(result: ISpectralDiagnostic): RapLPCustomSpectralDiagnostic {
     // Map properties from result ISpectralDiagnostic to CustomSpectralDiagnostic
     const { message, code, severity, path, source, range, ...rest } = result;
+
     // Map severity to corresponding string value for allvarlighetsgrad
     let allvarlighetsgrad: string;
     switch (severity) {
@@ -93,7 +95,6 @@ class RapLPCustomSpectral {
       omfattning: range,
     };
   }
-
 }
 export { RapLPCustomSpectral };
 /**
