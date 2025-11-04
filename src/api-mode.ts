@@ -1,12 +1,13 @@
-import express from "express";
-import { registerValidationRoutes } from "./routes/validate.js";
-import {
-  registerUrlValidationFallbackRoutes,
-  registerUrlValidationRoutes,
-} from "./routes/urlValidation.js";
-import { errorHandler } from "./util/RapLPBaseApiErrorHandling.js";
-import OpenApiValidator from "express-openapi-validator";
-import path from "path";
+// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
+//
+// SPDX-License-Identifier: EUPL-1.2
+
+import express from 'express';
+import { registerValidationRoutes } from './routes/validate.js';
+import { registerUrlValidationFallbackRoutes, registerUrlValidationRoutes } from './routes/urlValidation.js';
+import { errorHandler } from './util/RapLPBaseApiErrorHandling.js';
+import OpenApiValidator from 'express-openapi-validator';
+import path from 'path';
 
 export type ApiArgs = {
   enableUrlValidation?: boolean;
@@ -18,27 +19,24 @@ export async function startServer<T extends ApiArgs>(args: T) {
   const app = express();
   const port = process.env.PORT || 3000;
 
-  app.use(
-    "/api/v1/openapi.yaml",
-    express.static(path.join(process.cwd(), "openapi.yaml"))
-  );
+  app.use('/api/v1/openapi.yaml', express.static(path.join(process.cwd(), 'openapi.yaml')));
 
   // For the case of content upload
   app.use(express.json());
   // Path to your OpenAPI spec
-  const apiSpec = path.join(process.cwd(), "openapi.yaml");
+  const apiSpec = path.join(process.cwd(), 'openapi.yaml');
 
- // Initialize OpenAPI Validator middleware
+  // Initialize OpenAPI Validator middleware
   app.use(
     OpenApiValidator.middleware({
       apiSpec, // Path to OpenAPI spec
       validateRequests: true, // Automatically validate request bodies
       validateResponses: true, // Automatically validate responses
-    })
+    }),
   );
 
- // API Endpoint, t.ex. för att validera en YAML-fil
-    registerValidationRoutes(app);
+  // API Endpoint, t.ex. för att validera en YAML-fil
+  registerValidationRoutes(app);
 
   if (args.enableUrlValidation) {
     registerUrlValidationRoutes(app, args.urlValidationConfigFile);
