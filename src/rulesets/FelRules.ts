@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 //
 // SPDX-License-Identifier: EUPL-1.2
 
@@ -13,7 +13,9 @@ const moduleName: string = 'FelRules.js';
  */
 export class Fel01 extends BaseRuleset {
   static mandatoryProperties = ['type', 'title', 'status', 'detail', 'instance'];
-  static ruleMessage = `Om HTTP svarskoderna inte räcker SKALL (FEL.01) API:et beskriva feldetaljer enligt RFC 9457 med dessa ingående attribut; ${Fel01.mandatoryProperties.join(', ')}.`;
+  static ruleMessage = `Om HTTP svarskoderna inte räcker SKALL (FEL.01) API:et beskriva feldetaljer enligt RFC 9457 med dessa ingående attribut; ${Fel01.mandatoryProperties.join(
+    ', ',
+  )}.`;
 
   static customProperties: CustomProperties = {
     område: 'Felhantering',

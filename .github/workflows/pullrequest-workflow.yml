@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+# SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 #
 # SPDX-License-Identifier: CC0-1.0
 
@@ -14,26 +14,26 @@ on:
       - 'feature/**'
 
 permissions:
-  contents: read  # Best Security practice. Jobs only get read as base, and then permissions are added as needed
+  contents: read # Best Security practice. Jobs only get read as base, and then permissions are added as needed
 
 jobs:
   pr-checks:
     uses: diggsweden/reusable-ci/.github/workflows/pullrequest-orchestrator.yml@1a7dcd9c5257495ebf141e4e4b4bac438a8aae56 # v2.0.0
-    secrets: inherit  # Pass org-level secrets (NPM token if private packages)
+    secrets: inherit # Pass org-level secrets (NPM token if private packages)
     permissions:
-      contents: read         # Clone repository and read source code
-      packages: read         # Access private NPM packages from GitHub registry
+      contents: read # Clone repository and read source code
+      packages: read # Access private NPM packages from GitHub registry
       security-events: write # Upload ESLint/security findings to GitHub Security tab
     with:
       project-type: npm
       # MegaLinter is disabled for this project
-      linters.megalint: false  # Skip MegaLinter
+      linters.megalint: false # Skip MegaLinter
       linters.publiccodelint: true
-  
+
   test:
     needs: [pr-checks]
-    if: always()  # Run tests even if linting fails (get full CI feedback)
+    if: always() # Run tests even if linting fails (get full CI feedback)
     permissions:
-      contents: read  # Read test files and source code
-      packages: read  # Fetch test dependencies from registry
+      contents: read # Read test files and source code
+      packages: read # Fetch test dependencies from registry
     uses: ./.github/workflows/test.yml

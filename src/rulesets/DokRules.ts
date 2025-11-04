@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 //
 // SPDX-License-Identifier: EUPL-1.2
 
@@ -398,11 +398,11 @@ export class Dok19 extends BaseRuleset {
   message =
     'Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt';
   then = [
-      {
+    {
       field: 'summary',
       function: truthy,
     },
-     {
+    {
       field: 'description',
       function: truthy,
     },

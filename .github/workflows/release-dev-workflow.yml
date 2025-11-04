@@ -1,16 +1,16 @@
-# SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
+# SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 #
 # SPDX-License-Identifier: CC0-1.0
 
 # Release Workflow Dev
-# 
+#
 # Triggers dev builds for testing on development branches.
 # Creates:
 # - Dev container image (ghcr.io)
 # - Dev NPM package (GitHub Packages)
 #
 # Triggers:
-# - Push to dev/* or feat/* branches  
+# - Push to dev/* or feat/* branches
 # - Manual workflow dispatch
 #
 # Created artifacts:
@@ -34,5 +34,5 @@ jobs:
     uses: diggsweden/reusable-ci/.github/workflows/release-dev-orchestrator.yml@1a7dcd9c5257495ebf141e4e4b4bac438a8aae56 # v2.0.0
     with:
       project-type: npm
-      package-scope: "@diggsweden"
+      package-scope: '@diggsweden'
     secrets: inherit
