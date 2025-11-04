@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { RuleCategoryError } from "./RapLPBaseApiErrorHandling.js";
+import { RuleCategoryError } from './RapLPBaseApiErrorHandling.js';
 
 // ruleUtil.ts
 interface CustomSchema {
@@ -99,22 +99,21 @@ export async function importAndCreateRuleInstances(
    * Load modules
    */
   try {
-
     if (ruleCategories && ruleCategories.length > 0) {
       //Check if we gonna load PrerequisetRules or if it is specified
       if (!ruleCategories.includes('ForRules')) {
         ruleCategories.push('ForRules');
       }
-    await importRulesByCategory(ruleCategories);
-  } else {
-    await importAllRules();
+      await importRulesByCategory(ruleCategories);
+    } else {
+      await importAllRules();
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      throw new RuleCategoryError(e.message);
+    }
+    throw e;
   }
-} catch (e) {
-  if(e instanceof Error) {
-    throw new RuleCategoryError(e.message)
-  }
-  throw e
-} 
   /**
    * Loop entries of instanceCategory map
    */

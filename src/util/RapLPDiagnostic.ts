@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { ruleExecutionStatus, RuleExecutionLog, ruleExecutionLogDictionary } from './RuleExecutionStatusModule.js';
 import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.js';
+import { RuleExecutionLog, ruleExecutionLogDictionary } from './RuleExecutionStatusModule.js';
 
 class RapLPDiagnostic {
   private _ruleSets: DiagnosticRuleinfoSet = {
