@@ -41,6 +41,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: DOK.17](#id-dok17)
    - [ID: DOK.19](#id-dok19)
    - [ID: DOK.20](#id-dok20)
+   - [ID: DOK.21](#id-dok21)
 2. [Område: Datum- och tidsformat](#område-datum--och-tidsformat)
    - [ID: DOT.01](#id-dot01)
    - [ID: DOT.04](#id-dot04)
@@ -93,7 +94,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
 
 ## Område: Dokumentation
 
-**Täckningsgrad: 46%**
+**Täckningsgrad: 50%**
 
 ### ID: DOK.01
 
@@ -402,6 +403,33 @@ Regeln förutsätter att det finns en förekomst av objektet `Paths`. Regeln und
 ![alt text](images/dok20.png)
 
 I exemplet ovan, så exemplifieras regeln med GET samt en POST operation, där regeln förutsätter att det finns en förekomst av fältet description under fältet responses. I detta exempel så har man också angett att man behöver ha ett default svar, som då också blir föremål för regelvalidering.
+
+---
+
+### ID: DOK.21
+
+**Krav:** Krav på autentisering SKALL anges i specifikationen.
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+$
+```
+
+**Förklaring:**
+Regeln förutsätter att det finns minst en förekomst av objektet `security`, antingen på rot- eller operationsnivå.
+
+**Exempel:**
+
+![Exempelbild som visar var security-objektet kan existera i en OpenAPI description](images/dok21-1.png)
+
+_Security-objektet kan existera på antingen rot- eller operationsnivå, eller båda._
+
+![Exempelbild som visar att security-objektet också kan användas när API:et saknar säkerhet](images/dok21-2.png)
+
+_Om säkerhet saknas så bör det signaleras genom att tilldela security-objektet en tom array._
 
 ---
 
