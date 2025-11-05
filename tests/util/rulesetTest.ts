@@ -72,6 +72,7 @@ const ruleTypes = [
   DokRules.Dok15ReqBody,
   DotRules.Dot04,
   DokRules.Dok19,
+  DokRules.Dok21,
   DokRules.Dok01,
   DokRules.Dok11,
   DokRules.Dok17,

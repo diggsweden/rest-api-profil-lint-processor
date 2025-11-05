@@ -510,7 +510,105 @@ testRule('Dok19', [
     ],
   },
 ]);
-
+testRule('Dok21', [
+  {
+    name: 'ogiltigt testfall - security saknas helt',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [{ url: 'https://example.com/my-api/v1' }],
+      paths: {
+        '/pets': {
+          get: {
+            description: 'Retrieve all pets',
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message: 'Krav på autentisering SKALL anges i specifikationen.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'giltigt testfall - security finns på rootnivå och består utav en tom array',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [{ url: 'https://example.com/my-api/v1' }],
+      security: [],
+      paths: {
+        '/pets': {
+          get: {
+            description: 'Retrieve all pets',
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - security finns på rootnivå och innehåller ett objekt',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [{ url: 'https://example.com/my-api/v1' }],
+      security: [
+        {
+          OAuth2: [],
+        },
+      ],
+      paths: {
+        '/pets': {
+          get: {
+            description: 'Retrieve all pets',
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - security finns på operationsnivå och består utav en tom array',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [{ url: 'https://example.com/my-api/v1' }],
+      paths: {
+        '/pets': {
+          get: {
+            description: 'Retrieve all pets',
+            security: [],
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - security finns på operationsnivå och innehåller ett objekt',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [{ url: 'https://example.com/my-api/v1' }],
+      paths: {
+        '/pets': {
+          get: {
+            description: 'Retrieve all pets',
+            security: [
+              {
+                OAuth2: [],
+              },
+            ],
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+]);
 testRule('Dok01', [
   {
     name: 'giltigt testfall',
