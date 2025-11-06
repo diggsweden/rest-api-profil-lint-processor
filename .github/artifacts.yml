@@ -11,6 +11,8 @@ artifacts:
     project-type: npm
     working-directory: .
     build-type: application
+    publish-to:
+      - github-packages
     config:
       node-version: 22
 
