@@ -14,7 +14,7 @@ artifacts:
     publish-to:
       - github-packages
     config:
-      node-version: 22
+      node-version: 24
 
 # Container builds from source (no artifact dependency)
 # Containerfile copies source code and runs npm install
