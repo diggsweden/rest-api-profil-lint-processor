@@ -306,31 +306,70 @@ export function consolidateIssues(issues: Issue[]): Issue[] {
   return merged;
 }
 /**
- * Format single issue into editor-like lines (array of strings)
+ * Format a single Issue into editor-like lines (no duplicates).
  */
 export function formatIssueAsEditorLines(issue: Issue): string[] {
   const lines: string[] = [];
-  const typ = issue.type ? `${issue.type}` : 'Error';
-  lines.push(`${typ} error at ${issue.path || issue.location || '<unknown>'}`);
-  lines.push(issue.message || '(no message)');
-  if (issue.details && issue.details.length) {
-    for (const d of issue.details) lines.push(d);
-  }
-  if (issue.raw && Array.isArray(issue.raw)) {
-    for (const r of issue.raw) {
-      const t = String(r).trim();
-      if (t && !lines.includes(t)) lines.push(t);
+
+  const typ = (issue.type ?? 'Error').toString();
+  const target = issue.path || issue.location || '<unknown>';
+  const header = `${typ} error at ${target}`;
+
+  // header
+  lines.push(header);
+
+  // message
+  const msg = (issue.message ?? '').toString().trim();
+  if (msg) lines.push(msg);
+
+  // details (only ones that are not identical to message)
+  if (Array.isArray(issue.details) && issue.details.length) {
+    for (const d of issue.details) {
+      const dd = (d ?? '').toString().trim();
+      if (!dd) continue;
+      if (dd === msg) continue; // skip duplicate
+      lines.push(dd);
     }
   }
-  if (typeof issue.line === 'number') lines.push(`Jump to line ${issue.line}`);
+
+  // If raw is present, include only lines from raw that are not duplicates of already included lines
+  if (Array.isArray(issue.raw) && issue.raw.length) {
+    for (const r of issue.raw) {
+      const rr = (r ?? '').toString().trim();
+      if (!rr) continue;
+      // skip if it's identical to header, msg, any details or "Jump to line ..." (we will add jump ourselves)
+      if (rr === header) continue;
+      if (rr === msg) continue;
+      if ((issue.details || []).some(d => (d ?? '').toString().trim() === rr)) continue;
+      if (/^Jump to line\s+\d+/i.test(rr)) continue;
+      lines.push(rr);
+    }
+  }
+
+  // Jump to line (prefer issue.line if present)
+  const l = normalizeLine(issue.line);
+  if (l) lines.push(`Jump to line ${l}`);
+
   return lines;
 }
+function normalizeLine(line?: number | null): number | undefined {
+  if (typeof line === 'number' && Number.isFinite(line) && line > 0) return line;
+  return undefined;
+}
 /**
- * Format array of issues to single editor-like string (for snippet)
+ * Format entire Issue[] as a single editor-like text block.
+ * Ensures issues are separated by a blank line.
  */
 export function formatIssuesAsEditorText(issues: Issue[]): string {
-  if (!issues || !issues.length) return '';
-  return issues.map(i => formatIssueAsEditorLines(i).join('\n')).join('\n\n');
+  if (!Array.isArray(issues) || issues.length === 0) return '';
+
+  // We'll assume caller has already consolidated & sorted issues.
+  const blocks: string[] = [];
+  for (const issue of issues) {
+    const lines = formatIssueAsEditorLines(issue);
+    if (lines.length) blocks.push(lines.join('\n'));
+  }
+  return blocks.join('\n\n');
 }
 export function parsePrettyLinesToIssues(prettyLines: string[]): Issue[] {
   const issues: Issue[] = [];

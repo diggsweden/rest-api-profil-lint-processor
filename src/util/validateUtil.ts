@@ -206,7 +206,7 @@ export async function parseApiSpecInput(input: SpecInput,
       console.error('Spectral semantic validation failed (non-fatal):', e?.message ?? String(e));
       spectralDiagnostics = [];
     }
-    const finalIssues = IssueHelper.buildIssuesFromPrettyAndSpectral(prettyLines ?? [], spectralDiagnostics, false  /* addOneToLine */);
+    const finalIssues = IssueHelper.buildIssuesFromPrettyAndSpectral(prettyLines ?? [], spectralDiagnostics, true  /* addOneToLine */);
     //console.log('Merged issues length:', Array.isArray(finalIssues) ? finalIssues.length : 0);
     issues = Array.isArray(finalIssues) && finalIssues.length ? finalIssues : undefined;
     issues = finalIssues && finalIssues.length ? finalIssues : undefined;

@@ -28,6 +28,7 @@ import { SpecParseError } from './util/RapLPSpecParseError.js';
 import type { IParser } from '@stoplight/spectral-parsers';
 import { Document as SpectralDocument } from '@stoplight/spectral-core';
 import { Issue } from './util/RapLPIssueHelpers.js';
+import * as IssueHelper from './util/RapLPIssueHelpers.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -97,7 +98,6 @@ async function main(): Promise<void> {
     let apiSpecDocument: SpectralDocument;
     let parseResult: any;
     try {
-      // NOTE: use filePath (camelCase)
       const prefer = detectSpecFormatPreference(apiSpecFileName,undefined,'auto');
       parseResult = await parseApiSpecInput(
           {filePath: apiSpecFileName},{
@@ -105,17 +105,17 @@ async function main(): Promise<void> {
             preferJsonError: prefer
           }
       );
+    // Issue handling ----------
       if (parseResult.strictIssues && parseResult.strictIssues.length > 0) {
          console.error('Strict validation reported issues:');
           parseResult.strictIssues.forEach((iss: Issue) =>
             console.error(chalk.yellow(`- ${iss.type} at ${iss.path} : ${iss.message} ${iss.line ? `(line ${iss.line})` : ''}`)),
-            //console.error(`- ${iss.type} at ${iss.path} : ${iss.message} ${iss.line ? `(line ${iss.line})` : ''}`),
           );
           process.exitCode = 2;
           return;
       }
     } catch (err: any) {
-      // Hantering av parse-fel (behåll din logik men använd return; nu innanför main())
+      // Parse handling
       if (err instanceof SpecParseError) {
         const formattedDate = new Date().toISOString();
         const logData = {
