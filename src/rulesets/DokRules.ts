@@ -9,6 +9,13 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { Dok03Base } from './rulesetUtil.js';
 import { Dok15Base } from './rulesetUtil.js';
 import { commonEnglishWords, commonSwedishWords } from './constants/CommonWords.js';
+import {
+  OpenAPIObject,
+  OperationObject,
+  PathItemObject,
+  PathsObject,
+  SecurityRequirementObject,
+} from '../types/openapi-3.0.js';
 const moduleName: string = 'DokRules.js';
 
 export class Dok15Get extends Dok15Base {
@@ -426,7 +433,71 @@ export class Dok19 extends BaseRuleset {
   }
   severity = DiagnosticSeverity.Error;
 }
+export class Dok21 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: 'Dokumentation',
+    id: 'DOK.21',
+  };
+  given = '$';
+  message = 'Krav på autentisering SKALL anges i specifikationen.';
+  then = [
+    {
+      function: (targetVal: OpenAPIObject, _opts: string, paths: string[]) => {
+        const rootSecurity: SecurityRequirementObject[] | undefined = targetVal.security;
 
+        if (rootSecurity) {
+          if (Array.isArray(rootSecurity)) {
+            return [];
+          }
+        }
+
+        const hasSecurityInAnyPath = (paths: PathsObject | undefined): boolean => {
+          if (!paths) return false;
+          return Object.values(paths).some((pathItem: PathItemObject | undefined) => {
+            if (!pathItem) return false;
+
+            return (Object.keys(pathItem) as (keyof PathItemObject)[])
+              .filter((k) => ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'].includes(k))
+              .some((k) => {
+                const op = pathItem[k] as OperationObject | undefined;
+                return op?.security;
+              });
+          });
+        };
+
+        if (hasSecurityInAnyPath(targetVal.paths)) {
+          return [];
+        }
+
+        return [
+          {
+            message: this.message,
+            severity: this.severity,
+            paths: paths,
+          },
+        ];
+      },
+    },
+    {
+      function: (targetVal: string, _opts: string, paths: string[]) => {
+        this.trackRuleExecutionHandler(
+          JSON.stringify(targetVal, null, 2),
+          _opts,
+          paths,
+          this.severity,
+          this.constructor.name,
+          moduleName,
+          Dok21.customProperties,
+        );
+      },
+    },
+  ];
+  constructor() {
+    super();
+    super.initializeFormats(['OAS3']);
+  }
+  severity = DiagnosticSeverity.Error;
+}
 export class Dok01 extends BaseRuleset {
   static customProperties: CustomProperties = {
     område: 'Dokumentation',
