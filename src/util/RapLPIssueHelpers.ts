@@ -43,7 +43,7 @@ function extractJumpLinesFromPretty(prettyLines?: string[]): Set<number> {
 export function spectralDiagnosticsToIssuesSimple(
   diagnostics: SpectralCore.ISpectralDiagnostic[] | readonly SpectralCore.ISpectralDiagnostic[] | undefined,
   prettyLines?: string[],
-  fallbackAddOne = false // om ingen referens finns, välj detta
+  fallbackAddOne = false // If no ref, choose thisone
 ): Issue[] {
   const issues: Issue[] = [];
   if (!diagnostics || diagnostics.length === 0) return issues;
@@ -59,18 +59,18 @@ export function spectralDiagnosticsToIssuesSimple(
     let line: number | null = null;
     if (rawLine !== null) {
       if (useJumpRef) {
-        // Om prettifier har rawLine+1 så använd +1, annars använd rawLine (ingen annan gissning)
+        // Om prettifier har rawLine+1 så använd +1, annars använd rawLine 
         if (jumpSet.has(rawLine + 1)) {
           line = rawLine + 1;
         } else {
           line = rawLine;
         }
       } else {
-        // ingen referens — fallback baserat på param
+        // No ref  — fallback 
         line = fallbackAddOne ? rawLine + 1 : rawLine;
       }
     }
-
+    //Create Issue
     issues.push({
       type: 'Semantic',
       code: d.code ?? undefined,
@@ -207,12 +207,113 @@ export function mergeAndDedupeIssues(prettyIssues: Issue[], spectralIssues: Issu
 
   return result;
 }
+export function consolidateIssues(issues: Issue[]): Issue[] {
+  if (!issues || issues.length === 0) return [];
+
+  const normalizeMsg = (s?: string) => (s ?? '').replace(/\s+/g, ' ').trim().toLowerCase();
+  const normalizePath = (p?: string) => (p ?? '').toString().trim();
+
+  // Key now: path + line (group by location), not path+message
+  const map = new Map<string, Issue>();
+
+  const priorityScore = (type?: string) => {
+    if (!type) return 0;
+    const t = type.toLowerCase();
+    if (t === 'semantic') return 3;
+    if (t === 'structural') return 2;
+    if (t === 'info') return 1;
+    return 0;
+  };
+
+  for (const rawIss of issues) {
+    const iss: Issue = { ...rawIss }; // shallow copy
+    iss.path = normalizePath(iss.path);
+    iss.message = (iss.message ?? '').trim();
+
+    const linePart = iss.line != null ? String(iss.line) : '_noline_';
+    const key = `${iss.path}|${linePart}`;
+
+    const existing = map.get(key);
+    if (!existing) {
+      // ensure details is array
+      if (!Array.isArray(iss.details)) iss.details = [];
+      if (iss.raw && !Array.isArray(iss.raw)) iss.raw = [String(iss.raw)];
+      map.set(key, iss);
+      continue;
+    }
+
+    // If incoming has higher priority (e.g. Semantic > Structural) - replace as primary
+    if (priorityScore(iss.type) > priorityScore(existing.type)) {
+      // preserve existing as detail(s)
+      const details = new Set<string>(existing.details ?? []);
+      if (existing.message && existing.message !== iss.message) details.add(existing.message);
+      if (existing.raw && Array.isArray(existing.raw)) {
+        for (const r of existing.raw) details.add(String(r).trim());
+      }
+      // merge existing.details too
+      if (Array.isArray(existing.details)) {
+        for (const d of existing.details) details.add((d ?? '').toString().trim());
+      }
+
+      iss.details = Array.from(new Set([...(iss.details ?? []), ...Array.from(details)])).filter(Boolean);
+      // copy metadata if missing on new
+      if (!iss.documentationUrl) iss.documentationUrl = existing.documentationUrl;
+      if (!iss.source) iss.source = existing.source;
+      // keep smallest non-null line if new misses it
+      if ((iss.line == null || iss.line === 0) && (existing.line != null)) iss.line = existing.line;
+      map.set(key, iss);
+    } else {
+      // Keep existing primary; merge incoming into details
+      const details = new Set<string>(existing.details ?? []);
+      if (iss.message && iss.message !== existing.message) details.add(iss.message);
+      if (Array.isArray(iss.details)) for (const d of iss.details) details.add(d);
+      if (Array.isArray(iss.raw)) for (const r of iss.raw) details.add(String(r).trim());
+      existing.details = Array.from(details).filter(Boolean);
+      // keep smallest non-null line if existing missing
+      if ((existing.line == null || existing.line === 0) && (iss.line != null)) existing.line = iss.line;
+      existing.documentationUrl = existing.documentationUrl ?? iss.documentationUrl;
+      existing.source = existing.source ?? iss.source;
+      map.set(key, existing);
+    }
+  }
+
+  // Convert to array
+  let merged = Array.from(map.values());
+
+  // Filter: ta bort generiska oneOf-meddelanden om specifika finns i samma parent path
+  merged = merged.filter(i => {
+    if (i.message && /oneOf schema/i.test(i.message)) {
+      const parent = i.path.split('.').slice(0, -1).join('.');
+      const hasSpecific = merged.some(o => o.path.startsWith(parent) && !/oneOf schema/i.test(o.message));
+      if (hasSpecific) return false;
+    }
+    return true;
+  });
+
+  // Sort determenistic: source, line (nummer), path
+  merged.sort((a, b) => {
+    const sa = `${a.source ?? ''}|${String(a.line ?? 0).padStart(6, '0')}|${a.path ?? ''}`;
+    const sb = `${b.source ?? ''}|${String(b.line ?? 0).padStart(6, '0')}|${b.path ?? ''}`;
+    return sa.localeCompare(sb);
+  });
+
+  // Trim messages & details, dedupe details
+  for (const i of merged) {
+    i.message = (i.message ?? '').trim();
+    if (i.details && Array.isArray(i.details)) {
+      i.details = Array.from(new Set(i.details.map(d => (d ?? '').toString().trim()))).filter(Boolean);
+    }
+  }
+
+  return merged;
+}
+
 /**
  * ConsolidateIssues
  * @param issues 
  * @returns 
  */
-export function consolidateIssues(issues: Issue[]): Issue[] {
+export function consolidateIssues2(issues: Issue[]): Issue[] {
   if (!issues || issues.length === 0) return [];
 
   // Normaliseringshjälpare

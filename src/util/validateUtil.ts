@@ -20,7 +20,6 @@ import type { IParser } from '@stoplight/spectral-parsers';
 import * as IssueHelper from './RapLPIssueHelpers.js';
 import { SpecParseError} from './RapLPSpecParseError.js';
 
-
 /**
  * Possible input types for specifications
  * - filePath: Read from filesystem

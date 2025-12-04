@@ -67,7 +67,6 @@ class RapLPCustomSpectral {
     // Map properties from result ISpectralDiagnostic to CustomSpectralDiagnostic
     const { message, code, severity, path, source, range, ...rest } = result;
     // Map severity to corresponding string value for allvarlighetsgrad
-    console.log("Code is:" + code);
     let allvarlighetsgrad: string;
     switch (severity) {
       case 0:

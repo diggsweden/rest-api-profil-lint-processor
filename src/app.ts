@@ -23,12 +23,11 @@ import { DiagnosticReport, RapLPDiagnostic } from './util/RapLPDiagnostic.js';
 import { AggregateError } from './util/RapLPCustomErrorInfo.js';
 import chalk from 'chalk';
 import { ExcelReportProcessor } from './util/excelReportProcessor.js';
-import { parseApiSpecInput,detectSpecFormatPreference,semanticValidate, ParseResult} from './util/validateUtil.js';
+import { parseApiSpecInput,detectSpecFormatPreference, ParseResult} from './util/validateUtil.js';
 import { SpecParseError } from './util/RapLPSpecParseError.js';
 import type { IParser } from '@stoplight/spectral-parsers';
 import { Document as SpectralDocument } from '@stoplight/spectral-core';
 import { Issue } from './util/RapLPIssueHelpers.js';
-import * as IssueHelper from './util/RapLPIssueHelpers.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -91,12 +90,11 @@ async function main(): Promise<void> {
     const ruleCategories = argv.categories ? (argv.categories as string).split(',') : undefined;
     const logErrorFilePath = argv.logError as string | undefined;
     const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
-    const disableSanity = argv.disableSanity as boolean ?? false;
     const strict = argv.strict as boolean ?? false;
 
     // Schemevalidation and Spectral  Document creation ----------
     let apiSpecDocument: SpectralDocument;
-    let parseResult: any;
+    let parseResult: ParseResult;
     try {
       const prefer = detectSpecFormatPreference(apiSpecFileName,undefined,'auto');
       parseResult = await parseApiSpecInput(
@@ -109,7 +107,7 @@ async function main(): Promise<void> {
       if (parseResult.strictIssues && parseResult.strictIssues.length > 0) {
          console.error('Strict validation reported issues:');
           parseResult.strictIssues.forEach((iss: Issue) =>
-            console.error(chalk.yellow(`- ${iss.type} at ${iss.path} : ${iss.message} ${iss.line ? `(line ${iss.line})` : ''}`)),
+              console.error(chalk.yellow(`- ${iss.type} at ${iss.path} : ${iss.message} ${iss.line ? `(line ${iss.line})` : ''}`)),
           );
           process.exitCode = 2;
           return;
