@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
+//
+// SPDX-License-Identifier: EUPL-1.2
 
 import { execFile } from 'child_process';
 import { promisify } from 'util';
