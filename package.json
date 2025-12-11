@@ -24,8 +24,8 @@
     "build": "tsc -p tsconfig.json",
     "test": "jest",
     "test:integration": "node --experimental-vm-modules ./node_modules/.bin/jest --config jest.integration.config.cjs ",
-    "prepare": "npm run build",
-    "prepack": "npm run build",
+    "prepare": "test -f dist/cli.js || npm run build",
+    "prepack": "test -f dist/cli.js || npm run build",
     "start": "node dist/app.js"
   },
   "directories": {

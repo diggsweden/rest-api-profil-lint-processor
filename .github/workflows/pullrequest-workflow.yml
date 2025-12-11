@@ -26,8 +26,11 @@ jobs:
       security-events: write # Upload ESLint/security findings to GitHub Security tab
     with:
       project-type: npm
-      # MegaLinter is disabled for this project
-      linters.megalint: false # Skip MegaLinter
+      # Use just+mise linting (replaces megalint, commitlint, licenselint)
+      linters.justmiselint: true
+      linters.megalint: false
+      linters.commitlint: false
+      linters.licenselint: false
       linters.publiccodelint: true
 
   test:
