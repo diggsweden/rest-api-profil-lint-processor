@@ -31,7 +31,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    uses: diggsweden/reusable-ci/.github/workflows/release-dev-orchestrator.yml@02decc6526ebd8994da90b923974e59e1cc9c22e # v2.3.8
+    uses: diggsweden/reusable-ci/.github/workflows/release-dev-orchestrator.yml@8a16cb75501be27dde6b5fba6c93ae091442d476 # v2.4.1
     with:
       project-type: npm
       package-scope: '@diggsweden'
