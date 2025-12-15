@@ -6,6 +6,7 @@ import { execFile } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
 import fs from 'fs';
+import { strict } from 'yargs';
 
 const execFileP = promisify(execFile);
 
@@ -33,7 +34,6 @@ async function runRunnerWithInput(input: any) {
       return { ok: false, payload: { message: stderr.trim() } };
     }
   }
-
   // Tolka stdout (förväntat JSON)
   if (!stdout || !stdout.trim()) {
     throw new Error(`Runner returned no stdout. Stderr: ${stderr}`);
@@ -43,7 +43,7 @@ async function runRunnerWithInput(input: any) {
   return { ok: true, payload: out };
 }
 
-describe('Integration: parseApiSpecInput via runner', () => {
+describe('Integration: parseApiSpecInput via runner produces some output', () => {
   beforeAll(() => {
     // kontrollera att runner finns
     if (!fs.existsSync(runnerPath)) {
@@ -93,3 +93,87 @@ paths:
     }
   });
 });
+describe('Integration: parseApiSpecInput via runner', () => {
+    beforeAll(() => {
+      // kontrollera att runner finns
+      if (!fs.existsSync(runnerPath)) {
+        throw new Error(`Integration runner saknas: ${runnerPath}. Är tests/unit/integration/validateRunner.mjs korrekt ?.`);
+      }
+    });
+    it('detects structural and semantic issues for intentional broken YAML', async() => {
+    // BAD yaml - contains structural and semantic errors
+    const badYaml = `openapi: 3.0.0
+info:
+  title: bad
+paths:
+  /pets:
+    get:
+      responses:
+        '200': {}
+`;
+      //Run runner in strict mode
+      const {ok,payload} = await runRunnerWithInput( {raw: badYaml, strict: true} );
+      expect(ok).toBe(true);
+
+      //Sanity checks first
+      const issues = extractIssuesFromResult(payload);
+      expect(Array.isArray(issues)).toBe(true);
+      expect(issues.length).toBeGreaterThanOrEqual(1);
+
+      //console.log('ISSUES:', JSON.stringify(issues, null, 2));
+
+      //Define issue to to partial matching 
+      const expected = [
+        {
+          type: 'Semantic',      // spectral usually produces semantic
+          path: 'info',
+          line: 2,               // 1-baserad rad som Spectral/pretty brukar rapportera
+          messageContains: 'version', // spectral säger "must have required property "version""
+        },
+        {
+          type: 'Semantic',
+          path: 'paths./pets.get.responses.200',
+          line: 8,
+          messageContains: 'description',
+        }
+      ];
+
+      //Check that every expected issue matches actual issue
+      for (const exp of expected) {
+        const found = issues.some((a: any) => issueMatches(a,exp));
+        expect(found).toBe(true);
+      }
+
+      //Extra check that there is structural parser issues in actual issue array as well
+      const hasStructural = issues.some((i: any) =>
+        Array.isArray(i.details) &&
+        i.details.some(d => d.toLowerCase().includes('structural'))
+      );
+      expect(hasStructural).toBe(true);
+    });
+
+
+});
+/**
+ * Helper function to extract array with issues from payload result.
+ * 
+ * @param runnerPayload 
+ * @returns array with issues or empty[]
+ */
+function extractIssuesFromResult(runnerPayload: any): any[] {
+
+  if (!runnerPayload || !runnerPayload.result) return [];
+    const result = runnerPayload.result;
+  if (Array.isArray(result.strictIssues)) return result.strictIssues;
+
+  return [];
+}
+function issueMatches(actual: any, expected: any) {
+  if (!actual) return false;
+  if (expected.type && String(actual.type).toLowerCase() !== String(expected.type).toLowerCase()) return false;
+  if (expected.path && actual.path !== expected.path) return false;
+  if (typeof expected.line === 'number' && actual.line !== expected.line) return false;
+  if (expected.code && actual.code !== expected.code) return false;
+  if (expected.messageContains && (!actual.message || !String(actual.message).toLowerCase().includes(String(expected.messageContains).toLowerCase()))) return false;
+  return true;
+}

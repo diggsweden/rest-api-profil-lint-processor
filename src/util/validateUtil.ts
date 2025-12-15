@@ -206,7 +206,6 @@ export async function parseApiSpecInput(input: SpecInput,
       spectralDiagnostics = [];
     }
     const finalIssues = IssueHelper.buildIssuesFromPrettyAndSpectral(prettyLines ?? [], spectralDiagnostics, true  /* addOneToLine */);
-    //console.log('Merged issues length:', Array.isArray(finalIssues) ? finalIssues.length : 0);
     issues = Array.isArray(finalIssues) && finalIssues.length ? finalIssues : undefined;
     issues = finalIssues && finalIssues.length ? finalIssues : undefined;
   }
@@ -337,6 +336,13 @@ function tryParseYaml(raw: string, maxSnippetLength: number): any {
     throw new SpecParseError('Kunde inte tolka YAML-innehållet.', { source: 'yaml' });
   }
 }
+function normalizeRaw(raw: string): string {
+  return raw
+    .replace(/^\uFEFF/, "")      // ta bort BOM
+    .replace(/\r\n/g, "\n")      // normalisera newline
+    .replace(/^\s*\n/, "");      // ta bort exakt EN ledande tomrad
+}
+
 /**
  * Helper function ( high level ) to get raw from input 
  * @param input 
@@ -388,6 +394,7 @@ export async function semanticValidate(apiSpecDocument: SpectralDocument): Promi
 
   //Hardcoded rules to extend ( Should be able to config thoose)
   let selectedRules: string[] = ['path-params', 'operation-operationId-unique', 'operation-parameters','oas3-schema'];
+  //let selectedRules: string[] = ['oas3-schema'];
 
     // Start of ruleset string to extend ! ( Must look like this)
   const rulesetYaml = `extends: spectral:oas
@@ -426,10 +433,31 @@ rules: {}`;
     }
     //Run async
     const results = await runner.runSemanticValidation(apiSpecDocument);
-
+  /*console.log('RESULT SPECTRAL :', JSON.stringify(results,null,2));
+  console.log('DBG: spectral raw diagnostics (range.start.line may be 0- or 1-based):');
+  console.log(JSON.stringify(results.map(r => ({
+    code: r.code,
+    path: r.path,
+    rawRangeStart: r.range?.start?.line ?? null,
+    message: r.message
+  })), null, 2));    
+  */
     return results;
   } finally {
     // Cleanup temporary files
     try { await fs.rm(tmpDir, { recursive: true, force: true }); } catch {}
   }
 }
+function normalizeSpecRaw(raw: string): string {
+  if (typeof raw !== 'string') return raw;
+  // 1) Remove BOM if present
+  if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
+  // 2) Normalize CRLF -> LF
+  raw = raw.replace(/\r\n/g, '\n');
+  // 3) Remove leading SPDX block comments (optional — keep if you strip them elsewhere)
+  // raw = raw.replace(/^\/\*![\s\S]*?\*\/\n*/, ''); // uncomment if used
+  // 4) Remove leading blank lines (one or many)
+  raw = raw.replace(/^\n+/, '');
+  return raw;
+}
+

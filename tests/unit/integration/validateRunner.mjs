@@ -11,7 +11,6 @@ async function main() {
   try {
     
     const { parseApiSpecInput } = await import('../../../dist/util/validateUtil.js');
-
     const res = await parseApiSpecInput(input, { strict: !!input.strict });
     console.log(JSON.stringify({ ok: true, result: res }));
     process.exit(0);

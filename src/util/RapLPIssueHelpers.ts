@@ -28,7 +28,7 @@ function extractJumpLinesFromPretty(prettyLines?: string[]): Set<number> {
   const s = new Set<number>();
   if (!Array.isArray(prettyLines)) return s;
   for (const l of prettyLines) {
-    if (typeof l !== 'string') continue;
+    if (!l || typeof l !== 'string') continue;
     const m = l.match(/Jump to line\s+(\d+)/i);
     if (m) {
       const n = parseInt(m[1], 10);
@@ -563,6 +563,9 @@ export function parsePrettyLinesToIssues(prettyLines: string[]): Issue[] {
     });
     i++;
   }
+  //console.log('DBG: prettyLines (first 40):', JSON.stringify(prettyLines?.slice(0,40) ?? []));
+  //console.log('DBG: jumpSet:', Array.from(extractJumpLinesFromPretty(prettyLines)).sort((a,b)=>a-b));
+
   return issues;
 }
 /**
@@ -626,17 +629,167 @@ export function sortIssues(issues: Issue[] | undefined): Issue[] {
  * Helper function (highlevel) to go from from prettyLines and SpectralDiagnostic to specified Issue format
  * @param prettyLines - result from AJV parsing
  * @param spectralDiagnostics - result from Spectral parsing
- * @param addOneToLine - boolean to move pointer one line or not 
+ * @param addOneToLine - boolean to move pointer one line or not
+ *  Spectral gives 0-based line in some code paths
+ *  AJV / pretty-parser gives 1-based line
+ *  We use 1-based to the user 
  * @returns sorted Issue list
  */
 export function buildIssuesFromPrettyAndSpectral(prettyLines: string[], 
-  spectralDiagnostics: SpectralCore.ISpectralDiagnostic[] | readonly SpectralCore.ISpectralDiagnostic[], addOneToLine = true):Issue[] {
+  spectralDiagnostics: SpectralCore.ISpectralDiagnostic[] | 
+  readonly SpectralCore.ISpectralDiagnostic[], addOneToLine = true):Issue[] {
 
     const pretty = parsePrettyLinesToIssues(prettyLines);
     const spec = spectralDiagnosticsToIssues(spectralDiagnostics,addOneToLine);
-    //const spec = spectralDiagnosticsToIssuesSimple(spectralDiagnostics,prettyLines,addOneToLine);
     const merged  = mergeAndDedupeIssues(pretty,spec);
     const consolidated = consolidateIssues(merged); 
     const sorted = sortIssues(consolidated);
-    return sorted;
+    return sorted;  
+}
+export function mergeAndDedupeIssuesPathFirst(prettyIssues: Issue[], spectralIssues: Issue[]): Issue[] {
+  const result: Issue[] = [];
+
+  // Normaliseringshjälpare
+  const normPath = (p?: string) => (p ?? '').toString().trim();
+
+  // 1) indexera pretty issues per path (kan finnas flera per path)
+  const prettyByPath = new Map<string, Issue[]>();
+  prettyIssues.forEach(p => {
+    const k = normPath(p.path || p.location || '');
+    if (!prettyByPath.has(k)) prettyByPath.set(k, []);
+    prettyByPath.get(k)!.push({ ...p });
+  });
+
+  // 2) gå igenom spectralIssues och matcha mot pretty (path-first)
+  for (let si = 0; si < spectralIssues.length; si++) {
+    const s = spectralIssues[si];
+    const spath = normPath(s.path || s.location || '');
+
+    // håll koll på om vi gjort någon merge för denna spectral entry
+    let merged = false;
+
+    // Hämta candPretty array (kopiera referens så vi kan modifiera den)
+    const candPretty = prettyByPath.get(spath) ?? [];
+
+    if (candPretty.length > 0) {
+      // Samla alla pretty entries som matchar rad-proximity (±1 eller saknad rad)
+      const matchedIndices: number[] = [];
+      const detailsSet = new Set<string>(s.details ?? []);
+
+      for (let pi = 0; pi < candPretty.length; pi++) {
+        const p = candPretty[pi];
+        const pLine = typeof p.line === 'number' ? p.line : null;
+        const sLine = typeof s.line === 'number' ? s.line : null;
+
+        const within = (pLine == null || sLine == null) || Math.abs((pLine || 0) - (sLine || 0)) <= 1;
+        if (within) {
+          // lägg till pretty-meddelanden i details (om olika)
+          if (p.message && p.message.trim() && p.message !== s.message) detailsSet.add(p.message);
+          // även inkludera raw lines om användbart
+          if (Array.isArray(p.raw)) for (const r of p.raw) if (r && String(r).trim()) detailsSet.add(String(r).trim());
+          matchedIndices.push(pi);
+        }
+      }
+
+      if (matchedIndices.length > 0) {
+        // skapa merged issue: främst semantic (promote)
+        const mergedIssue: Issue = {
+          ...s,
+          type: 'Semantic',
+          details: Array.from(detailsSet),
+          location: s.location || (candPretty[0] && candPretty[0].location) || s.path,
+          source: s.source || (candPretty[0] && candPretty[0].source),
+        };
+        result.push(mergedIssue);
+        merged = true;
+
+        // Ta bort de matchade pretty entries från prettyByPath (samt tomma listor)
+        // Vi ska ta bort dem i omvänd index-ordning så splice inte stör undanstående index
+        matchedIndices.sort((a, b) => b - a);
+        const arr = prettyByPath.get(spath)!;
+        for (const idx of matchedIndices) {
+          arr.splice(idx, 1);
+        }
+        if (arr.length === 0) prettyByPath.delete(spath);
+      }
+    }
+
+    if (!merged) {
+      // försök bredare parent/child match (som tidigare)
+      let mergedLoosely = false;
+      for (const [ppath, arr] of Array.from(prettyByPath.entries())) {
+        if (!ppath) continue;
+        if (spath.startsWith(ppath) || ppath.startsWith(spath)) {
+          // hitta alla arr entries som matchar rad-proximity
+          const matchedIndices: number[] = [];
+          const detailsSet = new Set<string>(s.details ?? []);
+
+          for (let pi = 0; pi < arr.length; pi++) {
+            const p = arr[pi];
+            const pLine = typeof p.line === 'number' ? p.line : null;
+            const sLine = typeof s.line === 'number' ? s.line : null;
+            const within = (pLine == null || sLine == null) || Math.abs((pLine || 0) - (sLine || 0)) <= 1;
+            if (within) {
+              if (p.message && p.message.trim() && p.message !== s.message) detailsSet.add(p.message);
+              if (Array.isArray(p.raw)) for (const r of p.raw) if (r && String(r).trim()) detailsSet.add(String(r).trim());
+              matchedIndices.push(pi);
+            }
+          }
+
+          if (matchedIndices.length > 0) {
+            const mergedIssue: Issue = {
+              ...s,
+              type: 'Semantic',
+              details: Array.from(detailsSet),
+              location: s.location || (arr[0] && arr[0].location) || s.path,
+              source: s.source || (arr[0] && arr[0].source),
+            };
+            result.push(mergedIssue);
+            mergedLoosely = true;
+
+            // rensa arr för de matchade index (vänd ordning)
+            matchedIndices.sort((a, b) => b - a);
+            for (const idx of matchedIndices) arr.splice(idx, 1);
+            if (arr.length === 0) prettyByPath.delete(ppath);
+            break;
+          }
+        }
+      }
+
+      if (!mergedLoosely) {
+        // ingen match alls -> behåll spectral som-is
+        result.push(s);
+      }
+    }
+  }
+
+  // 3) Add remaining pretty-only issues (de som inte matchades)
+  for (const arr of prettyByPath.values()) {
+    for (const p of arr) {
+      result.push(p);
+    }
+  }
+
+  // 4) dedupe final (based on path+message+line) to be safe
+  const seen = new Set<string>();
+  const deduped: Issue[] = [];
+  for (const r of result) {
+    const key = `${r.type}|${r.path}|${r.message}|${r.line ?? ''}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      deduped.push(r);
+    }
+  }
+
+  // 5) deterministic sort: by line (num), then path
+  deduped.sort((a, b) => {
+    const la = typeof a.line === 'number' ? a.line : Number.MAX_SAFE_INTEGER;
+    const lb = typeof b.line === 'number' ? b.line : Number.MAX_SAFE_INTEGER;
+    if (la !== lb) return la - lb;
+    const pa = a.path ?? '';
+    const pb = b.path ?? '';
+    return pa.localeCompare(pb);
+  });
+
+  return deduped;
 }

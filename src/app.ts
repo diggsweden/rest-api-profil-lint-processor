@@ -95,6 +95,7 @@ async function main(): Promise<void> {
     // Schemevalidation and Spectral  Document creation ----------
     let apiSpecDocument: SpectralDocument;
     let parseResult: ParseResult;
+
     try {
       const prefer = detectSpecFormatPreference(apiSpecFileName,undefined,'auto');
       parseResult = await parseApiSpecInput(
@@ -103,6 +104,7 @@ async function main(): Promise<void> {
             preferJsonError: prefer
           }
       );
+
     // Issue handling ----------
       if (parseResult.strictIssues && parseResult.strictIssues.length > 0) {
          console.error('Strict validation reported issues:');
