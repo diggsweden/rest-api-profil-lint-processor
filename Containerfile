@@ -11,9 +11,8 @@ RUN npm ci --no-audit --no-fund --ignore-scripts
 
 COPY . .
 
-RUN npm run build
-
-RUN npm prune --omit=dev
+RUN npm run build && \
+    npm prune --omit=dev
 
 FROM node:24.11.0-slim AS runtime
 ENV NODE_ENV=production
