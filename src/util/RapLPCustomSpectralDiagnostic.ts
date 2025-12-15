@@ -17,3 +17,6 @@ export interface RapLPCustomSpectralDiagnostic
   sökväg?: any;
   omfattning?: any;
 }
+
+
+

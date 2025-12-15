@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
+// SPDX-FileCopyrightText: 2025 diggsweden/rest-api-profil-lint-processor
 //
 // SPDX-License-Identifier: EUPL-1.2
 
@@ -13,11 +13,9 @@
  *
  **************************************************************/
 import yargs from 'yargs';
-import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { join } from 'path';
+import * as fs from 'node:fs';
 import Parsers from '@stoplight/spectral-parsers';
-import spectralCore from '@stoplight/spectral-core';
 import { importAndCreateRuleInstances, getRuleModules } from './util/ruleUtil.js'; // Import the helper function
 import util from 'util';
 import { RapLPCustomSpectral } from './util/RapLPCustomSpectral.js';
@@ -25,27 +23,34 @@ import { DiagnosticReport, RapLPDiagnostic } from './util/RapLPDiagnostic.js';
 import { AggregateError } from './util/RapLPCustomErrorInfo.js';
 import chalk from 'chalk';
 import { ExcelReportProcessor } from './util/excelReportProcessor.js';
+import { parseApiSpecInput,detectSpecFormatPreference, ParseResult} from './util/validateUtil.js';
+import { SpecParseError } from './util/RapLPSpecParseError.js';
+import type { IParser } from '@stoplight/spectral-parsers';
+import { Document as SpectralDocument } from '@stoplight/spectral-core';
+import { Issue } from './util/RapLPIssueHelpers.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
   new (errors: any[], message?: string): AggregateError;
 };
-const { Spectral, Document } = spectralCore;
 const writeFileAsync = util.promisify(fs.writeFile);
 const appendFileAsync = util.promisify(fs.appendFile);
 
-try {
-  // Parse command-line arguments using yargs
-  const argv = await yargs(process.argv.slice(2))
-    .version('1.0.0')
-    .option('file', {
-      alias: 'f',
-      describe: 'Sökväg till OpenAPI specifikation(yaml,json)',
-      demandOption: true,
-      type: 'string',
-      coerce: (file: string) => path.resolve(file), // convert to absolute path
-    })
-    .option('categories', {
+
+
+async function main(): Promise<void> {
+  try {
+    // Parse command-line arguments using yargs
+    const argv = await yargs(process.argv.slice(2))
+      .version('1.0.0')
+      .option('file', {
+        alias: 'f',
+        describe: 'Sökväg till OpenAPI specifikation(yaml,json)',
+        demandOption: true,
+        type: 'string',
+        coerce: (file: string) => path.resolve(file),
+      })
+       .option('categories', {
       alias: 'c',
       describe: `Regelkategorier separerade med kommatecken.Tillgängliga kategorier: ${getRuleModules().join(',')}`,
       type: 'string',
@@ -73,21 +78,100 @@ try {
       describe:
         'Sökväg till fil för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i Excel format.',
       type: 'string',
+    }).option('strict', {
+      describe: 
+        'Aktivera strict mode för validering av semantik och struktur.',
+      type: 'boolean',
+      default: false,
     }).argv;
-  // Extract arguments from yargs
-  const apiSpecFileName = (argv.file as string) || '';
-  const ruleCategories = argv.categories ? (argv.categories as string).split(',') : undefined;
-  const logErrorFilePath = argv.logError as string | undefined;
-  const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
+
+    // Extract arguments from yargs
+    const apiSpecFileName = (argv.file as string) || '';
+    const ruleCategories = argv.categories ? (argv.categories as string).split(',') : undefined;
+    const logErrorFilePath = argv.logError as string | undefined;
+    const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
+    const strict = argv.strict as boolean ?? false;
+
+    // Schemevalidation and Spectral  Document creation ----------
+    let apiSpecDocument: SpectralDocument;
+    let parseResult: ParseResult;
+
+    try {
+      const prefer = detectSpecFormatPreference(apiSpecFileName,undefined,'auto');
+      parseResult = await parseApiSpecInput(
+          {filePath: apiSpecFileName},{
+            strict: strict,
+            preferJsonError: prefer
+          }
+      );
+
+    // Issue handling ----------
+      if (parseResult.strictIssues && parseResult.strictIssues.length > 0) {
+         console.error('Strict validation reported issues:');
+          parseResult.strictIssues.forEach((iss: Issue) =>
+              console.error(chalk.yellow(`- ${iss.type} at ${iss.path} : ${iss.message} ${iss.line ? `(line ${iss.line})` : ''}`)),
+          );
+          process.exitCode = 2;
+          return;
+      }
+    } catch (err: any) {
+      // Parse handling
+      if (err instanceof SpecParseError) {
+        const formattedDate = new Date().toISOString();
+        const logData = {
+          timeStamp: formattedDate,
+          message: 'Fel vid parsing av API-specifikationen.',
+          error: err.toJSON ? err.toJSON() : { message: String(err) },
+        };
+
+        if (logErrorFilePath) {
+          try {
+            let existingLogs: any[] = [];
+            if (argv.append && fs.existsSync(logErrorFilePath)) {
+              const fileContent = await fs.promises.readFile(logErrorFilePath, 'utf8');
+              try {
+                existingLogs = JSON.parse(fileContent);
+                if (!Array.isArray(existingLogs)) existingLogs = [existingLogs];
+              } catch {
+                existingLogs = [];
+              }
+            }
+            existingLogs.push(logData);
+            const updatedContent = JSON.stringify(existingLogs, null, 2);
+            await writeFileAsync(logErrorFilePath, Buffer.from(updatedContent, 'utf8'));
+            console.log(chalk.green(`Parserfel loggat till ${logErrorFilePath}`));
+          } catch (fileErr: any) {
+            console.error(chalk.red('Misslyckades att skriva parserfel till loggfilen:'), fileErr.message);
+          }
+        } else {
+          // No log file specified - write to stdout
+          console.error(chalk.red('<<< Parserfel i API-specifikationen >>>'));
+          console.error(chalk.red(`Fel: ${err.message}`));
+          if (err.line || err.column) {
+            console.error(chalk.yellow(`Rad: ${err.line ?? '-'}, Kolumn: ${err.column ?? '-'}`));
+          }
+          if (err.snippet && !err.message.includes(err.snippet)) {
+            console.error(chalk.gray('--- snippet ---'));
+            console.error(chalk.gray(err.snippet));
+            console.error(chalk.gray('---------------'));
+          }
+        }
+
+        process.exitCode = 1;
+        return; // terminate main gracefully
+      }
+
+      // Övrigt oväntat fel
+      logErrorToFile(err);
+      console.error(chalk.red('Ett fel uppstod vid inläsning/parsing av spec-filen. Se felloggen för mer information.'));
+      process.exitCode = 1;
+      return;
+    }
+
   try {
     // Import and create rule instances in RAP-LP
     const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
     // Load API specification into a Document object
-    const apiSpecDocument = new Document(
-      fs.readFileSync(join(apiSpecFileName), 'utf-8').trim(),
-      Parsers.Yaml,
-      apiSpecFileName,
-    );
     try {
       /**
        * CustomSpectral
@@ -95,6 +179,11 @@ try {
       const customSpectral = new RapLPCustomSpectral();
       customSpectral.setCategorys(enabledRulesAndCategorys.instanceCategoryMap);
       customSpectral.setRuleset(enabledRulesAndCategorys.rules);
+      //Use previous parseResult 
+      const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
+      apiSpecDocument = new SpectralDocument(parseResult.raw, parser, apiSpecFileName);
+
+      // Run ruleengine
       const result = await customSpectral.run(apiSpecDocument);
 
       const customDiagnostic = new RapLPDiagnostic();
@@ -127,20 +216,12 @@ try {
         }
       };
       const formatLintingResult = (result: any) => {
-        return `allvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${
-          result.krav
-        } \nområde: ${result.område} \nsökväg:[${result.sökväg}] \nomfattning:${JSON.stringify(
-          result.omfattning,
-          null,
-          2,
-        )} `;
+        return `allvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${result.krav} \nområde: ${result.område} \nsökväg:[${result.sökväg}] \nomfattning:${JSON.stringify(result.omfattning, null, 2)} `;
       };
       //Check specified option from yargs input
 
       const currentDate = new Date(); //.toISOString(); // Get current date and time in ISO format
-      const formattedDate = `${currentDate.getFullYear()}-${padZero(currentDate.getMonth() + 1)}-${padZero(
-        currentDate.getDate(),
-      )} ${padZero(currentDate.getHours())}:${padZero(currentDate.getMinutes())}:${padZero(currentDate.getSeconds())}`;
+      const formattedDate = `${currentDate.getFullYear()}-${padZero(currentDate.getMonth() + 1)}-${padZero(currentDate.getDate())} ${padZero(currentDate.getHours())}:${padZero(currentDate.getMinutes())}:${padZero(currentDate.getSeconds())}`;
 
       function padZero(num: number): string {
         return num < 10 ? `0${num}` : `${num}`;
@@ -261,13 +342,23 @@ try {
         'Ett fel uppstod vid inläsning av moduler och skapande av regelklasser! Undersök felloggen för RAP-LP för mer information om felet',
       ),
     );
+  }    
+  } catch (error: any) {
+    logErrorToFile(error);
+    console.error(
+      chalk.red('Ett oväntat fel uppstod! Undersök felloggen för RAP-LP för mer information om felet', error.message),
+    );
+    process.exitCode = 1;
   }
-} catch (error: any) {
-  logErrorToFile(error);
-  console.error(
-    chalk.red('Ett oväntat fel uppstod! Undersök felloggen för RAP-LP för mer information om felet', error.message),
-  );
 }
+// Kör main och fånga oväntade promise-rejections
+main().catch((err) => {
+  logErrorToFile(err);
+  console.error(chalk.red('Oväntat fel i main:'), err);
+  process.exitCode = 1;
+});
+
+
 function logErrorToFile(error: any) {
   const errorMessage = `${new Date().toISOString()} - ${error.stack}\n`;
   fs.appendFileSync('rap-lp-error.log', errorMessage);
@@ -282,3 +373,4 @@ function logErrorToFile(error: any) {
     });
   }
 }
+
