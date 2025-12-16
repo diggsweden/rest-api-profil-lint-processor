@@ -435,7 +435,7 @@ export class Dok19 extends BaseRuleset {
 }
 export class Dok21 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Dokumentation',
+    omrade: 'Dokumentation',
     id: 'DOK.21',
   };
   given = '$';
