@@ -32,6 +32,7 @@ export async function startServer<T extends ApiArgs>(args: T) {
       apiSpec, // Path to OpenAPI spec
       validateRequests: true, // Automatically validate request bodies
       validateResponses: true, // Automatically validate responses
+      ignorePaths: /\/api\/v1\/validation\/validatespec/,
     }),
   );
 
