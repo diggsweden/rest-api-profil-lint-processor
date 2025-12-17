@@ -12,6 +12,12 @@ import { ApiInfo } from '../model/ApiInfo.js';
 import { validationRules } from '../model/validationRules.js';
 import { ExcelReportProcessor } from '../util/excelReportProcessor.js';
 import { DiagnosticReport, RapLPDiagnostic } from '../util/RapLPDiagnostic.js';
+import { Issue } from '../util/Issue.js';
+import * as IssueHelper from '../util/RapLPIssueHelpers.js'; 
+import { parseApiSpecInput,detectSpecFormatPreference, ParseResult} from '../util/validateUtil.js';
+import { SpecParseError } from '../util/RapLPSpecParseError.js';
+import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
+
 
 export const registerValidationRoutes = (app: Express) => {
   // Route for raw content upload.
@@ -77,4 +83,78 @@ export const registerValidationRoutes = (app: Express) => {
       next(e);
     }
   });
+  app.post('/api/v1/validation/validatespec', async (req, res, next) => {
+    try {
+      const body: YamlContentDto = req.body;
+
+      // 1. Decode input
+      const raw = decodeBase64String(body.yaml);
+
+      // 2. Avgör format-preferens (samma som CLI)
+      const prefer = detectSpecFormatPreference(
+        undefined,
+        raw,
+        'auto',
+      );
+
+      // 3. Parse + strict-validate (Spectral + AJV)
+      const parseResult = await parseApiSpecInput(
+        { raw },
+        {
+          strict: true,
+          preferJsonError: prefer,
+        },
+      );
+
+      // 4. Om strict-issues → returnera validation response
+      if (parseResult.strictIssues?.length) {
+        const sorted = IssueHelper.sortIssues(parseResult.strictIssues);
+        const snippet = IssueHelper.formatIssuesAsEditorText(sorted);
+
+        return res.status(200).json({
+          ok: false,
+          kind: 'validation',
+          issues: sorted,
+          snippet,
+        });
+      }
+
+      // 5. Inga strict-fel → kör domänregler
+      const apiSpecDocument = new Document(raw, Parsers.Yaml, '');
+      const rules = await importAndCreateRuleInstances(body.categories);
+      const result = await processApiSpec(rules, apiSpecDocument);
+
+      const hasRuleViolations = result.result.some(
+        d =>d.allvarlighetsgrad === 'Error' || d.allvarlighetsgrad === 'Warning'
+      );
+      if (hasRuleViolations) {
+         //Rulevalidation occured in RapLP-ruleengine
+         return res.status(400).json(
+            new ProblemDetailsDTO({
+              type: 'https://rap-lp./problems/rule-validation',
+              title: 'Rule validation failed',
+              status: 400,
+              detail: 'The api specification violates one or more rules according to the Swedish REST API-profile',
+              instance: req.originalUrl,
+
+              // Put in kind field to indicate violation
+              kind: 'rule-validation',
+              //Payload 
+              payload: result, // ValidationResponseDto
+              report: result.report,
+            }),          
+         );
+      }
+      // No rule violation and success response goes here
+      return res.status(200).json({
+        ok: true,
+        //Payload 
+        payload: result, // ValidationResponseDto
+        report: result.report,
+      });
+    } catch (e) {
+      // SpecParseError / ProblemDetailsDTO fångas här
+      next(e);
+    }
+  });  
 };

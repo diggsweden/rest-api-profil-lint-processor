@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import type * as SpectralCore from '@stoplight/spectral-core';
-
+import { Issue } from './Issue.js';
 /**
  * Issue type to use from client to validate parsing
  */
-export type Issue = {
+/*export type Issue = {
   type: 'Structural' | 'Semantic' | 'Info' | string;
   code?: string | number;  // ex 'path-params' (från Spectral)
   path: string;            // ex "paths./pets.get.responses.200"
@@ -18,7 +18,7 @@ export type Issue = {
   documentationUrl?: string;// optional link
   raw?: string[];          // original lines that created this issue (optional)
   details?: string[];      // extra details (optional)
-};
+};*/
 /**
  * Extract jumplines
  * @param prettyLines 
