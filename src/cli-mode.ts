@@ -6,13 +6,20 @@ import * as fs from 'node:fs';
 import { join } from 'path';
 import Parsers from '@stoplight/spectral-parsers';
 import { Document } from '@stoplight/spectral-core';
-import { importAndCreateRuleInstances } from './util/ruleUtil.js'; // Import the helper function
+import { importAndCreateRuleInstances, getRuleModules } from './util/ruleUtil.js'; // Import the helper function
 import util from 'util';
 import { RapLPCustomSpectral } from './util/RapLPCustomSpectral.js';
 import { DiagnosticReport, RapLPDiagnostic } from './util/RapLPDiagnostic.js';
 import { AggregateError } from './util/RapLPCustomErrorInfo.js';
 import chalk from 'chalk';
 import { ExcelReportProcessor } from './util/excelReportProcessor.js';
+
+import type { IParser } from '@stoplight/spectral-parsers';
+import { Document as SpectralDocument } from '@stoplight/spectral-core';
+import { Issue } from './util/Issue.js';
+import { parseApiSpecInput,detectSpecFormatPreference, ParseResult} from './util/validateUtil.js';
+import { SpecParseError } from './util/RapLPSpecParseError.js';
+import * as path from 'node:path';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -29,6 +36,7 @@ export type CliArgs = {
   append: boolean;
   logDiagnostic?: string;
   dex?: string;
+  strict?: boolean;
 };
 
 export async function execCLI<T extends CliArgs>(argv: T) {
@@ -38,6 +46,83 @@ export async function execCLI<T extends CliArgs>(argv: T) {
     const ruleCategories = argv.categories ? (argv.categories as string).split(',') : undefined;
     const logErrorFilePath = argv.logError as string | undefined;
     const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
+    const strict = argv.strict as boolean ?? false;
+
+    // Schemevalidation and Spectral  Document creation ----------
+    let apiSpecDocument: SpectralDocument;
+    let parseResult: ParseResult;
+    try {
+      const prefer = detectSpecFormatPreference(apiSpecFileName,undefined,'auto');
+      parseResult = await parseApiSpecInput(
+          {filePath: apiSpecFileName},{
+            strict: strict,
+            preferJsonError: prefer
+          }
+      );
+
+    // Issue handling ----------
+      if (parseResult.strictIssues && parseResult.strictIssues.length > 0) {
+         console.error('Strict validation reported issues:');
+          parseResult.strictIssues.forEach((iss: Issue) =>
+              console.error(chalk.yellow(`- ${iss.type} at ${iss.path} : ${iss.message} ${iss.line ? `(line ${iss.line})` : ''}`)),
+          );
+          process.exitCode = 2;
+          return;
+      }
+    } catch (err: any) {
+      // Parse handling
+      if (err instanceof SpecParseError) {
+        const formattedDate = new Date().toISOString();
+        const logData = {
+          timeStamp: formattedDate,
+          message: 'Fel vid parsing av API-specifikationen.',
+          error: err.toJSON ? err.toJSON() : { message: String(err) },
+        };
+
+        if (logErrorFilePath) {
+          try {
+            let existingLogs: any[] = [];
+            if (argv.append && fs.existsSync(logErrorFilePath)) {
+              const fileContent = await fs.promises.readFile(logErrorFilePath, 'utf8');
+              try {
+                existingLogs = JSON.parse(fileContent);
+                if (!Array.isArray(existingLogs)) existingLogs = [existingLogs];
+              } catch {
+                existingLogs = [];
+              }
+            }
+            existingLogs.push(logData);
+            const updatedContent = JSON.stringify(existingLogs, null, 2);
+            await writeFileAsync(logErrorFilePath, Buffer.from(updatedContent, 'utf8'));
+            console.log(chalk.green(`Parserfel loggat till ${logErrorFilePath}`));
+          } catch (fileErr: any) {
+            console.error(chalk.red('Misslyckades att skriva parserfel till loggfilen:'), fileErr.message);
+          }
+        } else {
+          // No log file specified - write to stdout
+          console.error(chalk.red('<<< Parserfel i API-specifikationen >>>'));
+          console.error(chalk.red(`Fel: ${err.message}`));
+          if (err.line || err.column) {
+            console.error(chalk.yellow(`Rad: ${err.line ?? '-'}, Kolumn: ${err.column ?? '-'}`));
+          }
+          if (err.snippet && !err.message.includes(err.snippet)) {
+            console.error(chalk.gray('--- snippet ---'));
+            console.error(chalk.gray(err.snippet));
+            console.error(chalk.gray('---------------'));
+          }
+        }
+
+        process.exitCode = 1;
+        return; // terminate main gracefully
+      }
+
+      // Övrigt oväntat fel
+      logErrorToFile(err);
+      console.error(chalk.red('Ett fel uppstod vid inläsning/parsing av spec-filen. Se felloggen för mer information.'));
+      process.exitCode = 1;
+      return;
+    }
+
     try {
       // Import and create rule instances in RAP-LP
       const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
@@ -60,7 +145,8 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         const customDiagnostic = new RapLPDiagnostic();
         customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.instanceCategoryMap);
         const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
-
+        console.log("REPORT");
+        console.log(JSON.stringify(diagnosticReports,null,2));
         if (argv.dex != null) {
           const reportHandler = new ExcelReportProcessor({
             outputFilePath: argv.dex,

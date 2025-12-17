@@ -4,6 +4,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
+import { SpecParseError } from './RapLPSpecParseError.js';
 
 /**
  * Extended error class with errorType that will be used as HTTP error codes in custom error handler.
@@ -26,9 +27,28 @@ class RuleCategoryError extends RapLPBaseApiError {
 }
 
 // Express.js middleware to map Extended
+
 const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(err);
 
+// SpecParseError --> 400 adapter impl
+if (err instanceof SpecParseError) {
+    const problemDetails = new ProblemDetailsDTO({
+      type: 'https://rap-lp./problems/spec-parse-error',
+      title: 'Specification parse error',
+      status: ERROR_TYPE.BAD_REQUEST,
+      detail: err.message,
+      instance: req.originalUrl,
+
+      //Extra fields 
+      kind: 'spec-parse',
+      line: err.line,
+      column: err.column,
+      format: err.source, 
+    });
+
+    return res.status(ERROR_TYPE.BAD_REQUEST).send(problemDetails);  
+}
   const status = err.errorType || err.status || ERROR_TYPE.INTERNAL_SERVER_ERROR;
   const title = err.title || 'An unexpected error occurred';
   const detail = err.message || 'An unknown error occurred.';

@@ -19,6 +19,8 @@ import Parsers from '@stoplight/spectral-parsers';
 import type { IParser } from '@stoplight/spectral-parsers';
 import * as IssueHelper from './RapLPIssueHelpers.js';
 import { SpecParseError} from './RapLPSpecParseError.js';
+import { Issue } from './Issue.js';
+
 
 /**
  * Possible input types for specifications
@@ -40,7 +42,7 @@ export type ParseResult = {
   format: 'json' | 'yaml';
   raw: string;
   parsed: any;  
-  strictIssues?: IssueHelper.Issue[];
+  strictIssues?: Issue[];
 }
 export type ParseOptions = {
   preferJsonError?: 'auto' | 'never' | 'always';
@@ -103,7 +105,7 @@ export async function parseApiSpecInput(input: SpecInput,
       throw new SpecParseError('Det parsade objektet verkar inte vara en giltig OpenAPI-specifikation.', { source: 'unknown' });
     }
     const serialized = JSON.stringify(parsed, null, 2); // Serialize raw format
-    let strictIssues: IssueHelper.Issue[] | undefined;
+    let strictIssues: Issue[] | undefined;
     if (strict) { 
       try {
         await runStrictValidationIfRequested(parsed);
@@ -180,7 +182,7 @@ export async function parseApiSpecInput(input: SpecInput,
   }
   //Make sure parsed specification is OpenAPI like
   ensureIsOpenApiLike(parsedSpec,target);
-  let issues: IssueHelper.Issue[] | undefined;
+  let issues: Issue[] | undefined;
   let prettyLines: string[] = [];
   //If here - we have a parsed openapi object
   if (strict) {

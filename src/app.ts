@@ -73,6 +73,12 @@ async function main() {
       describe:
         '[api-mode] Sökväg till fil för configuration av urlValidation funktionalliteten faller tillbaka på ./urlValidationConfig.cjs',
     })
+    .option('strict', {
+      describe: 
+        'Aktivera strict mode för validering av semantik och struktur.',
+      type: 'boolean',
+      default: false,
+    })    
     .check(function (argv) {
       if (argv.mode !== 'api') {
         if (!argv.file) {
