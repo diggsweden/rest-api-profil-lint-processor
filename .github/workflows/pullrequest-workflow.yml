@@ -1,10 +1,7 @@
 # SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 #
 # SPDX-License-Identifier: CC0-1.0
-
----
 name: Pull Request Workflow
-
 on:
   pull_request:
     branches:
@@ -12,10 +9,8 @@ on:
       - develop
       - 'release/**'
       - 'feature/**'
-
 permissions:
   contents: read # Best Security practice. Jobs only get read as base, and then permissions are added as needed
-
 jobs:
   pr-checks:
     uses: diggsweden/reusable-ci/.github/workflows/pullrequest-orchestrator.yml@e1e1387d5b0399bb5edb00e40485746772344176 # v2.6.0
@@ -26,13 +21,12 @@ jobs:
       security-events: write # Upload ESLint/security findings to GitHub Security tab
     with:
       project-type: npm
-      # Use just+mise linting (replaces megalint, commitlint, licenselint)
-      linters.justmiselint: true
+      # Use devbase-check linting (replaces megalint, commitlint, licenselint)
+      linters.devbasecheck: true
       linters.megalint: false
       linters.commitlint: false
       linters.licenselint: false
       linters.publiccodelint: true
-
   test:
     needs: [pr-checks]
     if: always() # Run tests even if linting fails (get full CI feedback)

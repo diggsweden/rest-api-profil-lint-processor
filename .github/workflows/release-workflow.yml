@@ -4,9 +4,7 @@
 
 # Release Workflow for rest-api-profil-lint-processor
 # Uses the unified release orchestrator for NPM packages
----
 name: Release
-
 on:
   push:
     tags:
@@ -14,14 +12,11 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+-alpha*' # Alpha: v1.0.0-alpha.1
       - 'v[0-9]+.[0-9]+.[0-9]+-beta*' # Beta: v1.0.0-beta.1
       - 'v[0-9]+.[0-9]+.[0-9]+-rc*' # RC: v1.0.0-rc.1
-
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false # Queue releases, don't cancel partial releases
-
 permissions:
   contents: read # Best Security practice. Jobs only get read as base, and then permissions are added as needed
-
 jobs:
   release:
     uses: diggsweden/reusable-ci/.github/workflows/release-orchestrator.yml@e1e1387d5b0399bb5edb00e40485746772344176 # v2.6.0
