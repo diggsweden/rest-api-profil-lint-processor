@@ -11,7 +11,7 @@ const moduleName: string = 'ResRules.js';
 
 export class Res02 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'Resurser',
+    område: 'Resurser',
     id: 'RES.02',
   };
   message = 'Primärnycklar eller personligt identifierbar information (personnummer, etc.) BÖR INTE exponeras. ';
@@ -58,7 +58,7 @@ export class Res02 extends BaseRuleset {
 
 export class Res06 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'Resurser',
+    område: 'Resurser',
     id: 'RES.06',
   };
   message =

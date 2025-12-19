@@ -29,7 +29,6 @@ class RapLPCustomSpectral {
   }
   async run(document: any): Promise<RapLPCustomSpectralDiagnostic[]> {
     const spectralResults = await this.spectral.run(document);
-    const modifiedResults = this.modifyResults(spectralResults);
     return this.modifyResults(spectralResults);
   }
   async runSemanticValidation(document: any): Promise<ISpectralDiagnostic[]> {

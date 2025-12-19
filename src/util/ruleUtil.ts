@@ -8,7 +8,7 @@ import { RuleCategoryError } from './RapLPBaseApiErrorHandling.js';
 interface CustomSchema {
   id: string;
   krav: string;
-  sokvag: string[];
+  sökväg: string[];
   allvarlighetsgrad: number;
   omfattning: { start: Record<string, unknown>; end: Record<string, unknown> };
   kategori: string;

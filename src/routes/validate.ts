@@ -17,6 +17,11 @@ import * as IssueHelper from '../util/RapLPIssueHelpers.js';
 import { parseApiSpecInput,detectSpecFormatPreference, ParseResult} from '../util/validateUtil.js';
 import { SpecParseError } from '../util/RapLPSpecParseError.js';
 import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
+import { SpecValidationRequestDto } from '../model/SpecValidationRequestDto.js';
+import { ERROR_TYPE, RapLPBaseApiError } from '../util/RapLPBaseApiErrorHandling.js';
+import type { IParser } from '@stoplight/spectral-parsers';
+import { stringify } from 'node:querystring';
+
 
 
 export const registerValidationRoutes = (app: Express) => {
@@ -83,49 +88,69 @@ export const registerValidationRoutes = (app: Express) => {
       next(e);
     }
   });
+  /**
+   * Endpoint 
+   */
   app.post('/api/v1/validation/validatespec', async (req, res, next) => {
     try {
-      const body: YamlContentDto = req.body;
+      const body: SpecValidationRequestDto = req.body;
+      
+      //0.5 Check input
+      if (!body.spec) {
+        throw new RapLPBaseApiError(
+          'Invalid request',
+          'Missing required field: spec',
+          ERROR_TYPE.BAD_REQUEST,
+          );
+      }
 
       // 1. Decode input
-      const raw = decodeBase64String(body.yaml);
+      const raw = decodeBase64String(body.spec);
+      const strict = body.strict ?? true;
+      const categories = body.categories ?? [];
 
-      // 2. Avgör format-preferens (samma som CLI)
+      // 2. Detect format-preferens 
       const prefer = detectSpecFormatPreference(
         undefined,
         raw,
         'auto',
       );
-
-      // 3. Parse + strict-validate (Spectral + AJV)
+      // 3. Parse handling + strict-validate (Structural / Semantic errors)
       const parseResult = await parseApiSpecInput(
         { raw },
-        {
-          strict: true,
-          preferJsonError: prefer,
-        },
+        {strict,preferJsonError: prefer},
       );
 
-      // 4. Om strict-issues → returnera validation response
+      // 4. Strict-issues → 
       if (parseResult.strictIssues?.length) {
         const sorted = IssueHelper.sortIssues(parseResult.strictIssues);
         const snippet = IssueHelper.formatIssuesAsEditorText(sorted);
 
-        return res.status(200).json({
-          ok: false,
-          kind: 'validation',
-          issues: sorted,
-          snippet,
-        });
+         return res.status(400).json(
+            new ProblemDetailsDTO({
+              type: 'https://rap-lp./problems/semantic-validation',
+              title: 'Rule validation failed',
+              status: 400,
+              detail: 'The specification contains structural or semantic errors',
+              instance: req.originalUrl,
+
+              // Put in kind field to indicate violation
+              kind: 'spec-validation',
+              //Payload 
+              issues: sorted, 
+              snippet,
+            }),          
+         );
       }
 
-      // 5. Inga strict-fel → kör domänregler
-      const apiSpecDocument = new Document(raw, Parsers.Yaml, '');
-      const rules = await importAndCreateRuleInstances(body.categories);
+      // 5. No strict-errors → run raplp ruleengine
+      const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
+      const apiSpecDocument = new Document(parseResult.raw, parser, '');
+      const rules = await importAndCreateRuleInstances(categories);
       const result = await processApiSpec(rules, apiSpecDocument);
 
       const hasRuleViolations = result.result.some(
-        d =>d.allvarlighetsgrad === 'Error' || d.allvarlighetsgrad === 'Warning'
+        d =>d.allvarlighetsgrad === 'ERROR' || d.allvarlighetsgrad === 'WARNING'
       );
       if (hasRuleViolations) {
          //Rulevalidation occured in RapLP-ruleengine
