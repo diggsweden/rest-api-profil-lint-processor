@@ -2,7 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { Issue, sortIssues,consolidateIssues } from '../../src/util/RapLPIssueHelpers.js';
+import { Issue } from '../../src/util/Issue.js';
+import {sortIssues,consolidateIssues } from '../../src/util/RapLPIssueHelpers.js';
 import { spectralDiagnosticsToIssuesSimple } from '../../src/util/RapLPIssueHelpers.js';
 import type * as SpectralCore from '@stoplight/spectral-core';
 describe('IssueHelper.sortIssues', ()=> {
