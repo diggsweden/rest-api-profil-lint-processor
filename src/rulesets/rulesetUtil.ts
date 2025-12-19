@@ -42,7 +42,7 @@ export abstract class SakBaseApiKeyRule extends BaseRuleset {
 
 export class Dok03Base extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'Dokumentation',
+    område: 'Dokumentation',
     id: 'DOK.03',
   };
   constructor() {
@@ -56,7 +56,7 @@ export class Dok03Base extends BaseRuleset {
 
 export class Ufn05Base extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'URL Format och namngivning',
+    område: 'URL Format och namngivning',
     id: 'UFN.05',
   };
   constructor() {
@@ -71,7 +71,7 @@ export class Ufn05Base extends BaseRuleset {
 
 export class Ufn09Base extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'URL Format och namngivning',
+    område: 'URL Format och namngivning',
     id: 'UFN.09',
   };
   constructor() {
@@ -108,7 +108,7 @@ export class Ufn09Base extends BaseRuleset {
 
 export class Dok15Base extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'Dokumentation',
+    område: 'Dokumentation',
     id: 'DOK.15',
   };
   constructor() {
@@ -151,7 +151,7 @@ export class Dok15Base extends BaseRuleset {
 }
 export class Arq05Base extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'API Request',
+    område: 'API Request',
     id: 'ARQ.05',
   };
   constructor() {
