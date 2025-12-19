@@ -29,7 +29,6 @@ class RuleCategoryError extends RapLPBaseApiError {
 // Express.js middleware to map Extended
 
 const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err);
 
 // SpecParseError --> 400 adapter impl
 if (err instanceof SpecParseError) {
