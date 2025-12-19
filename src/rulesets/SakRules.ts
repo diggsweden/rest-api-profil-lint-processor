@@ -13,7 +13,7 @@ const moduleName: string = 'SakRules.js';
 
 export class Sak01 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'Säkerhet',
+    område: 'Säkerhet',
     id: 'SAK.01',
   };
   message = 'All transport SKALL ske över HTTPS med minst TLS 1.2.';
@@ -62,7 +62,7 @@ export class Sak01 extends BaseRuleset {
 }
 export class Sak09 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'Säkerhet',
+    område: 'Säkerhet',
     id: 'SAK.09',
   };
   description =
@@ -109,7 +109,7 @@ export class Sak09 extends BaseRuleset {
 }
 export class Sak10 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'Säkerhet',
+    område: 'Säkerhet',
     id: 'SAK.10',
   };
   description =
@@ -146,7 +146,7 @@ export class Sak10 extends BaseRuleset {
 }
 export class Sak15 extends SakBaseApiKeyRule {
   static customProperties: CustomProperties = {
-    omrade: 'Säkerhet',
+    område: 'Säkerhet',
     id: 'SAK.15',
   };
   constructor() {
@@ -177,7 +177,7 @@ export class Sak15 extends SakBaseApiKeyRule {
  */
 export class Sak16 extends SakBaseApiKeyRule {
   static customProperties: CustomProperties = {
-    omrade: 'Säkerhet',
+    område: 'Säkerhet',
     id: 'SAK.16',
   };
   constructor() {
@@ -207,7 +207,7 @@ export class Sak16 extends SakBaseApiKeyRule {
 }
 export class Sak18 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'Säkerhet',
+    område: 'Säkerhet',
     id: 'SAK.18',
   };
   description = 'OAuth är ett auktorisationsprotokoll som säkert delegerar behörighet till en annan resurs.';

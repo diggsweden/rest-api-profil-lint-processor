@@ -12,7 +12,7 @@ const moduleName: string = 'DotRules.js';
 
 export class Dot02 extends DotRuleBase {
   static customProperties: CustomProperties = {
-    omrade: 'Datum- och tidsformat',
+    område: 'Datum- och tidsformat',
     id: 'DOT.02',
   };
   description = 'Ett giltigt exempel enligt DOT.02 behöver anges som ett exempel';
@@ -61,7 +61,7 @@ export class Dot02 extends DotRuleBase {
 }
 export class Dot04 extends DotRuleBase {
   static customProperties: CustomProperties = {
-    omrade: 'Datum- och tidsformat',
+    område: 'Datum- och tidsformat',
     id: 'DOT.04',
   };
   description = 'När man använder RFC 3339 format BÖR tidszonen anges.';
