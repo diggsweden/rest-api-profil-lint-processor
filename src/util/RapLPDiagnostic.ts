@@ -43,7 +43,7 @@ class RapLPDiagnostic {
         const severityText = severity.toUpperCase();
         // Check if rule is found in Spectral results
         const spectralResult = spectralResults.find((result) => {
-          return result.omrade === customProperties.omrade && result.id === customProperties.id;
+          return result.område === customProperties.område && result.id === customProperties.id;
         });
         if (spectralResult) {
           //We have a match, that means there is an error
@@ -51,7 +51,7 @@ class RapLPDiagnostic {
             if (!executedRuleIdsWithError.has(customProperties.id)) {
               this._ruleSets.executedUniqueRulesWithError.push({
                 id: customProperties.id, // Store some more diagnostic info (Duplicate NOT OK)
-                omrade: customProperties.omrade,
+                område: customProperties.område,
               });
             }
           }
@@ -63,7 +63,7 @@ class RapLPDiagnostic {
           if (!executedRuleIds.has(customProperties.id)) {
             this._ruleSets.executedUniqueRules.push({
               id: customProperties.id, // Store some more diagnostic info (Duplicate OK)
-              omrade: customProperties.omrade,
+              område: customProperties.område,
             });
           }
           executedRuleIds.add(customProperties.id); // Store current ID of rule with NO error
@@ -74,11 +74,11 @@ class RapLPDiagnostic {
     for (const key of instanceCategoryMap.keys()) {
       const customProperties = instanceCategoryMap.get(key).customProperties;
       const exists = this._ruleSets.notApplicableRules.some((rule) => {
-        return rule.id === customProperties.id && rule.omrade === customProperties.omrade;
+        return rule.id === customProperties.id && rule.område === customProperties.område;
       });
       if (!ruleIdsNotApplicable.has(customProperties.id) && !exists) {
         // If not present, store the id and område in the not applicableRules
-        this._ruleSets.notApplicableRules.push({ id: customProperties.id, omrade: customProperties.omrade }); // Rules
+        this._ruleSets.notApplicableRules.push({ id: customProperties.id, område: customProperties.område }); // Rules
       }
     }
   }
@@ -155,7 +155,7 @@ interface DiagnosticRuleinfoSet {
 }
 interface DiagnosticRuleInfo {
   id: string;
-  omrade: string;
+  område: string;
 }
 interface PopulatedDiagnosticRuleInfo extends DiagnosticRuleInfo {
   status: string;

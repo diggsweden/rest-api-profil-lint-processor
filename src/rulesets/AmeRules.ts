@@ -28,7 +28,7 @@ interface StateExecutionLog {
 }
 export class Ame07 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'API Message',
+    område: 'API Message',
     id: 'AME.07',
   };
   description = 'Fältnamn BÖR använda tecken som är alfanumeriska.';
@@ -64,7 +64,7 @@ export class Ame07 extends BaseRuleset {
 
 export class Ame04 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'API Message',
+    område: 'API Message',
     id: 'AME.04',
   };
   description = 'För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.';
@@ -100,7 +100,7 @@ export class Ame04 extends BaseRuleset {
 export class Ame01 extends BaseRuleset {
   static errorMessage = 'Datamodellen för en representation BÖR beskrivas med JSON enligt senaste versionen, RFC 8259.';
   static customProperties: CustomProperties = {
-    omrade: 'API Message',
+    område: 'API Message',
     id: 'AME.01',
   };
   description = 'Denna regel validerar att request och response är application/json.';
@@ -148,7 +148,7 @@ export class Ame02 extends BaseRuleset {
   static errorMessage =
     "Det BÖR förutsättas att alla request headers som standard använder 'Accept' med värde 'application/json'";
   static customProperties: CustomProperties = {
-    omrade: 'API Message',
+    område: 'API Message',
     id: 'AME.02',
   };
   description = 'Denna regel validerar att response är application/json.';
@@ -193,7 +193,7 @@ export class Ame02 extends BaseRuleset {
 }
 export class Ame05 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'API Message',
+    område: 'API Message',
     id: 'AME.05',
   };
   description = 'Inom ett API SKALL namnsättningen vara konsekvent, dvs blanda inte camelCase och snake_case.';

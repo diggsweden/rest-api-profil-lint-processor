@@ -10,7 +10,7 @@ const moduleName: string = 'VerRules.js';
 
 export class Ver06 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'Versionhantering',
+    område: 'Versionhantering',
     id: 'VER.06',
   };
   given = '$.paths';
@@ -43,7 +43,7 @@ export class Ver06 extends BaseRuleset {
 }
 export class Ver05 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    omrade: 'Versionhantering',
+    område: 'Versionhantering',
     id: 'VER.05',
   };
 

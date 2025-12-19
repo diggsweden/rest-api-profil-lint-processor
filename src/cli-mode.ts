@@ -127,12 +127,8 @@ export async function execCLI<T extends CliArgs>(argv: T) {
       // Import and create rule instances in RAP-LP
       const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
       // Load API specification into a Document object
-      const apiSpecDocument = new Document(
-        fs.readFileSync(join(apiSpecFileName), 'utf-8').trim(),
-        Parsers.Yaml,
-        apiSpecFileName,
-      );
-
+      const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
+      apiSpecDocument = new SpectralDocument(parseResult.raw, parser, apiSpecFileName);
       try {
         /**
          * CustomSpectral
@@ -175,7 +171,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         const formatLintingResult = (result: any) => {
           return `allvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${
             result.krav
-          } \nområde: ${result.omrade} \nsökväg:[${result.sokvag}] \nomfattning:${JSON.stringify(
+          } \nområde: ${result.område} \nsökväg:[${result.sökväg}] \nomfattning:${JSON.stringify(
             result.omfattning,
             null,
             2,
@@ -211,7 +207,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             customDiagnostic.diagnosticInformation.executedUniqueRules
               .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
-                console.log(chalk.bgGreen('OK') + '\t' + item.omrade + ' / ' + item.id);
+                console.log(chalk.bgGreen('OK') + '\t' + item.område + ' / ' + item.id);
               });
           }
           if (
@@ -223,7 +219,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             customDiagnostic.diagnosticInformation.executedUniqueRulesWithError
               .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
-                console.log(chalk.bgRed('EJ OK') + '\t' + item.omrade + ' / ' + item.id);
+                console.log(chalk.bgRed('EJ OK') + '\t' + item.område + ' / ' + item.id);
               });
           }
           if (
@@ -235,7 +231,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             customDiagnostic.diagnosticInformation.notApplicableRules
               .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
-                console.log(chalk.bgGrey('N/A') + '\t' + item.omrade + '/' + item.id);
+                console.log(chalk.bgGrey('N/A') + '\t' + item.område + '/' + item.id);
               });
           }
         }
