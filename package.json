@@ -37,8 +37,10 @@
     "@types/express": "^5.0.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
+    "@types/supertest": "^6.0.3",
     "jest": "^30.0.4",
     "standard-version": "^9.5.0",
+    "supertest": "^7.1.4",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
