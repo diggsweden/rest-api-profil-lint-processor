@@ -61,6 +61,7 @@ jest.mock('../../../src/routes/validate.js', () => ({
       }
     const invalidPathsScalar =
       /paths:\s*\n\s*\/\s*(\n|$)/m.test(raw);
+      
       // Violation (synthetic)
       if (invalidPathsScalar) {
         if (strict) {
@@ -177,7 +178,7 @@ openapi: 3.0.0
 info:
   version: 1.0.0
 paths:
-  FORBIDDEN_RULE: true
+  /
 `;
     const res = await request(app)
       .post('/api/v1/validation/validatespec')
