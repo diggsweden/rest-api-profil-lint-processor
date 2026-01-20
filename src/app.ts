@@ -191,10 +191,15 @@ async function main(): Promise<void> {
       const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
 
       if (argv.dex != null) {
-        const reportHandler = new ExcelReportProcessor({
-          outputFilePath: argv.dex,
-        });
-        reportHandler.generateReportDocument(customDiagnostic);
+        try {
+          const reportHandler = new ExcelReportProcessor({
+            outputFilePath: argv.dex,
+          });
+          reportHandler.generateReportDocument(customDiagnostic);
+        } catch (dexError: any) {
+          logErrorToFile(dexError);
+          console.error(chalk.red('Misslyckades att skriva till excelfilen!'));
+        }
       }
 
       /**
