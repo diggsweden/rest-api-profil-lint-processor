@@ -7,6 +7,7 @@ import { ISpectralDiagnostic } from '@stoplight/spectral-core';
 import spectralCore from '@stoplight/spectral-core';
 const { Spectral, Document } = spectralCore;
 import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.js';
+import { buildRuleHelpUrl } from '../rulesets/util/rules-doc.config.js';
 
 class RapLPCustomSpectral {
   private spectral: SpectralCore.Spectral;
@@ -49,9 +50,12 @@ class RapLPCustomSpectral {
           if (ruleClass && typeof ruleClass.getCustomProperties === 'function') {
             // Check for existance
             const customProperties = ruleClass.getCustomProperties;
+            const ruleId = ruleClass.customProperties.id;   
+
             const customResult: RapLPCustomSpectralDiagnostic = {
-              id: ruleClass.customProperties.id,
+              id: ruleId,
               område: ruleClass.customProperties.område,
+              helpUrl: ruleId ? buildRuleHelpUrl(ruleId) : undefined,
               ...customProperties, // For more copy
               ...this.mapResultToCustom(result),
             };
