@@ -167,13 +167,13 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           }
         };
         const formatLintingResult = (result: any) => {
-          return `allvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${
+          return `\nallvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${
             result.krav
           } \nområde: ${result.område} \nsökväg:[${result.sökväg}] \nomfattning:${JSON.stringify(
             result.omfattning,
             null,
             2,
-          )} `;
+          )}\ndesignregel: ${result.helpUrl} `;
         };
         //Check specified option from yargs input
 
