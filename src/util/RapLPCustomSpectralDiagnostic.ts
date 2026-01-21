@@ -16,6 +16,9 @@ export interface RapLPCustomSpectralDiagnostic
   allvarlighetsgrad?: string;
   sökväg?: any;
   omfattning?: any;
+
+  /**Helper Url for guidelines */
+  helpUrl?: string;
 }
 
 
