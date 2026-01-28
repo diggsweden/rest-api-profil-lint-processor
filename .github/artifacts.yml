@@ -5,7 +5,6 @@
 # Artifacts Configuration for rest-api-profil-lint-processor
 # NPM CLI application with container
 # Package tarballs will be attached to GitHub Release as assets
-
 artifacts:
   - name: raplp
     project-type: npm
@@ -15,7 +14,6 @@ artifacts:
       - github-packages
     config:
       node-version: 24
-
 # Container builds from source (no artifact dependency)
 # Containerfile copies source code and runs npm install
 containers:

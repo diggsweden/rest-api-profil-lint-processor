@@ -17,15 +17,11 @@
 # - NPM package: @diggsweden/rest-api-profil-lint-processor@0.5.9-dev-feat-name-abc1234
 # - Container image: ghcr.io/diggsweden/rest-api-profil-lint-processor:0.5.9-dev-feat-name-abc1234
 # - Tagged with 'dev' (not 'latest')
-
 name: Release Workflow Dev
-
 on:
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   dev-release:
     permissions:
