@@ -78,7 +78,7 @@ export function detectSpecFormatPreference(
 
   if (raw) {
     const t = raw.trim();
-    if (t.startsWith('{') || t.startsWith('[')) return 'auto';
+    if (t.startsWith('{') || t.startsWith('[')) return 'always';
     if (/^\s*<\?xml|^\s*<[\w-]+[\s>]/i.test(t)) return 'never';
   }
 
