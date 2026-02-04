@@ -30,67 +30,67 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
 ## Innehållsförteckning
 
 1. [Område: Dokumentation](#område-dokumentation)
-   - [ID: DOK.01](#id-dok01)
-   - [ID: DOK.03](#id-dok03)
-   - [ID: DOK.06](#id-dok06)
-   - [ID: DOK.07](#id-dok07)
-   - [ID: DOK.08](#id-dok08)
-   - [ID: DOK.09](#id-dok09)
-   - [ID: DOK.11](#id-dok11)
-   - [ID: DOK.15](#id-dok15)
-   - [ID: DOK.17](#id-dok17)
-   - [ID: DOK.19](#id-dok19)
-   - [ID: DOK.20](#id-dok20)
-   - [ID: DOK.21](#id-dok21)
+  - [ID: DOK.01](#id-dok01)
+  - [ID: DOK.03](#id-dok03)
+  - [ID: DOK.06](#id-dok06)
+  - [ID: DOK.07](#id-dok07)
+  - [ID: DOK.08](#id-dok08)
+  - [ID: DOK.09](#id-dok09)
+  - [ID: DOK.11](#id-dok11)
+  - [ID: DOK.15](#id-dok15)
+  - [ID: DOK.17](#id-dok17)
+  - [ID: DOK.19](#id-dok19)
+  - [ID: DOK.20](#id-dok20)
+  - [ID: DOK.21](#id-dok21)
 2. [Område: Datum- och tidsformat](#område-datum--och-tidsformat)
-   - [ID: DOT.01](#id-dot01)
-   - [ID: DOT.04](#id-dot04)
+  - [ID: DOT.01](#id-dot01)
+  - [ID: DOT.04](#id-dot04)
 3. [Område: Resurser](#område-resurser)
-   - [ID: RES.02](#id-res02)
-   - [ID: RES.06](#id-res06)
+  - [ID: RES.02](#id-res02)
+  - [ID: RES.06](#id-res06)
 4. [Område: URL Format och namngivning](#område-url-format-och-namngivning)
-   - [ID: UFN.01](#id-ufn01)
-   - [ID: UFN.02](#id-ufn02)
-   - [ID: UFN.05](#id-ufn05)
-   - [ID: UFN.07](#id-ufn07)
-   - [ID: UFN.08](#id-ufn08)
-   - [ID: UFN.09](#id-ufn09)
+  - [ID: UFN.01](#id-ufn01)
+  - [ID: UFN.02](#id-ufn02)
+  - [ID: UFN.05](#id-ufn05)
+  - [ID: UFN.07](#id-ufn07)
+  - [ID: UFN.08](#id-ufn08)
+  - [ID: UFN.09](#id-ufn09)
 5. [Område: Mognad](#område-mognad)
-   - [ID: MOG.01](#id-mog01)
-   - [ID: MOG.02](#id-mog02)
+  - [ID: MOG.01](#id-mog01)
+  - [ID: MOG.02](#id-mog02)
 6. [Område: API Message](#område-api-message)
-   - [ID: AME.01](#id-ame01)
-   - [ID: AME.02](#id-ame02)
-   - [ID: AME.04](#id-ame04)
-   - [ID: AME.05](#id-ame05)
-   - [ID: AME.07](#id-ame07)
+  - [ID: AME.01](#id-ame01)
+  - [ID: AME.02](#id-ame02)
+  - [ID: AME.04](#id-ame04)
+  - [ID: AME.05](#id-ame05)
+  - [ID: AME.07](#id-ame07)
 7. [Område: API Request](#område-api-request)
-   - [ID: ARQ.01](#id-arq01)
-   - [ID: ARQ.03](#id-arq03)
-   - [ID: ARQ.05](#id-arq05)
+  - [ID: ARQ.01](#id-arq01)
+  - [ID: ARQ.03](#id-arq03)
+  - [ID: ARQ.05](#id-arq05)
 8. [Område: Felhantering](#område-felhantering)
-   - [ID: FEL.01](#id-fel01)
-   - [ID: FEL.02](#id-fel02)
+  - [ID: FEL.01](#id-fel01)
+  - [ID: FEL.02](#id-fel02)
 9. [Område: Versionhantering](#område-versionhantering)
-   - [ID: VER.05](#id-ver05)
-   - [ID: VER.06](#id-ver06)
+  - [ID: VER.05](#id-ver05)
+  - [ID: VER.06](#id-ver06)
 10. [Område: Filtrering, paginering och sökparametrar](#område-filtrering-paginering-och-sökparametrar)
-    - [ID: FNS.01](#id-fns01)
-    - [ID: FNS.03](#id-fns03)
-    - [ID: FNS.05](#id-fns05)
-    - [ID: FNS.06](#id-fns06)
-    - [ID: FNS.07](#id-fns07)
-    - [ID: FNS.08](#id-fns08)
-    - [ID: FNS.09](#id-fns09)
+  - [ID: FNS.01](#id-fns01)
+  - [ID: FNS.03](#id-fns03)
+  - [ID: FNS.05](#id-fns05)
+  - [ID: FNS.06](#id-fns06)
+  - [ID: FNS.07](#id-fns07)
+  - [ID: FNS.08](#id-fns08)
+  - [ID: FNS.09](#id-fns09)
 11. [Område: Säkerhet](#område-säkerhet)
-    - [ID: SAK.01](#id-sak01)
-    - [ID: SAK.09](#id-sak09)
-    - [ID: SAK.10](#id-sak10)
-    - [ID: SAK.15](#id-sak15)
-    - [ID: SAK.16](#id-sak16)
-    - [ID: SAK.18](#id-sak18)
+  - [ID: SAK.01](#id-sak01)
+  - [ID: SAK.09](#id-sak09)
+  - [ID: SAK.10](#id-sak10)
+  - [ID: SAK.15](#id-sak15)
+  - [ID: SAK.16](#id-sak16)
+  - [ID: SAK.18](#id-sak18)
 12. [Område: Förutsättningar](#område-förutsättningar)
-    - [ID: FOR.02](#id-for02)
+  - [ID: FOR.02](#id-for02)
 
 ## Område: Dokumentation
 
@@ -104,7 +104,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $
 ```
 
@@ -129,7 +129,7 @@ Regeln förutsätter att det finns en förekomst av objektet `externalDocs` med 
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.info
 $.info.contact
 $.info.license
@@ -165,7 +165,7 @@ Regeln förutsätter att det finns en förekomst av objektet `info` med underlig
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.info.description
 ```
 
@@ -197,7 +197,7 @@ _Större än-tecknet kan också användas när beskrivningen sträcker sig över
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.info
 ```
 
@@ -221,7 +221,7 @@ Regeln förutsätter att det finns en förekomst av objektet `info` med underlig
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $
 ```
 
@@ -258,7 +258,7 @@ _Ett av objekten räcker för att uppfylla regeln._
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $
 ```
 
@@ -281,7 +281,7 @@ _Ett av objekten räcker för att uppfylla regeln, men "limit", "begränsning" e
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.info
 ```
 
@@ -305,7 +305,7 @@ _Exemplet ovan är giltigt då description finns, och innehåller en textsträng
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths[*][*].responses[*].content.application/json
 
 $.paths[*][?(@ != "get")].requestBody.content.application/json
@@ -339,7 +339,7 @@ I exemplet ovan, så exemplifieras regeln med en post operation, där regeln und
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $
 ```
 
@@ -367,7 +367,7 @@ I exemplet ovan, så exemplifieras regeln det med ett icke godkänt värde på v
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths[*][*]
 ```
 
@@ -390,7 +390,7 @@ _I exemplet ovan illustreras regeln med flera operationer, där DOK.19 kontrolle
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths[*][*].responses[*]
 
 ```
@@ -414,7 +414,7 @@ I exemplet ovan, så exemplifieras regeln med GET samt en POST operation, där r
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $
 ```
 
@@ -445,7 +445,7 @@ _Om säkerhet saknas så bör det signaleras genom att tilldela security-objekte
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.responses.content.application/json.schema.properties
 ```
 
@@ -468,7 +468,7 @@ I exemplet ovan, så exemplifieras regeln med en POST operation, där regeln fö
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.components.schemas
 ```
 
@@ -496,7 +496,7 @@ I exemplet ovan, så exemplifieras regeln med att oavsett typ av operation, unde
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths[*].*.parameters[*]
 ```
 
@@ -526,7 +526,7 @@ _Exemplet ovan är giltigt då namnet på parametern inte är ett av ovanståend
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths[*]~
 ```
 
@@ -559,7 +559,7 @@ följa namnstandarden nedan:
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.servers.[url]
 ```
 
@@ -581,7 +581,7 @@ Regeln söker efter 1-n förekomster av fältet `Url` under Serverobjektet, samt
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.servers.[url]
 ```
 
@@ -604,7 +604,7 @@ I exemplet ovan, så exemplifieras regeln med att den första url:en inte expone
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.servers[*].url
 $.paths
 ```
@@ -632,7 +632,7 @@ I exemplet ovan, så utgör paths tillsammans med parameters sektionen föremål
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.
 ```
 
@@ -655,7 +655,7 @@ I exemplet ovan, så utgör fältet url under serverobjektet, samt objektet path
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths[*]~
 ```
 
@@ -678,7 +678,7 @@ I exemplet ovan, så utgör fältet url under serverobjektet, samt objektet path
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.servers.[url]
 $.paths[*]~
 $.paths.*.*.parameters[?(@.in=='path')].name
@@ -708,7 +708,7 @@ I exemplet ovan, så utgör fältet `url` under serverobjektet, samt objektet `p
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths[*]
 ```
 
@@ -731,7 +731,7 @@ _Exemplet ovan är giltigt då `GET` är en av metoderna som listades ovan._
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths
 ```
 
@@ -762,7 +762,7 @@ _Exemplet är giltigt då det uppfyller samtliga krav i punktlistan ovan._
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths[*][*].responses[?(@property < 400)].content
 $.paths.*.*.requestBody.content
 ```
@@ -787,7 +787,7 @@ I exemplet ovan, så exemplifieras regeln med ett OK svar på en operation, där
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths.*.*.requestBody.content
 ```
 
@@ -810,7 +810,7 @@ I exemplet ovan, så exemplifieras regeln med ett OK svar på en operation, där
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.components.schemas.properties[*]~
 ```
 
@@ -833,7 +833,7 @@ I exemplet ovan, så exemplifieras regeln med ett OK svar på en operation, där
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.components.schemas.properties[*]~
 ```
 
@@ -856,7 +856,7 @@ I exemplet ovan, så exemplifieras ett icke giltigt exempel där regeln kommer s
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.components.schemas.properties[*]~
 ```
 
@@ -883,7 +883,7 @@ I exemplet ovan, så exemplifieras giltigt exempel (första egenskapen) respekti
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths[*][*].requestBody.content
 ```
 
@@ -906,7 +906,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av att media typen und
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths.*.*
 ```
 
@@ -933,7 +933,7 @@ TODO
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths.*.*.parameters[?(@.in=='header' && @.schema)]
 ```
 
@@ -954,7 +954,7 @@ Regeln förutsätter att payload data inte förekommer i HTTP headers. Regeln ä
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
   $.paths.*.*.responses.*.content['application/problem+json'].schema
   $.paths.*.*.responses.*.content['application/problem+xml'].schema
 ```
@@ -979,7 +979,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av den komplexa typen 
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths[*][*].responses[?(@property == 'default' || @property >= 400)].content
 ```
 
@@ -1006,7 +1006,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll att den komplexa typen
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.servers.[url]
 ```
 
@@ -1029,7 +1029,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll att den specificerade 
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths
 ```
 
@@ -1054,7 +1054,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll att den specificerade 
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths.*.*.parameters[?(@.in=='query')].name
 ```
 
@@ -1083,7 +1083,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av de parametrar som i
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths.*.*.parameters[?(@.in=='query')].name
 ```
 
@@ -1106,7 +1106,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av de parametrar som i
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths.[*].parameters[?(@.in=='query')].required
 ```
 
@@ -1129,7 +1129,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths.[*].parameters[?(@.in=='query')].name
 ```
 
@@ -1152,7 +1152,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths..parameters
 ```
 
@@ -1175,7 +1175,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths..parameters
 ```
 
@@ -1198,7 +1198,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths..parameters
 ```
 
@@ -1225,7 +1225,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.servers
 ```
 
@@ -1248,7 +1248,7 @@ _Exemplet ovan är giltigt då samtliga servrar innehåller en giltig `url` och 
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.components.securitySchemes[*]
 ```
 
@@ -1271,7 +1271,7 @@ I exemplet ovan så kommer regeln att ge ett negativt utfall eftersom det finns 
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $..components.securitySchemes[?(@.scheme)]
 ```
 
@@ -1294,7 +1294,7 @@ I exemplet ovan så kommer regeln att ge ett positivt utfall eftersom det finns 
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.components.securitySchemes[?(@ && @.type=='apiKey')]
 ```
 
@@ -1319,7 +1319,7 @@ I exemplet ovan ger regeln ett negativt utfall, eftersom det definierade säkerh
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.components.securitySchemes[?(@ && @.type=='apiKey')]
 ```
 
@@ -1342,7 +1342,7 @@ I exemplet ovan ger regeln ett positivt utfall, eftersom det definierade säkerh
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
  $..[securitySchemes][?(@ && @.type=='oauth2' && @.flows ? true : false)][*].[?(@property && @property.match(/Url$/i))]
 ```
 
@@ -1369,7 +1369,7 @@ I exemplet ovan så kommer regeln att ge ett negativt utfall eftersom clientCred
 
 **JSON Path Plus-uttryck:**
 
-```
+```text
 $.paths..get
 ```
 
