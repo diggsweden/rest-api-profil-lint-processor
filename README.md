@@ -45,10 +45,10 @@ Förutsätter att det finns en `openapi.yaml` att validera i den aktuella katalo
 > Notera: Att GitHub Packages (npm) kräver authentisering.<br>
 > Konfigurera `.npmrc` mot rätt registry och scope, antingen globalt eller lokalt för enskilda projekt - `@diggsweden:registry=https://npm.pkg.github.com`<br>
 > Om du saknar inloggning med GitHub Personal access token (PAT), se [FAQ](#hur-skapar-jag-ett-github-personal-access-token-pat).
-
+>
 > Notera: Att `<version>` byts ut mot önskad version av verktyget, oftast senaste release tag. För mer information se [versioner](#versioner).
 
-#### Installera globalt med npm:
+#### Installera globalt med npm
 
 ```bash
 npm i -g @diggsweden/rest-api-profil-lint-processor@<version>
@@ -61,7 +61,7 @@ raplp -f openapi.yaml
 
 Installera och lägg som `devDependencies`:
 
-```
+```text
 npm i --save-dev @diggsweden/rest-api-profil-lint-processor@<version>
 ```
 
@@ -112,10 +112,13 @@ docker run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processo
 #### Alternativ att köra ifrån containern med podman/docker
 
 1. Starta en podman/docker container:
+
    ```bash
    podman run --rm -it --entrypoint /bin/sh -v $(pwd):/app/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version>
    ```
+
 2. Kör din validering ifrån containern:
+
    ```bash
    npm start -- -f /data/openapi.yaml
    ```
@@ -352,9 +355,11 @@ Vid körningar med podman och docker i kombination med flaggor som sparar inform
 Se till att containern har rättigheter att skriva till den katalog som du mountar.
 
 1. Kolla rättigheter
+
    ```bash
    ls -ld /path/to/mount
    ```
+
 2. Prova köra som `root user`
 
    ```bash
@@ -362,11 +367,14 @@ Se till att containern har rättigheter att skriva till den katalog som du mount
    ```
 
 3. För att testa om det är ett åtkomstproblem kan du temporärt prova om det går efter du gett alla skrivrättigheter till den mountade katalogen:
+
    ```bash
    sudo chmod 777 /path/to/mount
    ```
+
 4. Beroende på din miljö och vilka möjligheter du har, hantera åtkomstproblemet mer beständigt och återställ tidigare läs- och skrivrättigheter.
 5. Du kan även prova:
+
    ```bash
    sudo podman run -it -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml -l /data/raplp.log --dex /data/avstamning.xlsx
    ```

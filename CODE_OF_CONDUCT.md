@@ -101,15 +101,15 @@ gemenskapen.
 
 Denna uppförandekod är en översättning av [Contributor Covenant][hemsida],
 version 2.1, tillgänglig på
-[https://www.contributor-covenant.org/version/2/1/code_of_conduct.html][v2.1].
+[<https://www.contributor-covenant.org/version/2/1/code_of_conduct.html>][v2.1].
 
 Uppförandekoden inspirerades av
 [Mozillas uppförandekod][Mozilla CoC].
 
 För svar på vanliga frågor kring uppförandekod, se "Vanliga frågor (F.A.Q)",
-[https://www.contributor-covenant.org/faq][FAQ].
+[<https://www.contributor-covenant.org/faq>][FAQ].
 Översättningar finns tillgängliga på
-[https://www.contributor-covenant.org/translations][translations].
+[<https://www.contributor-covenant.org/translations>][translations].
 
 [hemsida]: https://www.contributor-covenant.org
 [v2.1]: https://www.contributor-covenant.org/version/2/1/code_of_conduct.html
