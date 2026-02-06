@@ -34,7 +34,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
 if (err instanceof SpecParseError) {
     const problemDetails = new ProblemDetailsDTO({
       type: 'https://rap-lp./problems/spec-parse-error',
-      title: 'Specification parse error',
+      title: 'Okänt fel vid parsning av API-specifikationen',
       status: ERROR_TYPE.BAD_REQUEST,
       detail: err.message,
       instance: req.originalUrl,
