@@ -5,6 +5,7 @@
 import { BaseRuleset } from '../BaseRuleset.js';
 import { Property } from '../rulesetUtil.js';
 import { CustomProperties } from '../../ruleinterface/CustomProperties.js';
+import { RuleExecutionContext } from '../../util/RuleExecutionContext.js';
 
 /**
  * interface describing propertyes collected and validated
@@ -28,8 +29,8 @@ export interface DotStateExecutionLog {
  * Class that abstracts common logic needed in category of Datetime[DOT rules]
  */
 export class DotRuleBase extends BaseRuleset {
-  constructor() {
-    super();
+  protected constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
     this.given = '$.components.schemas';
   }

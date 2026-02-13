@@ -12,15 +12,14 @@ import { ApiInfo } from '../model/ApiInfo.js';
 import { validationRules } from '../model/validationRules.js';
 import { ExcelReportProcessor } from '../util/excelReportProcessor.js';
 import { DiagnosticReport, RapLPDiagnostic } from '../util/RapLPDiagnostic.js';
-import { Issue } from '../util/Issue.js';
 import * as IssueHelper from '../util/RapLPIssueHelpers.js'; 
 import { parseApiSpecInput,detectSpecFormatPreference, ParseResult} from '../util/validateUtil.js';
-import { SpecParseError } from '../util/RapLPSpecParseError.js';
 import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
 import { SpecValidationRequestDto } from '../model/SpecValidationRequestDto.js';
 import { ERROR_TYPE, RapLPBaseApiError } from '../util/RapLPBaseApiErrorHandling.js';
 import type { IParser } from '@stoplight/spectral-parsers';
 import { stringify } from 'node:querystring';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 
 
@@ -28,6 +27,7 @@ export const registerValidationRoutes = (app: Express) => {
   // Route for raw content upload.
   app.post('/api/v1/validation/validate', async (req, res, next) => {
     try {
+      const context = new RuleExecutionContext();
       const yamlContent: YamlContentDto = req.body;
 
       let yamlContentString: string;
@@ -37,9 +37,9 @@ export const registerValidationRoutes = (app: Express) => {
 
       const apiSpecDocument = new Document(yamlContentString, Parsers.Yaml, '');
 
-      const rules = await importAndCreateRuleInstances(yamlContent.categories);
+      const rules = await importAndCreateRuleInstances(context, yamlContent.categories);
 
-      const result = await processApiSpec(rules, apiSpecDocument);
+      const result = await processApiSpec(context,rules, apiSpecDocument);
       res.send(result);
     } catch (e) {
       next(e);
@@ -59,6 +59,7 @@ export const registerValidationRoutes = (app: Express) => {
   app.post('/api/v1/validation/generate-report', async (req, res, next): Promise<any> => {
     try {
       const data = req.body;
+      const context = new RuleExecutionContext();
 
       if (!data || !data.result || !Array.isArray(data.result)) {
         return res.status(400).json({ error: 'Invalid data format. Expected an object with a "result" array.' });
@@ -70,7 +71,7 @@ export const registerValidationRoutes = (app: Express) => {
       const ruleCategories = data.categories && data.categories.length > 0 ? data.categories : undefined;
 
       const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
-      const customDiagnostic = new RapLPDiagnostic();
+      const customDiagnostic = new RapLPDiagnostic(context);
       customDiagnostic.processRuleExecutionInformation(data.result, enabledRulesAndCategorys.instanceCategoryMap);
       const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
 
@@ -93,6 +94,7 @@ export const registerValidationRoutes = (app: Express) => {
    */
   app.post('/api/v1/validation/validatespec', async (req, res, next) => {
     try {
+      const context = new RuleExecutionContext();
       const body: SpecValidationRequestDto = req.body;
       
       //0.5 Check input
@@ -146,8 +148,8 @@ export const registerValidationRoutes = (app: Express) => {
       // 5. No strict-errors → run raplp ruleengine
       const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
       const apiSpecDocument = new Document(parseResult.raw, parser, '');
-      const rules = await importAndCreateRuleInstances(categories);
-      const result = await processApiSpec(rules, apiSpecDocument);
+      const rules = await importAndCreateRuleInstances(context, categories);
+      const result = await processApiSpec(context, rules, apiSpecDocument);
 
       const hasRuleViolations = result.result.some(
         d =>d.allvarlighetsgrad === 'ERROR' || d.allvarlighetsgrad === 'WARNING'

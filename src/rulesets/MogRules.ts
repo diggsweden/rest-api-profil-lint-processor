@@ -6,6 +6,7 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
 import { countEndpoints, endPointsAreValid } from './util/MogRulesUtil.js';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 const moduleName: string = 'MogRules.ts';
 
@@ -51,8 +52,8 @@ export class Mog01 extends BaseRuleset {
     },
   ];
   severity = DiagnosticSeverity.Error;
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
 }
@@ -94,8 +95,8 @@ export class Mog02 extends BaseRuleset {
     },
   ];
   severity = DiagnosticSeverity.Warning;
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
 }

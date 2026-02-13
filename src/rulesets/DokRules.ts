@@ -16,6 +16,8 @@ import {
   PathsObject,
   SecurityRequirementObject,
 } from '../types/openapi-3.0.js';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
+
 const moduleName: string = 'DokRules.js';
 
 export class Dok15Get extends Dok15Base {
@@ -102,9 +104,9 @@ export class Dok17 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS2', 'OAS3']);    
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -135,9 +137,9 @@ export class Dok20 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -183,8 +185,8 @@ export class Dok06 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
@@ -215,9 +217,9 @@ export class Dok07 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -287,9 +289,9 @@ export class Dok08 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -345,9 +347,9 @@ export class Dok09 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -389,9 +391,9 @@ export class Dok11 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -427,9 +429,9 @@ export class Dok19 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -492,8 +494,8 @@ export class Dok21 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
@@ -546,9 +548,9 @@ export class Dok01 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
 }

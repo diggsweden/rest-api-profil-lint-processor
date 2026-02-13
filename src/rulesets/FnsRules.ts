@@ -6,6 +6,7 @@ import { enumeration, truthy, falsy, undefined as undefinedFunc, pattern, schema
 import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 const moduleName: string = 'FnsRules.js';
 
@@ -40,9 +41,9 @@ export class Fns01 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -76,9 +77,9 @@ export class Fns03 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -137,9 +138,9 @@ export class Fns09 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
 }
 export class Fns05 extends BaseRuleset {
@@ -178,9 +179,9 @@ export class Fns05 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -215,9 +216,9 @@ export class Fns06 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -282,9 +283,9 @@ export class Fns07 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -349,9 +350,9 @@ export class Fns08 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
 }

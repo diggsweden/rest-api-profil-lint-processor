@@ -6,9 +6,7 @@ import { falsy, undefined as undefinedFunc } from '@stoplight/spectral-functions
 import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
-import Format from '@stoplight/spectral-formats';
-import { CustomFormats } from './util/CustomOasVersion.js';
-
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 const moduleName: string = 'ForRules.js';
 
 /**
@@ -43,8 +41,8 @@ export class For02 extends BaseRuleset {
   ];
   severity = DiagnosticSeverity.Error;
 
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
 }
