@@ -6,6 +6,7 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
 import { personalIdentityNumberFieldNames } from './constants/ResConstants.js';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 const moduleName: string = 'ResRules.js';
 
@@ -50,8 +51,8 @@ export class Res02 extends BaseRuleset {
     },
   ];
   severity = DiagnosticSeverity.Warning;
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
 }
@@ -108,8 +109,8 @@ export class Res06 extends BaseRuleset {
     },
   ];
   severity = DiagnosticSeverity.Error;
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
 }
