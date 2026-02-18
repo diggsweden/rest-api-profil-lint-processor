@@ -6,13 +6,14 @@ import { enumeration, truthy, falsy, undefined as undefinedFunc, pattern, schema
 import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 /**
  * Base class for handling security rules when apiKeys is defined
  */
 export abstract class SakBaseApiKeyRule extends BaseRuleset {
-  protected constructor() {
-    super();
+  protected constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   given = "$.components.securitySchemes[?(@ && @.type=='apiKey')]";
@@ -45,13 +46,14 @@ export class Dok03Base extends BaseRuleset {
     område: 'Dokumentation',
     id: 'DOK.03',
   };
-  constructor() {
-    super();
+  protected constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
     this.description =
       'Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter.';
     this.severity = DiagnosticSeverity.Error;
   }
+
 }
 
 export class Ufn05Base extends BaseRuleset {
@@ -59,8 +61,9 @@ export class Ufn05Base extends BaseRuleset {
     område: 'URL Format och namngivning',
     id: 'UFN.05',
   };
-  constructor() {
-    super();
+  protected constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
     this.message = 'En URL BÖR INTE vara längre än 2048 tecken.';
     this.severity = DiagnosticSeverity.Warning;
     this.description = 'En URL BÖR INTE vara längre än 2048 tecken.';
@@ -74,8 +77,8 @@ export class Ufn09Base extends BaseRuleset {
     område: 'URL Format och namngivning',
     id: 'UFN.09',
   };
-  constructor() {
-    super();
+   protected constructor(context: RuleExecutionContext) {
+    super(context);
     let moduleName: string = 'UfnRules.js';
     this.message =
       "Blanksteg ' ' och understreck '_' SKALL INTE användas i URL:er med undantag av parameter-delen (gäller alltså URL-elementen Scheme, Authority och Path samt API-elementen protokoll, domännamn, api, version, resurs och identifierare).";
@@ -111,8 +114,8 @@ export class Dok15Base extends BaseRuleset {
     område: 'Dokumentation',
     id: 'DOK.15',
   };
-  constructor() {
-    super();
+  protected constructor(context: RuleExecutionContext) {
+    super(context);
     this.message =
       'I dokumentationen av API:et SKALL exempel på API:ets fråga (eng:request) och svar (eng:reply) finnas i sin helhet.';
     this.severity = DiagnosticSeverity.Error;
@@ -154,8 +157,8 @@ export class Arq05Base extends BaseRuleset {
     område: 'API Request',
     id: 'ARQ.05',
   };
-  constructor() {
-    super();
+  protected constructor(context: RuleExecutionContext)  {
+    super(context);
     super.initializeFormats(['OAS3']);
     this.given = "$.paths.*.*.parameters[?(@.in=='header' && @.schema)]";
     this.message = 'Payload data SKALL INTE användas i HTTP-headers';

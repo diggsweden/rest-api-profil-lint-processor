@@ -7,6 +7,7 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { BaseRuleset } from './BaseRuleset.js';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { SakBaseApiKeyRule } from './rulesetUtil.js';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 //import Format from "@stoplight/spectral-formats";
 
 const moduleName: string = 'SakRules.js';
@@ -54,8 +55,8 @@ export class Sak01 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
@@ -101,8 +102,8 @@ export class Sak09 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
@@ -138,8 +139,8 @@ export class Sak10 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
@@ -149,8 +150,9 @@ export class Sak15 extends SakBaseApiKeyRule {
     område: 'Säkerhet',
     id: 'SAK.15',
   };
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   description = '-';
   message = 'API-nycklar SKALL INTE inkluderas i URL eller querysträngen';
@@ -180,8 +182,9 @@ export class Sak16 extends SakBaseApiKeyRule {
     område: 'Säkerhet',
     id: 'SAK.16',
   };
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   description = 'API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas i okrypterat format.';
   message =
@@ -235,8 +238,8 @@ export class Sak18 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;

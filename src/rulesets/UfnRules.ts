@@ -16,7 +16,8 @@ import {
 } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
-import Format from '@stoplight/spectral-formats';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
+
 const moduleName: string = 'UfnRules.js';
 
 export class Ufn01 extends BaseRuleset {
@@ -49,8 +50,8 @@ export class Ufn01 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
@@ -101,8 +102,8 @@ export class Ufn02 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
@@ -158,8 +159,8 @@ export class Ufn05Servers extends Ufn05Base {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
 }
@@ -235,8 +236,8 @@ export class Ufn05paths extends Ufn05Base {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
 }
@@ -296,9 +297,9 @@ export class Ufn08 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS3', 'OAS2']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -377,30 +378,30 @@ export class Ufn07 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS3', 'OAS2']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
 }
 export class Ufn09Server extends Ufn09Base {
   given = '$.servers.[url]';
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
 }
 export class Ufn09InPathParameters extends Ufn09Base {
   given = "$.paths.*.*.parameters[?(@.in=='path')].name";
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
 }
 export class Ufn09Path extends Ufn09Base {
   given = '$.paths[*]~';
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
 }

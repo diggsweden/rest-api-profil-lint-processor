@@ -8,6 +8,7 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
 import { isValidApplicationJson } from './rulesetUtil.js';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 const moduleName: string = 'ArqRules.js';
 
@@ -149,8 +150,8 @@ export class Arq01 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
@@ -215,9 +216,9 @@ export class Arq03 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
 }

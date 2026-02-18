@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.js';
-import { RuleExecutionLog, ruleExecutionLogDictionary } from './RuleExecutionStatusModule.js';
+import { RuleExecutionLog, RuleExecutionContext } from './RuleExecutionContext.js';
 
 class RapLPDiagnostic {
   private _ruleSets: DiagnosticRuleinfoSet = {
@@ -15,12 +15,12 @@ class RapLPDiagnostic {
   public get diagnosticInformation(): DiagnosticRuleinfoSet {
     return this._ruleSets;
   }
-  constructor() {}
+  constructor(private context: RuleExecutionContext) {}
   processRuleExecutionInformation(
     raplpCustomResult: RapLPCustomSpectralDiagnostic[],
     instanceCategoryMap: Map<string, any>,
   ): void {
-    this.processRuleExecutionLog(ruleExecutionLogDictionary, raplpCustomResult, instanceCategoryMap);
+    this.processRuleExecutionLog(this.context.ruleExecutionLogDictionary, raplpCustomResult, instanceCategoryMap);
   }
   private processRuleExecutionLog(
     log: RuleExecutionLog,
