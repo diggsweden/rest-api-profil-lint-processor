@@ -9,6 +9,7 @@ import { ERROR_TYPE, RapLPBaseApiError } from './RapLPBaseApiErrorHandling.js';
 import { DiagnosticReport, RapLPDiagnostic } from '../util/RapLPDiagnostic.js';
 import yaml from 'js-yaml';
 import { ValidationResponseDto } from '../model/ValidationResponseDto.js';
+import { RuleExecutionContext } from './RuleExecutionContext.js';
 
 export const validateYamlInput = (input: string): input is string => {
   try {
@@ -33,6 +34,7 @@ export function decodeBase64String(base64YamlFile: string) {
 }
 
 export async function processApiSpec(
+  context: RuleExecutionContext,
   enabledRulesAndCategorys: {
     rules: Record<string, any>;
     instanceCategoryMap: Map<string, any>;
@@ -44,7 +46,8 @@ export async function processApiSpec(
   customSpectral.setRuleset(enabledRulesAndCategorys.rules);
   const result = await customSpectral.run(apiSpecDocument);
 
-  const customDiagnostic = new RapLPDiagnostic();
+
+  const customDiagnostic = new RapLPDiagnostic(context);
   customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.instanceCategoryMap);
   const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
   return { result, report: diagnosticReports };
