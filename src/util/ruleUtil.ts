@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import { RuleCategoryError } from './RapLPBaseApiErrorHandling.js';
+import { RuleExecutionContext } from './RuleExecutionContext.js';
 
 // ruleUtil.ts
 interface CustomSchema {
@@ -46,7 +47,7 @@ export function getRuleModules() {
  * @returns Promise object with enabled rules in RAP-LP to run
  */
 export async function importAndCreateRuleInstances(
-  ruleCategories?: string[],
+  context: RuleExecutionContext, ruleCategories?: string[],
 ): Promise<{ rules: Record<string, any>; instanceCategoryMap: Map<string, any> }> {
   const ruleInstances: Record<string, any> = {}; // store instances of rule classes
   const ruleTypes: any[] = []; // array to store rule classes.
@@ -121,7 +122,7 @@ export async function importAndCreateRuleInstances(
   // Create instances of rule classes in RAP-LP
   ruleTypes.forEach((RuleClass) => {
     try {
-      const instance = new RuleClass();
+      const instance = new RuleClass(context);
       ruleInstances[RuleClass.name] = instance;
       instanceCategoryMap.set(RuleClass.name, RuleClass); // Do we have name of ruleClass ?
     } catch (error: any) {

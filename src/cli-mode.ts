@@ -20,6 +20,7 @@ import { Issue } from './util/Issue.js';
 import { parseApiSpecInput,detectSpecFormatPreference, ParseResult} from './util/validateUtil.js';
 import { SpecParseError } from './util/RapLPSpecParseError.js';
 import * as path from 'node:path';
+import { RuleExecutionContext } from './util/RuleExecutionContext.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -47,6 +48,8 @@ export async function execCLI<T extends CliArgs>(argv: T) {
     const logErrorFilePath = argv.logError as string | undefined;
     const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
     const strict = argv.strict as boolean ?? false;
+    const context = new RuleExecutionContext();
+
 
     // Schemevalidation and Spectral  Document creation ----------
     let apiSpecDocument: SpectralDocument;
@@ -125,7 +128,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
 
     try {
       // Import and create rule instances in RAP-LP
-      const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
+      const enabledRulesAndCategorys = await importAndCreateRuleInstances(context,ruleCategories);
       // Load API specification into a Document object
       const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
       apiSpecDocument = new SpectralDocument(parseResult.raw, parser, apiSpecFileName);
@@ -138,7 +141,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         customSpectral.setRuleset(enabledRulesAndCategorys.rules);
         const result = await customSpectral.run(apiSpecDocument);
 
-        const customDiagnostic = new RapLPDiagnostic();
+        const customDiagnostic = new RapLPDiagnostic(context);
         customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.instanceCategoryMap);
         const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
         if (argv.dex != null) {

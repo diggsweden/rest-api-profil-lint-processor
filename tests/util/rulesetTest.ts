@@ -19,6 +19,8 @@ import * as FelRules from '../../src/rulesets/FelRules.js';
 import * as ResRules from '../../src/rulesets/ResRules.js';
 import * as MogRules from '../../src/rulesets/MogRules.js';
 
+import { RuleExecutionContext } from '../../src/util/RuleExecutionContext.js';
+
 const ruleInstances: Record<string, any> = {};
 
 /**
@@ -89,8 +91,9 @@ const ruleTypes = [
   MogRules.Mog01,
   MogRules.Mog02,
 ];
+const context = new RuleExecutionContext();
 ruleTypes.forEach((RuleClass) => {
-  const instance = new RuleClass();
+  const instance = new RuleClass(context);
   ruleInstances[RuleClass.name] = instance;
 });
 

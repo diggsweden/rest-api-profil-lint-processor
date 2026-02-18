@@ -446,9 +446,7 @@ testRule('Dok17', [
     },
     errors: [
       {
-        message:
-          'API specifikation BÖR dokumenteras med den senaste versionen av OpenAPI Specification. ( Linter-analysverktyget (RAP-LP) för den nationella REST API-profilen är designat för senaste major versionen av OpenAPI Specification. Använd därför denna för full täckning av de implementerade reglerna. )',
-        //message: "AAA",
+        message: 'API specifikation BÖR dokumenteras med den senaste versionen av OpenAPI Specification. ( Linter-analysverktyget (RAP-LP) för den nationella REST API-profilen är designat för senaste major versionen av OpenAPI Specification. Använd därför denna för full täckning av de implementerade reglerna. )',
         path: ['swagger'],
         severity: DiagnosticSeverity.Warning,
       },

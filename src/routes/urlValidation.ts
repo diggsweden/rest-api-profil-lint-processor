@@ -10,6 +10,7 @@ import { UrlContentDto } from '../model/UrlContentDto.js';
 import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
 import { ERROR_TYPE, RapLPBaseApiError } from '../util/RapLPBaseApiErrorHandling.js';
 import { loadUrlValidationConfiguration } from '../util/urlValidationConfig.js';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFile?: string) => {
   const config = loadUrlValidationConfiguration(urlValidationConfigFile);
@@ -17,6 +18,7 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
   // Route for validating openapi yaml from url.
   app.post('/api/v1/validation/url', async (req, res, next) => {
     try {
+      const context = new RuleExecutionContext();
       const dto: UrlContentDto = req.body;
 
       if (config?.urlMatchRegex && !dto.url.match(config.urlMatchRegex)) {
@@ -35,9 +37,9 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
 
       const apiSpecDocument = new Document(yamlContentString, Parsers.Yaml, '');
 
-      const rules = await importAndCreateRuleInstances(dto.categories);
+      const rules = await importAndCreateRuleInstances(context, dto.categories);
 
-      const result = await processApiSpec(rules, apiSpecDocument);
+      const result = await processApiSpec(context,rules, apiSpecDocument);
       res.send(result);
     } catch (e) {
       next(e);

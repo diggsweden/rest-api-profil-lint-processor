@@ -5,6 +5,7 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 const moduleName: string = 'FelRules.js';
 
@@ -59,8 +60,8 @@ export class Fel01 extends BaseRuleset {
   ];
   severity = DiagnosticSeverity.Error;
 
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
 }
@@ -108,8 +109,8 @@ export class Fel02 extends BaseRuleset {
   ];
   severity = DiagnosticSeverity.Warning;
 
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
 }
