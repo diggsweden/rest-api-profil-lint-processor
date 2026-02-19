@@ -167,8 +167,7 @@ export const registerValidationRoutes = (app: Express) => {
               // Put in kind field to indicate violation
               kind: 'rule-validation',
               //Payload 
-              payload: result, // ValidationResponseDto
-              report: result.report,
+              payload: result,
             }),          
          );
       }
@@ -176,11 +175,10 @@ export const registerValidationRoutes = (app: Express) => {
       return res.status(200).json({
         ok: true,
         //Payload 
-        payload: result, // ValidationResponseDto
-        report: result.report,
+        payload: result, 
       });
     } catch (e) {
-      // SpecParseError / ProblemDetailsDTO fångas här
+      // Hantera SpecParseError här 
       next(e);
     }
   });  
