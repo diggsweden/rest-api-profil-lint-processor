@@ -142,7 +142,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         const result = await customSpectral.run(apiSpecDocument);
 
         const customDiagnostic = new RapLPDiagnostic(context);
-        customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.instanceCategoryMap);
+        customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.rules,enabledRulesAndCategorys.instanceCategoryMap);
         const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
         if (argv.dex != null) {
           const reportHandler = new ExcelReportProcessor({
