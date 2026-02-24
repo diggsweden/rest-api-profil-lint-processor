@@ -18,25 +18,27 @@ class RapLPDiagnostic {
   constructor(private context: RuleExecutionContext) {}
   processRuleExecutionInformation(
     raplpCustomResult: RapLPCustomSpectralDiagnostic[],
+    rules: Record<string, any>,
     instanceCategoryMap: Map<string, any>,
   ): void {
-    this.processRuleExecutionLog(this.context.ruleExecutionLogDictionary, raplpCustomResult, instanceCategoryMap);
+    this.processRuleExecutionLog(this.context.ruleExecutionLogDictionary, raplpCustomResult, instanceCategoryMap,rules);
   }
   private processRuleExecutionLog(
     log: RuleExecutionLog,
     spectralResults: RapLPCustomSpectralDiagnostic[],
     instanceCategoryMap: Map<string, any>,
+    rules: Record<string, any>,
   ) {
     let executedRuleIds = new Set<string>(); // Set to track executed rule IDs
     let executedRuleIdsWithError = new Set<string>(); // Set to track executed rule IDs with error
     let ruleIdsNotApplicable = new Set<string>(); // Set to track rules that are not applicable, that is the (Δ) between the two above sets
-
+    const ruleIdToMessage = new Map<string, string>();
+    
     for (const key in log) {
       const rules = log[key];
       const { moduleName, className } = rules[0]; // Get module and class name from the first entry
-
       //console.log(`Rule execution status for ${moduleName}:${className}:`);
-
+      
       rules.forEach((rule) => {
         const { customProperties, severity, passed, targetVal } = rule;
         const status = passed ? 'PASSED' : 'FAILED';
@@ -52,6 +54,7 @@ class RapLPDiagnostic {
               this._ruleSets.executedUniqueRulesWithError.push({
                 id: customProperties.id, // Store some more diagnostic info (Duplicate NOT OK)
                 område: customProperties.område,
+                krav: rules[key]?.message ?? '',
               });
             }
           }
@@ -64,6 +67,7 @@ class RapLPDiagnostic {
             this._ruleSets.executedUniqueRules.push({
               id: customProperties.id, // Store some more diagnostic info (Duplicate OK)
               område: customProperties.område,
+              krav:rules[key]?.message ?? '',
             });
           }
           executedRuleIds.add(customProperties.id); // Store current ID of rule with NO error
@@ -78,7 +82,7 @@ class RapLPDiagnostic {
       });
       if (!ruleIdsNotApplicable.has(customProperties.id) && !exists) {
         // If not present, store the id and område in the not applicableRules
-        this._ruleSets.notApplicableRules.push({ id: customProperties.id, område: customProperties.område }); // Rules
+        this._ruleSets.notApplicableRules.push({ id: customProperties.id, område: customProperties.område, krav: rules[key]?.message ?? ''}); // Rules
       }
     }
   }
@@ -94,7 +98,7 @@ class RapLPDiagnostic {
           'N/A',
           'Godkända regler - RAP-LP',
         ),
-      );
+      );  
     }
     if (
       this.diagnosticInformation.executedUniqueRulesWithError &&
@@ -156,6 +160,7 @@ interface DiagnosticRuleinfoSet {
 interface DiagnosticRuleInfo {
   id: string;
   område: string;
+  krav: string;
 }
 interface PopulatedDiagnosticRuleInfo extends DiagnosticRuleInfo {
   status: string;

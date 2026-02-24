@@ -48,7 +48,7 @@ export async function processApiSpec(
 
 
   const customDiagnostic = new RapLPDiagnostic(context);
-  customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.instanceCategoryMap);
+  customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.rules,enabledRulesAndCategorys.instanceCategoryMap);
   const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
   return { result, report: diagnosticReports };
 }
