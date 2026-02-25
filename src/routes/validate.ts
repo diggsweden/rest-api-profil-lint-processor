@@ -147,7 +147,7 @@ export const registerValidationRoutes = (app: Express) => {
 
       // 5. No strict-errors → run raplp ruleengine
       const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
-      const apiSpecDocument = new Document(parseResult.raw, parser, '');
+       const apiSpecDocument = new Document(parseResult.raw, parser, 'payload.yaml'); // In-memory-file to calculate correct positions when parsing
       const rules = await importAndCreateRuleInstances(context, categories);
       const result = await processApiSpec(context, rules, apiSpecDocument);
 
