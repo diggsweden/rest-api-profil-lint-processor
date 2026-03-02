@@ -35,10 +35,7 @@ paths:
       description: Validate your yaml
       operationId: validateContent
       requestBody:
-        description: |-
-          Yaml can be sent as a base64 encoded file or a yaml string. 
-
-          ContentType is specifying the type of yaml content being sent
+        description: "Yaml can be sent as a base64 encoded file or a yaml string. \n\nContentType is specifying the type of yaml content being sent"
         content:
           application/json:
             schema:
@@ -145,64 +142,64 @@ paths:
                 detail: "Test error"
                 instance: "/example"
   /validation/generate-report:
-      post:
-        tags:
-          - validate
-        summary: Generate status report
-        description: Accepts result data as the request body and returns a generated status report as a downloadable excel file.
-        operationId: generateReport
-        requestBody:
-          required: true
+    post:
+      tags:
+        - validate
+      summary: Generate status report
+      description: Accepts result data as the request body and returns a generated status report as a downloadable excel file.
+      operationId: generateReport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - result
+              properties:
+                result:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RapLPCustomSpectralDiagnosticItem'
+                  description: An array of result items used to generate the Excel report.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+              example:
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              description: Header to indicate the filename for the downloaded file.
+        '400':
+          description: BAD_REQUEST
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - result
-                properties:
-                  result:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/RapLPCustomSpectralDiagnosticItem'
-                    description: An array of result items used to generate the Excel report.
-        responses:
-          '200':
-            description: Successful operation
-            content:
-              application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
-                schema:
-                  type: string
-                  format: binary
-                example:
-            headers:
-              Content-Disposition:
-                schema:
-                  type: string
-                description: Header to indicate the filename for the downloaded file.
-          '400':
-            description: BAD_REQUEST
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/ProblemDetailsDto'
-                example:
-                  type: "about:blank"
-                  title: "Test title"
-                  status: 400
-                  detail: "Test error"
-                  instance: "/example"  
-          '500':
-            description: INTERNAL_SERVER_ERROR
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/ProblemDetailsDto'
-                example:
-                  type: "about:blank"
-                  title: "Test title"
-                  status: 500
-                  detail: "Test error"
-                  instance: "/example"
+                $ref: '#/components/schemas/ProblemDetailsDto'
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 400
+                detail: "Test error"
+                instance: "/example"
+        '500':
+          description: INTERNAL_SERVER_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsDto'
+              example:
+                type: "about:blank"
+                title: "Test title"
+                status: 500
+                detail: "Test error"
+                instance: "/example"
   /validation/url:
     post:
       tags:
@@ -211,10 +208,7 @@ paths:
       description: Validate your yaml from remote url
       operationId: validateUrl
       requestBody:
-        description: |-
-          OpenApi yaml is fetched from remote server and validated on server. 
-          Feature must be enabled explicitly on server.
-
+        description: "OpenApi yaml is fetched from remote server and validated on server. \nFeature must be enabled explicitly on server."
         content:
           application/json:
             schema:
@@ -327,7 +321,6 @@ paths:
                 status: 500
                 detail: "Test error"
                 instance: "/example"
-
 components:
   schemas:
     ValidationRules:
@@ -495,7 +488,6 @@ components:
       required:
         - id
         - omrade
-
     PopulatedDiagnosticRuleInfo:
       allOf:
         - $ref: '#/components/schemas/DiagnosticRuleInfo'
@@ -506,7 +498,6 @@ components:
               example: "OK"
           required:
             - status
-
     DiagnosticReport:
       type: object
       properties:
@@ -520,7 +511,6 @@ components:
       required:
         - Notering
         - regler
-
     DiagnosticRuleinfoSet:
       type: object
       # additionalProperties: false
@@ -537,13 +527,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DiagnosticRuleInfo'
-
     RapLPDiagnostic:
       type: object
       properties:
         _ruleSets:
           $ref: '#/components/schemas/DiagnosticRuleinfoSet'
-
     ValidationResponseDto:
       type: object
       properties:
@@ -558,4 +546,3 @@ components:
       required:
         - result
         - report
-
