@@ -4,6 +4,7 @@
 
 import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.js';
 import { RuleExecutionLog, RuleExecutionContext } from './RuleExecutionContext.js';
+import { buildRuleHelpUrl } from '../rulesets/util/rules-doc.config.js';
 
 class RapLPDiagnostic {
   private _ruleSets: DiagnosticRuleinfoSet = {
@@ -55,6 +56,7 @@ class RapLPDiagnostic {
                 id: customProperties.id, // Store some more diagnostic info (Duplicate NOT OK)
                 område: customProperties.område,
                 krav: rules[key]?.message ?? '',
+                helpUrl: customProperties.id ? buildRuleHelpUrl(customProperties.id) : undefined,
               });
             }
           }
@@ -68,6 +70,7 @@ class RapLPDiagnostic {
               id: customProperties.id, // Store some more diagnostic info (Duplicate OK)
               område: customProperties.område,
               krav:rules[key]?.message ?? '',
+              helpUrl: customProperties.id ? buildRuleHelpUrl(customProperties.id) : undefined,
             });
           }
           executedRuleIds.add(customProperties.id); // Store current ID of rule with NO error
@@ -82,7 +85,12 @@ class RapLPDiagnostic {
       });
       if (!ruleIdsNotApplicable.has(customProperties.id) && !exists) {
         // If not present, store the id and område in the not applicableRules
-        this._ruleSets.notApplicableRules.push({ id: customProperties.id, område: customProperties.område, krav: rules[key]?.message ?? ''}); // Rules
+        this._ruleSets.notApplicableRules.push({ 
+          id: customProperties.id, 
+          område: customProperties.område, 
+          krav: rules[key]?.message ?? '',
+          helpUrl: customProperties.id ? buildRuleHelpUrl(customProperties.id) : undefined,
+        }); // Rules
       }
     }
   }
@@ -161,6 +169,9 @@ interface DiagnosticRuleInfo {
   id: string;
   område: string;
   krav: string;
+  /**Helper Url for guidelines */
+  helpUrl?: string;
+
 }
 interface PopulatedDiagnosticRuleInfo extends DiagnosticRuleInfo {
   status: string;
