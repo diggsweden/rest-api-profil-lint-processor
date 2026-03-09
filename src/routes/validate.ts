@@ -72,7 +72,11 @@ export const registerValidationRoutes = (app: Express) => {
 
       const enabledRulesAndCategorys = await importAndCreateRuleInstances(ruleCategories);
       const customDiagnostic = new RapLPDiagnostic(context);
-      customDiagnostic.processRuleExecutionInformation(data.result, enabledRulesAndCategorys.rules,enabledRulesAndCategorys.instanceCategoryMap);
+      if (data.report && Array.isArray(data.report) && data.report.length > 0) {
+        customDiagnostic.setFromPrecomputedReport(data.report);
+      } else {
+        customDiagnostic.processRuleExecutionInformation(data.result, enabledRulesAndCategorys.rules, enabledRulesAndCategorys.instanceCategoryMap);
+      }
       const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
 
       try {
