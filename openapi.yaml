@@ -158,13 +158,13 @@ paths:
               schema:
                 type: object
                 required:
-                  - result
+                  - report
                 properties:
-                  result:
+                  report:
                     type: array
                     items:
-                      $ref: '#/components/schemas/RapLPCustomSpectralDiagnosticItem'
-                    description: An array of result items used to generate the Excel report.
+                      $ref: '#/components/schemas/DiagnosticReport'
+                    description: An array of precomputed report items used to generate the Excel report.
         responses:
           '200':
             description: Successful operation
@@ -489,12 +489,12 @@ components:
         id:
           type: string
           example: "UFN.05"
-        omrade:
+        område:
           type: string
           example: "URL Format och namngivning"
       required:
         - id
-        - omrade
+        - område
 
     PopulatedDiagnosticRuleInfo:
       allOf:
