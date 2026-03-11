@@ -99,6 +99,21 @@ class RapLPDiagnostic {
       }
     }
   }
+  setFromPrecomputedReport(reports: { Notering: string; regler: { id: string; område: string; krav?: string; helpUrl?: string; status: string }[] }[]): void {
+    for (const report of reports) {
+      for (const regel of report.regler) {
+        const ruleInfo = { id: regel.id, område: regel.område, krav: regel.krav ?? '', helpUrl: regel.helpUrl };
+        if (regel.status === 'OK') {
+          this._ruleSets.executedUniqueRules.push(ruleInfo);
+        } else if (regel.status === 'EJ OK') {
+          this._ruleSets.executedUniqueRulesWithError.push(ruleInfo);
+        } else {
+          this._ruleSets.notApplicableRules.push(ruleInfo);
+        }
+      }
+    }
+  }
+
   processDiagnosticInformation(): DiagnosticReport[] {
     const allReports: DiagnosticReport[] = [];
     // Populate the diagnostic reports and add them to the array
