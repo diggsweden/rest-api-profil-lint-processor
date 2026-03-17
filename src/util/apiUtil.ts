@@ -50,7 +50,12 @@ export async function processApiSpec(
   const customDiagnostic = new RapLPDiagnostic(context);
   customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.rules,enabledRulesAndCategorys.instanceCategoryMap);
   const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
-  return { result, report: diagnosticReports };
+
+  const sortedReports: DiagnosticReport[] = diagnosticReports.map(report => ({
+  ...report,
+  regler: [...report.regler].sort((a, b) => a.id.localeCompare(b.id))
+  }));
+  return { result, report: sortedReports };
 }
 
 /**
