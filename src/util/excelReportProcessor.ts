@@ -68,6 +68,7 @@ export class ExcelReportProcessor {
   private parser = new XMLParser({ ignoreAttributes: false });
   private builder = new XMLBuilder({ ignoreAttributes: false });
   private zip: AdmZip;
+
   constructor(config?: Partial<ExcelTemplateConfig>) {
     const isPresent = (x?: string): x is string => {
       return x != null && x !== '';
@@ -87,6 +88,9 @@ export class ExcelReportProcessor {
     }
 
     this.zip = new AdmZip(this.config.reportTemplatePath);
+  }
+  public get diagnosticInformation(): ExcelTemplateConfig {
+    return this.config;
   }
 
   public generateReportDocument(result: RapLPDiagnostic) {
@@ -114,6 +118,7 @@ export class ExcelReportProcessor {
 
     // Persist and write the output file.
     this.persistUpdates(this.config.outputFilePath);
+    console.log("THIS IS PATH: " + this.config.outputFilePath);
   }
 
   /**
