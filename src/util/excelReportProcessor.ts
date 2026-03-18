@@ -118,7 +118,6 @@ export class ExcelReportProcessor {
 
     // Persist and write the output file.
     this.persistUpdates(this.config.outputFilePath);
-    console.log("THIS IS PATH: " + this.config.outputFilePath);
   }
 
   /**
