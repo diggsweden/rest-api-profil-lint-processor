@@ -20,6 +20,8 @@ import { ERROR_TYPE, RapLPBaseApiError } from '../util/RapLPBaseApiErrorHandling
 import type { IParser } from '@stoplight/spectral-parsers';
 import { stringify } from 'node:querystring';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
+import { parseRuleCategories,resolveRuleCategories,RULE_REGISTRY} from '../rulesets/util/ruleModules.js';
+
 
 
 
@@ -28,16 +30,24 @@ export const registerValidationRoutes = (app: Express) => {
   app.post('/api/v1/validation/validate', async (req, res, next) => {
     try {
       const context = new RuleExecutionContext();
+      
+      const body: SpecValidationRequestDto = req.body;
+      const strict = body.strict ?? true;
+      const categories = body.categories ?? [];
+
       const yamlContent: YamlContentDto = req.body;
 
-      let yamlContentString: string;
-      yamlContentString = decodeBase64String(yamlContent.yaml);
+      //let yamlContentString: string;
+      //yamlContentString = decodeBase64String(yamlContent.yaml);
+      const raw = decodeBase64String(body.spec);
 
-      validateYamlInput(yamlContentString);
+      validateYamlInput(raw); // Do we need this ?
 
-      const apiSpecDocument = new Document(yamlContentString, Parsers.Yaml, '');
+      const apiSpecDocument = new Document(raw, Parsers.Yaml, 'payload.yaml');
+      const ruleCategories = parseRuleCategories(categories);
+      const resolvedCategories = resolveRuleCategories(ruleCategories);
 
-      const rules = await importAndCreateRuleInstances(context, yamlContent.categories);
+      const rules = await importAndCreateRuleInstances(context, resolvedCategories);
 
       const result = await processApiSpec(context,rules, apiSpecDocument);
       res.send(result);
@@ -47,7 +57,7 @@ export const registerValidationRoutes = (app: Express) => {
   });
 
   app.get('/api/v1/validation/rules', (req, res) => {
-    res.send(validationRules);
+    res.send(RULE_REGISTRY);
   });
 
   app.get('/api/v1/api-info', async (req, res, next) => {
@@ -144,8 +154,12 @@ export const registerValidationRoutes = (app: Express) => {
 
       // 5. No strict-errors → run raplp ruleengine
       const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
-       const apiSpecDocument = new Document(parseResult.raw, parser, 'payload.yaml'); // In-memory-file to calculate correct positions when parsing
-      const rules = await importAndCreateRuleInstances(context, categories);
+      const apiSpecDocument = new Document(parseResult.raw, parser, 'payload.yaml'); // In-memory-file to calculate correct positions when parsing
+
+      const ruleCategories = parseRuleCategories(categories);
+      const resolvedCategories = resolveRuleCategories(ruleCategories);
+
+      const rules = await importAndCreateRuleInstances(context, resolvedCategories);
       const result = await processApiSpec(context, rules, apiSpecDocument);
 
       const hasRuleViolations = result.result.some(
