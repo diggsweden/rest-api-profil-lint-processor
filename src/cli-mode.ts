@@ -21,6 +21,7 @@ import { parseApiSpecInput,detectSpecFormatPreference, ParseResult} from './util
 import { SpecParseError } from './util/RapLPSpecParseError.js';
 import * as path from 'node:path';
 import { RuleExecutionContext } from './util/RuleExecutionContext.js';
+import { parseRuleCategories,resolveRuleCategories } from './rulesets/util/ruleModules.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -44,7 +45,9 @@ export async function execCLI<T extends CliArgs>(argv: T) {
   try {
     // Parse command-line arguments using yargs
     const apiSpecFileName = (argv.file as string) || '';
-    const ruleCategories = argv.categories ? (argv.categories as string).split(',') : undefined;
+    //const ruleCategories = argv.categories ? (argv.categories as string).split(',') : undefined;
+    const ruleCategories = parseRuleCategories(argv.categories as string | undefined);
+    const resolvedCategories = resolveRuleCategories(ruleCategories);
     const logErrorFilePath = argv.logError as string | undefined;
     const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
     const strict = argv.strict as boolean ?? false;
@@ -128,7 +131,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
 
     try {
       // Import and create rule instances in RAP-LP
-      const enabledRulesAndCategorys = await importAndCreateRuleInstances(context,ruleCategories);
+      const enabledRulesAndCategorys = await importAndCreateRuleInstances(context,resolvedCategories);
       // Load API specification into a Document object
       const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
       apiSpecDocument = new SpectralDocument(parseResult.raw, parser, apiSpecFileName);

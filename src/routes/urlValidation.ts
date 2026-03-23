@@ -11,6 +11,7 @@ import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
 import { ERROR_TYPE, RapLPBaseApiError } from '../util/RapLPBaseApiErrorHandling.js';
 import { loadUrlValidationConfiguration } from '../util/urlValidationConfig.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
+import { parseRuleCategories,resolveRuleCategories } from '../rulesets/util/ruleModules.js';
 
 export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFile?: string) => {
   const config = loadUrlValidationConfiguration(urlValidationConfigFile);
@@ -34,10 +35,12 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
       const yamlContentString = await response.text();
 
       validateYamlInput(yamlContentString);
+      
+      const apiSpecDocument = new Document(yamlContentString, Parsers.Yaml, 'payload.yaml');
+      const ruleCategories = parseRuleCategories(dto.categories);
+      const resolvedCategories = resolveRuleCategories(ruleCategories);
 
-      const apiSpecDocument = new Document(yamlContentString, Parsers.Yaml, '');
-
-      const rules = await importAndCreateRuleInstances(context, dto.categories);
+      const rules = await importAndCreateRuleInstances(context, resolvedCategories);
 
       const result = await processApiSpec(context,rules, apiSpecDocument);
       res.send(result);
