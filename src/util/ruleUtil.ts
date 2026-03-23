@@ -4,6 +4,7 @@
 
 import { RuleCategoryError } from './RapLPBaseApiErrorHandling.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
+import { RuleModuleName } from '../rulesets/util/ruleModules.js';
 
 // ruleUtil.ts
 interface CustomSchema {
@@ -47,7 +48,7 @@ export function getRuleModules() {
  * @returns Promise object with enabled rules in RAP-LP to run
  */
 export async function importAndCreateRuleInstances(
-  context: RuleExecutionContext, ruleCategories?: string[],
+  context: RuleExecutionContext, ruleCategories: RuleModuleName[],
 ): Promise<{ rules: Record<string, any>; instanceCategoryMap: Map<string, any> }> {
   const ruleInstances: Record<string, any> = {}; // store instances of rule classes
   const ruleTypes: any[] = []; // array to store rule classes.
