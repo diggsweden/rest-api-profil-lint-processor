@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-# Release Workflow for rest-api-profil-lint-processor
+# Release Workflow for rest-api-profil-linter-citest
 # Uses the unified release orchestrator for NPM packages
 name: Release
 on:
@@ -19,7 +19,7 @@ permissions:
   contents: read # Best Security practice. Jobs only get read as base, and then permissions are added as needed
 jobs:
   release:
-    uses: diggsweden/reusable-ci/.github/workflows/release-orchestrator.yml@e1e1387d5b0399bb5edb00e40485746772344176 # v2.6.0
+    uses: diggsweden/reusable-ci/.github/workflows/release-orchestrator.yml@2afbedbefbb457a5fc6175de232e4644cab58a69 # v2.7.3
     permissions:
       contents: write # Create GitHub releases, push changelog commits
       packages: write # Publish to GitHub Packages
@@ -29,6 +29,7 @@ jobs:
       actions: read # Required for SLSA provenance
     secrets: inherit
     with:
+      reusable-ci-ref: v2.7.3
       artifacts-config: .github/artifacts.yml
       file-pattern: 'CHANGELOG.md package.json package-lock.json'
       release-publisher: github-cli
