@@ -6,7 +6,7 @@ version = 1
 
 # configurations
 [[annotations]]
-path = ["CHANGELOG.md","tsconfig.json","package.json","package-lock.json",".conform.yaml"]
+path = ["CHANGELOG.md","tsconfig.json","package.json","package-lock.json",".gommitlint.yaml"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2025 Digg - Agency for Digital Government"
 SPDX-License-Identifier = "CC0-1.0"

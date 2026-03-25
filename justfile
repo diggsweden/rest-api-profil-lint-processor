@@ -61,7 +61,7 @@ setup-devtools:
 # Check required tools are installed
 [group('setup')]
 check-tools: _ensure-devtools
-    @{{devtools_dir}}/scripts/check-tools.sh --check-devtools mise git just node npm rumdl yamlfmt actionlint gitleaks shellcheck shfmt conform reuse hadolint
+    @{{devtools_dir}}/scripts/check-tools.sh --check-devtools mise git just node npm rumdl yamlfmt actionlint gitleaks shellcheck shfmt gommitlint reuse hadolint
 
 # Install tools via mise
 [group('setup')]
@@ -136,6 +136,11 @@ lint-license:
 [group('lint')]
 lint-xml:
     @{{lint}}/xml.sh
+
+# Validate version control
+[group('lint')]
+lint-version-control:
+    @{{lint}}/version-control.sh
 
 # Lint containers (no-op for this project)
 [group('lint')]

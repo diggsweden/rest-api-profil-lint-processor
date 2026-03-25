@@ -149,7 +149,7 @@ just lint-fix
 - **Linting**: Shell, YAML, Markdown, TypeScript, GitHub Actions
 - **Säkerhet**: Hemlighetsskanning med gitleaks
 - **Licensefterlevnad**: REUSE-verktyget säkerställer korrekt copyright-information
-- **Commit-struktur**: Conform kontrollerar commit-meddelanden för changelog-generering
+- **Commit-struktur**: Gommitlint kontrollerar commit-meddelanden för changelog-generering
 
 #### Hantering av misslyckade kontroller
 
@@ -178,7 +178,7 @@ Kör `just` för att se alla tillgängliga kommandon. Huvudkommandon:
 
 | Kommando | Verktyg | Beskrivning |
 |----------|---------|-------------|
-| `just lint-commits` | conform | Validera commit-meddelanden |
+| `just lint-commits` | gommitlint | Validera commit-meddelanden |
 | `just lint-secrets` | gitleaks | Skanna efter hemligheter |
 | `just lint-yaml` | yamlfmt | Linta YAML-filer |
 | `just lint-markdown` | rumdl | Linta markdown-filer |
