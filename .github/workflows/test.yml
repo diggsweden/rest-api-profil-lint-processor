@@ -5,15 +5,10 @@ name: Run Tests
 on:
   push:
   workflow_call:
-<<<<<<< HEAD
 
 permissions:
   contents: read
 
-||||||| parent of 42934f3 (fix: fix project with just lint-fix, ignore some rules for now)
-
-=======
->>>>>>> 42934f3 (fix: fix project with just lint-fix, ignore some rules for now)
 jobs:
   test:
     runs-on: ubuntu-latest
