@@ -5,10 +5,8 @@ name: Run Tests
 on:
   push:
   workflow_call:
-
 permissions:
   contents: read
-
 jobs:
   test:
     runs-on: ubuntu-latest
