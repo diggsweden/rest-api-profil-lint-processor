@@ -91,7 +91,7 @@ async function main(): Promise<void> {
     const logErrorFilePath = argv.logError as string | undefined;
     const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
     const strict = argv.strict as boolean ?? false;
-
+    let logDexFilePath;
     // Schemevalidation and Spectral  Document creation ----------
     let apiSpecDocument: SpectralDocument;
     let parseResult: ParseResult;
@@ -196,6 +196,7 @@ async function main(): Promise<void> {
             outputFilePath: argv.dex,
           });
           reportHandler.generateReportDocument(customDiagnostic);
+          logDexFilePath = reportHandler.diagnosticInformation.outputFilePath;
         } catch (dexError: any) {
           logErrorToFile(dexError);
           console.error(chalk.red('Misslyckades att skriva till excelfilen!'));
@@ -331,6 +332,10 @@ async function main(): Promise<void> {
         } else {
           result.forEach((item) => console.log(formatLintingResult(item)));
         }
+      }
+      if (logDexFilePath!=undefined) {
+        console.log(chalk.green(`Skriver diagnostiseringsinformation i excelformat från RAP-LP till ${logDexFilePath}`));
+
       }
     } catch (spectralError: any) {
       logErrorToFile(spectralError); // Log stack
