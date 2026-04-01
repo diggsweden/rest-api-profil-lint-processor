@@ -10,5 +10,5 @@
 [per-file-ignores]
 "{SECURITY.md,CODE_OF_CONDUCT.md,CONTRIBUTING.md,README.md,GUIDELINES.md}" = ["MD041"]
 "README.md" = ["MD033", "MD036"]
-"development/DEVELOPMENT.md" = ["MD051"]
-"GUIDELINES.md" = ["MD007", "MD036", "MD052", "MD040", "MD005"]
+"development/DEVELOPMENT.md" = ["MD051", "MD057"]
+"GUIDELINES.md" = ["MD007", "MD036", "MD052", "MD040", "MD005", "MD057"]
