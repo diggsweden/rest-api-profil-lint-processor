@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 #
 # SPDX-License-Identifier: CC0-1.0
-
 # Artifacts Configuration for rest-api-profil-lint-processor
 # NPM CLI application with container
 # Package tarballs will be attached to GitHub Release as assets

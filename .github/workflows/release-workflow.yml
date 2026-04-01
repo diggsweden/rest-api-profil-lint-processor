@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 #
 # SPDX-License-Identifier: CC0-1.0
-
 # Release Workflow for rest-api-profil-lint-processor
 # Uses the unified release orchestrator for NPM packages
 name: Release
