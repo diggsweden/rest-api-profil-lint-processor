@@ -12,8 +12,8 @@ export const RULE_REGISTRY = [
   { rule: 'AmeRules', description: 'API Message' },
   { rule: 'ForRules', description: 'Förutsättningar' },
   { rule: 'DotRules', description: 'Datum- och tidsformat' },
-  { rule: 'ResRules', description: 'Mognad' },
-  { rule: 'MogRules', description: 'Datum- och tidsformat' },
+  { rule: 'ResRules', description: 'Resurser' },
+  { rule: 'MogRules', description: 'Mognad' },
   { rule: 'FelRules', description: 'Felhantering' },
 ] as const;
     

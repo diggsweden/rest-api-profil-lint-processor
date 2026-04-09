@@ -5,11 +5,9 @@
 import { Document } from '@stoplight/spectral-core';
 import Parsers from '@stoplight/spectral-parsers';
 import { Express } from 'express';
-import { decodeBase64String, processApiSpec, validateYamlInput } from '../util/apiUtil.js';
-import { YamlContentDto } from '../model/YamlContentDto.js';
+import { decodeBase64String, processApiSpec} from '../util/apiUtil.js';
 import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
 import { ApiInfo } from '../model/ApiInfo.js';
-import { validationRules } from '../model/validationRules.js';
 import { ExcelReportProcessor } from '../util/excelReportProcessor.js';
 import { DiagnosticReport, RapLPDiagnostic } from '../util/RapLPDiagnostic.js';
 import * as IssueHelper from '../util/RapLPIssueHelpers.js'; 
@@ -18,7 +16,6 @@ import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
 import { SpecValidationRequestDto } from '../model/SpecValidationRequestDto.js';
 import { ERROR_TYPE, RapLPBaseApiError } from '../util/RapLPBaseApiErrorHandling.js';
 import type { IParser } from '@stoplight/spectral-parsers';
-import { stringify } from 'node:querystring';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 import { parseRuleCategories,resolveRuleCategories,RULE_REGISTRY} from '../rulesets/util/ruleModules.js';
 
@@ -27,45 +24,15 @@ import { parseRuleCategories,resolveRuleCategories,RULE_REGISTRY} from '../rules
 
 export const registerValidationRoutes = (app: Express) => {
   // Route for raw content upload.
-  app.post('/api/v1/validation/validate', async (req, res, next) => {
-    try {
-      const context = new RuleExecutionContext();
-      
-      const body: SpecValidationRequestDto = req.body;
-      const strict = body.strict ?? true;
-      const categories = body.categories ?? [];
-
-      const yamlContent: YamlContentDto = req.body;
-
-      //let yamlContentString: string;
-      //yamlContentString = decodeBase64String(yamlContent.yaml);
-      const raw = decodeBase64String(body.spec);
-
-      validateYamlInput(raw); // Do we need this ?
-
-      const apiSpecDocument = new Document(raw, Parsers.Yaml, 'payload.yaml');
-      const ruleCategories = parseRuleCategories(categories);
-      const resolvedCategories = resolveRuleCategories(ruleCategories);
-
-      const rules = await importAndCreateRuleInstances(context, resolvedCategories);
-
-      const result = await processApiSpec(context,rules, apiSpecDocument);
-      res.send(result);
-    } catch (e) {
-      next(e);
-    }
-  });
-
   app.get('/api/v1/validation/rules', (req, res) => {
     res.send(RULE_REGISTRY);
   });
 
   app.get('/api/v1/api-info', async (req, res, next) => {
     res.send(
-      new ApiInfo('RAP-LP', '1.0.11', new Date().toDateString(), 'http://example.digg.se/RAP-LP-docs', 'development'),
+      new ApiInfo('RAP-LP', '1.0.11', new Date().toDateString(), 'http://raplp.digg.se/RAP-LP-docs', 'development'),
     );
   });
-
   app.post('/api/v1/validation/generate-report', async (req, res, next): Promise<any> => {
     try {
       const data = req.body;
@@ -96,9 +63,6 @@ export const registerValidationRoutes = (app: Express) => {
       next(e);
     }
   });
-  /**
-   * Endpoint 
-   */
   app.post('/api/v1/validation/validatespec', async (req, res, next) => {
     try {
       const context = new RuleExecutionContext();
