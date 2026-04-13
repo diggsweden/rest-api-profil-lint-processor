@@ -26,9 +26,9 @@ jobs:
     permissions:
       contents: read
       packages: write
-    uses: diggsweden/reusable-ci/.github/workflows/release-dev-orchestrator.yml@2afbedbefbb457a5fc6175de232e4644cab58a69 # v2.7.3
+    uses: diggsweden/reusable-ci/.github/workflows/release-dev-orchestrator.yml@4e656557f4fa8ba4ea8ec388eda0e23914ceae7f # v2.7.7
     with:
-      reusable-ci-ref: v2.7.3
+      reusable-ci-ref: v2.7.7
       project-type: npm
       package-scope: '@diggsweden'
     secrets: inherit
