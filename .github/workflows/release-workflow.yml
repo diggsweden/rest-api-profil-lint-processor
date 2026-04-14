@@ -18,7 +18,7 @@ permissions:
   contents: read # Best Security practice. Jobs only get read as base, and then permissions are added as needed
 jobs:
   release:
-    uses: diggsweden/reusable-ci/.github/workflows/release-orchestrator.yml@0f2695030159b1fc7331d290f8028b326173bffc # v2.7.7
+    uses: diggsweden/reusable-ci/.github/workflows/release-orchestrator.yml@1e3141deda57eba0e4a9e122b015862c738a2dfb # v2.7.8
     permissions:
       contents: write # Create GitHub releases, push changelog commits
       packages: write # Publish to GitHub Packages
@@ -28,7 +28,7 @@ jobs:
       actions: read # Required for SLSA provenance
     secrets: inherit
     with:
-      reusable-ci-ref: v2.7.7
+      reusable-ci-ref: v2.7.8
       artifacts-config: .github/artifacts.yml
       file-pattern: 'CHANGELOG.md package.json package-lock.json'
       release-publisher: github-cli

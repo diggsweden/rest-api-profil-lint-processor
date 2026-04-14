@@ -13,14 +13,14 @@ permissions:
   contents: read # Best Security practice. Jobs only get read as base, and then permissions are added as needed
 jobs:
   pr-checks:
-    uses: diggsweden/reusable-ci/.github/workflows/pullrequest-orchestrator.yml@0f2695030159b1fc7331d290f8028b326173bffc # v2.7.7
+    uses: diggsweden/reusable-ci/.github/workflows/pullrequest-orchestrator.yml@1e3141deda57eba0e4a9e122b015862c738a2dfb # v2.7.8
     secrets: inherit # Pass org-level secrets (NPM token if private packages)
     permissions:
       contents: read # Clone repository and read source code
       packages: read # Access private NPM packages from GitHub registry
       security-events: write # Upload ESLint/security findings to GitHub Security tab
     with:
-      reusable-ci-ref: v2.7.7
+      reusable-ci-ref: v2.7.8
       project-type: npm
       # Use devbase-check linting (replaces megalint, commitlint, licenselint)
       linters.devbasecheck: true
