@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
+import * as fs from 'node:fs';
+import util from 'util';
 import { Document } from '@stoplight/spectral-core';
 import Parsers from '@stoplight/spectral-parsers';
 import { Express } from 'express';
@@ -21,8 +23,17 @@ import type { IParser } from '@stoplight/spectral-parsers';
 import { stringify } from 'node:querystring';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 import { parseRuleCategories,resolveRuleCategories,RULE_REGISTRY} from '../rulesets/util/ruleModules.js';
+import { mapValidationExecutionError } from '../util/mapValidationExecutionError.js';
+import { AggregateError } from '../util/RapLPCustomErrorInfo.js'
 
 
+const writeFileAsync = util.promisify(fs.writeFile);
+const appendFileAsync = util.promisify(fs.appendFile);
+
+declare var AggregateError: {
+  prototype: AggregateError;
+  new (errors: any[], message?: string): AggregateError;
+};
 
 
 export const registerValidationRoutes = (app: Express) => {
@@ -100,6 +111,8 @@ export const registerValidationRoutes = (app: Express) => {
    * Endpoint 
    */
   app.post('/api/v1/validation/validatespec', async (req, res, next) => {
+
+    let strict = true;
     try {
       const context = new RuleExecutionContext();
       const body: SpecValidationRequestDto = req.body;
@@ -115,7 +128,7 @@ export const registerValidationRoutes = (app: Express) => {
 
       // 1. Decode input
       const raw = decodeBase64String(body.spec);
-      const strict = body.strict ?? true;
+      strict = body.strict ?? true;
       const categories = body.categories ?? [];
 
       // 2. Detect format-preferens 
@@ -145,13 +158,14 @@ export const registerValidationRoutes = (app: Express) => {
 
               // Put in kind field to indicate violation
               kind: 'spec-validation',
+              format: parseResult.format,
+              stage: 'strict',
               //Payload 
               issues: sorted, 
               snippet,
             }),          
          );
       }
-
       // 5. No strict-errors → run raplp ruleengine
       const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
       const apiSpecDocument = new Document(parseResult.raw, parser, 'payload.yaml'); // In-memory-file to calculate correct positions when parsing
@@ -177,6 +191,8 @@ export const registerValidationRoutes = (app: Express) => {
 
               // Put in kind field to indicate violation
               kind: 'rule-validation',
+              stage: 'rule-engine',
+              format: parseResult.format,
               //Payload 
               payload: result,
             }),          
@@ -185,12 +201,33 @@ export const registerValidationRoutes = (app: Express) => {
       // No rule violation and success response goes here
       return res.status(200).json({
         ok: true,
+        stage: 'rule-engine',
+        format:parseResult.format,
         //Payload 
         payload: result, 
       });
     } catch (e) {
       // Hantera SpecParseError här 
-      next(e);
+      logErrorToFile(e);
+      next(
+        mapValidationExecutionError(e, {
+          strictEnabled: strict,
+        }) 
+      );
     }
   });  
 };
+function logErrorToFile(error: any) {
+  const errorMessage = `${new Date().toISOString()} - ${error.stack}\n`;
+  fs.appendFileSync('rap-lp-api-mode-error.log', errorMessage);
+  if (error.errors) {
+    const detailedMessage = `${new Date().toISOString()} - ${JSON.stringify(error.errors, null, 2)}\n`;
+    fs.appendFileSync('rap-lp-error.log', detailedMessage);
+  }
+  if (error instanceof AggregateError) {
+    error.errors.forEach((err: any, index: number) => {
+      const causeMessage = `Cause ${index + 1}: ${err.stack || err}\n`;
+      fs.appendFileSync('rap-lp-api-mode-error.log', causeMessage);
+    });
+  }
+}
