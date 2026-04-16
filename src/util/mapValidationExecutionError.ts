@@ -95,6 +95,26 @@ function isKnownRuleEngineInvalidStructureCase(
   }
   const combined = buildCombinedErrorText(error);
 
+if (process.env.CI) {
+  console.log('--- DEBUG RULE ENGINE DETECTION ---');
+  console.log('combined:\n', combined);
+
+  console.log('signals:', {
+    nimma: combined.includes('nimma'),
+    spectral: combined.includes('@stoplight/spectral'),
+    proxyCallbacks: combined.includes('proxy-callbacks.js'),
+    scope: combined.includes('scope.js'),
+    runner: combined.includes('runner.js'),
+    spectralJs: combined.includes('spectral.js'),
+    infoThrew: combined.includes('$.info threw'),
+    pathsThrew: combined.includes('$.paths threw'),
+    errorWithCause: combined.includes('errorwithcause'),
+    aggregateError: combined.includes('aggregateerror'),
+    threwException: combined.includes('threw an exception'),
+    threw: combined.includes(' threw: '),
+  });
+}
+
   const fromRuleEngine =
     combined.includes('nimma') ||
     combined.includes('@stoplight/spectral') ||

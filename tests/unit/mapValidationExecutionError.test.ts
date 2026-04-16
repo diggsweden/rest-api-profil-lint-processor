@@ -129,6 +129,9 @@ Error: Database connection failed
     const mapped = mapValidationExecutionError(aggregate, {
       strictEnabled: false,
     });
+  
+    expect(mapped).toBe(aggregate);
     expect(mapped).not.toBeInstanceOf(SpecParseError);
+  
   });
 });
