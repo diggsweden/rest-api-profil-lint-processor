@@ -120,7 +120,7 @@ if (process.env.CI) {
     combined.includes('@stoplight/spectral') ||
     combined.includes('proxy-callbacks.js') ||
     combined.includes('scope.js') ||
-    combined.includes('runner.js') ||
+    //combined.includes('runner.js') ||
     combined.includes('spectral.js') ||
     combined.includes('$.info threw') ||
     combined.includes('$.paths threw') ||
@@ -130,8 +130,8 @@ if (process.env.CI) {
     const ruleExecutionCrash =
     combined.includes('threw an exception') ||
     combined.includes(' threw: ') ||
-    combined.includes('errorwithcause') ||
-    combined.includes('aggregateerror');
+    combined.includes('errorwithcause');
+    //combined.includes('aggregateerror');
 
   return fromRuleEngine && ruleExecutionCrash;
 }
