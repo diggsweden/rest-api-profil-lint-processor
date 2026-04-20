@@ -102,10 +102,6 @@ export async function importAndCreateRuleInstances(
    */
   try {
     if (ruleCategories && ruleCategories.length > 0) {
-      //Check if we gonna load PrerequisetRules or if it is specified
-      if (!ruleCategories.includes('ForRules')) {
-        ruleCategories.push('ForRules');
-      }
       await importRulesByCategory(ruleCategories);
     } else {
       await importAllRules();

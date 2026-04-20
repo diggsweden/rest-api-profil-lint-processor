@@ -51,10 +51,5 @@ export function resolveRuleCategories(
   }
 
   const result = [...categories];
-
-  if (!result.includes('ForRules')) {
-    result.push('ForRules');
-  }
-
   return result;
 }
