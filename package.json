@@ -68,7 +68,7 @@
   ],
   "overrides": {
     "@stoplight/spectral-core": {
-      "jsonpath-plus": "10.3.0"
+      "jsonpath-plus": "10.4.0"
     }
   },
   "author": "Digg - Agency for Digital Government",
