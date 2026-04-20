@@ -28,22 +28,42 @@ class RuleCategoryError extends RapLPBaseApiError {
 
 // Express.js middleware to map Extended
 
-const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
 
 // SpecParseError --> 400 adapter impl
 if (err instanceof SpecParseError) {
+
+    const isRuleEngineCase = err.stage === 'rule-engine';  
+    const isStrictCase = err.stage === 'strict';
+
     const problemDetails = new ProblemDetailsDTO({
-      type: 'https://rap-lp./problems/spec-parse-error',
-      title: 'Okänt fel vid parsning av API-specifikationen',
+      type: isRuleEngineCase 
+        ? 'https://rap-lp./problems/spec-validation'
+        : 'https://rap-lp./problems/spec-parse-error',
+
+      title: isRuleEngineCase || isStrictCase
+        ? 'Specifikationen kunde inte utvärderas fullt ut'
+        : 'Okänt fel vid parsning av API-specifikationen',
       status: ERROR_TYPE.BAD_REQUEST,
       detail: err.message,
       instance: req.originalUrl,
-
-      //Extra fields 
-      kind: 'spec-parse',
+      cause: err.cause instanceof Error
+        ? { name: err.cause.name, message: err.cause.message }
+        : undefined,
+      /**Extra fields**/ 
+      kind: isRuleEngineCase || isStrictCase ? 'spec-validation' : 'spec-parse',
       line: err.line,
       column: err.column,
-      format: err.source, 
+      format: err.source, // For now used with backward compability
+      stage: err.stage, // More finetuning needed, use this field
+
+      //Optional metadata
+      snippet: err.snippet,
     });
 
     return res.status(ERROR_TYPE.BAD_REQUEST).send(problemDetails);  
