@@ -22,7 +22,7 @@ export async function startServer<T extends ApiArgs>(args: T) {
   app.use('/api/v1/openapi.yaml', express.static(path.join(process.cwd(), 'rap-lp-openapi.yaml')));
 
   // For the case of content upload
-  app.use(express.json());
+  app.use(express.json({ limit: '5mb' }));
   // Path to your OpenAPI spec
   const apiSpec = path.join(process.cwd(), 'rap-lp-openapi.yaml');
 
