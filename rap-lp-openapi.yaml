@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
 #
 # SPDX-License-Identifier: EUPL-1.2
-
 openapi: 3.1.0
 info:
   title: REST API-profil - Lint Processor - OpenAPI 3.0
@@ -17,7 +16,7 @@ info:
     This specification describes the linter API itself.
     Begransningar: URL-baserad validering kan vara avstangd via serverkonfiguration,
     och generate-report returnerar en binar Excel-fil medan ovriga resurser returnerar JSON.
-  x-limitations: This is a custom property that can be used to describe known issues or limitations.   
+  x-limitations: This is a custom property that can be used to describe known issues or limitations.
   contact:
     name: Digg
     url: https://github.com/diggsweden/rest-api-profil-lint-processor/
