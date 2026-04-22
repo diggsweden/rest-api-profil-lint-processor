@@ -71,7 +71,7 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
       const rules = await importAndCreateRuleInstances(context, resolvedCategories);
 
       const result = await processApiSpec(context, rules, apiSpecDocument);
-      res.send(result);
+      res.json(result);
     } catch (e) {
       next(e);
     }
