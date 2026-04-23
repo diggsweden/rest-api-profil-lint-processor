@@ -49,7 +49,16 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
 
       assertSsrfSafeUrl(dto.url);
 
-      const response = await fetch(dto.url, { ...config?.customFetchConfig, redirect: 'error' });
+      let response: Response;
+      try {
+        response = await fetch(dto.url, { ...config?.customFetchConfig, redirect: 'error' });
+      } catch {
+        throw new RapLPBaseApiError(
+          'Invalid Request',
+          'The requested URL could not be fetched. Redirects are not allowed.',
+          ERROR_TYPE.BAD_REQUEST,
+        );
+      }
 
       const yamlContentString = await response.text();
 
