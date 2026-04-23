@@ -11,7 +11,7 @@ import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
 import { ERROR_TYPE, RapLPBaseApiError } from '../util/RapLPBaseApiErrorHandling.js';
 import { loadUrlValidationConfiguration } from '../util/urlValidationConfig.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
-import { parseRuleCategories,resolveRuleCategories } from '../rulesets/util/ruleModules.js';
+import { parseRuleCategories, resolveRuleCategories } from '../rulesets/util/ruleModules.js';
 
 const assertSsrfSafeUrl = (urlString: string): void => {
   let parsed: URL;
@@ -63,15 +63,15 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
       const yamlContentString = await response.text();
 
       validateYamlInput(yamlContentString);
-      
+
       const apiSpecDocument = new Document(yamlContentString, Parsers.Yaml, 'payload.yaml');
       const ruleCategories = parseRuleCategories(dto.categories);
       const resolvedCategories = resolveRuleCategories(ruleCategories);
 
       const rules = await importAndCreateRuleInstances(context, resolvedCategories);
 
-      const result = await processApiSpec(context,rules, apiSpecDocument);
-      res.send(result);
+      const result = await processApiSpec(context, rules, apiSpecDocument);
+      res.json(result);
     } catch (e) {
       next(e);
     }
