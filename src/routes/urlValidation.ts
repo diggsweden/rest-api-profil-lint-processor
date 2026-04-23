@@ -13,6 +13,23 @@ import { loadUrlValidationConfiguration } from '../util/urlValidationConfig.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 import { parseRuleCategories,resolveRuleCategories } from '../rulesets/util/ruleModules.js';
 
+const assertSsrfSafeUrl = (urlString: string): void => {
+  let parsed: URL;
+  try {
+    parsed = new URL(urlString);
+  } catch {
+    throw new RapLPBaseApiError('Invalid Request', 'Invalid URL format.', ERROR_TYPE.BAD_REQUEST);
+  }
+
+  if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+    throw new RapLPBaseApiError(
+      'Invalid Request',
+      'Only HTTPS and HTTP protocols are allowed.',
+      ERROR_TYPE.BAD_REQUEST,
+    );
+  }
+};
+
 export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFile?: string) => {
   const config = loadUrlValidationConfiguration(urlValidationConfigFile);
 
@@ -30,7 +47,9 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
         );
       }
 
-      const response = await fetch(dto.url, config?.customFetchConfig);
+      assertSsrfSafeUrl(dto.url);
+
+      const response = await fetch(dto.url, { ...config?.customFetchConfig, redirect: 'error' });
 
       const yamlContentString = await response.text();
 
