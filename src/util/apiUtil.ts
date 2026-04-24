@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
+import * as fs from 'node:fs';
 import { RapLPCustomSpectral } from './RapLPCustomSpectral.js';
 import { Document } from '@stoplight/spectral-core';
 import Parsers from '@stoplight/spectral-parsers';
@@ -10,6 +11,12 @@ import { DiagnosticReport, RapLPDiagnostic } from '../util/RapLPDiagnostic.js';
 import yaml from 'js-yaml';
 import { ValidationResponseDto } from '../model/ValidationResponseDto.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
+import { AggregateError } from '../util/RapLPCustomErrorInfo.js'
+
+declare var AggregateError: {
+  prototype: AggregateError;
+  new (errors: any[], message?: string): AggregateError;
+};
 
 export const validateYamlInput = (input: string): input is string => {
   try {
@@ -66,4 +73,18 @@ export async function processApiSpec(
  */
 export function hasOwnProperty<X extends {}, Y extends PropertyKey>(obj: X, prop: Y): obj is X & Record<Y, unknown> {
   return obj.hasOwnProperty(prop);
+}
+export function logErrorToFile(error: any) {
+  const errorMessage = `${new Date().toISOString()} - ${error.stack}\n`;
+  fs.appendFileSync('rap-lp-api-mode-error.log', errorMessage);
+  if (error.errors) {
+    const detailedMessage = `${new Date().toISOString()} - ${JSON.stringify(error.errors, null, 2)}\n`;
+    fs.appendFileSync('rap-lp-error.log', detailedMessage);
+  }
+  if (error instanceof AggregateError) {
+    error.errors.forEach((err: any, index: number) => {
+      const causeMessage = `Cause ${index + 1}: ${err.stack || err}\n`;
+      fs.appendFileSync('rap-lp-api-mode-error.log', causeMessage);
+    });
+  }
 }

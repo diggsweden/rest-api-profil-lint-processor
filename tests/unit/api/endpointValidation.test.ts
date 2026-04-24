@@ -116,7 +116,7 @@ describe('POST /api/v1/validation/validatespec – contract check', () => {
 
   const encode = (s: string) => Buffer.from(s).toString('base64');
 
-  it('200 – valid spec, no rule violations', async () => {
+  it('200 - valid spec, no rule violations', async () => {
     const yaml = `
 openapi: 3.0.0
 info:

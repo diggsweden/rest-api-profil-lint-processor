@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
+// SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
 //
 // SPDX-License-Identifier: EUPL-1.2
 
@@ -7,7 +7,7 @@ import util from 'util';
 import { Document } from '@stoplight/spectral-core';
 import Parsers from '@stoplight/spectral-parsers';
 import { Express } from 'express';
-import { decodeBase64String, processApiSpec} from '../util/apiUtil.js';
+import { decodeBase64String, processApiSpec,logErrorToFile} from '../util/apiUtil.js';
 import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
 import { ApiInfo } from '../model/ApiInfo.js';
 import { ExcelReportProcessor } from '../util/excelReportProcessor.js';
@@ -23,9 +23,6 @@ import { parseRuleCategories,resolveRuleCategories,RULE_REGISTRY} from '../rules
 import { mapValidationExecutionError } from '../util/mapValidationExecutionError.js';
 import { AggregateError } from '../util/RapLPCustomErrorInfo.js'
 
-
-const writeFileAsync = util.promisify(fs.writeFile);
-const appendFileAsync = util.promisify(fs.appendFile);
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -181,17 +178,3 @@ export const registerValidationRoutes = (app: Express) => {
     }
   });  
 };
-function logErrorToFile(error: any) {
-  const errorMessage = `${new Date().toISOString()} - ${error.stack}\n`;
-  fs.appendFileSync('rap-lp-api-mode-error.log', errorMessage);
-  if (error.errors) {
-    const detailedMessage = `${new Date().toISOString()} - ${JSON.stringify(error.errors, null, 2)}\n`;
-    fs.appendFileSync('rap-lp-error.log', detailedMessage);
-  }
-  if (error instanceof AggregateError) {
-    error.errors.forEach((err: any, index: number) => {
-      const causeMessage = `Cause ${index + 1}: ${err.stack || err}\n`;
-      fs.appendFileSync('rap-lp-api-mode-error.log', causeMessage);
-    });
-  }
-}
