@@ -37,3 +37,10 @@ components:
           type: string
         instance:
           type: string
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+      
