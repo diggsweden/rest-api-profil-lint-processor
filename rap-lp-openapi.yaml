@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 openapi: 3.1.0
 info:
-  title: REST API-profil - Lint Processor - OpenAPI 3.0
+  title: RAP-LP API
   version: 1.0.11
   summary: API for validating OpenAPI specifications against the Swedish REST API profile.
   description: |
@@ -14,9 +14,9 @@ info:
     Excel report from a precomputed validation report.
 
     This specification describes the linter API itself.
-    Begransningar: URL-baserad validering kan vara avstangd via serverkonfiguration,
+
+    Begransningar och problem: URL-baserad validering kan vara avstangd via serverkonfiguration,
     och generate-report returnerar en binar Excel-fil medan ovriga resurser returnerar JSON.
-  x-limitations: This is a custom property that can be used to describe known issues or limitations.
   contact:
     name: Digg
     url: https://github.com/diggsweden/rest-api-profil-lint-processor/
@@ -177,7 +177,7 @@ paths:
                     status: 400
                     detail: Specifikationen innehaller strukturella eller semantiska fel
                     instance: /api/v1/validation/validatespec
-                    kind: specValidation
+                    kind: spec-validation
                     issues:
                       - code: parser-error
                         message: Missing required property paths.
@@ -193,7 +193,7 @@ paths:
                     status: 400
                     detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
                     instance: /api/v1/validation/validatespec
-                    kind: ruleValidation
+                    kind: rule-validation
                     payload:
                       result:
                         - id: AME.04
@@ -241,11 +241,15 @@ paths:
       description: |
         Fetches an OpenAPI specification from a remote URL and validates it.
 
+        Redirects are not allowed. The requested URL is checked before fetching,
+        then the downloaded OpenAPI document is parsed and strictly validated before
+        RAP-LP rule validation is executed.
+
         This feature can be disabled by server configuration. When disabled, the API returns 409 Conflict.
       operationId: validateUrl
       requestBody:
         required: true
-        description: Remote URL to the OpenAPI specification and optional rule categories.
+        description: Remote URL to the OpenAPI specification and optional validation settings.
         content:
           application/json:
             schema:
@@ -254,57 +258,119 @@ paths:
               remoteSpecification:
                 value:
                   url: https://api.example.se/foretagsinformation/v2/openapi.yaml
+                  strict: true
                   categories:
                     - DokRules
                     - UfnRules
       responses:
         '200':
-          description: Validation completed.
+          description: Validation completed without rule violations.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationResult'
+                $ref: '#/components/schemas/UrlValidationSuccessResponse'
               examples:
-                validationWarnings:
+                success:
                   value:
-                    result:
-                      - id: AME.04
-                        omrade: API Message
-                        krav: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
-                        allvarlighetsgrad: WARNING
-                        sokvag:
-                          - components
-                          - schemas
-                          - Example
-                          - properties
-                          - badField
-                        omfattning:
-                          start:
-                            line: 17
-                            character: 10
-                          end:
-                            line: 17
-                            character: 18
-                    report:
-                      - notering: Ej godkanda regler - RAP-LP
-                        regler:
-                          - id: AME.04
-                            omrade: API Message
-                            status: EJ OK
+                    ok: true
+                    stage: rule-engine
+                    format: yaml
+                    payload:
+                      result: []
+                      report:
+                        - notering: Godkanda regler - RAP-LP
+                          regler:
+                            - id: DOK.03
+                              omrade: Dokumentation
+                              status: OK
         '400':
-          description: Invalid request, invalid URL or invalid YAML/OpenAPI input.
+          description: Invalid request, invalid URL, invalid remote response, strict validation error or rule validation error.
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
+                $ref: '#/components/schemas/ValidationProblemDetails'
               examples:
-                invalidRequest:
+                missingUrl:
+                  value:
+                    type: https://rap-lp/probs/bad-request
+                    title: Ogilitg Request
+                    status: 400
+                    detail: "Obligatoriskt falt saknas: url"
+                    instance: /api/v1/validation/url
+                urlPatternRejected:
+                  value:
+                    type: https://rap-lp/probs/bad-request
+                    title: Ogiltig Request
+                    status: 400
+                    detail: Den begarda adressen uppfyllde inte det tillatna URL-monstret. Kontakta din administrator om du tror att detta ar ett misstag.
+                    instance: /api/v1/validation/url
+                urlFetchFailed:
+                  value:
+                    type: https://rap-lp/probs/bad-request
+                    title: Ogiltig Request
+                    status: 400
+                    detail: Den begarda URL:en kunde inte hamtas. Omdirigeringar ar inte tillatna.
+                    instance: /api/v1/validation/url
+                remoteHttpError:
                   value:
                     type: https://rap-lp/probs/bad-request
                     title: Invalid Request
                     status: 400
-                    detail: The requested address failed the allowed url pattern. Contact your administrator if you think this is a misstake.
+                    detail: The requested URL returned HTTP 404.
                     instance: /api/v1/validation/url
+                specValidation:
+                  value:
+                    type: https://rap-lp./problems/semantic-validation
+                    title: Regelvalideringen misslyckades
+                    status: 400
+                    detail: Specifikationen innehaller strukturella eller semantiska fel
+                    instance: /api/v1/validation/url
+                    kind: spec-validation
+                    stage: strict
+                    format: yaml
+                    issues:
+                      - code: parser-error
+                        message: Missing required property paths.
+                        severity: error
+                        path:
+                          - paths
+                    snippet: |
+                      line 12: missing required property: paths
+                ruleValidation:
+                  value:
+                    type: https://rap-lp./problems/rule-validation
+                    title: Regelvalideringen misslyckades
+                    status: 400
+                    detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
+                    instance: /api/v1/validation/url
+                    kind: rule-validation
+                    stage: rule-engine
+                    format: yaml
+                    payload:
+                      result:
+                        - id: AME.04
+                          omrade: API Message
+                          krav: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
+                          allvarlighetsgrad: WARNING
+                          sokvag:
+                            - components
+                            - schemas
+                            - Example
+                            - properties
+                            - problemField
+                          omfattning:
+                            start:
+                              line: 10
+                              character: 8
+                            end:
+                              line: 10
+                              character: 20
+                      report:
+                        - notering: Ej godkanda regler - RAP-LP
+                          regler:
+                            - id: AME.04
+                              omrade: API Message
+                              status: EJ OK
         '409':
           description: URL validation is disabled by server configuration.
           content:
@@ -369,7 +435,7 @@ paths:
               description: Excel media type.
               schema:
                 type: string
-                example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet # Yes, we violate rule AME.01, but ok for the purpose ;)
+                example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
               schema:
@@ -453,9 +519,13 @@ components:
           type: string
           format: uri
           description: Absolute URL pointing to a remotely hosted OpenAPI specification.
+        strict:
+          type: boolean
+          description: Enables strict parsing and semantic validation before RAP-LP rules are executed.
+          default: true
         categories:
           type: array
-          description: Optional subset of rule categories to execute.
+          description: Optional subset of rule categories to execute. If omitted, all categories are used and ForRules is added implicitly by the service.
           items:
             type: string
           examples:
@@ -517,6 +587,41 @@ components:
       required:
         - ok
         - payload
+    UrlValidationSuccessResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        ok:
+          type: boolean
+          const: true
+        stage:
+          type: string
+          enum:
+            - rule-engine
+          description: Processing stage that produced the successful response.
+        format:
+          $ref: '#/components/schemas/SpecFormat'
+        payload:
+          $ref: '#/components/schemas/ValidationResult'
+      required:
+        - ok
+        - stage
+        - format
+        - payload
+    SpecFormat:
+      type: string
+      description: Parsed OpenAPI document format.
+      enum:
+        - yaml
+        - json
+      example: yaml
+    ValidationStage:
+      type: string
+      description: Validation stage that produced the response.
+      enum:
+        - strict
+        - rule-engine
+      example: rule-engine
     ProblemDetails:
       type: object
       additionalProperties: true
@@ -543,12 +648,17 @@ components:
       allOf:
         - $ref: '#/components/schemas/ProblemDetails'
         - type: object
+          additionalProperties: true
           properties:
             kind:
               type: string
               enum:
-                - specValidation
-                - ruleValidation
+                - spec-validation
+                - rule-validation
+            stage:
+              $ref: '#/components/schemas/ValidationStage'
+            format:
+              $ref: '#/components/schemas/SpecFormat'
             issues:
               type: array
               items:
