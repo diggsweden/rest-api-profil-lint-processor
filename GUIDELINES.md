@@ -709,17 +709,21 @@ I exemplet ovan, så utgör fältet `url` under serverobjektet, samt objektet `p
 **JSON Path Plus-uttryck:**
 
 ```
-$.paths[*]
+$.paths
 ```
 
 **Förklaring:**
-Regeln går igenom alla paths och kontrollerar så att minst en av metoderna GET, POST, PUT, DELETE eller PATCH finns definerade per path.
+Regeln kontrollerar att API:et uppfyller grundkraven för nivå 2 enligt Richardson Maturity Model:
+
+- minst två resurser (paths) är definierade
+- minst två HTTP-metoder totalt (GET, POST, PUT, DELETE eller PATCH) finns definierade i API:et
+- minst en av metoderna GET, POST, PUT, DELETE eller PATCH finns definierad per resurs
 
 **Exempel:**
 
 ![Exempelbild på en resurs med en GET-metod definierad i en OpenAPI description](images/mog01.png)
 
-_Exemplet ovan är giltigt då `GET` är en av metoderna som listades ovan._
+_För att exemplet ovan ska vara giltigt krävs att minst två resurser med varsitt giltig REST-metod finns definierade._
 
 ---
 
@@ -736,17 +740,17 @@ $.paths
 ```
 
 **Förklaring:**
-Regeln går igenom varje path och kontrollerar att:
+Regeln kontrollerar att API:et uppfyller samma grundkrav som MOG.01 (minst två resurser, minst två HTTP-metoder totalt, minst en giltig REST-metod per resurs) samt att minst ett svar i API:et innehåller en HATEOAS-indikator. Följande HATEOAS-indikatorer känns igen:
 
-- de är minst två till antalet
-- de innhåller minst två metoder vardera
-- minst en av metoderna GET, POST, PUT, DELETE eller PATCH finns definerade per path
+- `application/hal+json` används som mediatyp i ett svar
+- Ett OpenAPI `links`-objekt är definierat i ett svar
+- En `_links`-egenskap förekommer i ett svarsschema (HAL-format)
 
 **Exempel:**
 
 ![Exempelbild på två resurser med två metoder definierade vardera i en OpenAPI description](images/mog02.png)
 
-_Exemplet är giltigt då det uppfyller samtliga krav i punktlistan ovan._
+_Exemplet är giltigt då det uppfyller samtliga grundkrav samt innehåller en HATEOAS-indikator i minst ett svar._
 
 ---
 
