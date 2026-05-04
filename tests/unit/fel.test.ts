@@ -22,6 +22,7 @@ testRule('Fel01', [
                   'application/problem+json': {
                     schema: {
                       type: 'object',
+                      required: ['type', 'title', 'status', 'detail', 'instance'],
                       properties: {
                         type: {
                           type: 'string',
@@ -65,6 +66,7 @@ testRule('Fel01', [
                   'application/problem+xml': {
                     schema: {
                       type: 'object',
+                      required: ['type', 'title', 'status', 'detail', 'instance'],
                       properties: {
                         type: {
                           type: 'string',
@@ -182,6 +184,156 @@ testRule('Fel01', [
         severity: DiagnosticSeverity.Error,
       },
     ],
+  },
+  {
+    name: 'ogiltigt testfall - oneOf används',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/': {
+          get: {
+            responses: {
+              '500': {
+                content: {
+                  'application/problem+json': {
+                    schema: {
+                      oneOf: [{ type: 'object' }, { type: 'object' }],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message: Fel01.ruleMessage,
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+
+  {
+    name: 'giltigt testfall - $ref används',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      components: {
+        schemas: {
+          Problem: {
+            type: 'object',
+            required: ['type', 'title', 'status', 'detail', 'instance'],
+            properties: {
+              type: { type: 'string' },
+              title: { type: 'string' },
+              status: { type: 'integer' },
+              detail: { type: 'string' },
+              instance: { type: 'string' },
+            },
+          },
+        },
+      },
+      paths: {
+        '/': {
+          get: {
+            responses: {
+              '500': {
+                content: {
+                  'application/problem+json': {
+                    schema: {
+                      $ref: '#/components/schemas/Problem',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+
+  {
+    name: 'giltigt testfall - allOf används',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/': {
+          get: {
+            responses: {
+              '500': {
+                content: {
+                  'application/problem+json': {
+                    schema: {
+                      allOf: [
+                        {
+                          type: 'object',
+                          required: ['type', 'title'],
+                          properties: {
+                            type: { type: 'string' },
+                            title: { type: 'string' },
+                          },
+                        },
+                        {
+                          type: 'object',
+                          required: ['status', 'detail', 'instance'],
+                          properties: {
+                            status: { type: 'integer' },
+                            detail: { type: 'string' },
+                            instance: { type: 'string' },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: '$ref saknar required fields',
+    document: {
+      openapi: '3.1.0',
+      components: {
+        schemas: {
+          Problem: {
+            type: 'object',
+            properties: {
+              type: { type: 'string' },
+              title: { type: 'string' },
+            },
+          },
+        },
+      },
+      paths: {
+        '/': {
+          get: {
+            responses: {
+              '500': {
+                content: {
+                  'application/problem+json': {
+                    schema: {
+                      $ref: '#/components/schemas/Problem',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [{ message: Fel01.ruleMessage, severity: DiagnosticSeverity.Error }],
   },
 ]);
 
