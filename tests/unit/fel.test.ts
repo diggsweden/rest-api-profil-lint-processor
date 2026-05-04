@@ -229,7 +229,7 @@ testRule('Fel01', [
             properties: {
               type: { type: 'string' },
               title: { type: 'string' },
-              status: { type: 'integer' },
+              status: { type: 'string' },
               detail: { type: 'string' },
               instance: { type: 'string' },
             },
