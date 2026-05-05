@@ -950,13 +950,12 @@ Regeln förutsätter att payload data inte förekommer i HTTP headers. Regeln ä
 
 **Krav:** Om HTTP svarskoderna inte räcker SKALL API:et beskriva feldetaljer enligt RFC 9457 med dessa ingående attribut: 'type', 'title', 'status', 'detail', 'instance'.
 
-För `application/problem+json` och `application/problem+xml` förväntas schemat vara entydigt beskrivet som ett objekt, antingen inline, via `$ref` eller via `allOf`. 
+För `application/problem+json` och `application/problem+xml` förväntas schemat vara entydigt beskrivet som ett objekt, antingen inline, via `$ref` eller via `allOf`.
 
 Schemat ska innehålla attributen `type`, `title`, `status`, `detail` och `instance`, och dessa ska anges som
 obligatoriska via `required`.
 
 `oneOf` används <u>inte</u> för att uppfylla FEL.01 i RAP-LP, eftersom regeln då inte entydigt kan avgöra vilken feldetaljmodell som beskriver RFC 9457-strukturen. Använd i stället en gemensam Problem Details-modell via `$ref` och placera konkreta exempel under `content.application/problem+json.examples`.
-
 
 **Typ:** SKALL
 
