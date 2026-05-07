@@ -5,7 +5,12 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
-import { countEndpoints, countTotalHttpMethods, eachPathHasValidRestOperation, endPointsAreValid, hasHateoasIndicators } from './util/MogRulesUtil.js';
+import {
+  countEndpoints,
+  countTotalHttpMethods,
+  eachPathHasValidRestOperation,
+  hasHateoasIndicators,
+} from './util/MogRulesUtil.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 const moduleName: string = 'MogRules.ts';

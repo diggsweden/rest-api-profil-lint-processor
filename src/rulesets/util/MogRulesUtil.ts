@@ -44,19 +44,8 @@ export const hasHateoasIndicators = (apiPaths: Record<string, any>): boolean => 
           if (response.links && Object.keys(response.links).length > 0) return true;
           if (!response.content) return false;
           if ('application/hal+json' in response.content) return true;
-          return Object.values(response.content).some((mediaType: any) =>
-            hasLinksInSchema(mediaType?.schema),
-          );
+          return Object.values(response.content).some((mediaType: any) => hasLinksInSchema(mediaType?.schema));
         });
       });
-  });
-};
-
-export const endPointsAreValid = (apiPaths: Record<string, any>): boolean => {
-  return Object.values(apiPaths).every((methodsObj) => {
-    const methodKeys = Object.keys(methodsObj).map((method) => method.toLowerCase());
-    const hasAtLeastTwoMethods = methodKeys.length >= 2;
-    const hasValidHttpMethod = methodKeys.some((method) => validHttpMethods.includes(method));
-    return hasAtLeastTwoMethods && hasValidHttpMethod;
   });
 };
