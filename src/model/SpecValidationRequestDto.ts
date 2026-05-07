@@ -12,4 +12,7 @@ export class SpecValidationRequestDto {
 
     /** Enable strict OpenAPI validation (structural and sematic) */
     strict?: boolean;
+
+    /** Used by different endpoints when providing a URL  */
+    url?: string;
 }

@@ -43,8 +43,8 @@ if (err instanceof SpecParseError) {
 
     const problemDetails = new ProblemDetailsDTO({
       type: isRuleEngineCase 
-        ? 'https://rap-lp./problems/spec-validation'
-        : 'https://rap-lp./problems/spec-parse-error',
+        ? 'https://raplp.digg.se/problems/spec-validation'
+        : 'https://raplp.digg.se/problems/spec-parse-error',
 
       title: isRuleEngineCase || isStrictCase
         ? 'Specifikationen kunde inte utvärderas fullt ut'

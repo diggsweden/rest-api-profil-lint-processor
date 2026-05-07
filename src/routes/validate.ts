@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
+// SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
 //
 // SPDX-License-Identifier: EUPL-1.2
 
@@ -7,7 +7,7 @@ import util from 'util';
 import { Document } from '@stoplight/spectral-core';
 import Parsers from '@stoplight/spectral-parsers';
 import { Express } from 'express';
-import { decodeBase64String, processApiSpec} from '../util/apiUtil.js';
+import { decodeBase64String, processApiSpec,logErrorToFile} from '../util/apiUtil.js';
 import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
 import { ApiInfo } from '../model/ApiInfo.js';
 import { ExcelReportProcessor } from '../util/excelReportProcessor.js';
@@ -23,9 +23,6 @@ import { parseRuleCategories,resolveRuleCategories,RULE_REGISTRY} from '../rules
 import { mapValidationExecutionError } from '../util/mapValidationExecutionError.js';
 import { AggregateError } from '../util/RapLPCustomErrorInfo.js'
 
-
-const writeFileAsync = util.promisify(fs.writeFile);
-const appendFileAsync = util.promisify(fs.appendFile);
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -84,8 +81,8 @@ export const registerValidationRoutes = (app: Express) => {
       //0.5 Check input
       if (!body.spec) {
         throw new RapLPBaseApiError(
-          'Ogiltig request',
-          'Obligatoriskt fält saknas: spec',
+          'Invalid Request',
+          'Required field missing: spec',
           ERROR_TYPE.BAD_REQUEST,
           );
       }
@@ -114,8 +111,8 @@ export const registerValidationRoutes = (app: Express) => {
 
          return res.status(400).json(
             new ProblemDetailsDTO({
-              type: 'https://rap-lp./problems/semantic-validation',
-              title: 'Regelvalideringen misslyckades',
+              type: 'https://raplp.digg.se/problems/semantic-validation',
+              title: 'Rule validation failed',
               status: 400,
               detail: 'Specifikationen innehåller strukturella eller semantiska fel',
               instance: req.originalUrl,
@@ -147,8 +144,8 @@ export const registerValidationRoutes = (app: Express) => {
          //Rulevalidation occured in RapLP-ruleengine
          return res.status(400).json(
             new ProblemDetailsDTO({
-              type: 'https://rap-lp./problems/rule-validation',
-              title: 'Regelvalideringen misslyckades',
+              type: 'https://raplp.digg.se/problems/rule-validation',
+              title: 'Rule validation failed',
               status: 400,
               detail: 'API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.',
               instance: req.originalUrl,
@@ -181,17 +178,3 @@ export const registerValidationRoutes = (app: Express) => {
     }
   });  
 };
-function logErrorToFile(error: any) {
-  const errorMessage = `${new Date().toISOString()} - ${error.stack}\n`;
-  fs.appendFileSync('rap-lp-api-mode-error.log', errorMessage);
-  if (error.errors) {
-    const detailedMessage = `${new Date().toISOString()} - ${JSON.stringify(error.errors, null, 2)}\n`;
-    fs.appendFileSync('rap-lp-error.log', detailedMessage);
-  }
-  if (error instanceof AggregateError) {
-    error.errors.forEach((err: any, index: number) => {
-      const causeMessage = `Cause ${index + 1}: ${err.stack || err}\n`;
-      fs.appendFileSync('rap-lp-api-mode-error.log', causeMessage);
-    });
-  }
-}
