@@ -48,15 +48,15 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
 
       if (!body.url) {
         throw new RapLPBaseApiError(
-          'Ogilitg Request',
-          'Obligatoriskt fält saknas: url',
+          'Invalid Request',
+          'Required field missing: url',
           ERROR_TYPE.BAD_REQUEST,
         );
       }
       if (config?.urlMatchRegex && !body.url.match(config.urlMatchRegex)) {
         throw new RapLPBaseApiError(
-          'Ogiltig Request',
-          'Den begärda adressen uppfyllde inte det tillåtna URL-mönstret. Kontakta din administratör om du tror att detta är ett misstag.',
+          'Invalid Request',
+          'The requested address did not meet the allowed URL pattern. Please contact your administrator if you believe this is a mistake.',
           ERROR_TYPE.BAD_REQUEST,
         );
       }
@@ -67,8 +67,8 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
         response = await fetch(body.url, { ...config?.customFetchConfig, redirect: 'error' });
       } catch {
         throw new RapLPBaseApiError(
-          'Ogiltig Request',
-          'Den begärda URL:en kunde inte hämtas. Omdirigeringar är inte tillåtna.',
+          'Invalid Request',
+          'The requested URL could not be retrieved. Redirects are not allowed.',
           ERROR_TYPE.BAD_REQUEST,
         );
       }
@@ -105,8 +105,8 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
 
          return res.status(400).json(
             new ProblemDetailsDTO({
-              type: 'https://rap-lp./problems/semantic-validation',
-              title: 'Regelvalideringen misslyckades',
+              type: 'https://raplp.digg.se/problems/semantic-validation',
+              title: 'Rule validation failed',
               status: 400,
               detail: 'Specifikationen innehåller strukturella eller semantiska fel',
               instance: req.originalUrl,
@@ -138,8 +138,8 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
          //Rulevalidation occured in RapLP-ruleengine
          return res.status(400).json(
             new ProblemDetailsDTO({
-              type: 'https://rap-lp./problems/rule-validation',
-              title: 'Regelvalideringen misslyckades',
+              type: 'https://raplp.digg.se/problems/rule-validation',
+              title: 'Rule validation failed',
               status: 400,
               detail: 'API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.',
               instance: req.originalUrl,
@@ -184,3 +184,4 @@ export const registerUrlValidationFallbackRoutes = (app: Express) => {
     );
   });
 };
+

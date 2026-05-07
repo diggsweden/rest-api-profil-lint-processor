@@ -25,9 +25,9 @@ jest.mock('../../../src/routes/urlValidation.js', () => ({
       if (!url) {
         return res.status(400).json({
           type: 'about:blank',
-          title: 'Ogilitg Request',
+          title: 'Invalid Request',
           status: 400,
-          detail: 'Obligatoriskt fält saknas: url',
+          detail: 'Required field missing: url',
         });
       }
 
@@ -35,9 +35,9 @@ jest.mock('../../../src/routes/urlValidation.js', () => ({
       if (url.includes('forbidden')) {
         return res.status(400).json({
           type: 'about:blank',
-          title: 'Ogiltig Request',
+          title: 'Invalid Request',
           status: 400,
-          detail: 'Den begärda adressen uppfyllde inte det tillåtna URL-mönstret.',
+          detail: 'The requested address did not meet the allowed URL pattern. Please contact your administrator if you believe this is a mistake.',
         });
       }
 
@@ -47,7 +47,7 @@ jest.mock('../../../src/routes/urlValidation.js', () => ({
           type: 'about:blank',
           title: 'Invalid Request',
           status: 400,
-          detail: 'The requeste d URL could not be fetched. Redirects are not allowed.',
+          detail: 'The requested URL could not be fetched. Redirects are not allowed.',
         });
       }
 
@@ -64,8 +64,8 @@ jest.mock('../../../src/routes/urlValidation.js', () => ({
       // Strict validation error
       if (url.includes('bad-spec')) {
         return res.status(400).json({
-          type: 'https://rap-lp./problems/semantic-validation',
-          title: 'Regelvalideringen misslyckades',
+          type: 'https://raplp.digg.se/problems/semantic-validation',
+          title: 'Rule validation failed',
           status: 400,
           kind: 'spec-validation',
           stage: 'strict',
@@ -85,8 +85,8 @@ jest.mock('../../../src/routes/urlValidation.js', () => ({
       if (url.includes('rule-error')) {
         if (strict !== false) {
           return res.status(400).json({
-            type: 'https://rap-lp./problems/rule-validation',
-            title: 'Regelvalideringen misslyckades',
+            type: 'https://raplp.digg.se/problems/rule-validation',
+            title: 'Rule validation failed',
             status: 400,
             kind: 'rule-validation',
             stage: 'rule-engine',
@@ -135,7 +135,7 @@ describe('POST /api/v1/validation/url – kontrakt', () => {
     registerUrlValidationRoutes(app);
   });
 
-  it('400 - saknar url', async () => {
+  it('400 - Missing url', async () => {
     const res = await request(app)
       .post('/api/v1/validation/url')
       .send({});
@@ -144,7 +144,7 @@ describe('POST /api/v1/validation/url – kontrakt', () => {
     expect(res.body.detail).toContain('url');
   });
 
-  it('400 - ogiltig URL (regex/SSRF)', async () => {
+  it('400 - Invalid URL (regex/SSRF)', async () => {
     const res = await request(app)
       .post('/api/v1/validation/url')
       .send({ url: 'http://forbidden.com' });
@@ -186,7 +186,7 @@ describe('POST /api/v1/validation/url – kontrakt', () => {
     expect(res.body.kind).toBe('rule-validation');
   });
 
-  it('200 - strict=false tillåter rule violations', async () => {
+  it('200 - strict=false allow rule violations', async () => {
     const res = await request(app)
       .post('/api/v1/validation/url')
       .send({ url: 'http://example.com/rule-error', strict: false });

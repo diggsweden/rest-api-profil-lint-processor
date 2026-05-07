@@ -81,8 +81,8 @@ export const registerValidationRoutes = (app: Express) => {
       //0.5 Check input
       if (!body.spec) {
         throw new RapLPBaseApiError(
-          'Ogiltig request',
-          'Obligatoriskt fält saknas: spec',
+          'Invalid Request',
+          'Required field missing: spec',
           ERROR_TYPE.BAD_REQUEST,
           );
       }
@@ -111,8 +111,8 @@ export const registerValidationRoutes = (app: Express) => {
 
          return res.status(400).json(
             new ProblemDetailsDTO({
-              type: 'https://rap-lp./problems/semantic-validation',
-              title: 'Regelvalideringen misslyckades',
+              type: 'https://raplp.digg.se/problems/semantic-validation',
+              title: 'Rule validation failed',
               status: 400,
               detail: 'Specifikationen innehåller strukturella eller semantiska fel',
               instance: req.originalUrl,
@@ -144,8 +144,8 @@ export const registerValidationRoutes = (app: Express) => {
          //Rulevalidation occured in RapLP-ruleengine
          return res.status(400).json(
             new ProblemDetailsDTO({
-              type: 'https://rap-lp./problems/rule-validation',
-              title: 'Regelvalideringen misslyckades',
+              type: 'https://raplp.digg.se/problems/rule-validation',
+              title: 'Rule validation failed',
               status: 400,
               detail: 'API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.',
               instance: req.originalUrl,
