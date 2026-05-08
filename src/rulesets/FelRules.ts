@@ -30,18 +30,43 @@ export class Fel01 extends BaseRuleset {
   ];
   then = [
     {
-      function: (targetVal: unknown, _opts: unknown, paths: string[]) => {
-        if (!isOpenApiObject(targetVal)) {
-          return [{ message: 'Schema must be object' }];
-        }
+      function: (targetVal: unknown,  
+        _opts: unknown,
+         paths: string[], otherValues?: { document?: { data?: unknown } }
+      ) => {
 
-        return Fel01.mandatoryProperties
-          .filter((mandatory) => {
-            return !targetVal.properties?.[mandatory];
-          })
-          .map((missing) => ({
-            message: `Missing required field: ${missing}`,
-          }));
+        const rootDocument = otherValues?.document?.data;
+        if (!isOpenApiSchema(targetVal)) {
+          return [{ message: 'Schema must be an object' }];
+        }
+        //No oneOf --> see GUIDELINES.md
+        if (Array.isArray(targetVal.oneOf)) {
+          return [{ message: Fel01.ruleMessage }];
+        }     
+        const schemaInfo = this.collectSchemaInfo(
+          targetVal,
+          rootDocument,
+          new Set<string>(),
+        );
+
+        return Fel01.mandatoryProperties.flatMap((mandatory) => {
+          const issues: Array<{ message: string }> = [];
+
+          if (!schemaInfo.properties.has(mandatory)) {
+            issues.push({
+              message: `Missing property: ${mandatory}`,
+            });
+          }
+
+          if (!schemaInfo.required.has(mandatory)) {
+            issues.push({
+              message: `Missing required field: ${mandatory}`,
+            });
+          }
+
+          return issues;
+        });
+
       },
     },
     {
@@ -64,6 +89,88 @@ export class Fel01 extends BaseRuleset {
     super(context);
     super.initializeFormats(['OAS3']);
   }
+  private collectSchemaInfo(
+    schema: unknown,
+    rootDocument: unknown,
+    visitedRefs: Set<string>,
+  ): { properties: Set<string>; required: Set<string> } {
+    const properties = new Set<string>();
+    const required = new Set<string>();
+
+    if (!isOpenApiSchema(schema)) {
+      return { properties, required };
+    }
+
+    // Ordinary object-schema
+    if (isOpenApiObject(schema)) {
+      if (schema.properties) {
+        Object.keys(schema.properties).forEach((key) => properties.add(key));
+      }
+
+      if (Array.isArray(schema.required)) {
+        schema.required.forEach((key) => required.add(key));
+      }
+    }
+
+    // $ref
+    if (typeof schema.$ref === 'string') {
+      const resolved = this.resolveLocalRef(schema.$ref, rootDocument, visitedRefs);
+
+      if (resolved) {
+        const refInfo = this.collectSchemaInfo(resolved, rootDocument, visitedRefs);
+        refInfo.properties.forEach((p) => properties.add(p));
+        refInfo.required.forEach((r) => required.add(r));
+      }
+    }
+
+    // allOf
+    if (Array.isArray(schema.allOf)) {
+      for (const subSchema of schema.allOf) {
+        const subInfo = this.collectSchemaInfo(subSchema, rootDocument, visitedRefs);
+        subInfo.properties.forEach((p) => properties.add(p));
+        subInfo.required.forEach((r) => required.add(r));
+      }
+    }
+
+    return { properties, required };
+  }
+
+  private resolveLocalRef(
+    ref: string,
+    rootDocument: unknown,
+    visitedRefs: Set<string>,
+  ): unknown {
+    if (!ref.startsWith('#/')) {
+      return undefined;
+    }
+
+    if (!isOpenApiSchema(rootDocument)) {
+      return undefined;
+    }
+
+    if (visitedRefs.has(ref)) {
+      return undefined;
+    }
+
+    visitedRefs.add(ref);
+
+    const pathSegments = ref
+      .slice(2)
+      .split('/')
+      .map((segment) => segment.replace(/~1/g, '/').replace(/~0/g, '~'));
+
+    let current: unknown = rootDocument;
+
+    for (const segment of pathSegments) {
+      if (!isOpenApiSchema(current) || !(segment in current)) {
+        return undefined;
+      }
+
+      current = current[segment];
+    }
+
+    return current;
+  }  
 }
 
 export class Fel02 extends BaseRuleset {
@@ -116,12 +223,27 @@ export class Fel02 extends BaseRuleset {
 }
 export default { Fel01, Fel02 };
 
-type OpenApiObject = {
-  type: 'object';
+const isOpenApiSchema = (x: unknown): x is OpenApiSchema => {
+  return typeof x === 'object' && x !== null && !Array.isArray(x);
+};
+
+const isOpenApiObject = (x: unknown): x is OpenApiObject => {
+  return isOpenApiSchema(x) && x.type === 'object';
+};
+/**
+ * Bredare schematyp för traversal av OpenAPI-schema.
+ * Den representerar inte bara "type: object"-scheman,
+ * utan även kompositions- och referensnoder.
+ */
+type OpenApiSchema = {
+  $ref?: string;
+  allOf?: unknown[];
+  oneOf?: unknown[];
+  type?: string;
   properties?: Record<string, unknown>;
   required?: string[];
 };
 
-const isOpenApiObject = (x: unknown): x is OpenApiObject => {
-  return (x as OpenApiObject)?.type === 'object';
+type OpenApiObject = OpenApiSchema & {
+  type: 'object';
 };
