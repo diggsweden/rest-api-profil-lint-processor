@@ -27,7 +27,7 @@ testRule('Mog01', [
     ],
   },
   {
-    name: 'ogiltigt testfall - en resurs saknar giltig REST-metod',
+    name: 'ogiltigt testfall - /pets och /pets/{petId} räknas som samma resurs',
     document: {
       openapi: '3.1.0',
       info: { version: '1.0.0' },
@@ -38,6 +38,31 @@ testRule('Mog01', [
           },
         },
         '/pets/{petId}': {
+          get: {
+            responses: { 200: { description: 'OK' } },
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message: 'Alla API:er SKALL designas för att uppnå nivå 2 enligt Richardson Maturity Model.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - en resurs saknar giltig REST-metod',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0.0' },
+      paths: {
+        '/pets': {
+          get: {
+            responses: { 200: { description: 'OK' } },
+          },
+        },
+        '/orders': {
           options: {
             responses: { 204: { description: 'Supported methods' } },
           },
@@ -52,7 +77,7 @@ testRule('Mog01', [
     ],
   },
   {
-    name: 'giltigt testfall - två resurser med vardera en giltig REST-metod',
+    name: 'ogiltigt testfall - färre än två distinkta HTTP-metoder',
     document: {
       openapi: '3.1.0',
       info: { version: '1.0.0' },
@@ -62,9 +87,34 @@ testRule('Mog01', [
             responses: { 200: { description: 'OK' } },
           },
         },
-        '/pets/{petId}': {
+        '/orders': {
           get: {
             responses: { 200: { description: 'OK' } },
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message: 'Alla API:er SKALL designas för att uppnå nivå 2 enligt Richardson Maturity Model.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'giltigt testfall - två resurser med distinkta metoder',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0.0' },
+      paths: {
+        '/pets': {
+          get: {
+            responses: { 200: { description: 'OK' } },
+          },
+        },
+        '/orders': {
+          post: {
+            responses: { 201: { description: 'Created' } },
           },
         },
       },
@@ -85,7 +135,7 @@ testRule('Mog01', [
             responses: { 201: { description: 'Created' } },
           },
         },
-        '/pets/{petId}': {
+        '/orders': {
           get: {
             responses: { 200: { description: 'OK' } },
           },
@@ -140,7 +190,7 @@ testRule('Mog02', [
             },
           },
         },
-        '/pets/{petId}': {
+        '/orders': {
           options: {
             responses: { '204': { description: 'Supported methods' } },
           },
@@ -168,7 +218,7 @@ testRule('Mog02', [
             responses: { '201': { description: 'Created' } },
           },
         },
-        '/pets/{petId}': {
+        '/orders': {
           get: {
             responses: { '200': { description: 'OK' } },
           },
@@ -198,9 +248,9 @@ testRule('Mog02', [
             },
           },
         },
-        '/pets/{petId}': {
-          get: {
-            responses: { '200': { description: 'OK' } },
+        '/orders': {
+          post: {
+            responses: { '201': { description: 'Created' } },
           },
         },
       },
@@ -225,9 +275,122 @@ testRule('Mog02', [
             },
           },
         },
-        '/pets/{petId}': {
+        '/orders': {
+          post: {
+            responses: { '201': { description: 'Created' } },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - svarsschemat innehåller href+rel länkobjekt',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0.0' },
+      paths: {
+        '/pets': {
           get: {
-            responses: { '200': { description: 'OK' } },
+            responses: {
+              '200': {
+                description: 'OK',
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        href: { type: 'string' },
+                        rel: { type: 'string' },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        '/orders': {
+          post: {
+            responses: { '201': { description: 'Created' } },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - svarsschemat innehåller href+method länkobjekt',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0.0' },
+      paths: {
+        '/pets': {
+          get: {
+            responses: {
+              '200': {
+                description: 'OK',
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        href: { type: 'string' },
+                        method: { type: 'string' },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        '/orders': {
+          post: {
+            responses: { '201': { description: 'Created' } },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - svarsschemat innehåller nästlad array med href+rel länkobjekt',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0.0' },
+      paths: {
+        '/pets': {
+          get: {
+            responses: {
+              '200': {
+                description: 'OK',
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        links: {
+                          type: 'array',
+                          items: {
+                            type: 'object',
+                            properties: {
+                              href: { type: 'string' },
+                              rel: { type: 'string' },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        '/orders': {
+          post: {
+            responses: { '201': { description: 'Created' } },
           },
         },
       },
@@ -264,9 +427,9 @@ testRule('Mog02', [
             },
           },
         },
-        '/pets/{petId}': {
-          get: {
-            responses: { '200': { description: 'OK' } },
+        '/orders': {
+          post: {
+            responses: { '201': { description: 'Created' } },
           },
         },
       },
