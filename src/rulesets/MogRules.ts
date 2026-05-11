@@ -7,7 +7,7 @@ import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
 import {
   countEndpoints,
-  countTotalHttpMethods,
+  countDistinctHttpMethods,
   eachPathHasValidRestOperation,
   hasHateoasIndicators,
 } from './util/MogRulesUtil.js';
@@ -27,7 +27,7 @@ export class Mog01 extends BaseRuleset {
       function: (targetVal: any, _opts: string, paths: string[]) => {
         if (
           countEndpoints(targetVal) < 2 ||
-          countTotalHttpMethods(targetVal) < 2 ||
+          countDistinctHttpMethods(targetVal) < 2 ||
           !eachPathHasValidRestOperation(targetVal)
         ) {
           return [
@@ -74,7 +74,7 @@ export class Mog02 extends BaseRuleset {
       function: (targetVal: any, _opts: string, paths: string[]) => {
         if (
           countEndpoints(targetVal) < 2 ||
-          countTotalHttpMethods(targetVal) < 2 ||
+          countDistinctHttpMethods(targetVal) < 2 ||
           !eachPathHasValidRestOperation(targetVal) ||
           !hasHateoasIndicators(targetVal)
         ) {

@@ -5,13 +5,27 @@
 export const validHttpMethods = ['get', 'post', 'put', 'delete', 'patch'];
 
 export const countEndpoints = (apiPaths: Record<string, any>): number => {
-  return Object.keys(apiPaths).length;
+  const normalized = new Set(
+    Object.keys(apiPaths).map(
+      (path) =>
+        '/' +
+        path
+          .split('/')
+          .filter((seg) => seg !== '' && !seg.startsWith('{'))
+          .join('/'),
+    ),
+  );
+  return normalized.size;
 };
 
-export const countTotalHttpMethods = (apiPaths: Record<string, any>): number => {
-  return Object.values(apiPaths).reduce((total: number, methodsObj) => {
-    return total + Object.keys(methodsObj).filter((m) => validHttpMethods.includes(m.toLowerCase())).length;
-  }, 0);
+export const countDistinctHttpMethods = (apiPaths: Record<string, any>): number => {
+  const methods = new Set<string>();
+  Object.values(apiPaths).forEach((methodsObj) => {
+    Object.keys(methodsObj)
+      .filter((m) => validHttpMethods.includes(m.toLowerCase()))
+      .forEach((m) => methods.add(m.toLowerCase()));
+  });
+  return methods.size;
 };
 
 export const eachPathHasValidRestOperation = (apiPaths: Record<string, any>): boolean => {
@@ -24,11 +38,21 @@ const allHttpMethods = ['get', 'post', 'put', 'delete', 'options', 'head', 'patc
 
 const hasLinksInSchema = (schema: any): boolean => {
   if (!schema || typeof schema !== 'object') return false;
+
   if (schema.properties?._links) return true;
+
+  if (schema.properties?.href && (schema.properties?.rel || schema.properties?.method)) return true;
+
   for (const key of ['allOf', 'anyOf', 'oneOf']) {
     if (Array.isArray(schema[key]) && schema[key].some(hasLinksInSchema)) return true;
   }
+
   if (schema.items) return hasLinksInSchema(schema.items);
+
+  if (schema.properties) {
+    return Object.values(schema.properties).some((prop: any) => hasLinksInSchema(prop));
+  }
+
   return false;
 };
 
