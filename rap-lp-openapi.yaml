@@ -168,7 +168,7 @@ paths:
                     type: https://rap-lp/probs/bad-request
                     title: Ogiltig request
                     status: 400
-                    detail: "Obligatoriskt falt saknas: spec"
+                    detail: 'Obligatoriskt falt saknas: spec'
                     instance: /api/v1/validation/validatespec
                 specValidation:
                   value:
@@ -293,9 +293,9 @@ paths:
                 missingUrl:
                   value:
                     type: https://rap-lp/probs/bad-request
-                    title: Ogilitg Request
+                    title: Ogiltig Request
                     status: 400
-                    detail: "Obligatoriskt falt saknas: url"
+                    detail: 'Obligatoriskt falt saknas: url'
                     instance: /api/v1/validation/url
                 urlPatternRejected:
                   value:
