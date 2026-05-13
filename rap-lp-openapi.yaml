@@ -29,8 +29,12 @@ externalDocs:
   description: RAP-LP documentation and service level agreement information.
   url: https://www.dataportal.se/rest-api-profil
 servers:
-  - url: https://example.digg.se/rap-lp/v1
-    description: Example production base URL.
+  - url: https://raplp.digg.se/api/v1/
+    description: Production
+  - url: https://raplp.sandbox.digg.se/api/v1/
+    description: Sandbox
+  - url: http://localhost:3000/api/v1/
+    description: Local development
 tags:
   - name: validation
     description: Operations for validating OpenAPI specifications and generating reports.
