@@ -18,7 +18,7 @@ permissions:
   contents: read # Best Security practice. Jobs only get read as base, and then permissions are added as needed
 jobs:
   release:
-    uses: diggsweden/reusable-ci/.github/workflows/release-orchestrator.yml@d31c989acd139c3e8754e116496c826af8dbbca0 # v2.8.2
+    uses: diggsweden/reusable-ci/.github/workflows/release-orchestrator.yml@617cb32268cb6aefdfa4117b4159d37e3b47d7b3 # v2.8.3
     permissions:
       contents: write # Create GitHub releases, push changelog commits
       packages: write # Publish to GitHub Packages
