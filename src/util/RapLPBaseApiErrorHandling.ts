@@ -84,7 +84,8 @@ if (err instanceof SpecParseError) {
     return sendProblem(res, ERROR_TYPE.BAD_REQUEST, problemDetails);
 }
   const status = err.errorType || err.status || ERROR_TYPE.INTERNAL_SERVER_ERROR;
-  const title = err.title || 'An unexpected error occurred';
+  const isValidatorError = Array.isArray(err.errors);
+  const title = err.title || (isValidatorError ? 'Invalid Request' : 'An unexpected error occurred');
   const detail = err.message || 'An unknown error occurred.';
 
   const problemDetails = new ProblemDetailsDTO({
