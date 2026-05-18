@@ -74,7 +74,7 @@ paths:
               examples:
                 internalServerError:
                   value:
-                    type: https://rap-lp/probs/internal-server-error
+                    type: https://raplp.digg.se/problems/internal-server-error
                     title: Internt serverfel
                     status: 500
                     detail: Ett ovantat fel intraffade.
@@ -110,7 +110,7 @@ paths:
               examples:
                 internalServerError:
                   value:
-                    type: https://rap-lp/probs/internal-server-error
+                    type: https://raplp.digg.se/problems/internal-server-error
                     title: Internt serverfel
                     status: 500
                     detail: Ett ovantat fel intraffade.
@@ -152,6 +152,8 @@ paths:
                 success:
                   value:
                     ok: true
+                    stage: rule-engine
+                    format: yaml
                     payload:
                       result: []
                       report:
@@ -169,14 +171,14 @@ paths:
               examples:
                 missingSpec:
                   value:
-                    type: https://rap-lp/probs/bad-request
+                    type: https://raplp.digg.se/problems/bad-request
                     title: Ogiltig request
                     status: 400
                     detail: 'Obligatoriskt falt saknas: spec'
                     instance: /api/v1/validation/validatespec
                 specValidation:
                   value:
-                    type: https://rap-lp./problems/semantic-validation
+                    type: https://raplp.digg.se/problems/semantic-validation
                     title: Regelvalideringen misslyckades
                     status: 400
                     detail: Specifikationen innehaller strukturella eller semantiska fel
@@ -192,7 +194,7 @@ paths:
                       line 12: missing required property: paths
                 ruleValidation:
                   value:
-                    type: https://rap-lp./problems/rule-validation
+                    type: https://raplp.digg.se/problems/rule-validation
                     title: Regelvalideringen misslyckades
                     status: 400
                     detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
@@ -232,7 +234,7 @@ paths:
               examples:
                 internalServerError:
                   value:
-                    type: https://rap-lp/probs/internal-server-error
+                    type: https://raplp.digg.se/problems/internal-server-error
                     title: Internt serverfel
                     status: 500
                     detail: Ett ovantat fel intraffade.
@@ -296,35 +298,35 @@ paths:
               examples:
                 missingUrl:
                   value:
-                    type: https://rap-lp/probs/bad-request
+                    type: https://raplp.digg.se/problems/bad-request
                     title: Ogiltig Request
                     status: 400
                     detail: 'Obligatoriskt falt saknas: url'
                     instance: /api/v1/validation/url
                 urlPatternRejected:
                   value:
-                    type: https://rap-lp/probs/bad-request
+                    type: https://raplp.digg.se/problems/bad-request
                     title: Ogiltig Request
                     status: 400
                     detail: Den begarda adressen uppfyllde inte det tillatna URL-monstret. Kontakta din administrator om du tror att detta ar ett misstag.
                     instance: /api/v1/validation/url
                 urlFetchFailed:
                   value:
-                    type: https://rap-lp/probs/bad-request
+                    type: https://raplp.digg.se/problems/bad-request
                     title: Ogiltig Request
                     status: 400
                     detail: Den begarda URL:en kunde inte hamtas. Omdirigeringar ar inte tillatna.
                     instance: /api/v1/validation/url
                 remoteHttpError:
                   value:
-                    type: https://rap-lp/probs/bad-request
+                    type: https://raplp.digg.se/problems/bad-request
                     title: Invalid Request
                     status: 400
                     detail: The requested URL returned HTTP 404.
                     instance: /api/v1/validation/url
                 specValidation:
                   value:
-                    type: https://rap-lp./problems/semantic-validation
+                    type: https://raplp.digg.se/problems/semantic-validation
                     title: Regelvalideringen misslyckades
                     status: 400
                     detail: Specifikationen innehaller strukturella eller semantiska fel
@@ -342,7 +344,7 @@ paths:
                       line 12: missing required property: paths
                 ruleValidation:
                   value:
-                    type: https://rap-lp./problems/rule-validation
+                    type: https://raplp.digg.se/problems/rule-validation
                     title: Regelvalideringen misslyckades
                     status: 400
                     detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
@@ -384,7 +386,7 @@ paths:
               examples:
                 featureDisabled:
                   value:
-                    type: https://rap-lp/probs/conflict
+                    type: https://raplp.digg.se/problems/conflict
                     title: Conflict
                     status: 409
                     detail: This feature is currenctly dissabled due to server configuration. Contact your administrator if you think this is a misstake.
@@ -398,7 +400,7 @@ paths:
               examples:
                 internalServerError:
                   value:
-                    type: https://rap-lp/probs/internal-server-error
+                    type: https://raplp.digg.se/problems/internal-server-error
                     title: Internt serverfel
                     status: 500
                     detail: Ett ovantat fel intraffade.
@@ -448,31 +450,29 @@ paths:
         '400':
           description: Invalid report input.
           content:
-            application/problem+json:
+            application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
+                type: object
+                properties:
+                  error:
+                    type: string
               examples:
                 invalidData:
                   value:
-                    type: https://rap-lp/probs/bad-request
-                    title: Invalid data format
-                    status: 400
-                    detail: Expected an object with a report array.
-                    instance: /api/v1/validation/generate-report
+                    error: 'Invalid data format. Expected an object with a "report" array.'
         '500':
           description: Excel report generation failed.
           content:
-            application/problem+json:
+            application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
+                type: object
+                properties:
+                  error:
+                    type: string
               examples:
                 generationFailed:
                   value:
-                    type: https://rap-lp/probs/internal-server-error
-                    title: Failed to generate report
-                    status: 500
-                    detail: Failed to generate report.
-                    instance: /api/v1/validation/generate-report
+                    error: Failed to generate report.
 components:
   schemas:
     ValidationRules:
@@ -586,10 +586,16 @@ components:
         ok:
           type: boolean
           const: true
+        stage:
+          $ref: '#/components/schemas/ValidationStage'
+        format:
+          $ref: '#/components/schemas/SpecFormat'
         payload:
           $ref: '#/components/schemas/ValidationResult'
       required:
         - ok
+        - stage
+        - format
         - payload
     UrlValidationSuccessResponse:
       type: object

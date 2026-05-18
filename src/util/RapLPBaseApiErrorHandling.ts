@@ -6,6 +6,18 @@ import { Request, Response, NextFunction } from 'express';
 import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
 import { SpecParseError } from './RapLPSpecParseError.js';
 
+export enum ERROR_TYPE {
+  BAD_REQUEST = 400,
+  CONFLICT = 409,
+  INTERNAL_SERVER_ERROR = 500,
+}
+
+const PROBLEM_TYPE: Record<ERROR_TYPE, string> = {
+  [ERROR_TYPE.BAD_REQUEST]: 'https://raplp.digg.se/problems/bad-request',
+  [ERROR_TYPE.CONFLICT]: 'https://raplp.digg.se/problems/conflict',
+  [ERROR_TYPE.INTERNAL_SERVER_ERROR]: 'https://raplp.digg.se/problems/internal-server-error',
+};
+
 /**
  * Extended error class with errorType that will be used as HTTP error codes in custom error handler.
  */
@@ -73,6 +85,7 @@ if (err instanceof SpecParseError) {
   const detail = err.message || 'An unknown error occurred.';
 
   const problemDetails = new ProblemDetailsDTO({
+    type: PROBLEM_TYPE[status as ERROR_TYPE] ?? 'about:blank',
     status,
     title,
     detail,
@@ -81,11 +94,5 @@ if (err instanceof SpecParseError) {
 
   res.status(status).send(problemDetails);
 };
-
-export enum ERROR_TYPE {
-  BAD_REQUEST = 400,
-  CONFLICT = 409,
-  INTERNAL_SERVER_ERROR = 500,
-}
 
 export { errorHandler, RapLPBaseApiError, RuleCategoryError };
