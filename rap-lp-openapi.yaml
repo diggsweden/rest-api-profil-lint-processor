@@ -179,9 +179,9 @@ paths:
                 specValidation:
                   value:
                     type: https://raplp.digg.se/problems/semantic-validation
-                    title: Regelvalideringen misslyckades
+                    title: Rule validation failed
                     status: 400
-                    detail: Specifikationen innehaller strukturella eller semantiska fel
+                    detail: Specifikationen innehåller strukturella eller semantiska fel
                     instance: /api/v1/validation/validatespec
                     kind: spec-validation
                     issues:
@@ -195,7 +195,7 @@ paths:
                 ruleValidation:
                   value:
                     type: https://raplp.digg.se/problems/rule-validation
-                    title: Regelvalideringen misslyckades
+                    title: Rule validation failed
                     status: 400
                     detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
                     instance: /api/v1/validation/validatespec
@@ -327,9 +327,9 @@ paths:
                 specValidation:
                   value:
                     type: https://raplp.digg.se/problems/semantic-validation
-                    title: Regelvalideringen misslyckades
+                    title: Rule validation failed
                     status: 400
-                    detail: Specifikationen innehaller strukturella eller semantiska fel
+                    detail: Specifikationen innehåller strukturella eller semantiska fel
                     instance: /api/v1/validation/url
                     kind: spec-validation
                     stage: strict
@@ -345,7 +345,7 @@ paths:
                 ruleValidation:
                   value:
                     type: https://raplp.digg.se/problems/rule-validation
-                    title: Regelvalideringen misslyckades
+                    title: Rule validation failed
                     status: 400
                     detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
                     instance: /api/v1/validation/url
