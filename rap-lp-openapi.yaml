@@ -807,16 +807,22 @@ components:
         - id
         - omrade
     PopulatedDiagnosticRuleInfo:
-      allOf:
-        - $ref: '#/components/schemas/DiagnosticRuleInfo'
-        - type: object
-          additionalProperties: false
-          properties:
-            status:
-              type: string
-              example: OK
-          required:
-            - status
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          example: UFN.05
+        omrade:
+          type: string
+          example: URL Format och namngivning
+        status:
+          type: string
+          example: OK
+      required:
+        - id
+        - omrade
+        - status
     DiagnosticReport:
       type: object
       additionalProperties: false
