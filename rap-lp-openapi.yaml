@@ -200,6 +200,8 @@ paths:
                     detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
                     instance: /api/v1/validation/validatespec
                     kind: rule-validation
+                    stage: rule-engine
+                    format: yaml
                     payload:
                       result:
                         - id: AME.04
