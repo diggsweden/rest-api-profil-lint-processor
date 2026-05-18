@@ -7,7 +7,7 @@ import Parsers from '@stoplight/spectral-parsers';
 import { Express } from 'express';
 import { processApiSpec, logErrorToFile } from '../util/apiUtil.js';
 import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
-import { ERROR_TYPE, RapLPBaseApiError } from '../util/RapLPBaseApiErrorHandling.js';
+import { ERROR_TYPE, RapLPBaseApiError, sendProblem } from '../util/RapLPBaseApiErrorHandling.js';
 import { loadUrlValidationConfiguration } from '../util/urlValidationConfig.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 import { parseRuleCategories, resolveRuleCategories } from '../rulesets/util/ruleModules.js';
@@ -103,7 +103,7 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
         const sorted = IssueHelper.sortIssues(parseResult.strictIssues);
         const snippet = IssueHelper.formatIssuesAsEditorText(sorted);
 
-         return res.status(400).json(
+         return sendProblem(res, 400,
             new ProblemDetailsDTO({
               type: 'https://raplp.digg.se/problems/semantic-validation',
               title: 'Rule validation failed',
@@ -136,7 +136,7 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
       );
       if (hasRuleViolations) {
          //Rulevalidation occured in RapLP-ruleengine
-         return res.status(400).json(
+         return sendProblem(res, 400,
             new ProblemDetailsDTO({
               type: 'https://raplp.digg.se/problems/rule-validation',
               title: 'Rule validation failed',

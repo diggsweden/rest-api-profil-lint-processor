@@ -6,6 +6,9 @@ import { Request, Response, NextFunction } from 'express';
 import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
 import { SpecParseError } from './RapLPSpecParseError.js';
 
+export const sendProblem = (res: Response, status: number, body: ProblemDetailsDTO) =>
+  res.status(status).set('Content-Type', 'application/problem+json').json(body);
+
 export enum ERROR_TYPE {
   BAD_REQUEST = 400,
   CONFLICT = 409,
@@ -78,7 +81,7 @@ if (err instanceof SpecParseError) {
       snippet: err.snippet,
     });
 
-    return res.status(ERROR_TYPE.BAD_REQUEST).send(problemDetails);  
+    return sendProblem(res, ERROR_TYPE.BAD_REQUEST, problemDetails);
 }
   const status = err.errorType || err.status || ERROR_TYPE.INTERNAL_SERVER_ERROR;
   const title = err.title || 'An unexpected error occurred';
@@ -92,7 +95,7 @@ if (err instanceof SpecParseError) {
     instance: req.originalUrl,
   });
 
-  res.status(status).send(problemDetails);
+  sendProblem(res, status, problemDetails);
 };
 
 export { errorHandler, RapLPBaseApiError, RuleCategoryError };

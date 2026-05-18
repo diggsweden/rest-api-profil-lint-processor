@@ -16,7 +16,7 @@ import * as IssueHelper from '../util/RapLPIssueHelpers.js';
 import { parseApiSpecInput,detectSpecFormatPreference, ParseResult} from '../util/validateUtil.js';
 import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
 import { SpecValidationRequestDto } from '../model/SpecValidationRequestDto.js';
-import { ERROR_TYPE, RapLPBaseApiError } from '../util/RapLPBaseApiErrorHandling.js';
+import { ERROR_TYPE, RapLPBaseApiError, sendProblem } from '../util/RapLPBaseApiErrorHandling.js';
 import type { IParser } from '@stoplight/spectral-parsers';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 import { parseRuleCategories,resolveRuleCategories,RULE_REGISTRY} from '../rulesets/util/ruleModules.js';
@@ -109,7 +109,7 @@ export const registerValidationRoutes = (app: Express) => {
         const sorted = IssueHelper.sortIssues(parseResult.strictIssues);
         const snippet = IssueHelper.formatIssuesAsEditorText(sorted);
 
-         return res.status(400).json(
+         return sendProblem(res, 400,
             new ProblemDetailsDTO({
               type: 'https://raplp.digg.se/problems/semantic-validation',
               title: 'Rule validation failed',
@@ -142,7 +142,7 @@ export const registerValidationRoutes = (app: Express) => {
       );
       if (hasRuleViolations) {
          //Rulevalidation occured in RapLP-ruleengine
-         return res.status(400).json(
+         return sendProblem(res, 400,
             new ProblemDetailsDTO({
               type: 'https://raplp.digg.se/problems/rule-validation',
               title: 'Rule validation failed',
