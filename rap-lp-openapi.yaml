@@ -184,6 +184,8 @@ paths:
                     detail: Specifikationen innehåller strukturella eller semantiska fel
                     instance: /api/v1/validation/validatespec
                     kind: spec-validation
+                    stage: strict
+                    format: yaml
                     issues:
                       - code: parser-error
                         message: Missing required property paths.
