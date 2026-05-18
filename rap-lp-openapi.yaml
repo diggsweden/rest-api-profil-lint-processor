@@ -172,9 +172,9 @@ paths:
                 missingSpec:
                   value:
                     type: https://raplp.digg.se/problems/bad-request
-                    title: Ogiltig request
+                    title: Invalid Request
                     status: 400
-                    detail: 'Obligatoriskt falt saknas: spec'
+                    detail: 'Required field missing: spec'
                     instance: /api/v1/validation/validatespec
                 specValidation:
                   value:
@@ -299,23 +299,23 @@ paths:
                 missingUrl:
                   value:
                     type: https://raplp.digg.se/problems/bad-request
-                    title: Ogiltig Request
+                    title: Invalid Request
                     status: 400
-                    detail: 'Obligatoriskt falt saknas: url'
+                    detail: 'Required field missing: url'
                     instance: /api/v1/validation/url
                 urlPatternRejected:
                   value:
                     type: https://raplp.digg.se/problems/bad-request
-                    title: Ogiltig Request
+                    title: Invalid Request
                     status: 400
-                    detail: Den begarda adressen uppfyllde inte det tillatna URL-monstret. Kontakta din administrator om du tror att detta ar ett misstag.
+                    detail: The requested address did not meet the allowed URL pattern. Please contact your administrator if you believe this is a mistake.
                     instance: /api/v1/validation/url
                 urlFetchFailed:
                   value:
                     type: https://raplp.digg.se/problems/bad-request
-                    title: Ogiltig Request
+                    title: Invalid Request
                     status: 400
-                    detail: Den begarda URL:en kunde inte hamtas. Omdirigeringar ar inte tillatna.
+                    detail: The requested URL could not be retrieved. Redirects are not allowed.
                     instance: /api/v1/validation/url
                 remoteHttpError:
                   value:
