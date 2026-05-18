@@ -312,6 +312,20 @@ paths:
                     status: 400
                     detail: The requested address did not meet the allowed URL pattern. Please contact your administrator if you believe this is a mistake.
                     instance: /api/v1/validation/url
+                invalidUrlFormat:
+                  value:
+                    type: https://raplp.digg.se/problems/bad-request
+                    title: Invalid Request
+                    status: 400
+                    detail: Invalid URL format.
+                    instance: /api/v1/validation/url
+                invalidProtocol:
+                  value:
+                    type: https://raplp.digg.se/problems/bad-request
+                    title: Invalid Request
+                    status: 400
+                    detail: Only HTTPS and HTTP protocols are allowed.
+                    instance: /api/v1/validation/url
                 urlFetchFailed:
                   value:
                     type: https://raplp.digg.se/problems/bad-request
