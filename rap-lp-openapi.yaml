@@ -481,16 +481,17 @@ paths:
         '500':
           description: Excel report generation failed.
           content:
-            application/json:
+            application/problem+json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+                $ref: '#/components/schemas/ProblemDetails'
               examples:
                 generationFailed:
                   value:
-                    error: Failed to generate report.
+                    type: https://raplp.digg.se/problems/internal-server-error
+                    title: Failed to generate report
+                    status: 500
+                    detail: Failed to generate report.
+                    instance: /api/v1/validation/generate-report
 components:
   schemas:
     ValidationRules:

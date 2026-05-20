@@ -61,7 +61,15 @@ export const registerValidationRoutes = (app: Express) => {
         buffer = reportHandler.generateReportDocumentBuffer(customDiagnostic);
       } catch (error) {
         console.error('Error generating report buffer:', error);
-        return res.status(500).json({ error: 'Failed to generate report.' });
+        return sendProblem(res, 500,
+          new ProblemDetailsDTO({
+            type: 'https://raplp.digg.se/problems/internal-server-error',
+            title: 'Failed to generate report',
+            status: 500,
+            detail: 'Failed to generate report.',
+            instance: req.originalUrl,
+          }),
+        );
       }
 
       res.setHeader('Content-Disposition', 'attachment; filename="avstamningsfil.xlsx"');
