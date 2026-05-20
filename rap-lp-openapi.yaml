@@ -157,10 +157,10 @@ paths:
                     payload:
                       result: []
                       report:
-                        - notering: Godkanda regler - RAP-LP
+                        - Notering: Godkanda regler - RAP-LP
                           regler:
                             - id: DOK.03
-                              omrade: Dokumentation
+                              område: Dokumentation
                               status: OK
         '400':
           description: The specification was invalid or violated one or more rules.
@@ -207,10 +207,10 @@ paths:
                     payload:
                       result:
                         - id: AME.04
-                          omrade: API Message
+                          område: API Message
                           krav: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
                           allvarlighetsgrad: WARNING
-                          sokvag:
+                          sökväg:
                             - components
                             - schemas
                             - Example
@@ -224,10 +224,10 @@ paths:
                               line: 10
                               character: 20
                       report:
-                        - notering: Ej godkanda regler - RAP-LP
+                        - Notering: Ej godkanda regler - RAP-LP
                           regler:
                             - id: AME.04
-                              omrade: API Message
+                              område: API Message
                               status: EJ OK
         '500':
           description: Internal server error.
@@ -288,10 +288,10 @@ paths:
                     payload:
                       result: []
                       report:
-                        - notering: Godkanda regler - RAP-LP
+                        - Notering: Godkanda regler - RAP-LP
                           regler:
                             - id: DOK.03
-                              omrade: Dokumentation
+                              område: Dokumentation
                               status: OK
         '400':
           description: Invalid request, invalid URL, invalid remote response, strict validation error or rule validation error.
@@ -373,10 +373,10 @@ paths:
                     payload:
                       result:
                         - id: AME.04
-                          omrade: API Message
+                          område: API Message
                           krav: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
                           allvarlighetsgrad: WARNING
-                          sokvag:
+                          sökväg:
                             - components
                             - schemas
                             - Example
@@ -390,10 +390,10 @@ paths:
                               line: 10
                               character: 20
                       report:
-                        - notering: Ej godkanda regler - RAP-LP
+                        - Notering: Ej godkanda regler - RAP-LP
                           regler:
                             - id: AME.04
-                              omrade: API Message
+                              område: API Message
                               status: EJ OK
         '409':
           description: URL validation is disabled by server configuration.
@@ -441,10 +441,10 @@ paths:
               precomputedReport:
                 value:
                   report:
-                    - notering: Godkanda regler - RAP-LP
+                    - Notering: Godkanda regler - RAP-LP
                       regler:
                         - id: UFN.05
-                          omrade: URL Format och namngivning
+                          område: URL Format och namngivning
                           status: OK
       responses:
         '200':
@@ -719,7 +719,7 @@ components:
         id:
           type: string
           nullable: true
-        omrade:
+        område:
           type: string
           nullable: true
         krav:
@@ -733,7 +733,7 @@ components:
             - INFORMATION
             - WARNING
             - ERROR
-        sokvag:
+        sökväg:
           type: array
           items:
             type: string
@@ -801,12 +801,12 @@ components:
         id:
           type: string
           example: UFN.05
-        omrade:
+        område:
           type: string
           example: URL Format och namngivning
       required:
         - id
-        - omrade
+        - område
     PopulatedDiagnosticRuleInfo:
       type: object
       additionalProperties: false
@@ -814,7 +814,7 @@ components:
         id:
           type: string
           example: UFN.05
-        omrade:
+        område:
           type: string
           example: URL Format och namngivning
         status:
@@ -822,13 +822,13 @@ components:
           example: OK
       required:
         - id
-        - omrade
+        - område
         - status
     DiagnosticReport:
       type: object
       additionalProperties: false
       properties:
-        notering:
+        Notering:
           type: string
           example: Godkanda regler - RAP-LP
         regler:
@@ -836,7 +836,7 @@ components:
           items:
             $ref: '#/components/schemas/PopulatedDiagnosticRuleInfo'
       required:
-        - notering
+        - Notering
         - regler
     GenerateReportRequest:
       type: object
