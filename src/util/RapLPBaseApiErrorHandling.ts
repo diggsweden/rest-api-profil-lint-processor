@@ -6,6 +6,21 @@ import { Request, Response, NextFunction } from 'express';
 import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
 import { SpecParseError } from './RapLPSpecParseError.js';
 
+export const sendProblem = (res: Response, status: number, body: ProblemDetailsDTO) =>
+  res.status(status).set('Content-Type', 'application/problem+json').json(body);
+
+export enum ERROR_TYPE {
+  BAD_REQUEST = 400,
+  CONFLICT = 409,
+  INTERNAL_SERVER_ERROR = 500,
+}
+
+const PROBLEM_TYPE: Record<ERROR_TYPE, string> = {
+  [ERROR_TYPE.BAD_REQUEST]: 'https://raplp.digg.se/problems/bad-request',
+  [ERROR_TYPE.CONFLICT]: 'https://raplp.digg.se/problems/conflict',
+  [ERROR_TYPE.INTERNAL_SERVER_ERROR]: 'https://raplp.digg.se/problems/internal-server-error',
+};
+
 /**
  * Extended error class with errorType that will be used as HTTP error codes in custom error handler.
  */
@@ -66,26 +81,36 @@ if (err instanceof SpecParseError) {
       snippet: err.snippet,
     });
 
-    return res.status(ERROR_TYPE.BAD_REQUEST).send(problemDetails);  
+    return sendProblem(res, ERROR_TYPE.BAD_REQUEST, problemDetails);
 }
   const status = err.errorType || err.status || ERROR_TYPE.INTERNAL_SERVER_ERROR;
-  const title = err.title || 'An unexpected error occurred';
-  const detail = err.message || 'An unknown error occurred.';
+  const isValidatorError = Array.isArray(err.errors);
+  const title = err.title || (isValidatorError ? 'Invalid Request' : 'An unexpected error occurred');
+
+  let detail = err.message || 'An unknown error occurred.';
+  if (isValidatorError) {
+    const missingFields = (err.errors as any[])
+      .filter(e => e.errorCode?.startsWith('required.'))
+      .map(e => {
+        if (e.params?.missingProperty) return e.params.missingProperty;
+        const match = e.message?.match(/required property '(\w+)'/);
+        return match?.[1];
+      })
+      .filter(Boolean);
+    if (missingFields.length > 0) {
+      detail = `Required field missing: ${missingFields.join(', ')}`;
+    }
+  }
 
   const problemDetails = new ProblemDetailsDTO({
+    type: PROBLEM_TYPE[status as ERROR_TYPE] ?? 'about:blank',
     status,
     title,
     detail,
     instance: req.originalUrl,
   });
 
-  res.status(status).send(problemDetails);
+  sendProblem(res, status, problemDetails);
 };
-
-export enum ERROR_TYPE {
-  BAD_REQUEST = 400,
-  CONFLICT = 409,
-  INTERNAL_SERVER_ERROR = 500,
-}
 
 export { errorHandler, RapLPBaseApiError, RuleCategoryError };

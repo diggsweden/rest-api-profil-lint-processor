@@ -7,7 +7,7 @@ import Parsers from '@stoplight/spectral-parsers';
 import { Express } from 'express';
 import { processApiSpec, logErrorToFile } from '../util/apiUtil.js';
 import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
-import { ERROR_TYPE, RapLPBaseApiError } from '../util/RapLPBaseApiErrorHandling.js';
+import { ERROR_TYPE, RapLPBaseApiError, sendProblem } from '../util/RapLPBaseApiErrorHandling.js';
 import { loadUrlValidationConfiguration } from '../util/urlValidationConfig.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 import { parseRuleCategories, resolveRuleCategories } from '../rulesets/util/ruleModules.js';
@@ -46,25 +46,20 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
       const context = new RuleExecutionContext();
       const body: SpecValidationRequestDto = req.body;
 
-      if (!body.url) {
-        throw new RapLPBaseApiError(
-          'Invalid Request',
-          'Required field missing: url',
-          ERROR_TYPE.BAD_REQUEST,
-        );
-      }
-      if (config?.urlMatchRegex && !body.url.match(config.urlMatchRegex)) {
+      const url = body.url!;
+
+      if (config?.urlMatchRegex && !url.match(config.urlMatchRegex)) {
         throw new RapLPBaseApiError(
           'Invalid Request',
           'The requested address did not meet the allowed URL pattern. Please contact your administrator if you believe this is a mistake.',
           ERROR_TYPE.BAD_REQUEST,
         );
       }
-      assertSsrfSafeUrl(body.url);
+      assertSsrfSafeUrl(url);
 
       let response: Response;
       try {
-        response = await fetch(body.url, { ...config?.customFetchConfig, redirect: 'error' });
+        response = await fetch(url, { ...config?.customFetchConfig, redirect: 'error' });
       } catch {
         throw new RapLPBaseApiError(
           'Invalid Request',
@@ -103,7 +98,7 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
         const sorted = IssueHelper.sortIssues(parseResult.strictIssues);
         const snippet = IssueHelper.formatIssuesAsEditorText(sorted);
 
-         return res.status(400).json(
+         return sendProblem(res, 400,
             new ProblemDetailsDTO({
               type: 'https://raplp.digg.se/problems/semantic-validation',
               title: 'Rule validation failed',
@@ -136,7 +131,7 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
       );
       if (hasRuleViolations) {
          //Rulevalidation occured in RapLP-ruleengine
-         return res.status(400).json(
+         return sendProblem(res, 400,
             new ProblemDetailsDTO({
               type: 'https://raplp.digg.se/problems/rule-validation',
               title: 'Rule validation failed',
