@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 openapi: 3.1.0
 info:
-  title: REST API-profil - Lint Processor - OpenAPI 3.0
+  title: RAP-LP API
   version: 1.0.11
   summary: API for validating OpenAPI specifications against the Swedish REST API profile.
   description: |
@@ -14,9 +14,9 @@ info:
     Excel report from a precomputed validation report.
 
     This specification describes the linter API itself.
-    Begransningar: URL-baserad validering kan vara avstangd via serverkonfiguration,
+
+    Begransningar och problem: URL-baserad validering kan vara avstangd via serverkonfiguration,
     och generate-report returnerar en binar Excel-fil medan ovriga resurser returnerar JSON.
-  x-limitations: This is a custom property that can be used to describe known issues or limitations.
   contact:
     name: Digg
     url: https://github.com/diggsweden/rest-api-profil-lint-processor/
@@ -29,8 +29,12 @@ externalDocs:
   description: RAP-LP documentation and service level agreement information.
   url: https://www.dataportal.se/rest-api-profil
 servers:
-  - url: https://example.digg.se/rap-lp/v1
-    description: Example production base URL.
+  - url: https://raplp.digg.se/api/v1/
+    description: Production
+  - url: https://raplp.sandbox.digg.se/api/v1/
+    description: Sandbox
+  - url: http://localhost:3000/api/v1/
+    description: Local development
 tags:
   - name: validation
     description: Operations for validating OpenAPI specifications and generating reports.
@@ -70,7 +74,7 @@ paths:
               examples:
                 internalServerError:
                   value:
-                    type: https://rap-lp/probs/internal-server-error
+                    type: https://raplp.digg.se/problems/internal-server-error
                     title: Internt serverfel
                     status: 500
                     detail: Ett ovantat fel intraffade.
@@ -106,7 +110,7 @@ paths:
               examples:
                 internalServerError:
                   value:
-                    type: https://rap-lp/probs/internal-server-error
+                    type: https://raplp.digg.se/problems/internal-server-error
                     title: Internt serverfel
                     status: 500
                     detail: Ett ovantat fel intraffade.
@@ -148,13 +152,15 @@ paths:
                 success:
                   value:
                     ok: true
+                    stage: rule-engine
+                    format: yaml
                     payload:
                       result: []
                       report:
-                        - notering: Godkanda regler - RAP-LP
+                        - Notering: Godkanda regler - RAP-LP
                           regler:
                             - id: DOK.03
-                              omrade: Dokumentation
+                              område: Dokumentation
                               status: OK
         '400':
           description: The specification was invalid or violated one or more rules.
@@ -165,19 +171,21 @@ paths:
               examples:
                 missingSpec:
                   value:
-                    type: https://rap-lp/probs/bad-request
-                    title: Ogiltig request
+                    type: https://raplp.digg.se/problems/bad-request
+                    title: Invalid Request
                     status: 400
-                    detail: "Obligatoriskt falt saknas: spec"
+                    detail: 'Required field missing: spec'
                     instance: /api/v1/validation/validatespec
                 specValidation:
                   value:
-                    type: https://rap-lp./problems/semantic-validation
-                    title: Regelvalideringen misslyckades
+                    type: https://raplp.digg.se/problems/semantic-validation
+                    title: Rule validation failed
                     status: 400
-                    detail: Specifikationen innehaller strukturella eller semantiska fel
+                    detail: Specifikationen innehåller strukturella eller semantiska fel
                     instance: /api/v1/validation/validatespec
-                    kind: specValidation
+                    kind: spec-validation
+                    stage: strict
+                    format: yaml
                     issues:
                       - code: parser-error
                         message: Missing required property paths.
@@ -188,19 +196,21 @@ paths:
                       line 12: missing required property: paths
                 ruleValidation:
                   value:
-                    type: https://rap-lp./problems/rule-validation
-                    title: Regelvalideringen misslyckades
+                    type: https://raplp.digg.se/problems/rule-validation
+                    title: Rule validation failed
                     status: 400
                     detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
                     instance: /api/v1/validation/validatespec
-                    kind: ruleValidation
+                    kind: rule-validation
+                    stage: rule-engine
+                    format: yaml
                     payload:
                       result:
                         - id: AME.04
-                          omrade: API Message
+                          område: API Message
                           krav: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
                           allvarlighetsgrad: WARNING
-                          sokvag:
+                          sökväg:
                             - components
                             - schemas
                             - Example
@@ -214,10 +224,10 @@ paths:
                               line: 10
                               character: 20
                       report:
-                        - notering: Ej godkanda regler - RAP-LP
+                        - Notering: Ej godkanda regler - RAP-LP
                           regler:
                             - id: AME.04
-                              omrade: API Message
+                              område: API Message
                               status: EJ OK
         '500':
           description: Internal server error.
@@ -228,7 +238,7 @@ paths:
               examples:
                 internalServerError:
                   value:
-                    type: https://rap-lp/probs/internal-server-error
+                    type: https://raplp.digg.se/problems/internal-server-error
                     title: Internt serverfel
                     status: 500
                     detail: Ett ovantat fel intraffade.
@@ -241,11 +251,15 @@ paths:
       description: |
         Fetches an OpenAPI specification from a remote URL and validates it.
 
+        Redirects are not allowed. The requested URL is checked before fetching,
+        then the downloaded OpenAPI document is parsed and strictly validated before
+        RAP-LP rule validation is executed.
+
         This feature can be disabled by server configuration. When disabled, the API returns 409 Conflict.
       operationId: validateUrl
       requestBody:
         required: true
-        description: Remote URL to the OpenAPI specification and optional rule categories.
+        description: Remote URL to the OpenAPI specification and optional validation settings.
         content:
           application/json:
             schema:
@@ -254,57 +268,133 @@ paths:
               remoteSpecification:
                 value:
                   url: https://api.example.se/foretagsinformation/v2/openapi.yaml
+                  strict: true
                   categories:
                     - DokRules
                     - UfnRules
       responses:
         '200':
-          description: Validation completed.
+          description: Validation completed without rule violations.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationResult'
+                $ref: '#/components/schemas/UrlValidationSuccessResponse'
               examples:
-                validationWarnings:
+                success:
                   value:
-                    result:
-                      - id: AME.04
-                        omrade: API Message
-                        krav: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
-                        allvarlighetsgrad: WARNING
-                        sokvag:
-                          - components
-                          - schemas
-                          - Example
-                          - properties
-                          - badField
-                        omfattning:
-                          start:
-                            line: 17
-                            character: 10
-                          end:
-                            line: 17
-                            character: 18
-                    report:
-                      - notering: Ej godkanda regler - RAP-LP
-                        regler:
-                          - id: AME.04
-                            omrade: API Message
-                            status: EJ OK
+                    ok: true
+                    stage: rule-engine
+                    format: yaml
+                    payload:
+                      result: []
+                      report:
+                        - Notering: Godkanda regler - RAP-LP
+                          regler:
+                            - id: DOK.03
+                              område: Dokumentation
+                              status: OK
         '400':
-          description: Invalid request, invalid URL or invalid YAML/OpenAPI input.
+          description: Invalid request, invalid URL, invalid remote response, strict validation error or rule validation error.
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
+                $ref: '#/components/schemas/ValidationProblemDetails'
               examples:
-                invalidRequest:
+                missingUrl:
                   value:
-                    type: https://rap-lp/probs/bad-request
+                    type: https://raplp.digg.se/problems/bad-request
                     title: Invalid Request
                     status: 400
-                    detail: The requested address failed the allowed url pattern. Contact your administrator if you think this is a misstake.
+                    detail: 'Required field missing: url'
                     instance: /api/v1/validation/url
+                urlPatternRejected:
+                  value:
+                    type: https://raplp.digg.se/problems/bad-request
+                    title: Invalid Request
+                    status: 400
+                    detail: The requested address did not meet the allowed URL pattern. Please contact your administrator if you believe this is a mistake.
+                    instance: /api/v1/validation/url
+                invalidUrlFormat:
+                  value:
+                    type: https://raplp.digg.se/problems/bad-request
+                    title: Invalid Request
+                    status: 400
+                    detail: Invalid URL format.
+                    instance: /api/v1/validation/url
+                invalidProtocol:
+                  value:
+                    type: https://raplp.digg.se/problems/bad-request
+                    title: Invalid Request
+                    status: 400
+                    detail: Only HTTPS and HTTP protocols are allowed.
+                    instance: /api/v1/validation/url
+                urlFetchFailed:
+                  value:
+                    type: https://raplp.digg.se/problems/bad-request
+                    title: Invalid Request
+                    status: 400
+                    detail: The requested URL could not be retrieved. Redirects are not allowed.
+                    instance: /api/v1/validation/url
+                remoteHttpError:
+                  value:
+                    type: https://raplp.digg.se/problems/bad-request
+                    title: Invalid Request
+                    status: 400
+                    detail: The requested URL returned HTTP 404.
+                    instance: /api/v1/validation/url
+                specValidation:
+                  value:
+                    type: https://raplp.digg.se/problems/semantic-validation
+                    title: Rule validation failed
+                    status: 400
+                    detail: Specifikationen innehåller strukturella eller semantiska fel
+                    instance: /api/v1/validation/url
+                    kind: spec-validation
+                    stage: strict
+                    format: yaml
+                    issues:
+                      - code: parser-error
+                        message: Missing required property paths.
+                        severity: error
+                        path:
+                          - paths
+                    snippet: |
+                      line 12: missing required property: paths
+                ruleValidation:
+                  value:
+                    type: https://raplp.digg.se/problems/rule-validation
+                    title: Rule validation failed
+                    status: 400
+                    detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
+                    instance: /api/v1/validation/url
+                    kind: rule-validation
+                    stage: rule-engine
+                    format: yaml
+                    payload:
+                      result:
+                        - id: AME.04
+                          område: API Message
+                          krav: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
+                          allvarlighetsgrad: WARNING
+                          sökväg:
+                            - components
+                            - schemas
+                            - Example
+                            - properties
+                            - problemField
+                          omfattning:
+                            start:
+                              line: 10
+                              character: 8
+                            end:
+                              line: 10
+                              character: 20
+                      report:
+                        - Notering: Ej godkanda regler - RAP-LP
+                          regler:
+                            - id: AME.04
+                              område: API Message
+                              status: EJ OK
         '409':
           description: URL validation is disabled by server configuration.
           content:
@@ -314,7 +404,7 @@ paths:
               examples:
                 featureDisabled:
                   value:
-                    type: https://rap-lp/probs/conflict
+                    type: https://raplp.digg.se/problems/conflict
                     title: Conflict
                     status: 409
                     detail: This feature is currenctly dissabled due to server configuration. Contact your administrator if you think this is a misstake.
@@ -328,7 +418,7 @@ paths:
               examples:
                 internalServerError:
                   value:
-                    type: https://rap-lp/probs/internal-server-error
+                    type: https://raplp.digg.se/problems/internal-server-error
                     title: Internt serverfel
                     status: 500
                     detail: Ett ovantat fel intraffade.
@@ -351,10 +441,10 @@ paths:
               precomputedReport:
                 value:
                   report:
-                    - notering: Godkanda regler - RAP-LP
+                    - Notering: Godkanda regler - RAP-LP
                       regler:
                         - id: UFN.05
-                          omrade: URL Format och namngivning
+                          område: URL Format och namngivning
                           status: OK
       responses:
         '200':
@@ -369,7 +459,7 @@ paths:
               description: Excel media type.
               schema:
                 type: string
-                example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet # Yes, we violate rule AME.01, but ok for the purpose ;)
+                example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
               schema:
@@ -382,12 +472,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
-                invalidData:
+                missingReport:
                   value:
-                    type: https://rap-lp/probs/bad-request
-                    title: Invalid data format
+                    type: https://raplp.digg.se/problems/bad-request
+                    title: Invalid Request
                     status: 400
-                    detail: Expected an object with a report array.
+                    detail: 'Required field missing: report'
                     instance: /api/v1/validation/generate-report
         '500':
           description: Excel report generation failed.
@@ -398,7 +488,7 @@ paths:
               examples:
                 generationFailed:
                   value:
-                    type: https://rap-lp/probs/internal-server-error
+                    type: https://raplp.digg.se/problems/internal-server-error
                     title: Failed to generate report
                     status: 500
                     detail: Failed to generate report.
@@ -453,9 +543,13 @@ components:
           type: string
           format: uri
           description: Absolute URL pointing to a remotely hosted OpenAPI specification.
+        strict:
+          type: boolean
+          description: Enables strict parsing and semantic validation before RAP-LP rules are executed.
+          default: true
         categories:
           type: array
-          description: Optional subset of rule categories to execute.
+          description: Optional subset of rule categories to execute. If omitted, all categories are used and ForRules is added implicitly by the service.
           items:
             type: string
           examples:
@@ -512,11 +606,52 @@ components:
         ok:
           type: boolean
           const: true
+        stage:
+          $ref: '#/components/schemas/ValidationStage'
+        format:
+          $ref: '#/components/schemas/SpecFormat'
         payload:
           $ref: '#/components/schemas/ValidationResult'
       required:
         - ok
+        - stage
+        - format
         - payload
+    UrlValidationSuccessResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        ok:
+          type: boolean
+          const: true
+        stage:
+          type: string
+          enum:
+            - rule-engine
+          description: Processing stage that produced the successful response.
+        format:
+          $ref: '#/components/schemas/SpecFormat'
+        payload:
+          $ref: '#/components/schemas/ValidationResult'
+      required:
+        - ok
+        - stage
+        - format
+        - payload
+    SpecFormat:
+      type: string
+      description: Parsed OpenAPI document format.
+      enum:
+        - yaml
+        - json
+      example: yaml
+    ValidationStage:
+      type: string
+      description: Validation stage that produced the response.
+      enum:
+        - strict
+        - rule-engine
+      example: rule-engine
     ProblemDetails:
       type: object
       additionalProperties: true
@@ -543,12 +678,17 @@ components:
       allOf:
         - $ref: '#/components/schemas/ProblemDetails'
         - type: object
+          additionalProperties: true
           properties:
             kind:
               type: string
               enum:
-                - specValidation
-                - ruleValidation
+                - spec-validation
+                - rule-validation
+            stage:
+              $ref: '#/components/schemas/ValidationStage'
+            format:
+              $ref: '#/components/schemas/SpecFormat'
             issues:
               type: array
               items:
@@ -580,7 +720,7 @@ components:
         id:
           type: string
           nullable: true
-        omrade:
+        område:
           type: string
           nullable: true
         krav:
@@ -594,7 +734,7 @@ components:
             - INFORMATION
             - WARNING
             - ERROR
-        sokvag:
+        sökväg:
           type: array
           items:
             type: string
@@ -662,28 +802,39 @@ components:
         id:
           type: string
           example: UFN.05
-        omrade:
+        område:
           type: string
           example: URL Format och namngivning
       required:
         - id
-        - omrade
+        - område
     PopulatedDiagnosticRuleInfo:
-      allOf:
-        - $ref: '#/components/schemas/DiagnosticRuleInfo'
-        - type: object
-          additionalProperties: false
-          properties:
-            status:
-              type: string
-              example: OK
-          required:
-            - status
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          example: UFN.05
+        område:
+          type: string
+          example: URL Format och namngivning
+        helpUrl:
+          type: string
+          format: uri
+        krav:
+          type: string
+        status:
+          type: string
+          example: OK
+      required:
+        - id
+        - område
+        - status
     DiagnosticReport:
       type: object
       additionalProperties: false
       properties:
-        notering:
+        Notering:
           type: string
           example: Godkanda regler - RAP-LP
         regler:
@@ -691,7 +842,7 @@ components:
           items:
             $ref: '#/components/schemas/PopulatedDiagnosticRuleInfo'
       required:
-        - notering
+        - Notering
         - regler
     GenerateReportRequest:
       type: object
