@@ -20,6 +20,8 @@ describe('errorHandler middleware', () => {
     } as Request;
     res = {
       status: jest.fn().mockReturnThis(),
+      set: jest.fn().mockReturnThis(),
+      json: jest.fn(),
       send: jest.fn(),
     } as unknown as Response;
     next = jest.fn() as NextFunction;
@@ -36,12 +38,12 @@ describe('errorHandler middleware', () => {
     expect(res.status).toHaveBeenCalledWith(400);
 
     // Access the response object passed to res.send
-    const sendMock = res.send as jest.Mock;
+    const sendMock = res.json as jest.Mock;
     const sentResponse = sendMock.mock.calls[0][0] as ProblemDetailsDTO;
 
     // Validate the structure and content of the sent response
     expect(sentResponse).toMatchObject({
-      type: 'about:blank',
+      type: 'https://raplp.digg.se/problems/bad-request',
       title: 'Test title',
       status: 400,
       detail: 'Test error',
@@ -60,12 +62,12 @@ describe('errorHandler middleware', () => {
     expect(res.status).toHaveBeenCalledWith(500);
 
     // Access the response object passed to res.send
-    const sendMock = res.send as jest.Mock;
+    const sendMock = res.json as jest.Mock;
     const sentResponse = sendMock.mock.calls[0][0] as ProblemDetailsDTO;
 
     // Validate the structure and content of the sent response
     expect(sentResponse).toMatchObject({
-      type: 'about:blank',
+      type: 'https://raplp.digg.se/problems/internal-server-error',
       title: 'Test title',
       status: 500,
       detail: 'Test error',
@@ -84,12 +86,12 @@ describe('errorHandler middleware', () => {
     expect(res.status).toHaveBeenCalledWith(500);
 
     // Access the response object passed to res.send
-    const sendMock = res.send as jest.Mock;
+    const sendMock = res.json as jest.Mock;
     const sentResponse = sendMock.mock.calls[0][0] as ProblemDetailsDTO;
 
     // Validate the structure and content of the sent response
     expect(sentResponse).toMatchObject({
-      type: 'about:blank',
+      type: 'https://raplp.digg.se/problems/internal-server-error',
       title: 'An unexpected error occurred',
       status: 500,
       detail: 'Internal server error',
