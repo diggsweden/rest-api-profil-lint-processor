@@ -468,16 +468,17 @@ paths:
         '400':
           description: Invalid report input.
           content:
-            application/json:
+            application/problem+json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+                $ref: '#/components/schemas/ProblemDetails'
               examples:
-                invalidData:
+                missingReport:
                   value:
-                    error: 'Invalid data format. Expected an object with a "report" array.'
+                    type: https://raplp.digg.se/problems/bad-request
+                    title: Invalid Request
+                    status: 400
+                    detail: 'Required field missing: report'
+                    instance: /api/v1/validation/generate-report
         '500':
           description: Excel report generation failed.
           content:
