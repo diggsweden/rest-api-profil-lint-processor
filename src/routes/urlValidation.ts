@@ -46,13 +46,6 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
       const context = new RuleExecutionContext();
       const body: SpecValidationRequestDto = req.body;
 
-      if (!body.url) {
-        throw new RapLPBaseApiError(
-          'Invalid Request',
-          'Required field missing: url',
-          ERROR_TYPE.BAD_REQUEST,
-        );
-      }
       if (config?.urlMatchRegex && !body.url.match(config.urlMatchRegex)) {
         throw new RapLPBaseApiError(
           'Invalid Request',

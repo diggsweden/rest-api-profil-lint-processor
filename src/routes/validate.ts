@@ -45,11 +45,6 @@ export const registerValidationRoutes = (app: Express) => {
     try {
       const data = req.body;
       const context = new RuleExecutionContext();
-
-      if (!data || !Array.isArray(data.report)) {
-        return res.status(400).json({ error: 'Invalid data format. Expected an object with a "report" array.' });
-      }
-
       const reportHandler = new ExcelReportProcessor();
       let buffer: Buffer;
 
