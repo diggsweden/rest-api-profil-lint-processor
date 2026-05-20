@@ -86,7 +86,21 @@ if (err instanceof SpecParseError) {
   const status = err.errorType || err.status || ERROR_TYPE.INTERNAL_SERVER_ERROR;
   const isValidatorError = Array.isArray(err.errors);
   const title = err.title || (isValidatorError ? 'Invalid Request' : 'An unexpected error occurred');
-  const detail = err.message || 'An unknown error occurred.';
+
+  let detail = err.message || 'An unknown error occurred.';
+  if (isValidatorError) {
+    const missingFields = (err.errors as any[])
+      .filter(e => e.errorCode?.startsWith('required.'))
+      .map(e => {
+        if (e.params?.missingProperty) return e.params.missingProperty;
+        const match = e.message?.match(/required property '(\w+)'/);
+        return match?.[1];
+      })
+      .filter(Boolean);
+    if (missingFields.length > 0) {
+      detail = `Required field missing: ${missingFields.join(', ')}`;
+    }
+  }
 
   const problemDetails = new ProblemDetailsDTO({
     type: PROBLEM_TYPE[status as ERROR_TYPE] ?? 'about:blank',
