@@ -817,6 +817,11 @@ components:
         område:
           type: string
           example: URL Format och namngivning
+        helpUrl:
+          type: string
+          format: uri
+        krav:
+          type: string
         status:
           type: string
           example: OK
