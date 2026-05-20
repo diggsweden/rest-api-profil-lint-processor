@@ -46,18 +46,20 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
       const context = new RuleExecutionContext();
       const body: SpecValidationRequestDto = req.body;
 
-      if (config?.urlMatchRegex && !body.url.match(config.urlMatchRegex)) {
+      const url = body.url!;
+
+      if (config?.urlMatchRegex && !url.match(config.urlMatchRegex)) {
         throw new RapLPBaseApiError(
           'Invalid Request',
           'The requested address did not meet the allowed URL pattern. Please contact your administrator if you believe this is a mistake.',
           ERROR_TYPE.BAD_REQUEST,
         );
       }
-      assertSsrfSafeUrl(body.url);
+      assertSsrfSafeUrl(url);
 
       let response: Response;
       try {
-        response = await fetch(body.url, { ...config?.customFetchConfig, redirect: 'error' });
+        response = await fetch(url, { ...config?.customFetchConfig, redirect: 'error' });
       } catch {
         throw new RapLPBaseApiError(
           'Invalid Request',
