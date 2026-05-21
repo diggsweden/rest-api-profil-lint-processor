@@ -18,6 +18,32 @@ import * as IssueHelper from '../util/RapLPIssueHelpers.js';
 import type { IParser } from '@stoplight/spectral-parsers';
 import { mapValidationExecutionError } from '../util/mapValidationExecutionError.js';
 
+const isIpv4Address = (value: string): boolean => {
+  const parts = value.split('.');
+  if (parts.length !== 4) {
+    return false;
+  }
+  return parts.every((part) => {
+    if (!/^\d+$/.test(part)) {
+      return false;
+    }
+    const n = Number(part);
+    return n >= 0 && n <= 255;
+  });
+};
+
+const isPrivateOrLocalIpv4 = (ip: string): boolean => {
+  const [a, b] = ip.split('.').map(Number);
+  return (
+    a === 10 ||
+    a === 127 ||
+    (a === 169 && b === 254) ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168) ||
+    a === 0
+  );
+};
+
 const assertSsrfSafeUrl = (urlString: string): void => {
   let parsed: URL;
   try {
@@ -30,6 +56,28 @@ const assertSsrfSafeUrl = (urlString: string): void => {
     throw new RapLPBaseApiError(
       'Invalid Request',
       'Only HTTPS and HTTP protocols are allowed.',
+      ERROR_TYPE.BAD_REQUEST,
+    );
+  }
+
+  const hostname = parsed.hostname.toLowerCase();
+  if (
+    hostname === 'localhost' ||
+    hostname.endsWith('.localhost') ||
+    hostname === '::1' ||
+    hostname === '[::1]'
+  ) {
+    throw new RapLPBaseApiError(
+      'Invalid Request',
+      'The requested host is not allowed.',
+      ERROR_TYPE.BAD_REQUEST,
+    );
+  }
+
+  if (isIpv4Address(hostname) && isPrivateOrLocalIpv4(hostname)) {
+    throw new RapLPBaseApiError(
+      'Invalid Request',
+      'The requested host is not allowed.',
       ERROR_TYPE.BAD_REQUEST,
     );
   }
