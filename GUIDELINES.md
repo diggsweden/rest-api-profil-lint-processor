@@ -709,17 +709,21 @@ I exemplet ovan, så utgör fältet `url` under serverobjektet, samt objektet `p
 **JSON Path Plus-uttryck:**
 
 ```
-$.paths[*]
+$.paths
 ```
 
 **Förklaring:**
-Regeln går igenom alla paths och kontrollerar så att minst en av metoderna GET, POST, PUT, DELETE eller PATCH finns definerade per path.
+Regeln kontrollerar att API:et uppfyller grundkraven för nivå 2 enligt Richardson Maturity Model:
+
+- minst två normaliserade resurser är definierade (`/pets` och `/pets/{petId}` räknas som en resurs)
+- minst två distinkta HTTP-metoder (GET, POST, PUT, DELETE eller PATCH) används i API:et
+- minst en av metoderna GET, POST, PUT, DELETE eller PATCH finns definierad per resurs
 
 **Exempel:**
 
-![Exempelbild på en resurs med en GET-metod definierad i en OpenAPI description](images/mog01.png)
+![Exempelbild på två resurser /pets och /orders med metoderna GET respektive POST](images/mog01.png)
 
-_Exemplet ovan är giltigt då `GET` är en av metoderna som listades ovan._
+_Exemplet är giltigt: `/pets` och `/orders` är två normaliserade resurser med varsin distinkt REST-metod (GET och POST)._
 
 ---
 
@@ -736,17 +740,21 @@ $.paths
 ```
 
 **Förklaring:**
-Regeln går igenom varje path och kontrollerar att:
+Regeln kontrollerar att API:et uppfyller samma grundkrav som MOG.01 (minst två normaliserade resurser, minst två distinkta HTTP-metoder, minst en giltig REST-metod per resurs) samt att minst ett svar i API:et innehåller en HATEOAS-indikator. Följande HATEOAS-indikatorer känns igen:
 
-- de är minst två till antalet
-- de innhåller minst två metoder vardera
-- minst en av metoderna GET, POST, PUT, DELETE eller PATCH finns definerade per path
+- `application/hal+json` används som mediatyp i ett svar
+- Ett OpenAPI `links`-objekt är definierat i ett svar
+- En `_links`-egenskap förekommer i ett svarsschema (HAL-format)
+- Ett svarsschema innehåller ett länkobjekt med egenskaperna `href` och `rel`
+- Ett svarsschema innehåller ett länkobjekt med egenskaperna `href` och `method`
+
+Länkobjekten ovan kan förekomma direkt i schemat eller nästlat, exempelvis som `items` i en array av länkar.
 
 **Exempel:**
 
-![Exempelbild på två resurser med två metoder definierade vardera i en OpenAPI description](images/mog02.png)
+![Exempelbild på två resurser /pets och /orders där /pets GET-svar använder application/hal+json](images/mog02.png)
 
-_Exemplet är giltigt då det uppfyller samtliga krav i punktlistan ovan._
+_Exemplet är giltigt: det uppfyller grundkraven för nivå 2 (två normaliserade resurser, distinkta metoder) samt innehåller `application/hal+json` som HATEOAS-indikator i `/pets` GET-svaret._
 
 ---
 

@@ -5,7 +5,12 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
-import { countEndpoints, endPointsAreValid } from './util/MogRulesUtil.js';
+import {
+  countEndpoints,
+  countDistinctHttpMethods,
+  eachPathHasValidRestOperation,
+  hasHateoasIndicators,
+} from './util/MogRulesUtil.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 const moduleName: string = 'MogRules.ts';
@@ -16,16 +21,15 @@ export class Mog01 extends BaseRuleset {
     id: 'MOG.01',
   };
   message = 'Alla API:er SKALL designas för att uppnå nivå 2 enligt Richardson Maturity Model. ';
-  given = '$.paths[*]';
+  given = '$.paths';
   then = [
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {
-        let valid = false;
-        const allowedVerbs = ['get', 'post', 'put', 'delete', 'patch'];
-        const verbs = Object.keys(targetVal);
-        valid = verbs.some((verb) => allowedVerbs.includes(verb.toLowerCase()));
-
-        if (!valid) {
+        if (
+          countEndpoints(targetVal) < 2 ||
+          countDistinctHttpMethods(targetVal) < 2 ||
+          !eachPathHasValidRestOperation(targetVal)
+        ) {
           return [
             {
               message: this.message,
@@ -68,7 +72,12 @@ export class Mog02 extends BaseRuleset {
   then = [
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {
-        if (countEndpoints(targetVal) < 2 || !endPointsAreValid(targetVal)) {
+        if (
+          countEndpoints(targetVal) < 2 ||
+          countDistinctHttpMethods(targetVal) < 2 ||
+          !eachPathHasValidRestOperation(targetVal) ||
+          !hasHateoasIndicators(targetVal)
+        ) {
           return [
             {
               message: this.message,
