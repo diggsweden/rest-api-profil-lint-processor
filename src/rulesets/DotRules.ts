@@ -6,7 +6,6 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { parseProperties, Property } from './rulesetUtil.js';
 import { DotRuleBase, DotStateExecutionLog } from './util/DotRulesUtil.js';
-import { BaseRuleset } from './BaseRuleset.js';
 
 const moduleName: string = 'DotRules.js';
 

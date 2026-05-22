@@ -7,6 +7,7 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { BaseRuleset } from './BaseRuleset.js';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 const moduleName: string = 'VerRules.js';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 export class Ver06 extends BaseRuleset {
   static customProperties: CustomProperties = {
@@ -35,9 +36,9 @@ export class Ver06 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
-    super.initializeFormats(['OAS2', 'OAS3']);
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -91,8 +92,8 @@ export class Ver05 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;

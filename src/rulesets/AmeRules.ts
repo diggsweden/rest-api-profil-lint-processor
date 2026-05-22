@@ -8,6 +8,7 @@ import { parsePropertyNames } from './rulesetUtil.js';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
 import { isValidApplicationJson } from './util/AmeRulesUtil.js';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 const moduleName: string = 'AmeRules.js';
 
@@ -55,8 +56,8 @@ export class Ame07 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
@@ -91,8 +92,8 @@ export class Ame04 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
@@ -137,8 +138,8 @@ export class Ame01 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
@@ -185,8 +186,8 @@ export class Ame02 extends BaseRuleset {
       },
     },
   ];
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
@@ -197,7 +198,7 @@ export class Ame05 extends BaseRuleset {
     id: 'AME.05',
   };
   description = 'Inom ett API SKALL namnsättningen vara konsekvent, dvs blanda inte camelCase och snake_case.';
-  message = 'Inom ett API SKALL namnsättningen vara konsekvent, dvs blanda inte camelCase och snake_case. ';
+  message = 'Inom ett API SKALL namnsättningen vara konsekvent, dvs blanda inte camelCase och snake_case.';
   given = '$.components.schemas';
   then = [
     {
@@ -315,8 +316,8 @@ export class Ame05 extends BaseRuleset {
     }
     return Array.from(invalidEntries);
   }
-  constructor() {
-    super();
+  constructor(context: RuleExecutionContext) {
+    super(context);
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Error;

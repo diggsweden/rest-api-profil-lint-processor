@@ -2,8 +2,9 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { ruleExecutionStatus, RuleExecutionLog, ruleExecutionLogDictionary } from './RuleExecutionStatusModule.js';
 import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.js';
+import { RuleExecutionLog, RuleExecutionContext } from './RuleExecutionContext.js';
+import { buildRuleHelpUrl } from '../rulesets/util/rules-doc.config.js';
 
 class RapLPDiagnostic {
   private _ruleSets: DiagnosticRuleinfoSet = {
@@ -15,32 +16,39 @@ class RapLPDiagnostic {
   public get diagnosticInformation(): DiagnosticRuleinfoSet {
     return this._ruleSets;
   }
-  constructor() {}
+  constructor(private context: RuleExecutionContext) {}
   processRuleExecutionInformation(
     raplpCustomResult: RapLPCustomSpectralDiagnostic[],
+    rules: Record<string, any>,
     instanceCategoryMap: Map<string, any>,
   ): void {
-    this.processRuleExecutionLog(ruleExecutionLogDictionary, raplpCustomResult, instanceCategoryMap);
+    this.processRuleExecutionLog(
+      this.context.ruleExecutionLogDictionary,
+      raplpCustomResult,
+      instanceCategoryMap,
+      rules,
+    );
   }
   private processRuleExecutionLog(
     log: RuleExecutionLog,
     spectralResults: RapLPCustomSpectralDiagnostic[],
     instanceCategoryMap: Map<string, any>,
+    rules: Record<string, any>,
   ) {
     let executedRuleIds = new Set<string>(); // Set to track executed rule IDs
     let executedRuleIdsWithError = new Set<string>(); // Set to track executed rule IDs with error
     let ruleIdsNotApplicable = new Set<string>(); // Set to track rules that are not applicable, that is the (Δ) between the two above sets
 
     for (const key in log) {
-      const rules = log[key];
-      const { moduleName, className } = rules[0]; // Get module and class name from the first entry
-
+      const execRules = log[key];
+      const { className } = execRules[0]; // Get module and class name from the first entry
       //console.log(`Rule execution status for ${moduleName}:${className}:`);
 
-      rules.forEach((rule) => {
+      execRules.forEach((rule) => {
         const { customProperties, severity, passed, targetVal } = rule;
         const status = passed ? 'PASSED' : 'FAILED';
         const severityText = severity.toUpperCase();
+        const message = rules[className]?.message ?? ''; // Lookup instance message
         // Check if rule is found in Spectral results
         const spectralResult = spectralResults.find((result) => {
           return result.område === customProperties.område && result.id === customProperties.id;
@@ -52,6 +60,8 @@ class RapLPDiagnostic {
               this._ruleSets.executedUniqueRulesWithError.push({
                 id: customProperties.id, // Store some more diagnostic info (Duplicate NOT OK)
                 område: customProperties.område,
+                helpUrl: customProperties.id ? buildRuleHelpUrl(customProperties.id) : undefined,
+                krav: message,
               });
             }
           }
@@ -64,6 +74,8 @@ class RapLPDiagnostic {
             this._ruleSets.executedUniqueRules.push({
               id: customProperties.id, // Store some more diagnostic info (Duplicate OK)
               område: customProperties.område,
+              helpUrl: customProperties.id ? buildRuleHelpUrl(customProperties.id) : undefined,
+              krav: message,
             });
           }
           executedRuleIds.add(customProperties.id); // Store current ID of rule with NO error
@@ -78,10 +90,30 @@ class RapLPDiagnostic {
       });
       if (!ruleIdsNotApplicable.has(customProperties.id) && !exists) {
         // If not present, store the id and område in the not applicableRules
-        this._ruleSets.notApplicableRules.push({ id: customProperties.id, område: customProperties.område }); // Rules
+        this._ruleSets.notApplicableRules.push({
+          id: customProperties.id,
+          område: customProperties.område,
+          krav: rules[key]?.message ?? '',
+          helpUrl: customProperties.id ? buildRuleHelpUrl(customProperties.id) : undefined,
+        }); // Rules
       }
     }
   }
+  setFromPrecomputedReport(reports: { Notering: string; regler: { id: string; område: string; krav?: string; helpUrl?: string; status: string }[] }[]): void {
+    for (const report of reports) {
+      for (const regel of report.regler) {
+        const ruleInfo = { id: regel.id, område: regel.område, krav: regel.krav ?? '', helpUrl: regel.helpUrl };
+        if (regel.status === 'OK') {
+          this._ruleSets.executedUniqueRules.push(ruleInfo);
+        } else if (regel.status === 'EJ OK') {
+          this._ruleSets.executedUniqueRulesWithError.push(ruleInfo);
+        } else {
+          this._ruleSets.notApplicableRules.push(ruleInfo);
+        }
+      }
+    }
+  }
+
   processDiagnosticInformation(): DiagnosticReport[] {
     const allReports: DiagnosticReport[] = [];
     // Populate the diagnostic reports and add them to the array
@@ -156,6 +188,9 @@ interface DiagnosticRuleinfoSet {
 interface DiagnosticRuleInfo {
   id: string;
   område: string;
+  krav: string;
+  /**Helper Url for guidelines */
+  helpUrl?: string;
 }
 interface PopulatedDiagnosticRuleInfo extends DiagnosticRuleInfo {
   status: string;

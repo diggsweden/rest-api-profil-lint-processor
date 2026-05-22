@@ -6,10 +6,10 @@ import { RulesetInterface } from '../ruleinterface/RuleInterface.js';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { CustomFormatType } from './util/CustomOasVersion.js';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { logRuleExecution } from '../util/RuleExecutionStatusModule.js';
 import Format from '@stoplight/spectral-formats';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
-export class BaseRuleset implements RulesetInterface {
+export abstract class BaseRuleset implements RulesetInterface {
   static customProperties: CustomProperties = { område: undefined!, id: '' };
   static getCustomProperties(): CustomProperties {
     return BaseRuleset.customProperties;
@@ -22,7 +22,14 @@ export class BaseRuleset implements RulesetInterface {
 
   formats: any = [];
 
-  trackRuleExecutionHandler(
+  constructor(context: RuleExecutionContext) {
+    this.#context = context;
+
+  }
+  #context: RuleExecutionContext;
+  
+
+  protected trackRuleExecutionHandler(
     targetVal: string,
     _opts: string,
     paths: string[],
@@ -31,7 +38,7 @@ export class BaseRuleset implements RulesetInterface {
     moduleName: any,
     subclassProperties: CustomProperties,
   ) {
-    logRuleExecution(moduleName, subclassInfo, subclassProperties, this.severity.toString(), true, targetVal);
+    this.#context.logRuleExecution(moduleName, subclassInfo, subclassProperties, this.severity.toString(), true, targetVal);
     return [];
   }
   async initializeFormats(formats: CustomFormatType[] = []) {

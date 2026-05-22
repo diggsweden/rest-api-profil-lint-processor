@@ -2,6 +2,10 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
+import { RuleCategoryError } from './RapLPBaseApiErrorHandling.js';
+import { RuleExecutionContext } from './RuleExecutionContext.js';
+import { RuleModuleName } from '../rulesets/util/ruleModules.js';
+
 // ruleUtil.ts
 interface CustomSchema {
   id: string;
@@ -44,7 +48,7 @@ export function getRuleModules() {
  * @returns Promise object with enabled rules in RAP-LP to run
  */
 export async function importAndCreateRuleInstances(
-  ruleCategories?: string[],
+  context: RuleExecutionContext, ruleCategories: RuleModuleName[],
 ): Promise<{ rules: Record<string, any>; instanceCategoryMap: Map<string, any> }> {
   const ruleInstances: Record<string, any> = {}; // store instances of rule classes
   const ruleTypes: any[] = []; // array to store rule classes.
@@ -96,14 +100,17 @@ export async function importAndCreateRuleInstances(
   /**
    * Load modules
    */
-  if (ruleCategories && ruleCategories.length > 0) {
-    //Check if we gonna load PrerequisetRules or if it is specified
-    if (!ruleCategories.includes('ForRules')) {
-      ruleCategories.push('ForRules');
+  try {
+    if (ruleCategories && ruleCategories.length > 0) {
+      await importRulesByCategory(ruleCategories);
+    } else {
+      await importAllRules();
     }
-    await importRulesByCategory(ruleCategories);
-  } else {
-    await importAllRules();
+  } catch (e) {
+    if (e instanceof Error) {
+      throw new RuleCategoryError(e.message);
+    }
+    throw e;
   }
   /**
    * Loop entries of instanceCategory map
@@ -112,7 +119,7 @@ export async function importAndCreateRuleInstances(
   // Create instances of rule classes in RAP-LP
   ruleTypes.forEach((RuleClass) => {
     try {
-      const instance = new RuleClass();
+      const instance = new RuleClass(context);
       ruleInstances[RuleClass.name] = instance;
       instanceCategoryMap.set(RuleClass.name, RuleClass); // Do we have name of ruleClass ?
     } catch (error: any) {
