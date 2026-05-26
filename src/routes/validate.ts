@@ -23,6 +23,8 @@ import { parseRuleCategories,resolveRuleCategories,RULE_REGISTRY} from '../rules
 import { mapValidationExecutionError } from '../util/mapValidationExecutionError.js';
 import { AggregateError } from '../util/RapLPCustomErrorInfo.js'
 
+import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js'
+
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -41,7 +43,9 @@ export const registerValidationRoutes = (app: Express) => {
       new ApiInfo('RAP-LP', '1.0.11', new Date().toDateString(), 'http://raplp.digg.se/RAP-LP-docs', 'development'),
     );
   });
-  app.post('/api/v1/validation/generate-report', async (req, res, next): Promise<any> => {
+  app.post('/api/v1/validation/generate-report',
+    validateConcurrencyLimit(Number(process.env.MAX_CONCURRENT_REPORTS ?? 2)),
+    async (req, res, next): Promise<any> => {
     try {
       const data = req.body;
       const context = new RuleExecutionContext();
@@ -74,14 +78,28 @@ export const registerValidationRoutes = (app: Express) => {
       next(e);
     }
   });
-  app.post('/api/v1/validation/validatespec', async (req, res, next) => {
+  app.post(
+    '/api/v1/validation/validatespec',
+    validateConcurrencyLimit(Number(process.env.MAX_CONCURRENT_VALIDATIONS ?? 4)),
+     async (req, res, next) => {
+
+    //Tmp testing
+    console.log('VALIDATION_TEST_DELAY_MS=', process.env.VALIDATION_TEST_DELAY_MS);
+    
+    if (process.env.VALIDATION_TEST_DELAY_MS) {
+      console.log('Delaying validation...START');
+      await new Promise(resolve =>
+        setTimeout(resolve, Number(process.env.VALIDATION_TEST_DELAY_MS)),
+      );
+      console.log('Delaying validation...END');      
+    }      
 
     let strict = true;
     try {
       const context = new RuleExecutionContext();
       const body: SpecValidationRequestDto = req.body;
       
-      //0.5 Check input
+      //0.1 Check input
       if (!body.spec) {
         throw new RapLPBaseApiError(
           'Invalid Request',
@@ -89,7 +107,14 @@ export const registerValidationRoutes = (app: Express) => {
           ERROR_TYPE.BAD_REQUEST,
           );
       }
-
+      //0.2 Check input 
+      if (typeof body.spec !== 'string') {
+        throw new RapLPBaseApiError(
+          'Invalid Request',
+          'Field "spec" must be a base64 encoded string',
+          ERROR_TYPE.BAD_REQUEST,
+        );
+      }      
       // 1. Decode input
       const raw = decodeBase64String(body.spec);
       strict = body.strict ?? true;
