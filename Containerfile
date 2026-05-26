@@ -25,7 +25,7 @@ COPY --from=build /app/package*.json ./
 COPY --from=build /app/document ./document
 COPY --from=build /app/README.md ./README.md
 COPY --from=build /app/GUIDELINES.md ./GUIDELINES.md
-COPY --from=build /app/openapi.yaml ./openapi.yaml
+COPY --from=build /app/rap-lp-openapi.yaml ./rap-lp-openapi.yaml
 COPY --from=build /app/urlValidationConfig.cjs ./urlValidationConfig.cjs
 
 RUN chown -R node:node /app
