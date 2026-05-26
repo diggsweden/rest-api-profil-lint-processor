@@ -38,7 +38,7 @@ Verktyget är specifikt utvecklat för att linta OpenAPI-definitioner enligt den
 
 ## Instruktioner för att komma igång snabbt
 
-Förutsätter att det finns en `openapi.yaml` att validera i den aktuella katalogen och beroende på hur man önskar att nyttja verktyget måste det finns installerade versioner av `Node.js`,`npm`, `Podman` eller `Docker`.
+Förutsätter att det finns en `openapi.yaml` att validera i den aktuella katalogen och beroende på hur man önskar att nyttja verktyget måste det finnas installerade versioner av `Node.js`,`npm`, `Podman` eller `Docker`.
 
 ### NPM
 
@@ -161,7 +161,7 @@ Det går också att validera via en url istället för en fil men då behöver A
 npm start -- -m api --enableUrlValidation
 ```
 
-Validera en fil från en url via terminalen:
+Validera en fil från en URL via terminalen:
 
 ```bash
   curl -sS -X POST http://localhost:3000/api/v1/validation/url \
@@ -200,14 +200,15 @@ Här beskrivs vilka användningsområden verktyget har med diverse flaggor som k
 
 ### Tillgängliga flaggor
 
-| Flagga                | Beskrivning                                                                                                                                                     | Typ     | Standard            | Obligatorisk |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------- | ------------ |
-| `-f, --file`          | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                  | string  | –                   | Ja           |
-| `-c, --categories`    | Regelkategorier separerade med kommatecken. Tillgängliga: `UfnRules, SakRules, VerRules, FnsRules, ArqRules, DokRules, AmeRules, ForRules, DotRules, FelRules`. | string  | –                   | Nej          |
-| `-l, --logError`      | Sökväg till fil för felloggning från RAP-LP. Om inte angiven skrivs loggen till stdout.                                                                         | string  | stdout (om ej satt) | Nej          |
-| `-a, --append`        | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används).                                                                                     | boolean | `false`             | Nej          |
-| `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format.                                                                                      | string  | –                   | Nej          |
-| `--dex`               | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format.                                                                                     | string  | –                   | Nej          |
+| Flagga                | Beskrivning                                                                                                                                                                         | Typ     | Standard            | Obligatorisk |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------- | ------------ |
+| `-f, --file`          | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                                      | string  | –                   | Ja           |
+| `-c, --categories`    | Regelkategorier separerade med kommatecken. Tillgängliga: `DokRules, DotRules, ResRules, UfnRules, MogRules, SakRules, AmeRules, ArqRules, FelRules, VerRules, FnsRules, ForRules`. | string  | –                   | Nej          |
+| `--strict`            | Används för att validera OpenAPI-specifikationens struktur och semantik enligt OAS3.                                                                                                | boolean | –                   | Nej          |
+| `-l, --logError`      | Sökväg till fil för felloggning från RAP-LP. Om inte angiven skrivs loggen till stdout.                                                                                             | string  | stdout (om ej satt) | Nej          |
+| `-a, --append`        | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används).                                                                                                         | boolean | `false`             | Nej          |
+| `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format.                                                                                                          | string  | –                   | Nej          |
+| `--dex`               | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format.                                                                                                         | string  | –                   | Nej          |
 
 > Notera: Att `raplp` i alla kommandon nedan ersätts med respektive miljös sätt att köra verktyget (npm, docker eller podman).
 
@@ -235,18 +236,42 @@ raplp -f openapi.yaml -c DokRules,AmeRules,SakRules
 
 #### Tillgängliga kategorier med regler
 
-- AmeRules
-- ArqRules
-- DokRules
-- DotRules
-- FelRules
-- FnsRules
-- ForRules
-- MogRules
-- ResRules
-- SakRules
-- UfnRules
-- VerRules
+- DokRules _(Dokumentation)_
+- DotRules _(Datum- och tidsformat)_
+- ResRules _(Resurser)_
+- UfnRules _(URL Format och namngivning)_
+- MogRules _(Mognad)_
+- SakRules _(Säkerhet)_
+- AmeRules _(API Message)_
+- ArqRules _(API Request)_
+- FelRules _(Felhantering)_
+- VerRules _(Versionshantering)_
+- FnsRules _(Filtrering, paginering och sökparametrar)_
+- ForRules _(Förutsättningar)_
+
+### Strikt-läge (OAS3 Validering)
+
+Strikt-läge aktiverar validering av OpenAPI-specifikationens struktur och semantik enligt OpenAPI 3 (OAS3).
+
+När `--strict` används verifieras OpenAPI-specifikationen först enligt OAS3.  
+Kontrollen säkerställer att specifikationen är korrekt uppbyggd och semantiskt giltig innan validering mot REST API-profilens regler utförs.
+
+Flaggan `--strict` fungerar både med CLI och API-läge.
+I API-mode är strikt läge default, men kan stängas av.
+
+Aktivera strikt-läge med:
+
+```bash
+raplp -f openapi.yaml --strict
+```
+
+Exempel på resultat när --strict används i kombination med CLI-läge:
+
+```bash
+Strict validation reported issues:
+- Structural at components : should NOT have additional properties (line 6)
+- Semantic at components.tags : Property "tags" is not expected to be here. (line 7)
+```
 
 ### Validering som skriver felmeddelanden till en valfri loggfil
 
@@ -322,7 +347,7 @@ Validera mot en endpoint:
 POST http://localhost:3000/api/v1/validation/validate
 ```
 
-Request body - application/json`
+Request body - application/json
 
 ```bash
 {
