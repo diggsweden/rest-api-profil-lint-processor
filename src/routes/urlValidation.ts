@@ -5,7 +5,7 @@
 import { Document } from '@stoplight/spectral-core';
 import Parsers from '@stoplight/spectral-parsers';
 import { Express } from 'express';
-import { processApiSpec, logErrorToFile } from '../util/apiUtil.js';
+import { processApiSpec, logError } from '../util/apiUtil.js';
 import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
 import { ERROR_TYPE, RapLPBaseApiError, sendProblem } from '../util/RapLPBaseApiErrorHandling.js';
 import { loadUrlValidationConfiguration } from '../util/urlValidationConfig.js';
@@ -205,7 +205,7 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
         payload: result, 
       });
     } catch (e) {
-      logErrorToFile(e);
+      logError(e);
       next(
         mapValidationExecutionError(e, {
           strictEnabled: strict,

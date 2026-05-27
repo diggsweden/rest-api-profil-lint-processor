@@ -7,7 +7,7 @@ import util from 'util';
 import { Document } from '@stoplight/spectral-core';
 import Parsers from '@stoplight/spectral-parsers';
 import { Express } from 'express';
-import { decodeBase64String, processApiSpec,logErrorToFile} from '../util/apiUtil.js';
+import { decodeBase64String, processApiSpec,logError} from '../util/apiUtil.js';
 import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
 import { ApiInfo } from '../model/ApiInfo.js';
 import { ExcelReportProcessor } from '../util/excelReportProcessor.js';
@@ -197,7 +197,7 @@ export const registerValidationRoutes = (app: Express) => {
       });
     } catch (e) {
       // Hantera SpecParseError här 
-      logErrorToFile(e);
+      logError(e);
       next(
         mapValidationExecutionError(e, {
           strictEnabled: strict,
