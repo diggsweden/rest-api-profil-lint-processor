@@ -5,7 +5,6 @@ let activeValidations = 0;
 
 export function validateConcurrencyLimit(maxConcurrent: number) {
     return (req: Request, res:Response, next: NextFunction) => {
-        console.log('BEFORE:', activeValidations);
         if (activeValidations >= maxConcurrent) {
             //Service Unavailable
             return res.status(503).json({

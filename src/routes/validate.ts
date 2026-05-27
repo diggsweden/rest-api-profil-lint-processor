@@ -84,8 +84,8 @@ export const registerValidationRoutes = (app: Express) => {
      async (req, res, next) => {
 
     //Tmp testing
-    console.log('VALIDATION_TEST_DELAY_MS=', process.env.VALIDATION_TEST_DELAY_MS);
-    
+    //console.log('VALIDATION_TEST_DELAY_MS=', process.env.VALIDATION_TEST_DELAY_MS);
+    /*
     if (process.env.VALIDATION_TEST_DELAY_MS) {
       console.log('Delaying validation...START');
       await new Promise(resolve =>
@@ -93,7 +93,7 @@ export const registerValidationRoutes = (app: Express) => {
       );
       console.log('Delaying validation...END');      
     }      
-
+    */
     let strict = true;
     try {
       const context = new RuleExecutionContext();
