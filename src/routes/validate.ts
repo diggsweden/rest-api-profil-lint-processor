@@ -83,17 +83,6 @@ export const registerValidationRoutes = (app: Express) => {
     validateConcurrencyLimit(Number(process.env.MAX_CONCURRENT_VALIDATIONS ?? 4)),
      async (req, res, next) => {
 
-    //Tmp testing
-    //console.log('VALIDATION_TEST_DELAY_MS=', process.env.VALIDATION_TEST_DELAY_MS);
-    /*
-    if (process.env.VALIDATION_TEST_DELAY_MS) {
-      console.log('Delaying validation...START');
-      await new Promise(resolve =>
-        setTimeout(resolve, Number(process.env.VALIDATION_TEST_DELAY_MS)),
-      );
-      console.log('Delaying validation...END');      
-    }      
-    */
     let strict = true;
     try {
       const context = new RuleExecutionContext();

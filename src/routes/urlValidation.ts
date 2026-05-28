@@ -17,6 +17,8 @@ import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
 import * as IssueHelper from '../util/RapLPIssueHelpers.js'; 
 import type { IParser } from '@stoplight/spectral-parsers';
 import { mapValidationExecutionError } from '../util/mapValidationExecutionError.js';
+import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js'
+
 
 const isIpv4Address = (value: string): boolean => {
   const parts = value.split('.');
@@ -87,7 +89,10 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
   const config = loadUrlValidationConfiguration(urlValidationConfigFile);
 
   // Route for validating openapi yaml from url.
-  app.post('/api/v1/validation/url', async (req, res, next) => {
+
+  app.post('/api/v1/validation/url',
+     validateConcurrencyLimit(Number(process.env.MAX_CONCURRENT_VALIDATIONS ?? 4)),
+     async (req, res, next) => {
 
     let strict = true;
     try {

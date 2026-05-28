@@ -846,7 +846,7 @@ components:
         - regler
     GenerateReportRequest:
       type: object
-      additionalProperties: false
+      additionalProperties: true
       properties:
         report:
           type: array
