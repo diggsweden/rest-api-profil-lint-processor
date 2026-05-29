@@ -44,7 +44,7 @@ export const registerValidationRoutes = (app: Express) => {
     );
   });
   app.post('/api/v1/validation/generate-report',
-    validateConcurrencyLimit(Number(process.env.MAX_CONCURRENT_REPORTS ?? 2)),
+    validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_REPORTS ?? 4)),
     async (req, res, next): Promise<any> => {
     try {
       const data = req.body;
@@ -80,7 +80,7 @@ export const registerValidationRoutes = (app: Express) => {
   });
   app.post(
     '/api/v1/validation/validatespec',
-    validateConcurrencyLimit(Number(process.env.MAX_CONCURRENT_VALIDATIONS ?? 4)),
+    validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_VALIDATIONS ?? 4)),
      async (req, res, next) => {
 
     let strict = true;

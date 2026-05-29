@@ -18,11 +18,12 @@ export type ApiArgs = {
 export async function startServer<T extends ApiArgs>(args: T) {
   const app = express();
   const port = process.env.PORT || 3000;
+  const bodyLimit = process.env.RAP_LP_JSON_BODY_LIMIT || '3mb';
 
   app.use('/api/v1/rap-lp-openapi.yaml', express.static(path.join(process.cwd(), 'rap-lp-openapi.yaml')));
 
   // For the case of content upload
-  app.use(express.json({ limit: '5mb' }));
+  app.use(express.json({ limit: bodyLimit }));
   // Path to your OpenAPI spec
   const apiSpec = path.join(process.cwd(), 'rap-lp-openapi.yaml');
 
