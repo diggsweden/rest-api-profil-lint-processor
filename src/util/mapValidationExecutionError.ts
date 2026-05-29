@@ -121,7 +121,9 @@ export function mapValidationExecutionError(
   if (error instanceof SpecParseError) {
     return error;
   }
+    console.log('isKnownRuleEngineInvalidStructureCase...START');
   if (isKnownRuleEngineInvalidStructureCase(error, opts.strictEnabled)) {
+    console.log('isKnownRuleEngineInvalidStructureCase...FINISH');
     return SpecParseError.fromRuleEngineInvalidStructure(error);
   }
   return error;
