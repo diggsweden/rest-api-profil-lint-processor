@@ -48,7 +48,14 @@ export async function startServer<T extends ApiArgs>(args: T) {
   // Middleware för att mappa interna error till HTTP koder.
   app.use(errorHandler);
 
-  return app.listen(port, () => {
+  const server = app.listen(port, () => {
     console.log(`Servern körs på http://localhost:${port}`);
   });
+
+  server.requestTimeout = 120000;
+  server.headersTimeout = 121000;
+  server.keepAliveTimeout = 65000;
+  server.timeout = 120000;
+
+  return server;
 }
