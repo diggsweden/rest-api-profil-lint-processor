@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 SPDX-License-Identifier: CC0-1.0
 -->
 
-# REST API-profil -  Lint Processor (RAP-LP)
+# REST API-profil - Lint Processor (RAP-LP)
 
 [![Tag](https://img.shields.io/github/v/tag/diggsweden/rest-api-profil-lint-processor?style=for-the-badge&sort=semver&filter=%21*-*&color=green)](https://github.com/diggsweden/rest-api-profil-lint-processor/tags)
 
@@ -13,82 +13,78 @@ SPDX-License-Identifier: CC0-1.0
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/diggsweden/rest-api-profil-lint-processor/badge?style=for-the-badge)](https://scorecard.dev/viewer/?uri=github.com/diggsweden/rest-api-profil-lint-processor)
 
-[![License: EUPL 1.2](https://img.shields.io/badge/publiccode.yml-library?style=for-the-badge&&color=orange)](publiccode.yml) 
-
-
+[![License: EUPL 1.2](https://img.shields.io/badge/publiccode.yml-library?style=for-the-badge&&color=orange)](publiccode.yml)
 
 ## Beskrivning
 
-RAP-LP är ett verktyg för att linta OpenAPI v3-definitioner med hjälp av [Spectral](https://github.com/stoplightio/spectral).<br>
-Det är specifikt utvecklat för att validera OpenAPI-definitioner enligt den svenska REST API-profilens specifikation [REST API-profil](https://dev.dataportal.se/rest-api-profil).
+RAP-LP är ett verktyg för att validera OpenAPI v3-specifikationer mot den svenska REST API-profilen med hjälp av [Spectral](https://github.com/stoplightio/spectral).<br>
 
-RAP-LP kan användas lokalt i CLI-läge eller API-läge, samt via webbgränssnittet [RAP-LP](https://raplp.digg.se).
+Det är specifikt utvecklat för att validera OpenAPI-definitioner enligt den svenska REST API-profilens [specifikation](https://dev.dataportal.se/rest-api-profil).
+
+RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssnittet](https://raplp.digg.se).
 
 ## Innehållsförteckning
 
 <details>
-<summary><strong>Översikt</strong></summary>
+<summary><strong>Installationsguide</strong></summary>
 
-  - [Vad är RAP-LP](#vad-är-rap-lp)
+  - [Installera via npm](#installera-via-npm)
 
-  - [Funktionalitet](#funktionalitet)
+    - [Installera globalt med NPM](#installera-globalt-med-npm)
 
-</details>
+    - [Installera lokalt som npm run script](#installera-lokalt-som-npm-run-script)
 
-<details>
-<summary><strong>Kom igång</strong></summary>
+  - [Installera via NPX](#installera-via-npx)
 
-  - [Installationsguide](#installationsguide)
+  - [Installera via Podman](#installera-via-podman)
 
-    - [Installera via npm](#installera-via-npm)
+  - [Installera via Docker](#installera-via-docker)
 
-      - [Installera globalt med NPM](#installera-globalt-med-npm)
+  - [Alternativ - kör från containern med podman/docker](#alternativ---kör-från-containern-med-podmandocker)
 
-      - [Installera lokalt som npm run script](#installera-lokalt-som-npm-run-script)
-
-    - [Installera via NPX](#installera-via-npx)
-
-    - [Installera via Podman](#installera-via-podman)
-
-    - [Installera via Docker](#installera-via-docker)
-
-    - [Alternativ - kör från containern med podman/docker](#alternativ---kör-från-containern-med-podmandocker)
-
-    - [Bygg från källkod](#bygg-från-källkod)
-
-  - [Körlägen](#körlägen)
-
-    - [CLI-läge](#cli-läge)
-
-      - [Flaggor för CLI-läge](#flaggor-för-cli-läge)
-
-      - [Snabbstart](#snabbstart)
-
-    - [API-läge](#api-läge)
-
-      - [Endpoints för API-läge](#endpoints-för-api-läge)
-
-      - [Snabbstart](#snabbstart-1)
-
-    - [Strikt läge (OAS3 Validering)](#strikt-läge-oas3-validering)
-
-    - [Validering mot en, flera eller alla regelkategorier](#validering-mot-en-flera-eller-alla-regelkategorier)
+  - [Bygg från källkod](#bygg-från-källkod)
 
 </details>
 
 <details>
-<summary><strong>Rapportering och diagnostik</strong></summary>
+<summary><strong>Introduktion</strong></summary>
 
-  - [Validering som skriver felmeddelanden till en valfri loggfil](#validering-som-skriver-felmeddelanden-till-en-valfri-loggfil)
+  - [Regelfiltrering](#regelfiltrering)
 
-  - [Validering som sparar loggdiagnostik i en fil](#validering-som-sparar-loggdiagnostik-i-en-fil)
+  - [Strikt läge (OAS3 Validering)](#strikt-läge-oas3-validering)
 
-  - [Validering som sparar information om regelutfall i en Excel-fil](#validering-som-sparar-information-om-regelutfall-i-en-excel-fil)
+</details>
+
+<details>
+<summary><strong>CLI-läge</strong></summary>
+
+  - [Flaggor för CLI-läge](#flaggor-för-cli-läge)
+
+  - [Loggning i CLI-läge](#loggning-i-cli-läge)
+
+  - [Snabbstart - CLI-läge](#snabbstart---cli-läge)
+
+</details>
+
+<details>
+<summary><strong>API-läge</strong></summary>
+
+  - [Flaggor för API-läge](#flaggor-för-api-läge)
+
+  - [Endpoints för API-läge](#endpoints-för-api-läge)
+
+  - [Serverkonfiguration](#serverkonfiguration)
+
+  - [Exempel på requests](#exempel-på-requests)
+
+  - [Snabbstart - API-läge](#snabbstart---api-läge)
 
 </details>
 
 <details>
 <summary><strong>Mer information</strong></summary>
+
+  - [Versioner](#versioner)
 
   - [Riktlinjer och förklaringar](#riktlinjer-och-förklaringar)
 
@@ -107,28 +103,25 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, samt via webbgränssnit
     - [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container)
 
   - [Support](#support)
+
   - [Bidra](#bidra)
+
   - [Utveckling](#utveckling)
+
   - [Licens](#licens)
+
   - [Underhållare](#underhållare)
+
   - [Krediter och referenser](#krediter-och-referenser)
 
 </details>
 
-
 ---
-
-## Översikt
-
-### Vad är RAP-LP
-
-### Funktionalitet
-
-
 
 ## Kom igång
 
 ### Installationsguide
+
 Följande instruktioner förutsätter att det finns en `openapi.yaml` att validera i den aktuella katalogen. <br>
 
 Beroende på hur man önskar att nyttja verktyget måste det finnas installerade versioner av `Node.js`,`npm`, `Podman` eller `Docker`.
@@ -217,7 +210,6 @@ docker run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processo
 
 #### Alternativ - kör från containern med podman/docker
 
-
 1. Starta en podman/docker container:
 
    ```bash
@@ -248,79 +240,52 @@ npm start -- -f openapi.yaml
 
 ---
 
-### Körlägen
+## Introduktion
 
 Verktyget går att köra lokalt i två olika lägen
 
-**CLI** och **API**
+**CLI** och **API** läge. Om inget läge sätts manuellt, är CLI alltid default.
 
-**Snabbstart - lägesövergripande kommandon**
+**Lägesövergripande kommandon**
 
-|   Kommando   | Beskrivning | Typ | Standard | Obligatorisk |
-| ------------ | ----------- | --- | -------- | ------------ |
-| `--help`     | ----------- | --- | -------- | ------------ |
-| `--version`  | ----------- | --- | -------- | ------------ |
-| `-m, --mode` | ----------- | --- | -------- | ------------ |
+| Kommando       | Beskrivning | Typ | Standard | Obligatorisk |
+| -------------- | ----------- | --- | -------- | ------------ |
+| `--help`     | Visar tillgängliga kommandon, flaggor och användningsinformation för verktyget. |  Boolean | `false` | Nej |
+| `--version`  | Visar aktuell version av RAP-LP. | Boolean | `false` | Nej |
+| `-m, --mode` | Anger vilket körläge verktyget ska använda, om inget anges startas CLI-läge per automatik. | String | `CLI` | Nej |
 
----
+### Regelfiltrering
 
-#### CLI-läge
+Oavsett vilket läge du kör går det att filtrera vilka regelkategorier du vill validera emot.
 
-##### Flaggor för CLI-läge
+I dagsläget är följande regelkategorier från REST API-profilen tillgängliga:
 
-| Flagga | Beskrivning | Typ | Standard | Obligatorisk |
-| ------ | ----------- | --- | -------- | ------------ |
-| `-f, --file` | ----------- | --- | -------- | ------------ |
-| `-c, --categories` | ----------- | --- | -------- | ------------ |
-| ------ | ----------- | --- | -------- | ------------ |
-| ------ | ----------- | --- | -------- | ------------ |
+| Regelkod | Regelkategori |
+| -------- | ------------- |
+| DokRules | Dokumentation |
+| DotRules | Datum- och tidsformat |
+| ResRules | Resurser |
+| UfnRules | URL Format och namngivning |
+| MogRules | Mognad |
+| SakRules | Säkerhet |
+| AmeRules | API Message |
+| ArqRules | API Request |
+| FelRules | Felhantering |
+| VerRules | Versionshantering |
+| FnsRules | Filtrering, paginering och sökparametrar |
+| ForRules | Förutsättningar |
 
+Se information om hur du väljer regelkategorier vid validering under rubriken för antingen [CLI](#cli-läge) eller [API](#api-läge) läge.
 
-
-
-##### Snabbstart
-> 
-
----
-
-#### API-läge
-
-Verktyget kan även köras som en lokal HTTP-server, via API (Applikation Programming Interface). I detta läge kan funktionaliteten anropas via HTTP i stället för CLI-flaggor.
-
-##### Flaggor för API-läge
-| Flagga | Beskrivning | Typ | Standard |
-| ------ | ----------- | --- | -------- |
-| `--enableUrlValidation` | Aktiverar URL-validering i API-läge. | boolean | `false` | Nej |
-| `--urlValidationConfigFile` | Konfigurationsfil för URL-validering (fallback: `./urlValidationConfig.cjs`). | string | `./urlValidationConfig.cjs` | Nej |
-
-
-##### Endpoints för API-läge
-
-| Endpoint                               | Beskrivning |
-| -------------------------------------- | ----------- |
-| `/api/v1/validation/rules`             | Används för att hämta lista med tillgängliga regelkategorier som stöds av verktyget. |
-| `/api/v1/validation/validatespec`      | Används för att validera en OpenAPI-specifikation mot REST API-profilens regler. |
-| `/api/v1/validation/url`               | Används för att validera en OpenAPI-specifikation från en angiven URL. |
-| `/api/v1/validation/generate-report`   | Används för att generera en rapport baserad på ett valideringsresultat. |
-| `/api/v1/api-info`                     | Används för att hämta information om API:et. |
-
-##### Server
-
-##### Snabbstart
->
-
----
-
-#### Strikt läge (OAS3 Validering)
+### Strikt läge (OAS3 Validering)
 
 Strikt-läge aktiverar validering av OpenAPI-specifikationens struktur och semantik enligt OpenAPI 3 (OAS3).
 
-När `--strict` används verifieras OpenAPI-specifikationen först enligt OAS3.  
+När `--strict` används verifieras OpenAPI-specifikationen först enligt OAS3.
 Kontrollen säkerställer att specifikationen är korrekt uppbyggd och semantiskt giltig innan validering mot REST API-profilens regler utförs.
 
 Flaggan `--strict` fungerar både med CLI och API-läge.
-I API-mode är strikt läge default, men kan stängas av.
-
+I API-mode är strikt läge default, men kan stängas av.<br>
 Aktivera strikt-läge med:
 
 ```bash
@@ -337,33 +302,33 @@ Strict validation reported issues:
 
 ---
 
-#### Validering mot en, flera eller alla regelkategorier
 
-Oavsett vilket läge du kör går det att filtrera vilka regelkategorier du vill validera emot.
+## CLI-läge
 
-I dagsläget är följande regelkategorier från REST API-profilen tillgängliga
+### Flaggor för CLI-läge
 
-| Regelkod | Regelkategori |
-| -------- | ------------- |
-| DokRules | Dokumentation |
-| DotRules | Datum- och tidsformat |
-| ResRules | Resurser |
-| UfnRules | URL Format och namngivning |
-| MogRules | Mognad |
-| SakRules | Säkerhet |
-| AmeRules | API Message |
-| ArqRules | API Request |
-| FelRules | Felhantering | 
-| VerRules | Versionshantering |
-| FnsRules | Filtrering, paginering och sökparametrar |
-| ForRules | Förutsättningar |
+| Flagga | Beskrivning | Typ | Standard | Obligatorisk |
+| ------ | ----------- | --- | -------- | ------------ |
+| `-f, --file` | Sökväg till OpenAPI-specifikation (YAML/JSON). | String  | – | Ja |
+| `-c, --categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `DokRules, DotRules, ResRules, UfnRules, MogRules, SakRules, AmeRules, ArqRules, FelRules, VerRules, FnsRules, ForRules`. | String  | – | Nej |
 
+### Loggning i CLI-läge
 
+RAP-LP erbjuder stöd för att logga fel, exportera diagnostiseringsinformation samt generera rapporter baserade på resultatet från en validering. Läs mer om de olika alternativen för CLI-läge nedan.
+<details>
+<summary><strong>Flaggor för loggning</strong></summary>
 
-## Rapportering och diagnostik
+| Flagga | Beskrivning | Typ | Standard | Obligatorisk |
+| ------ | ----------- | --- | -------- | ------------ |
+| `-l, --logError` | Sökväg till fil för felloggning från RAP-LP. Om inte angiven skrivs loggen till stdout. | string  | stdout (om ej satt) | Nej |
+| `-a, --append`| Append—utökar loggen i befintlig felloggningsfil (om `--logError` används). | boolean | `false` | Nej |
+| `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format. | string | – | Nej |
+| `--dex` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format. | string  | – | Nej |
 
-### Validering som skriver felmeddelanden till en valfri loggfil
-
+</details>
+<br>
+<details>
+<summary><strong>Validering som skriver felmeddelanden till en valfri loggfil</strong></summary>
 För att skriva felmeddelanden till en valfri loggfil, lägg till `-l <FILE>`
 
 ```bash
@@ -377,16 +342,19 @@ För att lägga till loggning i samma fil, lägg till `-a`
 ```bash
 raplp -f openapi.yaml -l raplp.log -a
 ```
-
-### Validering som sparar loggdiagnostik i en fil
-
+</details>
+<br>
+<details>
+<summary><strong>Validering som sparar loggdiagnostik i en fil</strong></summary>
 För att spara loggdiagnostik i en fil, lägg till `-d <FILE>`
 
 ```bash
 raplp -f openapi.yaml -d logDiagnostic.log
 ```
-
-### Validering som sparar information om regelutfall i en Excel-fil
+</details>
+<br>
+<details>
+<summary><strong>Validering som sparar information om regelutfall i en Excel-fil</strong></summary>
 
 För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, lägg till `--dex`.<br>
 Om en specifik sökväg till avstämningsfilen ska anges, kan denna läggas till.<br>
@@ -405,24 +373,317 @@ raplp -f openapi.yaml --dex
 ```bash
 raplp -f openapi.yaml --dex <PATH>
 ```
+</details>
 
-### Visa information version
-
-För att visa aktuell version av verktyget, lägg till `--version`
-
-```bash
-raplp --version
-```
-
-### Visa hjälp
-
-```bash
-raplp --help
-```
 ---
 
+### Snabbstart - CLI-läge
+
+```mermaid
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#fbf2f0",
+    "primaryTextColor": "#000",
+    "primaryBorderColor": "#cd7a6e",
+    "lineColor": "#666",
+    "secondaryColor": "#ffffff",
+    "tertiaryColor": "#ffffff"
+  }
+}}%%
+flowchart TD
+
+    A["OpenAPI-specifikation (YAML/JSON)"]
+
+    A --> B["Ange fil med -f"]
+
+    B --> C{Välj regelkategorier?}
+
+    C -->|Nej| D["Alla regler används"]
+    C -->|Ja| E["Ange -c DokRules,UfnRules,..."]
+
+    D --> F{Använd strikt läge?}
+    E --> F
+
+    F -->|Nej| G["Validera"]
+    F -->|Ja| H["Validera med --strict"]
+
+    G --> I["Resultat visas i terminalen"]
+    H --> I
+
+    I --> J{Spara resultat?}
+
+    J -->|Nej| K["Klart"]
+
+    J -->|Fellogg| L["-l <fil>"]
+    J -->|Diagnostik JSON| M["-d <fil>"]
+    J -->|Excelrapport| N["--dex"]
+
+    L --> K
+    M --> K
+    N --> K
+```
+
+---
+
+## API-läge
+
+Verktyget kan även köras som en lokal HTTP-server, via API (Applikation Programming Interface). I detta läge kan funktionaliteten anropas via HTTP i stället för CLI-flaggor.
+
+### Flaggor för API-läge
+
+| Flagga | Beskrivning | Typ | Standard | Obligatorisk |
+| ------ | ----------- | --- | -------- | -------- |
+| `--enableUrlValidation` | Aktiverar URL-validering i API-läge. | boolean | `false` | Nej |
+| `--urlValidationConfigFile` | Konfigurationsfil för URL-validering (fallback: `./urlValidationConfig.cjs`). | string | `./urlValidationConfig.cjs` | Nej |
+
+
+### Endpoints för API-läge
+
+| Endpoint                               | Beskrivning |
+| -------------------------------------- | ----------- |
+| `/api/v1/validation/rules`             | Används för att hämta lista med tillgängliga regelkategorier som stöds av verktyget. |
+| `/api/v1/validation/validatespec`      | Används för att validera en OpenAPI-specifikation mot REST API-profilens regler. |
+| `/api/v1/validation/url`               | Används för att validera en OpenAPI-specifikation från en angiven URL. |
+| `/api/v1/validation/generate-report`   | Används för att generera en rapport baserad på ett valideringsresultat. |
+| `/api/v1/api-info`                     | Används för att hämta information om API:et. |
+
+---
+### Serverkonfiguration
+
+Vid körning i API-läge från en lokal server kan RAP-LP konfigureras med hjälp av miljövariabler.
+
+| Miljövariabel | Beskrivning |
+| ------------- | ----------- |
+| `MAX_CONCURRENT_VALIDATIONS` | Maximalt antal samtidiga valideringar som får bearbetas samtidigt.|
+| `MAX_CONCURRENT_REPORTS` | Maximalt antal samtidiga rapportgenereringar som får bearbetas samtidigt. |
+| `LOG_TARGET` | Anger var serverloggar ska skrivas, exempelvis `stdout` eller `stderr`.
+
+---
+
+### Exempel på requests
+
+Nedan följer exempel på hur API:ets endpoints kan anropas, inklusive nödvändiga headers, request bodies och exempel med curl.
+
+<details>
+<summary><strong>Validera lokal OpenAPI-specifikation (/api/v1/validation/validatespec)</strong></summary>
+
+**Request headers**
+
+```http
+Content-Type: application/json
+Accept: application/json
+```
+
+**Request body**
+
+```json
+{
+  "yaml": "<base64encoded file>",
+  "categories": [
+    "DokRules",
+    "UfnRules"
+  ],
+  "strict": true
+}
+```
+
+**Exempel med curl**
+
+```bash
+curl -X POST http://localhost:3000/api/v1/validation/validatespec \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d "{
+    \"yaml\": \"$(base64 -w 0 openapi.yaml)\",
+    \"categories\": [\"DokRules\", \"UfnRules\"],
+    \"strict\": true
+  }"
+```
+
+</details>
+<br>
+<details>
+<summary><strong>Validera OpenAPI-specifikation via URL (/api/v1/validation/url)</strong></summary>
+
+> Kräver att API-läget startats med `--enableUrlValidation`.
+
+**Request headers**
+
+```http
+Content-Type: application/json
+Accept: application/json
+```
+
+**Request body**
+
+```json
+{
+  "url": "<URL_TO_YAML_FILE>",
+  "categories": [
+    "DokRules",
+    "UfnRules"
+  ],
+  "strict": true
+}
+```
+
+**Exempel med curl**
+
+```bash
+curl -X POST http://localhost:3000/api/v1/validation/url \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "url": "<URL_TO_YAML_FILE>",
+    "categories": ["DokRules", "UfnRules"],
+    "strict": true
+  }'
+```
+
+</details>
+<br>
+<details>
+<summary><strong>Generera Excel-rapport (/api/v1/validation/generate-report)</strong></summary>
+
+**Request headers**
+
+```http
+Content-Type: application/json
+Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+```
+
+**Request body**
+```json
+{
+  "result": [],
+  "categories": [
+    "DokRules",
+    "UfnRules"
+  ]
+}
+```
+
+**Exempel med curl**
+
+```bash
+curl -X POST http://localhost:3000/api/v1/validation/generate-report \
+  -H "Content-Type: application/json" \
+  -o avstamningsfil.xlsx \
+  -d '{
+    "result": [],
+    "categories": ["DokRules", "UfnRules"]
+  }'
+```
+
+</details>
+<br>
+<details>
+<summary><strong>Hämta tillgängliga regelkategorier (/api/v1/validation/rules)</strong></summary>
+
+**Exempel med curl**
+
+```bash
+curl -X GET http://localhost:3000/api/v1/validation/rules \
+  -H "Accept: application/json"
+```
+
+</details>
+<br>
+<details>
+<summary><strong>Hämta API-information (/api/v1/api-info)</strong></summary>
+
+**Exempel med curl**
+
+```bash
+curl -X GET http://localhost:3000/api/v1/api-info \
+  -H "Accept: application/json"
+```
+</details>
+
+---
+
+### Snabbstart - API-läge
+
+```mermaid
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#fbf2f0",
+    "primaryTextColor": "#000",
+    "primaryBorderColor": "#cd7a6e",
+    "lineColor": "#666",
+    "secondaryColor": "#ffffff",
+    "tertiaryColor": "#ffffff"
+  }
+}}%%
+flowchart TD
+
+    A[Starta RAP-LP i API-läge]
+
+    A --> B{Validera via URL?}
+
+    B -->|Nej| C["npm start -- -m api"]
+    B -->|Ja| D["npm start -- -m api --enableUrlValidation"]
+
+    C --> E["Server startar på localhost:3000"]
+    D --> E
+
+    E --> F{Vad vill du validera?}
+
+    F -->|Lokal OpenAPI-specifikation| G["POST /api/v1/validation/validatespec"]
+    F -->|URL till OpenAPI-specifikation| H["POST /api/v1/validation/url"]
+
+    G --> I["Skicka OpenAPI-specifikation (JSON/YAML)"]
+    H --> I
+
+    I --> J["Valfritt: Skicka med categories"]
+
+    J --> K["Valfritt: Ange strict som true eller false"]
+
+    K --> L["Ta emot valideringsresultat"]
+
+    L --> M{Vill du generera Excel-rapport?}
+
+    M -->|Nej| N[Klart]
+
+    M -->|Ja| O["POST /api/v1/validation/generate-report"]
+
+    O --> P["Skicka tidigare valideringsresultat"]
+
+    P --> Q["Excel-fil med regelutfall genereras"]
+
+    Q --> N
+```
+
+---
 
 ## Mer information
+
+### Versioner
+
+Main-branchen, feature-brancher, pre-release- och testversioner används med reservation för att de kan innehålla funktionalitet som inte är garanterad att den är testad på samma sätt som en stabil version.
+
+**Stabila versioner**
+
+[Release](https://github.com/diggsweden/rest-api-profil-lint-processor/releases) ska alltid vara stabil och testad, vilket gör den till den föredragna versionen för att nyttja verktyget.<br>
+Dessa versioner är taggade med `vX.X.X` utan något suffix.
+
+**Pre-release- och testversioner**
+
+Pre-release-versioner är taggade med följande suffix:
+
+- alpha → tidig testversion, ofta instabil
+- beta → mer testad, men fortfarande pre-release
+- rc → nära färdigställande, stabil release candidate
+
+Rena testversioner är taggade med `vX.X.X-dev` följt av namnet på den branchen.<br>
+Dessa versioner är byggda för att testa funktionalitet som är under utveckling.
+
+Alla versioner av verktyget hittar du här:
+
+- [Container Image](https://github.com/diggsweden/rest-api-profil-lint-processor/pkgs/container/rest-api-profil-lint-processor)
+- [NPM Package](https://github.com/diggsweden/rest-api-profil-lint-processor/pkgs/npm/rest-api-profil-lint-processor)
 
 ### Riktlinjer och förklaringar
 
@@ -438,7 +699,7 @@ Det går endast att köra RAP-LP mot en enda OpenAPI-specifikation åt gången.
 
 #### Förklaring av översikt för regelutfall
 
-Om man väljer att köra verktyget i console läge, så kommer diagnostiseringsinformationen på stdout.<br>
+Om man väljer att köra verktyget i CLI-läge, så kommer diagnostiseringsinformationen på stdout.<br>
 I denna så kommer en sammanställning av det totala regelutfallet att visas.
 
 - Verkställda och godkända regler:
@@ -485,6 +746,23 @@ Kravet har bedömts ha allvarlighetsgraden Warning eftersom API:et bryter mot et
 
 #### Hur skapar jag ett GitHub Personal Access Token (PAT)?
 
+1. Gå till GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token → Generate new token (classic).
+2. Sätt en beskrivning för ditt token under `Note` och ett utgångsdatum under `Expiration` (ha utgångsdatum!).
+3. Select scopes → read:packages
+4. Skapa token → kopiera värdet direkt (visas bara en gång).
+
+```bash
+npm login --registry=https://npm.pkg.github.com
+# username: ditt GitHub-användarnamn
+# password: GitHub PAT med read:packages
+```
+
+```bash
+podman login ghcr.io
+# username: ditt GitHub-användarnamn
+# password: GitHub PAT med read:packages
+```
+
 #### Skrivåtkomst till mount från container
 
 Vid körningar med podman och docker i kombination med flaggor som sparar information till filer kan det uppstå problem kring skrivrättigheter som gör att filer inte dyker upp som önskat. Filerna kan finnas i containern men dyker inte i den mountade katalogen som specificerats.
@@ -518,11 +796,11 @@ Se till att containern har rättigheter att skriva till den katalog som du mount
 
 ---
 
-### Support 
+### Support
 
 Om du har frågor, funderingar, buggrapporter etc, vänligen kontakta [Digg - Agency for Digital Government](https://www.digg.se/)
 
-### Bidra 
+### Bidra
 
 Om du vill bidra till projektet, vänligen följ instruktionerna i avsnittet [Contributing](CONTRIBUTING.md).<br>
 För utvecklare finns det mer information i avsnittet [Development](development/DEVELOPMENT.md).
@@ -547,12 +825,3 @@ Licens: [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
 ### Krediter och referenser
 
 Speciellt tack till [Arbetsförmedlingen – The Swedish Public Employment Service](https://arbetsformedlingen.se/)
-
-
-
-
-
-
-
-
-
