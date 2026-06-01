@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 diggsweden/rest-api-profil-lint-processor
+//
+// SPDX-License-Identifier: EUPL-1.2
 import { Request, Response, NextFunction } from 'express';
 
 /**
@@ -15,7 +18,7 @@ export function validateConcurrencyLimit(maxConcurrent: number) {
     return (req: Request, res:Response, next: NextFunction) => {
         if (activeValidations >= maxConcurrent) { // Check if the request fits or if it is full 
             //Service Unavailable
-            console.log('REJECTING request');
+            console.log('REJECTING request, activeValidations is to high:', activeValidations );
             return res.status(503).json({
                 error: 'Server is busy, Please try again later'
             });
