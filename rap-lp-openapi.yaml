@@ -407,7 +407,7 @@ paths:
                     type: https://raplp.digg.se/problems/conflict
                     title: Conflict
                     status: 409
-                    detail: This feature is currenctly disabled due to server configuration. Contact your administrator if you think this is a misstake.
+                    detail: This feature is currently disabled due to server configuration. Contact your administrator if you think this is a mistake.
                     instance: /api/v1/validation/url
         '500':
           description: Internal server error.
