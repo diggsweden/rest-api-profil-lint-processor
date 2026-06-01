@@ -460,7 +460,7 @@ Vid körning i API-läge från en lokal server kan RAP-LP konfigureras med hjäl
 | ------------- | ----------- |
 | `MAX_CONCURRENT_VALIDATIONS` | Maximalt antal samtidiga valideringar som får bearbetas samtidigt.|
 | `MAX_CONCURRENT_REPORTS` | Maximalt antal samtidiga rapportgenereringar som får bearbetas samtidigt. |
-| `LOG_TARGET` | Anger var serverloggar ska skrivas, exempelvis `stdout` eller `stderr`.
+| `LOG_TARGET` | Anger var serverloggar ska skrivas, exempelvis `stdout` eller `stderr`.|
 
 ---
 
