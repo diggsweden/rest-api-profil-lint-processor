@@ -28,91 +28,91 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 <details>
 <summary><strong>Installationsguide</strong></summary>
 
-  - [Installera via npm](#installera-via-npm)
+- [Installera via npm](#installera-via-npm)
 
-    - [Installera globalt med NPM](#installera-globalt-med-npm)
+  - [Installera globalt med NPM](#installera-globalt-med-npm)
 
-    - [Installera lokalt som npm run script](#installera-lokalt-som-npm-run-script)
+  - [Installera lokalt som npm run script](#installera-lokalt-som-npm-run-script)
 
-  - [Installera via NPX](#installera-via-npx)
+- [Installera via NPX](#installera-via-npx)
 
-  - [Installera via Podman](#installera-via-podman)
+- [Installera via Podman](#installera-via-podman)
 
-  - [Installera via Docker](#installera-via-docker)
+- [Installera via Docker](#installera-via-docker)
 
-  - [Alternativ - kör från containern med podman/docker](#alternativ---kör-från-containern-med-podmandocker)
+- [Alternativ - kör från containern med podman/docker](#alternativ---kör-från-containern-med-podmandocker)
 
-  - [Bygg från källkod](#bygg-från-källkod)
+- [Bygg från källkod](#bygg-från-källkod)
 
 </details>
 
 <details>
 <summary><strong>Introduktion</strong></summary>
 
-  - [Regelfiltrering](#regelfiltrering)
+- [Regelfiltrering](#regelfiltrering)
 
-  - [Strikt läge (OAS3 Validering)](#strikt-läge-oas3-validering)
+- [Strikt läge (OAS3 Validering)](#strikt-läge-oas3-validering)
 
 </details>
 
 <details>
 <summary><strong>CLI-läge</strong></summary>
 
-  - [Flaggor för CLI-läge](#flaggor-för-cli-läge)
+- [Flaggor för CLI-läge](#flaggor-för-cli-läge)
 
-  - [Loggning i CLI-läge](#loggning-i-cli-läge)
+- [Loggning i CLI-läge](#loggning-i-cli-läge)
 
-  - [Snabbstart - CLI-läge](#snabbstart---cli-läge)
+- [Snabbstart - CLI-läge](#snabbstart---cli-läge)
 
 </details>
 
 <details>
 <summary><strong>API-läge</strong></summary>
 
-  - [Flaggor för API-läge](#flaggor-för-api-läge)
+- [Flaggor för API-läge](#flaggor-för-api-läge)
 
-  - [Endpoints för API-läge](#endpoints-för-api-läge)
+- [Endpoints för API-läge](#endpoints-för-api-läge)
 
-  - [Serverkonfiguration](#serverkonfiguration)
+- [Serverkonfiguration](#serverkonfiguration)
 
-  - [Exempel på requests](#exempel-på-requests)
+- [Exempel på requests](#exempel-på-requests)
 
-  - [Snabbstart - API-läge](#snabbstart---api-läge)
+- [Snabbstart - API-läge](#snabbstart---api-läge)
 
 </details>
 
 <details>
 <summary><strong>Mer information</strong></summary>
 
-  - [Versioner](#versioner)
+- [Versioner](#versioner)
 
-  - [Riktlinjer och förklaringar](#riktlinjer-och-förklaringar)
+- [Riktlinjer och förklaringar](#riktlinjer-och-förklaringar)
 
-  - [Begränsningar](#begränsningar)
+- [Begränsningar](#begränsningar)
 
-  - [Exempel på regelutfall](#exempel-på-regelutfall)
+- [Exempel på regelutfall](#exempel-på-regelutfall)
 
-    - [Förklaring av översikt för regelutfall](#förklaring-av-översikt-för-regelutfall)
+  - [Förklaring av översikt för regelutfall](#förklaring-av-översikt-för-regelutfall)
 
-    - [Förklaring av detaljering för regelutfall](#förklaring-av-detaljering-för-regelutfall)
+  - [Förklaring av detaljering för regelutfall](#förklaring-av-detaljering-för-regelutfall)
 
-  - [FAQ](#faq)
+- [FAQ](#faq)
 
-    - [Hur skapar jag ett GitHub Personal Access Token (PAT)?](#hur-skapar-jag-ett-github-personal-access-token-pat)
+  - [Hur skapar jag ett GitHub Personal Access Token (PAT)?](#hur-skapar-jag-ett-github-personal-access-token-pat)
 
-    - [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container)
+  - [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container)
 
-  - [Support](#support)
+- [Support](#support)
 
-  - [Bidra](#bidra)
+- [Bidra](#bidra)
 
-  - [Utveckling](#utveckling)
+- [Utveckling](#utveckling)
 
-  - [Licens](#licens)
+- [Licens](#licens)
 
-  - [Underhållare](#underhållare)
+- [Underhållare](#underhållare)
 
-  - [Krediter och referenser](#krediter-och-referenser)
+- [Krediter och referenser](#krediter-och-referenser)
 
 </details>
 
@@ -190,6 +190,7 @@ Kör med podman:
 ```bash
 podman run --rm -v $(pwd):/data ghcr.io/diggsweden/rest-api-profil-lint-processor:<version> -f /data/openapi.yaml
 ```
+
 ---
 
 #### Installera via Docker
@@ -302,7 +303,6 @@ Strict validation reported issues:
 
 ---
 
-
 ## CLI-läge
 
 ### Flaggor för CLI-läge
@@ -342,6 +342,7 @@ För att lägga till loggning i samma fil, lägg till `-a`
 ```bash
 raplp -f openapi.yaml -l raplp.log -a
 ```
+
 </details>
 <br>
 <details>
@@ -351,6 +352,7 @@ För att spara loggdiagnostik i en fil, lägg till `-d <FILE>`
 ```bash
 raplp -f openapi.yaml -d logDiagnostic.log
 ```
+
 </details>
 <br>
 <details>
@@ -373,6 +375,7 @@ raplp -f openapi.yaml --dex
 ```bash
 raplp -f openapi.yaml --dex <PATH>
 ```
+
 </details>
 
 ---
@@ -437,7 +440,6 @@ Verktyget kan även köras som en lokal HTTP-server, via API (Applikation Progra
 | `--enableUrlValidation` | Aktiverar URL-validering i API-läge. | boolean | `false` | Nej |
 | `--urlValidationConfigFile` | Konfigurationsfil för URL-validering (fallback: `./urlValidationConfig.cjs`). | string | `./urlValidationConfig.cjs` | Nej |
 
-
 ### Endpoints för API-läge
 
 | Endpoint                               | Beskrivning |
@@ -449,6 +451,7 @@ Verktyget kan även köras som en lokal HTTP-server, via API (Applikation Progra
 | `/api/v1/api-info`                     | Används för att hämta information om API:et. |
 
 ---
+
 ### Serverkonfiguration
 
 Vid körning i API-läge från en lokal server kan RAP-LP konfigureras med hjälp av miljövariabler.
@@ -554,6 +557,7 @@ Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ```
 
 **Request body**
+
 ```json
 {
   "result": [],
@@ -599,6 +603,7 @@ curl -X GET http://localhost:3000/api/v1/validation/rules \
 curl -X GET http://localhost:3000/api/v1/api-info \
   -H "Accept: application/json"
 ```
+
 </details>
 
 ---
