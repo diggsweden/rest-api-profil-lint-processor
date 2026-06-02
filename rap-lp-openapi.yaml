@@ -654,7 +654,7 @@ components:
       example: rule-engine
     ProblemDetails:
       type: object
-      additionalProperties: false
+      additionalProperties: true
       properties:
         type:
           type: string
@@ -846,7 +846,7 @@ components:
         - regler
     GenerateReportRequest:
       type: object
-      additionalProperties: true
+      additionalProperties: false
       properties:
         report:
           type: array
