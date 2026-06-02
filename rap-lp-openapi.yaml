@@ -654,7 +654,7 @@ components:
       example: rule-engine
     ProblemDetails:
       type: object
-      additionalProperties: true
+      additionalProperties: false
       properties:
         type:
           type: string
