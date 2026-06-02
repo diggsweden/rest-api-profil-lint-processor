@@ -17,8 +17,10 @@ import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
 import * as IssueHelper from '../util/RapLPIssueHelpers.js'; 
 import type { IParser } from '@stoplight/spectral-parsers';
 import { mapValidationExecutionError } from '../util/mapValidationExecutionError.js';
-import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js'
 
+import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js'
+import { measure } from '../util/performance.js';
+import crypto from 'node:crypto';
 
 const isIpv4Address = (value: string): boolean => {
   const parts = value.split('.');
@@ -46,7 +48,7 @@ const isPrivateOrLocalIpv4 = (ip: string): boolean => {
   );
 };
 
-const assertSsrfSafeUrl = (urlString: string): void => {
+const assertSsrfSafeUrl = (config: any, urlString: string): void => {
   let parsed: URL;
   try {
     parsed = new URL(urlString);
@@ -63,19 +65,21 @@ const assertSsrfSafeUrl = (urlString: string): void => {
   }
 
   const hostname = parsed.hostname.toLowerCase();
-  if (
+  const isLocalhost = 
     hostname === 'localhost' ||
     hostname.endsWith('.localhost') ||
     hostname === '::1' ||
-    hostname === '[::1]'
-  ) {
-    throw new RapLPBaseApiError(
-      'Invalid Request',
-      'The requested host is not allowed.',
-      ERROR_TYPE.BAD_REQUEST,
-    );
-  }
+    hostname === '[::1]';
+    console.log("IsLocalhost: " + isLocalhost);
+    console.log("allowLocalhost: " + config?.allowLocalhost);
 
+    if (isLocalhost && !config?.allowLocalhost) {
+      throw new RapLPBaseApiError(
+        'Invalid Request',
+        'The requested host is not allowed',
+        ERROR_TYPE.BAD_REQUEST,
+      );      
+    }
   if (isIpv4Address(hostname) && isPrivateOrLocalIpv4(hostname)) {
     throw new RapLPBaseApiError(
       'Invalid Request',
@@ -87,15 +91,15 @@ const assertSsrfSafeUrl = (urlString: string): void => {
 
 export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFile?: string) => {
   const config = loadUrlValidationConfiguration(urlValidationConfigFile);
-
   // Route for validating openapi yaml from url.
 
   app.post('/api/v1/validation/url',
-     validateConcurrencyLimit(Number(process.env.MAX_CONCURRENT_VALIDATIONS ?? 4)),
+     validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_VALIDATIONS ?? 4)),
      async (req, res, next) => {
 
     let strict = true;
     try {
+      const requestId = crypto.randomUUID();
       const context = new RuleExecutionContext();
       const body: SpecValidationRequestDto = req.body;
 
@@ -108,11 +112,15 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
           ERROR_TYPE.BAD_REQUEST,
         );
       }
-      assertSsrfSafeUrl(url);
-
+      assertSsrfSafeUrl(config,url);
       let response: Response;
       try {
-        response = await fetch(url, { ...config?.customFetchConfig, redirect: 'error' });
+        response = await measure(
+          { requestId, operation: 'fetch' },
+          () => fetch(url, { ...config?.customFetchConfig, redirect: 'error' })
+        );
+        
+        //response = await fetch(url, { ...config?.customFetchConfig, redirect: 'error' });
       } catch {
         throw new RapLPBaseApiError(
           'Invalid Request',
@@ -136,15 +144,18 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
       const categories = body.categories ?? [];
 
       // 2. Detect format-preferens 
-      const prefer = detectSpecFormatPreference(
+      const prefer = await measure(
+        { requestId, operation: 'detectSpecFormatPreference' },
+        () => detectSpecFormatPreference(
         undefined,
         raw,
-        'auto',
+        'auto',)
       );
       // 3. Parse handling + strict-validate (Structural / Semantic errors)
-      const parseResult = await parseApiSpecInput(
-        { raw},
-        {strict,preferJsonError: prefer},
+      const parseResult = await measure(
+        { requestId, operation: 'parseApiSpecInput' },
+        () => parseApiSpecInput({ raw },
+        {strict,preferJsonError: prefer},)
       );
       // 4. Strict-issues → 
       if (parseResult.strictIssues?.length) {
@@ -171,13 +182,22 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
       }
       // 5. No strict-errors → run raplp ruleengine
       const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
-      const apiSpecDocument = new Document(parseResult.raw, parser, 'payload.yaml'); // In-memory-file to calculate correct positions when parsing
+      const apiSpecDocument = await measure(
+        { requestId, operation: 'create Document' },
+        () => new Document(parseResult.raw, parser, 'payload.yaml')
+      );
 
       const ruleCategories = parseRuleCategories(categories);
       const resolvedCategories = resolveRuleCategories(ruleCategories);
 
-      const rules = await importAndCreateRuleInstances(context, resolvedCategories);
-      const result = await processApiSpec(context, rules, apiSpecDocument);
+      const rules = await measure(
+        { requestId, operation: 'importAndCreateRuleInstances' },
+        () => importAndCreateRuleInstances(context, resolvedCategories)
+      );
+      const result = await measure(
+        { requestId, operation: 'processApiSpec' },
+        () => processApiSpec(context, rules, apiSpecDocument)
+      );
 
       const hasRuleViolations = result.result.some(
         d =>d.allvarlighetsgrad === 'ERROR' || d.allvarlighetsgrad === 'WARNING'

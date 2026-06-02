@@ -10,4 +10,5 @@ module.exports = {
   // Can be used to customize request headers, method etc.
   // https://developer.mozilla.org/en-US/docs/Web/API/RequestInit
   fetchRequestInit: {},
+  allowLocalhost: process.env.RAP_LP_ALLOW_LOCALHOST_URL_VALIDATION === 'true',
 };

@@ -12,8 +12,11 @@ import { ValidationResponseDto } from '../model/ValidationResponseDto.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
 import { AggregateError } from '../util/RapLPCustomErrorInfo.js'
 
-const LOG_TARGET = process.env.LOG_TARGET ?? "stderr"; // LOG_TARGET=stderr should be default mode in container. Use LOG_TARGET=file to activate a mode that support writing to disc!
-
+/**
+ * RAP_LP_LOG_TARGET=stderr should be default mode in container. 
+ * Use RAP_LP_LOG_TARGET=file to activate a mode that support writing to disc!
+ */
+const LOG_TARGET = process.env.RAP_LP_LOG_TARGET ?? "stderr"; 
 function writeLog(fileName: string, message: string) {
   console.log('LOG_TARGET=', LOG_TARGET);
 

@@ -108,7 +108,6 @@ export const registerValidationRoutes = (app: Express) => {
         );
       }      
       // 1. Decode input
-      //const raw = decodeBase64String(body.spec);
       const raw = await measure(
         { requestId, operation: 'Decoding Base64String' },
         () => decodeBase64String(body.spec)
@@ -126,26 +125,12 @@ export const registerValidationRoutes = (app: Express) => {
         raw,
         'auto',)
       );
-      /*
-      const prefer = detectSpecFormatPreference(
-        undefined,
-        raw,
-        'auto',
-      );*/
-
       // 3. Parse handling + strict-validate (Structural / Semantic errors)
       const parseResult = await measure(
         { requestId, operation: 'parseApiSpecInput' },
         () => parseApiSpecInput({ raw },
         {strict,preferJsonError: prefer},)
       );
-
-      /*      
-      const parseResult = await parseApiSpecInput(
-        { raw },
-        {strict,preferJsonError: prefer},
-      );*/
-
       // 4. Strict-issues → 
       if (parseResult.strictIssues?.length) {
         const sorted = IssueHelper.sortIssues(parseResult.strictIssues);
@@ -176,9 +161,6 @@ export const registerValidationRoutes = (app: Express) => {
         { requestId, operation: 'create Document' },
         () => new Document(parseResult.raw, parser, 'payload.yaml')
       );
-     
-      //const apiSpecDocument = new Document(parseResult.raw, parser, 'payload.yaml'); // In-memory-file to calculate correct positions when parsing
-
       const ruleCategories = parseRuleCategories(categories);
       const resolvedCategories = resolveRuleCategories(ruleCategories);
 
@@ -186,14 +168,10 @@ export const registerValidationRoutes = (app: Express) => {
         { requestId, operation: 'importAndCreateRuleInstances' },
         () => importAndCreateRuleInstances(context, resolvedCategories)
       );
-      //const rules = await importAndCreateRuleInstances(context, resolvedCategories);
-
       const result = await measure(
         { requestId, operation: 'processApiSpec' },
         () => processApiSpec(context, rules, apiSpecDocument)
       );
-      //const result = await processApiSpec(context, rules, apiSpecDocument);
-
       const hasRuleViolations = result.result.some(
         d =>d.allvarlighetsgrad === 'ERROR' || d.allvarlighetsgrad === 'WARNING'
       );
