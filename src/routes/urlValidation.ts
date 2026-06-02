@@ -119,8 +119,6 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
           { requestId, operation: 'fetch' },
           () => fetch(url, { ...config?.customFetchConfig, redirect: 'error' })
         );
-        
-        //response = await fetch(url, { ...config?.customFetchConfig, redirect: 'error' });
       } catch {
         throw new RapLPBaseApiError(
           'Invalid Request',
