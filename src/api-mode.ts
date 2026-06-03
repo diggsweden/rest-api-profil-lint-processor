@@ -17,7 +17,11 @@ export type ApiArgs = {
 // Funktion för att starta API-servern
 export async function startServer<T extends ApiArgs>(args: T) {
   const app = express();
-  const port = process.env.PORT || 3000;
+  const DEFAULT_PORT = 3000;
+
+  const port = Number(
+    process.env.RAP_LP_PORT ?? DEFAULT_PORT,
+  );
   const bodyLimit = process.env.RAP_LP_JSON_BODY_LIMIT || '3mb';
 
   app.use('/api/v1/rap-lp-openapi.yaml', express.static(path.join(process.cwd(), 'rap-lp-openapi.yaml')));
@@ -50,6 +54,6 @@ export async function startServer<T extends ApiArgs>(args: T) {
   app.use(errorHandler);
 
   return app.listen(port, () => {
-    console.log(`Servern körs på http://localhost:${port}`);
+    console.log(`Servern startad. Lyssnar på port ${port}.`);
   });
 }
