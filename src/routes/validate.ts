@@ -7,7 +7,7 @@ import util from 'util';
 import { Document } from '@stoplight/spectral-core';
 import Parsers from '@stoplight/spectral-parsers';
 import { Express } from 'express';
-import { decodeBase64String, processApiSpec,logErrorToFile} from '../util/apiUtil.js';
+import { decodeBase64String, processApiSpec,logError} from '../util/apiUtil.js';
 import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
 import { ApiInfo } from '../model/ApiInfo.js';
 import { ExcelReportProcessor } from '../util/excelReportProcessor.js';
@@ -22,6 +22,10 @@ import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 import { parseRuleCategories,resolveRuleCategories,RULE_REGISTRY} from '../rulesets/util/ruleModules.js';
 import { mapValidationExecutionError } from '../util/mapValidationExecutionError.js';
 import { AggregateError } from '../util/RapLPCustomErrorInfo.js'
+
+import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js'
+import { measure } from '../util/performance.js';
+import crypto from 'node:crypto';
 
 
 declare var AggregateError: {
@@ -41,7 +45,9 @@ export const registerValidationRoutes = (app: Express) => {
       new ApiInfo('RAP-LP', '1.0.11', new Date().toDateString(), 'http://raplp.digg.se/RAP-LP-docs', 'development'),
     );
   });
-  app.post('/api/v1/validation/generate-report', async (req, res, next): Promise<any> => {
+  app.post('/api/v1/validation/generate-report',
+    validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_REPORTS ?? 4)),
+    async (req, res, next): Promise<any> => {
     try {
       const data = req.body;
       const context = new RuleExecutionContext();
@@ -74,14 +80,18 @@ export const registerValidationRoutes = (app: Express) => {
       next(e);
     }
   });
-  app.post('/api/v1/validation/validatespec', async (req, res, next) => {
+  app.post(
+    '/api/v1/validation/validatespec',
+    validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_VALIDATIONS ?? 4)),
+     async (req, res, next) => {
 
     let strict = true;
     try {
+      const requestId = crypto.randomUUID();
       const context = new RuleExecutionContext();
       const body: SpecValidationRequestDto = req.body;
       
-      //0.5 Check input
+      //0.1 Check input
       if (!body.spec) {
         throw new RapLPBaseApiError(
           'Invalid Request',
@@ -89,24 +99,38 @@ export const registerValidationRoutes = (app: Express) => {
           ERROR_TYPE.BAD_REQUEST,
           );
       }
-
+      //0.2 Check input 
+      if (typeof body.spec !== 'string') {
+        throw new RapLPBaseApiError(
+          'Invalid Request',
+          'Field "spec" must be a base64 encoded string',
+          ERROR_TYPE.BAD_REQUEST,
+        );
+      }      
       // 1. Decode input
-      const raw = decodeBase64String(body.spec);
+      const raw = await measure(
+        { requestId, operation: 'Decoding Base64String' },
+        () => decodeBase64String(body.spec)
+      );
+
+
       strict = body.strict ?? true;
       const categories = body.categories ?? [];
 
       // 2. Detect format-preferens 
-      const prefer = detectSpecFormatPreference(
+      const prefer = await measure(
+        { requestId, operation: 'detectSpecFormatPreference' },
+        () => detectSpecFormatPreference(
         undefined,
         raw,
-        'auto',
+        'auto',)
       );
       // 3. Parse handling + strict-validate (Structural / Semantic errors)
-      const parseResult = await parseApiSpecInput(
-        { raw },
-        {strict,preferJsonError: prefer},
+      const parseResult = await measure(
+        { requestId, operation: 'parseApiSpecInput' },
+        () => parseApiSpecInput({ raw },
+        {strict,preferJsonError: prefer},)
       );
-
       // 4. Strict-issues → 
       if (parseResult.strictIssues?.length) {
         const sorted = IssueHelper.sortIssues(parseResult.strictIssues);
@@ -132,14 +156,22 @@ export const registerValidationRoutes = (app: Express) => {
       }
       // 5. No strict-errors → run raplp ruleengine
       const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
-      const apiSpecDocument = new Document(parseResult.raw, parser, 'payload.yaml'); // In-memory-file to calculate correct positions when parsing
 
+      const apiSpecDocument = await measure(
+        { requestId, operation: 'create Document' },
+        () => new Document(parseResult.raw, parser, 'payload.yaml')
+      );
       const ruleCategories = parseRuleCategories(categories);
       const resolvedCategories = resolveRuleCategories(ruleCategories);
 
-      const rules = await importAndCreateRuleInstances(context, resolvedCategories);
-      const result = await processApiSpec(context, rules, apiSpecDocument);
-
+      const rules = await measure(
+        { requestId, operation: 'importAndCreateRuleInstances' },
+        () => importAndCreateRuleInstances(context, resolvedCategories)
+      );
+      const result = await measure(
+        { requestId, operation: 'processApiSpec' },
+        () => processApiSpec(context, rules, apiSpecDocument)
+      );
       const hasRuleViolations = result.result.some(
         d =>d.allvarlighetsgrad === 'ERROR' || d.allvarlighetsgrad === 'WARNING'
       );
@@ -172,7 +204,7 @@ export const registerValidationRoutes = (app: Express) => {
       });
     } catch (e) {
       // Hantera SpecParseError här 
-      logErrorToFile(e);
+      logError(e);
       next(
         mapValidationExecutionError(e, {
           strictEnabled: strict,

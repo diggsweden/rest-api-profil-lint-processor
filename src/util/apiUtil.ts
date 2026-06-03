@@ -8,26 +8,29 @@ import { Document } from '@stoplight/spectral-core';
 import Parsers from '@stoplight/spectral-parsers';
 import { ERROR_TYPE, RapLPBaseApiError } from './RapLPBaseApiErrorHandling.js';
 import { DiagnosticReport, RapLPDiagnostic } from '../util/RapLPDiagnostic.js';
-import yaml from 'js-yaml';
 import { ValidationResponseDto } from '../model/ValidationResponseDto.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
 import { AggregateError } from '../util/RapLPCustomErrorInfo.js'
 
+/**
+ * RAP_LP_LOG_TARGET=stderr should be default mode in container. 
+ * Use RAP_LP_LOG_TARGET=file to activate a mode that support writing to disc!
+ */
+const LOG_TARGET = process.env.RAP_LP_LOG_TARGET ?? "stderr"; 
+function writeLog(fileName: string, message: string) {
+  console.log('LOG_TARGET=', LOG_TARGET);
+
+  if (LOG_TARGET === "file") {
+    fs.appendFileSync(fileName, message);
+    return;
+  }
+
+  console.error(message.trimEnd());
+}
+
 declare var AggregateError: {
   prototype: AggregateError;
   new (errors: any[], message?: string): AggregateError;
-};
-
-export const validateYamlInput = (input: string): input is string => {
-  try {
-    //Parse the yaml to verify
-    yaml.load(input);
-  } catch (e) {
-    // Handle YAML parsing error
-    throw new RapLPBaseApiError('Could not validate Yaml', 'Invalid YAML', ERROR_TYPE.BAD_REQUEST);
-  }
-
-  return true;
 };
 
 export function decodeBase64String(base64YamlFile: string) {
@@ -74,6 +77,27 @@ export async function processApiSpec(
 export function hasOwnProperty<X extends {}, Y extends PropertyKey>(obj: X, prop: Y): obj is X & Record<Y, unknown> {
   return obj.hasOwnProperty(prop);
 }
+/**
+ * Log error. Either to stderr or to disc!
+ * @param error 
+ */
+export function logError(error:any) {
+  const errorMessage = `${new Date().toISOString()} - ${error.stack ?? error}\n`;
+  writeLog("rap-lp-api-mode-error.log", errorMessage);
+
+  if (error.errors) {
+    const detailedMessage = `${new Date().toISOString()} - ${JSON.stringify(error.errors, null, 2)}\n`;
+    writeLog("rap-lp-api-mode-error.log", detailedMessage);
+  }
+
+  if (error instanceof AggregateError) {
+    error.errors.forEach((err: any, index: number) => {
+      const causeMessage = `Cause ${index + 1}: ${err.stack || err}\n`;
+      writeLog("rap-lp-api-mode-error.log", causeMessage);
+    });
+  }  
+}
+/*
 export function logErrorToFile(error: any) {
   const errorMessage = `${new Date().toISOString()} - ${error.stack}\n`;
   fs.appendFileSync('rap-lp-api-mode-error.log', errorMessage);
@@ -88,3 +112,4 @@ export function logErrorToFile(error: any) {
     });
   }
 }
+  */
