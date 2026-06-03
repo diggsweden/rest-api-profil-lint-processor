@@ -852,12 +852,5 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DiagnosticReport'
-        categories:
-          type: array
-          description: Optional subset of rule categories to execute.
-          items:
-            type: string
-          examples:
-            - [DokRules, UfnRules]
       required:
         - report
