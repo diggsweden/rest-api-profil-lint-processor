@@ -278,7 +278,7 @@ I dagsläget är följande regelkategorier från REST API-profilen tillgängliga
 | FnsRules | Filtrering, paginering och sökparametrar |
 | ForRules | Förutsättningar                          |
 
-Se information om hur du väljer regelkategorier vid validering under rubriken för antingen [CLI](#cli-läge) eller [API](#api-läge) läge.
+Se information om hur du väljer regelkategorier vid validering under rubriken för antingen [CLI](#cli-läge) eller [API](#exempel-på-requests) läge.
 
 ### Strikt läge (OAS3 Validering)
 
@@ -461,13 +461,13 @@ Vid körning i API-läge från en lokal server kan RAP-LP konfigureras med hjäl
 
 | Miljövariabel                         | Beskrivning                                                                                                                                                                                                            |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| RAP_LP_JSON_BODY_LIMIT                | Maximalt tillåten storlek på JSON-requests                                                                                                                                                                             |
-| RAP_LP_MAX_CONCURRENT_REPORTS         | Maximalt antal samtidiga rapportgenereringar som får bearbetas samtidigt.                                                                                                                                              |
-| RAP_LP_MAX_CONCURRENT_VALIDATIONS     | Maximalt antal samtidiga valideringar som får bearbetas samtidigt.                                                                                                                                                     |
-| RAP_LP_PERF_LOGGING                   | Anger om prestandaloggning ska användas, kan sättas till `true` eller `false`.                                                                                                                                         |
-| RAP_LP_LOG_TARGET                     | Anger var serverloggar ska skrivas, exempelvis stdout eller stderr.                                                                                                                                                    |
+| RAP_LP_JSON_BODY_LIMIT                | Maximalt tillåten storlek på JSON-requests. Defaultvärdet är `3mb`                                                                                                                                                                            |
+| RAP_LP_MAX_CONCURRENT_REPORTS         | Maximalt antal samtidiga rapportgenereringar som får bearbetas samtidigt. Defaultvärdet är `4`                                                                                                                                              |
+| RAP_LP_MAX_CONCURRENT_VALIDATIONS     | Maximalt antal samtidiga valideringar som får bearbetas samtidigt. Defaultvärdet är `4`                                                                                                                                                        |
+| RAP_LP_PERF_LOGGING                   | Anger om prestandaloggning ska användas, kan sättas till `true` eller `false`. Funktionen är inaktiverad som standard.                                                                                                                                          |
+| RAP_LP_LOG_TARGET                     | Anger var serverloggar ska skrivas, exempelvis `stdout` eller `stderr`. Defaultvärdet är `stderr`                                                                                                                                                       |
 | RAP_LP_ALLOW_LOCALHOST_URL_VALIDATION | Anger om validering av specifikationer som lagras lokalt på localhost är tillåten. Inställningen används främst vid lokal utveckling och kan sättas till `true` eller `false`. Funktionen är inaktiverad som standard. |
-| RAP_LP_PORT                           | Portkonfiguration för vilken port servern ska starta på och lyssna på inkommande requests. Defaultport är 3000.                                                                                                        |
+| RAP_LP_PORT                           | Portkonfiguration för vilken port servern ska starta på och lyssna på inkommande requests. Defaultvärdet är `3000`.                                                                                                        |
 
 ---
 
@@ -734,10 +734,10 @@ Tillsammans med diagnostiseringsinformationen följer en detaljerad beskrivning 
 
 ![alt text](document/instructions/images/regelutfall-2.png)
 
-I exemplet ovan framgår det att kravet för regeln med **id** DOK.06 inte är godkänt och att den aktuella API-specifikationen inte uppfyller detta.<br>
-**Kravet** har bedömts ha **allvarlighetsgraden** Warning eftersom API-specifikationen bryter mot ett BÖR/BÖR INTE-krav i REST API-profilens **område** för regler som gäller dokumentation.<br>
-Genom **sökvägen** kan vi se var i den aktuella OpenAPI-specifikationen problemet återfinns.<br>
-**Omfattningen** visar på vilken rad i din API-specifikation felet börjar och slutar.<br>
+I exemplet ovan framgår det att kravet för regeln med **id** DOK.06 inte är godkänt och att den aktuella API-specifikationen inte uppfyller detta.<br><br>
+**Kravet** har bedömts ha **allvarlighetsgraden** Warning eftersom API-specifikationen bryter mot ett BÖR/BÖR INTE-krav i REST API-profilens **område** för regler som gäller dokumentation.<br><br>
+Genom **sökvägen** kan vi se var i den aktuella OpenAPI-specifikationen problemet återfinns.<br><br>
+**Omfattningen** visar på vilken rad i din API-specifikation felet börjar och slutar.<br><br>
 Längst ned ser du även en hänvisning till specifik dokumentation om den **designregel** som verktyget tillämpat.
 
 ---
@@ -811,12 +811,11 @@ Vänligen kontakta [Digg - Agency for Digital Government](https://www.digg.se/)
 
 ### Licens
 
-**Programkod**
+**Programkod**<br>
 [European Union Public Licence v. 1.2](https://eupl.eu/1.2/en/)
 
-**Dokumentation, övrigt**
+**Dokumentation, övrigt**<br>
 [CCO 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
-
 
 ### Underhållsansvariga
 
