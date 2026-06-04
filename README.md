@@ -815,7 +815,7 @@ Vänligen kontakta [Digg - Agency for Digital Government](https://www.digg.se/)
 [European Union Public Licence v. 1.2](https://eupl.eu/1.2/en/)
 
 **Dokumentation, övrigt**<br>
-[CCO 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
+[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
 
 ### Underhållsansvariga
 
