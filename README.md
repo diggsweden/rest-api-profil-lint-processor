@@ -635,7 +635,7 @@ flowchart TD
     F -->|Lokal OpenAPI-specifikation| G["POST /api/v1/validation/validatespec"]
     F -->|URL till OpenAPI-specifikation| H["POST /api/v1/validation/url"]
 
-    G --> I["Skicka OpenAPI-specifikation (JSON/YAML)"]
+    G --> I["Skicka OpenAPI-specifikation"]
     H --> I
 
     I --> J["Valfritt: Skicka med categories"]
