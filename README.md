@@ -627,32 +627,32 @@ flowchart TD
     B -->|Nej| C["npm start -- -m api"]
     B -->|Ja| D["npm start -- -m api --enableUrlValidation"]
 
-    C --> E["Server startad, lyssnar på port"]
+    C --> E["Server startad,<br> lyssnar på port"]
     D --> E
 
     E --> F{Vad vill du validera?}
 
-    F -->|Lokal OpenAPI-specifikation| G["POST /api/v1/validation/validatespec"]
-    F -->|URL till OpenAPI-specifikation| H["POST /api/v1/validation/url"]
+    F -->|Lokal OpenAPI-specifikation| G["POST<br>/api/v1/validation/validatespec"]
+    F -->|URL till OpenAPI-specifikation| H["POST<br>/api/v1/validation/url"]
 
     G --> I["Skicka OpenAPI-specifikation"]
     H --> I
 
-    I --> J["Valfritt: Skicka med categories"]
+    I --> J["Valfritt:<br> Skicka med categories"]
 
-    J --> K["Valfritt: Ange strict som true eller false"]
+    J --> K["Valfritt:<br> Ange strict som <br>true eller false"]
 
     K --> L["Ta emot valideringsresultat"]
 
-    L --> M{Vill du generera Excel-rapport?}
+    L --> M{Vill du generera<br> Excel-rapport?}
 
     M -->|Nej| N[Klart]
 
-    M -->|Ja| O["POST /api/v1/validation/generate-report"]
+    M -->|Ja| O["POST<br> /api/v1/validation/generate-report"]
 
-    O --> P["Skicka tidigare valideringsresultat"]
+    O --> P["Skicka tidigare<br> valideringsresultat"]
 
-    P --> Q["Excel-fil med regelutfall genereras"]
+    P --> Q["Excel-fil med<br> regelutfall genereras"]
 
     Q --> N
 ```
