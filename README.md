@@ -28,91 +28,93 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 <details>
 <summary><strong>Installationsguide</strong></summary>
 
-- [Installera via npm](#installera-via-npm)
+- [Installationsguide](#installationsguide)
+  - [Installera via npm](#installera-via-npm)
+    - [Installera globalt med NPM](#installera-globalt-med-npm)
 
-  - [Installera globalt med NPM](#installera-globalt-med-npm)
+    - [Installera lokalt som npm run script](#installera-lokalt-som-npm-run-script)
 
-  - [Installera lokalt som npm run script](#installera-lokalt-som-npm-run-script)
+  - [Installera via NPX](#installera-via-npx)
 
-- [Installera via NPX](#installera-via-npx)
+  - [Installera via Podman](#installera-via-podman)
 
-- [Installera via Podman](#installera-via-podman)
+  - [Installera via Docker](#installera-via-docker)
 
-- [Installera via Docker](#installera-via-docker)
+  - [Alternativ - kör från containern med podman/docker](#alternativ---kör-från-containern-med-podmandocker)
 
-- [Alternativ - kör från containern med podman/docker](#alternativ---kör-från-containern-med-podmandocker)
-
-- [Bygg från källkod](#bygg-från-källkod)
+  - [Bygg från källkod](#bygg-från-källkod)
 
 </details>
 
 <details>
 <summary><strong>Introduktion</strong></summary>
 
-- [Regelfiltrering](#regelfiltrering)
+- [Introduktion](#introduktion)
+  - [Regelfiltrering](#regelfiltrering)
 
-- [Strikt läge (OAS3 Validering)](#strikt-läge-oas3-validering)
+  - [Strikt läge (OAS3 Validering)](#strikt-läge-oas3-validering)
 
 </details>
 
 <details>
 <summary><strong>CLI-läge</strong></summary>
 
-- [Flaggor för CLI-läge](#flaggor-för-cli-läge)
+- [CLI-läge](#cli-läge)
+  - [Flaggor för CLI-läge](#flaggor-för-cli-läge)
 
-- [Loggning i CLI-läge](#loggning-i-cli-läge)
+  - [Loggning i CLI-läge](#loggning-i-cli-läge)
 
-- [Snabbstart - CLI-läge](#snabbstart---cli-läge)
+  - [Snabbstart - CLI-läge](#snabbstart---cli-läge)
 
 </details>
 
 <details>
 <summary><strong>API-läge</strong></summary>
 
-- [Flaggor för API-läge](#flaggor-för-api-läge)
+- [API-läge](#api-läge)
+  - [Flaggor för API-läge](#flaggor-för-api-läge)
 
-- [Endpoints för API-läge](#endpoints-för-api-läge)
+  - [Endpoints för API-läge](#endpoints-för-api-läge)
 
-- [Serverkonfiguration](#serverkonfiguration)
+  - [Serverkonfiguration](#serverkonfiguration)
 
-- [Exempel på requests](#exempel-på-requests)
+  - [Exempel på requests](#exempel-på-requests)
 
-- [Snabbstart - API-läge](#snabbstart---api-läge)
+  - [Snabbstart - API-läge](#snabbstart---api-läge)
 
 </details>
 
 <details>
 <summary><strong>Mer information</strong></summary>
 
-- [Versioner](#versioner)
+- [Mer information](#mer-information)
+  - [Versioner](#versioner)
 
-- [Riktlinjer och förklaringar](#riktlinjer-och-förklaringar)
+  - [Riktlinjer och förklaringar](#riktlinjer-och-förklaringar)
 
-- [Begränsningar](#begränsningar)
+  - [Begränsningar](#begränsningar)
 
-- [Exempel på regelutfall](#exempel-på-regelutfall)
+  - [Exempel på regelutfall](#exempel-på-regelutfall)
+    - [Förklaring av översikt för regelutfall](#förklaring-av-översikt-för-regelutfall)
 
-  - [Förklaring av översikt för regelutfall](#förklaring-av-översikt-för-regelutfall)
+    - [Förklaring av detaljering för regelutfall](#förklaring-av-detaljering-för-regelutfall)
 
-  - [Förklaring av detaljering för regelutfall](#förklaring-av-detaljering-för-regelutfall)
+  - [FAQ](#faq)
+    - [Hur skapar jag ett GitHub Personal Access Token (PAT)?](#hur-skapar-jag-ett-github-personal-access-token-pat)
 
-- [FAQ](#faq)
+    - [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container)
 
-  - [Hur skapar jag ett GitHub Personal Access Token (PAT)?](#hur-skapar-jag-ett-github-personal-access-token-pat)
+  - [Support](#support)
 
-  - [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container)
+  - [Bidra](#bidra)
 
-- [Support](#support)
+  - [Utveckling](#utveckling)
 
-- [Bidra](#bidra)
+  - [Licens](#licens)
 
-- [Utveckling](#utveckling)
+  - [Underhållare](#underhållare)
 
-- [Licens](#licens)
-
-- [Underhållare](#underhållare)
-
-- [Krediter och referenser](#krediter-och-referenser)
+  - [Krediter och referenser](#krediter-och-referenser)
 
 </details>
 
@@ -249,11 +251,11 @@ Verktyget går att köra lokalt i två olika lägen
 
 **Lägesövergripande kommandon**
 
-| Kommando       | Beskrivning | Typ | Standard | Obligatorisk |
-| -------------- | ----------- | --- | -------- | ------------ |
-| `--help`     | Visar tillgängliga kommandon, flaggor och användningsinformation för verktyget. |  Boolean | `false` | Nej |
-| `--version`  | Visar aktuell version av RAP-LP. | Boolean | `false` | Nej |
-| `-m, --mode` | Anger vilket körläge verktyget ska använda, om inget anges startas CLI-läge per automatik. | String | `CLI` | Nej |
+| Kommando     | Beskrivning                                                                                | Typ     | Standard | Obligatorisk |
+| ------------ | ------------------------------------------------------------------------------------------ | ------- | -------- | ------------ |
+| `--help`     | Visar tillgängliga kommandon, flaggor och användningsinformation för verktyget.            | Boolean | `false`  | Nej          |
+| `--version`  | Visar aktuell version av RAP-LP.                                                           | Boolean | `false`  | Nej          |
+| `-m, --mode` | Anger vilket körläge verktyget ska använda, om inget anges startas CLI-läge per automatik. | String  | `CLI`    | Nej          |
 
 ### Regelfiltrering
 
@@ -261,20 +263,20 @@ Oavsett vilket läge du kör går det att filtrera vilka regelkategorier du vill
 
 I dagsläget är följande regelkategorier från REST API-profilen tillgängliga:
 
-| Regelkod | Regelkategori |
-| -------- | ------------- |
-| DokRules | Dokumentation |
-| DotRules | Datum- och tidsformat |
-| ResRules | Resurser |
-| UfnRules | URL Format och namngivning |
-| MogRules | Mognad |
-| SakRules | Säkerhet |
-| AmeRules | API Message |
-| ArqRules | API Request |
-| FelRules | Felhantering |
-| VerRules | Versionshantering |
+| Regelkod | Regelkategori                            |
+| -------- | ---------------------------------------- |
+| DokRules | Dokumentation                            |
+| DotRules | Datum- och tidsformat                    |
+| ResRules | Resurser                                 |
+| UfnRules | URL Format och namngivning               |
+| MogRules | Mognad                                   |
+| SakRules | Säkerhet                                 |
+| AmeRules | API Message                              |
+| ArqRules | API Request                              |
+| FelRules | Felhantering                             |
+| VerRules | Versionshantering                        |
 | FnsRules | Filtrering, paginering och sökparametrar |
-| ForRules | Förutsättningar |
+| ForRules | Förutsättningar                          |
 
 Se information om hur du väljer regelkategorier vid validering under rubriken för antingen [CLI](#cli-läge) eller [API](#api-läge) läge.
 
@@ -307,23 +309,24 @@ Strict validation reported issues:
 
 ### Flaggor för CLI-läge
 
-| Flagga | Beskrivning | Typ | Standard | Obligatorisk |
-| ------ | ----------- | --- | -------- | ------------ |
-| `-f, --file` | Sökväg till OpenAPI-specifikation (YAML/JSON). | String  | – | Ja |
-| `-c, --categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `DokRules, DotRules, ResRules, UfnRules, MogRules, SakRules, AmeRules, ArqRules, FelRules, VerRules, FnsRules, ForRules`. | String  | – | Nej |
+| Flagga             | Beskrivning                                                                                                                                                                         | Typ    | Standard | Obligatorisk |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | -------- | ------------ |
+| `-f, --file`       | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                                      | String | –        | Ja           |
+| `-c, --categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `DokRules, DotRules, ResRules, UfnRules, MogRules, SakRules, AmeRules, ArqRules, FelRules, VerRules, FnsRules, ForRules`. | String | –        | Nej          |
 
 ### Loggning i CLI-läge
 
 RAP-LP erbjuder stöd för att logga fel, exportera diagnostiseringsinformation samt generera rapporter baserade på resultatet från en validering. Läs mer om de olika alternativen för CLI-läge nedan.
+
 <details>
 <summary><strong>Flaggor för loggning</strong></summary>
 
-| Flagga | Beskrivning | Typ | Standard | Obligatorisk |
-| ------ | ----------- | --- | -------- | ------------ |
-| `-l, --logError` | Sökväg till fil för felloggning från RAP-LP. Om inte angiven skrivs loggen till stdout. | string  | stdout (om ej satt) | Nej |
-| `-a, --append`| Append—utökar loggen i befintlig felloggningsfil (om `--logError` används). | boolean | `false` | Nej |
-| `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format. | string | – | Nej |
-| `--dex` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format. | string  | – | Nej |
+| Flagga                | Beskrivning                                                                             | Typ     | Standard            | Obligatorisk |
+| --------------------- | --------------------------------------------------------------------------------------- | ------- | ------------------- | ------------ |
+| `-l, --logError`      | Sökväg till fil för felloggning från RAP-LP. Om inte angiven skrivs loggen till stdout. | string  | stdout (om ej satt) | Nej          |
+| `-a, --append`        | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används).             | boolean | `false`             | Nej          |
+| `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format.              | string  | –                   | Nej          |
+| `--dex`               | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format.             | string  | –                   | Nej          |
 
 </details>
 <br>
@@ -396,14 +399,14 @@ raplp -f openapi.yaml --dex <PATH>
 }}%%
 flowchart TD
 
-    A["OpenAPI-specifikation (YAML/JSON)"]
+    A["OpenAPI-specifikation"]
 
     A --> B["Ange fil med -f"]
 
     B --> C{Välj regelkategorier?}
 
     C -->|Nej| D["Alla regler används"]
-    C -->|Ja| E["Ange -c DokRules,UfnRules,..."]
+    C -->|Ja| E["Ange -c <br> DokRules, UfnRules..."]
 
     D --> F{Använd strikt läge?}
     E --> F
@@ -435,20 +438,20 @@ Verktyget kan även köras som en lokal HTTP-server, via API (Applikation Progra
 
 ### Flaggor för API-läge
 
-| Flagga | Beskrivning | Typ | Standard | Obligatorisk |
-| ------ | ----------- | --- | -------- | -------- |
-| `--enableUrlValidation` | Aktiverar URL-validering i API-läge. | boolean | `false` | Nej |
-| `--urlValidationConfigFile` | Konfigurationsfil för URL-validering (fallback: `./urlValidationConfig.cjs`). | string | `./urlValidationConfig.cjs` | Nej |
+| Flagga                      | Beskrivning                                                                   | Typ     | Standard                    | Obligatorisk |
+| --------------------------- | ----------------------------------------------------------------------------- | ------- | --------------------------- | ------------ |
+| `--enableUrlValidation`     | Aktiverar URL-validering i API-läge.                                          | boolean | `false`                     | Nej          |
+| `--urlValidationConfigFile` | Konfigurationsfil för URL-validering (fallback: `./urlValidationConfig.cjs`). | string  | `./urlValidationConfig.cjs` | Nej          |
 
 ### Endpoints för API-läge
 
-| Endpoint                               | Beskrivning |
-| -------------------------------------- | ----------- |
-| `/api/v1/validation/rules`             | Används för att hämta lista med tillgängliga regelkategorier som stöds av verktyget. |
-| `/api/v1/validation/validatespec`      | Används för att validera en OpenAPI-specifikation mot REST API-profilens regler. |
-| `/api/v1/validation/url`               | Används för att validera en OpenAPI-specifikation från en angiven URL. |
-| `/api/v1/validation/generate-report`   | Används för att generera en rapport baserad på ett valideringsresultat. |
-| `/api/v1/api-info`                     | Används för att hämta information om API:et. |
+| Endpoint                             | Beskrivning                                                                          |
+| ------------------------------------ | ------------------------------------------------------------------------------------ |
+| `/api/v1/validation/rules`           | Används för att hämta lista med tillgängliga regelkategorier som stöds av verktyget. |
+| `/api/v1/validation/validatespec`    | Används för att validera en OpenAPI-specifikation mot REST API-profilens regler.     |
+| `/api/v1/validation/url`             | Används för att validera en OpenAPI-specifikation från en angiven URL.               |
+| `/api/v1/validation/generate-report` | Används för att generera en rapport baserad på ett valideringsresultat.              |
+| `/api/v1/api-info`                   | Används för att hämta information om API:et.                                         |
 
 ---
 
@@ -456,11 +459,15 @@ Verktyget kan även köras som en lokal HTTP-server, via API (Applikation Progra
 
 Vid körning i API-läge från en lokal server kan RAP-LP konfigureras med hjälp av miljövariabler.
 
-| Miljövariabel | Beskrivning |
-| ------------- | ----------- |
-| `MAX_CONCURRENT_VALIDATIONS` | Maximalt antal samtidiga valideringar som får bearbetas samtidigt.|
-| `MAX_CONCURRENT_REPORTS` | Maximalt antal samtidiga rapportgenereringar som får bearbetas samtidigt. |
-| `LOG_TARGET` | Anger var serverloggar ska skrivas, exempelvis `stdout` eller `stderr`.|
+| Miljövariabel                         | Beskrivning                                                                                                                                                                                                            |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| RAP_LP_JSON_BODY_LIMIT                | Maximalt tillåten storlek på JSON-requests                                                                                                                                                                             |
+| RAP_LP_MAX_CONCURRENT_REPORTS         | Maximalt antal samtidiga rapportgenereringar som får bearbetas samtidigt.                                                                                                                                              |
+| RAP_LP_MAX_CONCURRENT_VALIDATIONS     | Maximalt antal samtidiga valideringar som får bearbetas samtidigt.                                                                                                                                                     |
+| RAP_LP_PERF_LOGGING                   | Anger om prestandaloggning ska användas, kan sättas till `true` eller `false`.                                                                                                                                         |
+| RAP_LP_LOG_TARGET                     | Anger var serverloggar ska skrivas, exempelvis stdout eller stderr.                                                                                                                                                    |
+| RAP_LP_ALLOW_LOCALHOST_URL_VALIDATION | Anger om validering av specifikationer som lagras lokalt på localhost är tillåten. Inställningen används främst vid lokal utveckling och kan sättas till `true` eller `false`. Funktionen är inaktiverad som standard. |
+| RAP_LP_PORT                           | Portkonfiguration för vilken port servern ska starta på och lyssna på inkommande requests. Defaultport är 3000.                                                                                                        |
 
 ---
 
@@ -483,10 +490,7 @@ Accept: application/json
 ```json
 {
   "yaml": "<base64encoded file>",
-  "categories": [
-    "DokRules",
-    "UfnRules"
-  ],
+  "categories": ["DokRules", "UfnRules"],
   "strict": true
 }
 ```
@@ -497,10 +501,10 @@ Accept: application/json
 curl -X POST http://localhost:3000/api/v1/validation/validatespec \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
-  -d "{
-    \"yaml\": \"$(base64 -w 0 openapi.yaml)\",
+  -d "{ 
+    \"spec\": \"$(base64 -w 0 openapi.yaml)\",
     \"categories\": [\"DokRules\", \"UfnRules\"],
-    \"strict\": true
+    \"strict\": true 
   }"
 ```
 
@@ -523,10 +527,7 @@ Accept: application/json
 ```json
 {
   "url": "<URL_TO_YAML_FILE>",
-  "categories": [
-    "DokRules",
-    "UfnRules"
-  ],
+  "categories": ["DokRules", "UfnRules"],
   "strict": true
 }
 ```
@@ -561,10 +562,7 @@ Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ```json
 {
   "result": [],
-  "categories": [
-    "DokRules",
-    "UfnRules"
-  ]
+  "categories": ["DokRules", "UfnRules"]
 }
 ```
 
@@ -573,11 +571,9 @@ Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ```bash
 curl -X POST http://localhost:3000/api/v1/validation/generate-report \
   -H "Content-Type: application/json" \
+  -H "Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" \
   -o avstamningsfil.xlsx \
-  -d '{
-    "result": [],
-    "categories": ["DokRules", "UfnRules"]
-  }'
+  --data-binary @report-payload.json
 ```
 
 </details>
@@ -631,7 +627,7 @@ flowchart TD
     B -->|Nej| C["npm start -- -m api"]
     B -->|Ja| D["npm start -- -m api --enableUrlValidation"]
 
-    C --> E["Server startar på localhost:3000"]
+    C --> E["Server startad, lyssnar på port"]
     D --> E
 
     E --> F{Vad vill du validera?}
@@ -692,7 +688,7 @@ Alla versioner av verktyget hittar du här:
 
 ### Riktlinjer och förklaringar
 
-Vill du veta mer om de specifika reglerna som verktyget tillämpar, se avsnittet [GUIDELINES](GUIDELINES.md) för detaljer.
+Vill du veta mer om de specifika reglerna som verktyget tillämpar, se avsnittet [GUIDELINES](https://github.com/diggsweden/rest-api-profil-lint-processor/blob/main/GUIDELINES.md) för detaljer.
 
 ### Begränsningar
 
@@ -732,18 +728,17 @@ Tillsammans med diagnostiseringsinformationen följer en detaljerad beskrivning 
 - Område: Det aktuella området i REST API-profilen som regeln gäller för.
 - Sökväg: Sökvägen till felet, det vill säga den JSONPath som pekar på det fält som diagnostiken avser och som orsakade felet.
 - Omfattning: Det omfång som denna diagnostik gäller.
+- Länk till specifik designregel av kravet som verktyget tillämpar.
 
 **Exempel:**
 
 ![alt text](document/instructions/images/regelutfall-2.png)
 
-I exemplet ovan framgår det att kravet för regeln DOK.01 inte är godkänt och att det aktuella API:et inte uppfyller detta.<br>
-Kravet har bedömts ha allvarlighetsgraden Error eftersom API:et bryter mot ett SKALL/SKALL INTE-krav i REST API-profilen.<br>
-Det finns också information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
-
-Vidare framgår det att kravet för regeln DOK.03 inte är godkänt och att det aktuella API:et inte möter detta krav.<br>
-Kravet har bedömts ha allvarlighetsgraden Warning eftersom API:et bryter mot ett BÖR/BÖR INTE-krav i REST API-profilen.<br>
-Även här finns information om var i den aktuella OpenAPI-specifikationen problemet återfinns.
+I exemplet ovan framgår det att kravet för regeln med **id** DOK.06 inte är godkänt och att den aktuella API-specifikationen inte uppfyller detta.<br>
+**Kravet** har bedömts ha **allvarlighetsgraden** Warning eftersom API-specifikationen bryter mot ett BÖR/BÖR INTE-krav i REST API-profilens **område** för regler som gäller dokumentation.<br>
+Genom **sökvägen** kan vi se var i den aktuella OpenAPI-specifikationen problemet återfinns.<br>
+**Omfattningen** visar på vilken rad i din API-specifikation felet börjar och slutar.<br>
+Längst ned ser du även en hänvisning till specifik dokumentation om den **designregel** som verktyget tillämpat.
 
 ---
 
@@ -803,7 +798,7 @@ Se till att containern har rättigheter att skriva till den katalog som du mount
 
 ### Support
 
-Om du har frågor, funderingar, buggrapporter etc, vänligen kontakta [Digg - Agency for Digital Government](https://www.digg.se/)
+Om du har frågor, funderingar, buggrapporter etc. Vänligen kontakta [Digg - Agency for Digital Government](mailto:raplp-maintenance@digg.se).
 
 ### Bidra
 
@@ -816,14 +811,14 @@ Vänligen kontakta [Digg - Agency for Digital Government](https://www.digg.se/)
 
 ### Licens
 
-European Union Public Licence v. 1.2
-Se [LICENS](LICENSE) för mer detaljer.
+**Programkod**
+[European Union Public Licence v. 1.2](https://eupl.eu/1.2/en/)
 
-Copyright: [Contributor Covenant](https://www.contributor-covenant.org/)
+**Dokumentation, övrigt**
+[CCO 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
 
-Licens: [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
 
-### Underhållare
+### Underhållsansvariga
 
 [Digg - Agency for Digital Government](https://github.com/diggsweden)
 
