@@ -122,8 +122,20 @@ export class ExcelReportProcessor {
 
   public generateReportDocumentBuffer(result: RapLPDiagnostic): Buffer {
     try {
-      this.generateReportDocument(result);
-      let reportDocumentBuffer = this.zip.toBuffer();
+      const resultMap = this.reportToMap(result);
+      const workbook = this.loadWorkBook();
+      const sheetPath = this.getSheetPathFromName(workbook, this.config.dataSheetName);
+      const sharedStrings = this.loadSharedStrings();
+
+      if (!sharedStrings || !sheetPath) {
+        throw new Error('Could not load required components from template.');
+      }
+
+      const optionIndexMap = this.indexMapOf(['-', 'OK', 'NOK', 'N/A', 'Pågående'], sharedStrings);
+      this.updateResultColumn(sheetPath, resultMap, sharedStrings, optionIndexMap);
+      this.enableFullCalcOnLoad(workbook);
+
+      const reportDocumentBuffer = this.zip.toBuffer();
 
       if (!reportDocumentBuffer || reportDocumentBuffer.length === 0) {
         throw new Error('Generated buffer is empty or invalid.');
