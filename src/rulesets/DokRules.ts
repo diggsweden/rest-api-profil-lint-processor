@@ -598,7 +598,6 @@ export class Dok03Info extends Dok03Base {
       },
     },
   ];
-  severity = DiagnosticSeverity.Warning;
 }
 
 export class Dok03ContactName extends Dok03Base {
@@ -615,7 +614,6 @@ export class Dok03ContactName extends Dok03Base {
       function: truthy,
     },
   ];
-  severity = DiagnosticSeverity.Warning;
 }
 
 export class Dok03ContactEmail extends Dok03Base {
@@ -632,7 +630,6 @@ export class Dok03ContactEmail extends Dok03Base {
       function: truthy,
     },
   ];
-  severity = DiagnosticSeverity.Warning;
 }
 
 export class Dok03ContactUrl extends Dok03Base {
@@ -649,7 +646,6 @@ export class Dok03ContactUrl extends Dok03Base {
       function: truthy,
     },
   ];
-  severity = DiagnosticSeverity.Warning;
 }
 
 export class Dok03Contact extends Dok03Base {
