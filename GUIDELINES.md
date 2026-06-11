@@ -345,7 +345,7 @@ $
 
 **Förklaring:**
 
-Regeln förutsätter att API-specifikationen dokumenteras med den senaste major versionen av OpenAPI. Detta för att få full täckning av de implementerade reglerna. Regeln förutsätter vidare att man använder sig av fältet openapi för att beskriva v
+Regeln förutsätter att API-specifikationen dokumenteras med den senaste major versionen av OpenAPI. Detta för att få full täckning av de implementerade reglerna. Regeln förutsätter vidare att man använder sig av fältet openapi för att beskriva värdet.
 
 **Exempel:**
 
