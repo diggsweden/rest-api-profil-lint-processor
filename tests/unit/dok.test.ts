@@ -1091,7 +1091,7 @@ testRule('Dok03Info', [
         message:
           'Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter.' +
           '[ info objektet bör ha title, version , description, termsOfService, contact , license ]',
-        severity: DiagnosticSeverity.Warning,
+        severity: DiagnosticSeverity.Error,
       },
     ],
   },
