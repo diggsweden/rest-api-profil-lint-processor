@@ -55,13 +55,14 @@ if (err instanceof SpecParseError) {
 
     const isRuleEngineCase = err.stage === 'rule-engine';  
     const isStrictCase = err.stage === 'strict';
+    const isSecurityCase = err.stage === 'security';
 
     const problemDetails = new ProblemDetailsDTO({
-      type: isRuleEngineCase 
+      type: isRuleEngineCase || isSecurityCase
         ? 'https://raplp.digg.se/problems/spec-validation'
         : 'https://raplp.digg.se/problems/spec-parse-error',
 
-      title: isRuleEngineCase || isStrictCase
+      title: isRuleEngineCase || isStrictCase || isSecurityCase
         ? 'Specifikationen kunde inte utvärderas fullt ut'
         : 'Okänt fel vid parsning av API-specifikationen',
       status: ERROR_TYPE.BAD_REQUEST,
@@ -71,7 +72,7 @@ if (err instanceof SpecParseError) {
         ? { name: err.cause.name, message: err.cause.message }
         : undefined,
       /**Extra fields**/ 
-      kind: isRuleEngineCase || isStrictCase ? 'spec-validation' : 'spec-parse',
+      kind: isRuleEngineCase || isStrictCase || isSecurityCase ? 'spec-validation' : 'spec-parse',
       line: err.line,
       column: err.column,
       format: err.source, // For now used with backward compability

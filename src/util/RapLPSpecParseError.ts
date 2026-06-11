@@ -7,7 +7,7 @@
  * Captured centrally in pipeline (CLI/API), and delivers structured data. 
  */
 export type SpecParseErrorSource = 'yaml' | 'json' | 'xml' | 'unknown';
-export type SpecParseErrorStage = 'sanity' | 'strict' | 'rule-engine';
+export type SpecParseErrorStage = 'sanity' | 'strict' | 'rule-engine' | 'security';
 
 export class SpecParseError extends Error {
     public line?: number;

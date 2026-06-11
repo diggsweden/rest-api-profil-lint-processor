@@ -21,6 +21,14 @@ import * as IssueHelper from './RapLPIssueHelpers.js';
 import { SpecParseError, SpecParseErrorSource} from './RapLPSpecParseError.js';
 import { Issue } from './Issue.js';
 
+/**
+ * 
+ */
+type ExternalRefFinding = {
+  path: string;
+  ref: string;
+};
+
 
 /**
  * Possible input types for specifications
@@ -186,6 +194,9 @@ export async function parseApiSpecInput(input: SpecInput,
   }
   //Make sure parsed specification is OpenAPI like
   ensureIsOpenApiLike(parsedSpec,target);
+  //Make sure parsed specification is a secure OpenAPI like
+  ensureIsSecureOpenApiLike(parsedSpec,target);
+  
   let issues: Issue[] | undefined;
   let prettyLines: string[] = [];
   //If here - we have a parsed openapi object
@@ -267,6 +278,28 @@ function stripLeadingCommentsAndWhitespace(raw: string): string {
     break;
   }
   return lines.slice(i).join('\n');
+}
+function ensureIsSecureOpenApiLike(parsed: any, target: any) {
+
+  const violations: string[] = [];
+  //Look for external $refs
+  if (findExternalRefs(parsed).length > 0) {
+    violations.push('Externa $ref-referenser är ej tillåtna.');
+  }
+  /*const details = externalRefs
+    .map(ref => `${ref.path}: ${ref.ref}`)
+    .join('\n');*/
+  if (violations.length > 0) {
+    throw new SpecParseError([
+        'API-specifikationen innehåller konstruktioner som inte är tillåtna enligt säkerhetsreglerna:',
+        ...violations.map(v => ` * ${v}`),
+      ].join('\n'),{
+        source: target,
+        stage: 'security',
+      },
+    );
+  }      
+  // Add more security controls here if needed.
 }
 /**
  * Helper function ( High level)
@@ -469,5 +502,35 @@ function normalizeSpecRaw(raw: string): string {
   // 4) Remove leading blank lines (one or many)
   raw = raw.replace(/^\n+/, '');
   return raw;
+}
+function findExternalRefs(parsed: any): ExternalRefFinding[] {
+  const findings: ExternalRefFinding[] = [];
+
+  function walk(node: any, path: string) {
+    if (!node || typeof node !== 'object') return;
+
+    if (typeof node.$ref === 'string' && isExternalRef(node.$ref)) {
+      findings.push({
+        path: `${path}.$ref`,
+        ref: node.$ref,
+      });
+    }
+    for (const [key, value] of Object.entries(node)) {
+      walk(value, path ? `${path}.${escapePathPart(key)}` : escapePathPart(key));
+    }
+  }
+  walk(parsed, '');
+  return findings;
+}
+function isExternalRef(ref: string): boolean {
+  const normalized = ref.trim();
+
+  // Endast interna JSON Pointer-referenser tillåts
+  return !normalized.startsWith('#/');
+}
+function escapePathPart(part: string): string {
+  return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(part)
+    ? part
+    : `[${JSON.stringify(part)}]`;
 }
 
