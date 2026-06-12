@@ -54,7 +54,7 @@ class RapLPCustomSpectral {
 
             const customResult: RapLPCustomSpectralDiagnostic = {
               id: ruleId,
-              område: ruleClass.customProperties.område,
+              area: ruleClass.customProperties.område,
               helpUrl: ruleId ? buildRuleHelpUrl(ruleId) : undefined,
               ...customProperties, // For more copy
               ...this.mapResultToCustom(result),
@@ -69,33 +69,33 @@ class RapLPCustomSpectral {
   }
   private mapResultToCustom(result: ISpectralDiagnostic): RapLPCustomSpectralDiagnostic {
     // Map properties from result ISpectralDiagnostic to CustomSpectralDiagnostic
-    const { message, code, severity, path, source, range, ...rest } = result;
+    const { message, code, severity: spectralSeverity, path, source, range, ...rest } = result;
 
     // Map severity to corresponding string value for allvarlighetsgrad
-    let allvarlighetsgrad: string;
-    switch (severity) {
+    let severity: string;
+    switch (spectralSeverity) {
       case 0:
-        allvarlighetsgrad = 'ERROR';
+        severity = 'ERROR';
         break;
       case 1:
-        allvarlighetsgrad = 'WARNING';
+        severity = 'WARNING';
         break;
       case 2:
-        allvarlighetsgrad = 'INFORMATION';
+        severity = 'INFORMATION';
         break;
       case 3:
-        allvarlighetsgrad = 'HINT';
+        severity = 'HINT';
         break;
       default:
-        allvarlighetsgrad = ''; // Handle other cases if needed
+        severity = ''; // Handle other cases if needed
     }
     return {
       ...rest,
 
-      krav: message,
-      allvarlighetsgrad,
-      sökväg: path,
-      omfattning: range,
+      requirement: message,
+      severity,
+      path: path,
+      range: range,
     };
   }
 }

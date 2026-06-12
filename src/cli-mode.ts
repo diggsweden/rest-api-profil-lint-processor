@@ -173,10 +173,10 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           }
         };
         const formatLintingResult = (result: any) => {
-          return `\nallvarlighetsgrad: ${colorizeSeverity(result.allvarlighetsgrad)} \nid: ${result.id} \nkrav: ${
-            result.krav
-          } \nområde: ${result.område} \nsökväg:[${result.sökväg}] \nomfattning:${JSON.stringify(
-            result.omfattning,
+          return `\nallvarlighetsgrad: ${colorizeSeverity(result.severity)} \nid: ${result.id} \nkrav: ${
+            result.requirement
+          } \nområde: ${result.area} \nsökväg:[${result.path}] \nomfattning:${JSON.stringify(
+            result.range,
             null,
             2,
           )}\ndesignregel: ${result.helpUrl} `;
@@ -211,7 +211,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             customDiagnostic.diagnosticInformation.executedUniqueRules
               .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
-                console.log(chalk.bgGreen('OK') + '\t' + item.område + ' / ' + item.id);
+                console.log(chalk.bgGreen('OK') + '\t' + item.area + ' / ' + item.id);
               });
           }
           if (
@@ -223,7 +223,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             customDiagnostic.diagnosticInformation.executedUniqueRulesWithError
               .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
-                console.log(chalk.bgRed('EJ OK') + '\t' + item.område + ' / ' + item.id);
+                console.log(chalk.bgRed('EJ OK') + '\t' + item.area + ' / ' + item.id);
               });
           }
           if (
@@ -235,7 +235,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             customDiagnostic.diagnosticInformation.notApplicableRules
               .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
-                console.log(chalk.bgGrey('N/A') + '\t' + item.område + '/' + item.id);
+                console.log(chalk.bgGrey('N/A') + '\t' + item.area + '/' + item.id);
               });
           }
         }
