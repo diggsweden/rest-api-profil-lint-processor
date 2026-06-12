@@ -244,7 +244,7 @@ export const registerUrlValidationFallbackRoutes = (app: Express) => {
     next(
       new RapLPBaseApiError(
         'Conflict',
-        'This feature is currenctly dissabled due to server configuration. Contact your administrator if you think this is a misstake.',
+        'This feature is currently disabled due to server configuration. Contact your administrator if you think this is a mistake.',
         ERROR_TYPE.CONFLICT,
       ),
     );
