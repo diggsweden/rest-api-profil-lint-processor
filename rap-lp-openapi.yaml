@@ -157,10 +157,10 @@ paths:
                     payload:
                       result: []
                       report:
-                        - Notering: Godkanda regler - RAP-LP
-                          regler:
+                        - note: Godkanda rules - RAP-LP
+                          rules:
                             - id: DOK.03
-                              område: Dokumentation
+                              area: Dokumentation
                               status: OK
         '400':
           description: The specification was invalid or violated one or more rules.
@@ -199,7 +199,7 @@ paths:
                     type: https://raplp.digg.se/problems/rule-validation
                     title: Rule validation failed
                     status: 400
-                    detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
+                    detail: API-specifikationen bryter mot en eller flera rules enligt den svenska REST API-profilen.
                     instance: /api/v1/validation/validatespec
                     kind: rule-validation
                     stage: rule-engine
@@ -207,16 +207,16 @@ paths:
                     payload:
                       result:
                         - id: AME.04
-                          område: API Message
-                          krav: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
-                          allvarlighetsgrad: WARNING
-                          sökväg:
+                          area: API Message
+                          requirement: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
+                          area: WARNING
+                          path:
                             - components
                             - schemas
                             - Example
                             - properties
                             - problemField
-                          omfattning:
+                          range:
                             start:
                               line: 10
                               character: 8
@@ -224,10 +224,10 @@ paths:
                               line: 10
                               character: 20
                       report:
-                        - Notering: Ej godkanda regler - RAP-LP
-                          regler:
+                        - note: Ej godkanda rules - RAP-LP
+                          rules:
                             - id: AME.04
-                              område: API Message
+                              area: API Message
                               status: EJ OK
         '500':
           description: Internal server error.
@@ -288,10 +288,10 @@ paths:
                     payload:
                       result: []
                       report:
-                        - Notering: Godkanda regler - RAP-LP
-                          regler:
+                        - note: Godkanda rules - RAP-LP
+                          rules:
                             - id: DOK.03
-                              område: Dokumentation
+                              area: Dokumentation
                               status: OK
         '400':
           description: Invalid request, invalid URL, invalid remote response, strict validation error or rule validation error.
@@ -365,7 +365,7 @@ paths:
                     type: https://raplp.digg.se/problems/rule-validation
                     title: Rule validation failed
                     status: 400
-                    detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
+                    detail: API-specifikationen bryter mot en eller flera rules enligt den svenska REST API-profilen.
                     instance: /api/v1/validation/url
                     kind: rule-validation
                     stage: rule-engine
@@ -373,10 +373,10 @@ paths:
                     payload:
                       result:
                         - id: AME.04
-                          område: API Message
-                          krav: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
-                          allvarlighetsgrad: WARNING
-                          sökväg:
+                          area: API Message
+                          requirement: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
+                          severity: WARNING
+                          path:
                             - components
                             - schemas
                             - Example
@@ -390,10 +390,10 @@ paths:
                               line: 10
                               character: 20
                       report:
-                        - Notering: Ej godkanda regler - RAP-LP
-                          regler:
+                        - note: Ej godkanda rules - RAP-LP
+                          rules:
                             - id: AME.04
-                              område: API Message
+                              area: API Message
                               status: EJ OK
         '409':
           description: URL validation is disabled by server configuration.
@@ -441,10 +441,10 @@ paths:
               precomputedReport:
                 value:
                   report:
-                    - Notering: Godkanda regler - RAP-LP
-                      regler:
+                    - note: Godkanda rules - RAP-LP
+                      rules:
                         - id: UFN.05
-                          område: URL Format och namngivning
+                          area: URL Format och namngivning
                           status: OK
       responses:
         '200':
@@ -720,13 +720,13 @@ components:
         id:
           type: string
           nullable: true
-        område:
+        area:
           type: string
           nullable: true
-        krav:
+        requirement:
           type: string
           nullable: true
-        allvarlighetsgrad:
+        severity:
           type: string
           nullable: true
           enum:
@@ -734,7 +734,7 @@ components:
             - INFORMATION
             - WARNING
             - ERROR
-        sökväg:
+        path:
           type: array
           items:
             type: string
@@ -802,12 +802,12 @@ components:
         id:
           type: string
           example: UFN.05
-        område:
+        area:
           type: string
           example: URL Format och namngivning
       required:
         - id
-        - område
+        - area
     PopulatedDiagnosticRuleInfo:
       type: object
       additionalProperties: false
@@ -815,35 +815,35 @@ components:
         id:
           type: string
           example: UFN.05
-        område:
+        area:
           type: string
           example: URL Format och namngivning
         helpUrl:
           type: string
           format: uri
-        krav:
+        requirement:
           type: string
         status:
           type: string
           example: OK
       required:
         - id
-        - område
+        - area
         - status
     DiagnosticReport:
       type: object
       additionalProperties: false
       properties:
-        Notering:
+        note:
           type: string
-          example: Godkanda regler - RAP-LP
-        regler:
+          example: Godkanda rules - RAP-LP
+        rules:
           type: array
           items:
             $ref: '#/components/schemas/PopulatedDiagnosticRuleInfo'
       required:
-        - Notering
-        - regler
+        - note
+        - rules
     GenerateReportRequest:
       type: object
       additionalProperties: false
