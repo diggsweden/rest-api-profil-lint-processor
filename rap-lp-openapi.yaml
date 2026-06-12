@@ -15,8 +15,8 @@ info:
 
     This specification describes the linter API itself.
 
-    Begransningar och problem: URL-baserad validering kan vara avstangd via serverkonfiguration,
-    och generate-report returnerar en binar Excel-fil medan ovriga resurser returnerar JSON.
+    Begränsningar och problem: URL-baserad validering kan vara avstängd via serverkonfiguration,
+    och generate-report returnerar en binär Excel-fil medan övriga resurser returnerar JSON.
   contact:
     name: Digg
     url: https://github.com/diggsweden/rest-api-profil-lint-processor/
@@ -157,7 +157,7 @@ paths:
                     payload:
                       result: []
                       report:
-                        - note: Godkanda rules - RAP-LP
+                        - note: Godkända regler - RAP-LP
                           rules:
                             - id: DOK.03
                               area: Dokumentation
@@ -199,7 +199,7 @@ paths:
                     type: https://raplp.digg.se/problems/rule-validation
                     title: Rule validation failed
                     status: 400
-                    detail: API-specifikationen bryter mot en eller flera rules enligt den svenska REST API-profilen.
+                    detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
                     instance: /api/v1/validation/validatespec
                     kind: rule-validation
                     stage: rule-engine
@@ -208,8 +208,8 @@ paths:
                       result:
                         - id: AME.04
                           area: API Message
-                          requirement: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
-                          area: WARNING
+                          requirement: För faltnamn i request och response body BÖR camelCase eller snake_case notation anvandas.
+                          severity: WARNING
                           path:
                             - components
                             - schemas
@@ -224,7 +224,7 @@ paths:
                               line: 10
                               character: 20
                       report:
-                        - note: Ej godkanda rules - RAP-LP
+                        - note: Ej godkända regler - RAP-LP
                           rules:
                             - id: AME.04
                               area: API Message
@@ -288,7 +288,7 @@ paths:
                     payload:
                       result: []
                       report:
-                        - note: Godkanda rules - RAP-LP
+                        - note: Godkända regler - RAP-LP
                           rules:
                             - id: DOK.03
                               area: Dokumentation
@@ -365,7 +365,7 @@ paths:
                     type: https://raplp.digg.se/problems/rule-validation
                     title: Rule validation failed
                     status: 400
-                    detail: API-specifikationen bryter mot en eller flera rules enligt den svenska REST API-profilen.
+                    detail: API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.
                     instance: /api/v1/validation/url
                     kind: rule-validation
                     stage: rule-engine
@@ -374,7 +374,7 @@ paths:
                       result:
                         - id: AME.04
                           area: API Message
-                          requirement: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
+                          requirement: For faltnamn i request och response body BÖR camelCase eller snake_case notation anvandas.
                           severity: WARNING
                           path:
                             - components
@@ -390,7 +390,7 @@ paths:
                               line: 10
                               character: 20
                       report:
-                        - note: Ej godkanda rules - RAP-LP
+                        - note: Ej godkända regler - RAP-LP
                           rules:
                             - id: AME.04
                               area: API Message
@@ -441,7 +441,7 @@ paths:
               precomputedReport:
                 value:
                   report:
-                    - note: Godkanda rules - RAP-LP
+                    - note: Godkända regler - RAP-LP
                       rules:
                         - id: UFN.05
                           area: URL Format och namngivning
@@ -836,7 +836,7 @@ components:
       properties:
         note:
           type: string
-          example: Godkanda rules - RAP-LP
+          example: Godkända regler - RAP-LP
         rules:
           type: array
           items:
