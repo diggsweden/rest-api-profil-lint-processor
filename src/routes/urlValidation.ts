@@ -198,7 +198,7 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
       );
 
       const hasRuleViolations = result.result.some(
-        d =>d.allvarlighetsgrad === 'ERROR' || d.allvarlighetsgrad === 'WARNING'
+        d =>d.severity === 'ERROR' || d.severity === 'WARNING'
       );
       if (hasRuleViolations) {
          //Rulevalidation occured in RapLP-ruleengine
