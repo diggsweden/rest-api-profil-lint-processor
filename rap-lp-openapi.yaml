@@ -96,11 +96,11 @@ paths:
               examples:
                 default:
                   value:
-                    apiName: RAP-LP
-                    apiVersion: 1.0.11
-                    apiReleased: '2026-03-26'
-                    apiDocumentation: https://www.dataportal.se/rest-api-profil
-                    apiStatus: development
+                    apiName: RAP-LP API
+                    apiVersion: 1.0.0
+                    apiReleased: '2026-06-12'
+                    apiDocumentation: https://raplp.digg.se/api/v1/rap-lp-openapi.yaml
+                    apiStatus: active
         '500':
           description: Internal server error.
           content:
@@ -562,22 +562,22 @@ components:
       properties:
         apiName:
           type: string
-          example: RAP-LP
+          example: RAP-LP API
         apiVersion:
           type: string
           description: Semantic version of this API.
-          example: 1.0.11
+          example: 1.0.0
         apiReleased:
           type: string
           format: date
-          example: '2026-03-26'
+          example: '2026-06-12'
         apiDocumentation:
           type: string
           format: uri
-          example: https://www.dataportal.se/rest-api-profil
+          example: https://raplp.digg.se/api/v1/rap-lp-openapi.yaml
         apiStatus:
           type: string
-          example: development
+          example: active
       required:
         - apiName
         - apiVersion

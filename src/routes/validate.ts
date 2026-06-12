@@ -27,6 +27,10 @@ import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js'
 import { measure } from '../util/performance.js';
 import crypto from 'node:crypto';
 
+const pkg = JSON.parse(
+  fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf8'),
+);
+
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -42,7 +46,7 @@ export const registerValidationRoutes = (app: Express) => {
 
   app.get('/api/v1/api-info', async (req, res, next) => {
     res.send(
-      new ApiInfo('RAP-LP', '1.0.11', new Date().toDateString(), 'http://raplp.digg.se/RAP-LP-docs', 'development'),
+      new ApiInfo('RAP-LP API', pkg.apiVersion, '2026-06-16', 'https://raplp.digg.se/api/v1/rap-lp-openapi.yaml', 'active'),
     );
   });
   app.post('/api/v1/validation/generate-report',
