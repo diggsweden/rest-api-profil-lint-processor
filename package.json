@@ -37,7 +37,7 @@
     "@types/adm-zip": "0.5.8",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
-    "@types/node": "24.13.1",
+    "@types/node": "24.13.2",
     "@types/supertest": "6.0.3",
     "jest": "30.4.2",
     "standard-version": "9.5.0",
