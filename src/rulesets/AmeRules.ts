@@ -68,15 +68,34 @@ export class Ame04 extends BaseRuleset {
     område: 'API Message',
     id: 'AME.04',
   };
+  
   description = 'För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.';
   message = 'För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.';
   given = '$.components.schemas..properties[*]~';
   then = [
     {
-      function: pattern,
-      functionOptions: {
-        match: '^(?:[a-z]+(?:_[a-z]+)*|[a-z]+(?:[A-Z][a-z]*)*)$',
-      },
+      function: (targetVal: string, _opts: unknown, paths: string[]) => {
+
+        const reservedFieldNames = ['_links', '_embedded'];
+        const isReservedFieldName = (value: string): boolean =>
+        reservedFieldNames.includes(value);        
+        if (isReservedFieldName(targetVal)) {
+          return [];
+        }
+        const valid =
+          /^(?:[a-z]+(?:_[a-z]+)*|[a-z]+(?:[A-Z][a-z]*)*)$/.test(targetVal);
+
+        if (!valid) {
+          return [
+            {
+              message: this.message,
+              severity: this.severity,
+              paths,
+            },
+          ];
+        }
+        return [];
+      },      
     },
     {
       function: (targetVal: string, _opts: string, paths: string[]) => {
@@ -191,6 +210,7 @@ export class Ame02 extends BaseRuleset {
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
+  private 
 }
 export class Ame05 extends BaseRuleset {
   static customProperties: CustomProperties = {
