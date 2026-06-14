@@ -33,7 +33,7 @@
     "test": "test"
   },
   "devDependencies": {
-    "@stoplight/spectral-formats": "1.8.2",
+    "@stoplight/spectral-formats": "1.8.3",
     "@types/adm-zip": "0.5.8",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
