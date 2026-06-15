@@ -208,7 +208,7 @@ paths:
                       result:
                         - id: AME.04
                           area: API Message
-                          requirement: För faltnamn i request och response body BÖR camelCase eller snake_case notation anvandas.
+                          requirement: För faltnamn i request och response body BÖR camelCase eller snake_case notation användas.
                           severity: WARNING
                           path:
                             - components
@@ -374,7 +374,7 @@ paths:
                       result:
                         - id: AME.04
                           area: API Message
-                          requirement: For faltnamn i request och response body BÖR camelCase eller snake_case notation anvandas.
+                          requirement: För faltnamn i request och response body BÖR camelCase eller snake_case notation användas.
                           severity: WARNING
                           path:
                             - components
@@ -382,7 +382,7 @@ paths:
                             - Example
                             - properties
                             - problemField
-                          omfattning:
+                          Range:
                             start:
                               line: 10
                               character: 8
@@ -459,7 +459,7 @@ paths:
               description: Excel media type.
               schema:
                 type: string
-                example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet # Yes, we violate rule AME.01, but ok for the purpose ;)
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
               schema:
@@ -739,7 +739,7 @@ components:
           items:
             type: string
           nullable: true
-        omfattning:
+        range:
           $ref: '#/components/schemas/Range'
         tags:
           type: array
