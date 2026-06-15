@@ -208,7 +208,7 @@ paths:
                       result:
                         - id: AME.04
                           area: API Message
-                          requirement: För faltnamn i request och response body BÖR camelCase eller snake_case notation användas.
+                          requirement: För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.
                           severity: WARNING
                           path:
                             - components
@@ -374,7 +374,7 @@ paths:
                       result:
                         - id: AME.04
                           area: API Message
-                          requirement: För faltnamn i request och response body BÖR camelCase eller snake_case notation användas.
+                          requirement: För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.
                           severity: WARNING
                           path:
                             - components
@@ -382,7 +382,7 @@ paths:
                             - Example
                             - properties
                             - problemField
-                          Range:
+                          range:
                             start:
                               line: 10
                               character: 8
