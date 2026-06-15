@@ -31,10 +31,6 @@ externalDocs:
 servers:
   - url: https://raplp.digg.se/api/v1/
     description: Production
-  - url: https://raplp.sandbox.digg.se/api/v1/
-    description: Sandbox
-  - url: http://localhost:3000/api/v1/
-    description: Local development
 tags:
   - name: validation
     description: Operations for validating OpenAPI specifications and generating reports.
@@ -563,6 +559,19 @@ components:
         apiName:
           type: string
           example: RAP-LP API
+        _links:
+          type: object
+          properties:
+            self:
+              type: object
+              properties:
+                href:
+                  type: string
+            rules:
+              type: object
+              properties:
+                href:
+                  type: string
         apiVersion:
           type: string
           description: Semantic version of this API.
