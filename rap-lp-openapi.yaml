@@ -20,7 +20,7 @@ info:
   contact:
     name: Digg
     url: https://github.com/diggsweden/rest-api-profil-lint-processor/
-    email: raplp-maintenance@digg.se
+    email: apiteam@digg.se
   license:
     name: EUPL-1.2
     url: https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
@@ -208,7 +208,7 @@ paths:
                       result:
                         - id: AME.04
                           area: API Message
-                          requirement: För faltnamn i request och response body BÖR camelCase eller snake_case notation anvandas.
+                          requirement: För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.
                           severity: WARNING
                           path:
                             - components
@@ -374,7 +374,7 @@ paths:
                       result:
                         - id: AME.04
                           area: API Message
-                          requirement: For faltnamn i request och response body BÖR camelCase eller snake_case notation anvandas.
+                          requirement: För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.
                           severity: WARNING
                           path:
                             - components
@@ -382,7 +382,7 @@ paths:
                             - Example
                             - properties
                             - problemField
-                          omfattning:
+                          range:
                             start:
                               line: 10
                               character: 8
@@ -459,9 +459,9 @@ paths:
               description: Excel media type.
               schema:
                 type: string
-                example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet 
+                example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet # Yes, we violate rule AME.01, but ok for the purpose ;)
           content:
-            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: # Yes, we violate rule AME.01, but ok for the purpose ;)
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
               schema:
                 type: string
                 format: binary
@@ -563,19 +563,6 @@ components:
         apiName:
           type: string
           example: RAP-LP API
-        _links:
-          type: object
-          properties:
-            self:
-              type: object
-              properties:
-                href:
-                  type: string
-            rules:
-              type: object
-              properties:
-                href:
-                  type: string   
         apiVersion:
           type: string
           description: Semantic version of this API.
@@ -752,7 +739,7 @@ components:
           items:
             type: string
           nullable: true
-        omfattning:
+        range:
           $ref: '#/components/schemas/Range'
         tags:
           type: array
