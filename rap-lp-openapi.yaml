@@ -571,7 +571,7 @@ components:
               type: object
               properties:
                 href:
-                  type: string   
+                  type: string
         apiVersion:
           type: string
           description: Semantic version of this API.
@@ -863,4 +863,3 @@ components:
             $ref: '#/components/schemas/DiagnosticReport'
       required:
         - report
-        
