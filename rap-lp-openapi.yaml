@@ -31,10 +31,6 @@ externalDocs:
 servers:
   - url: https://raplp.digg.se/api/v1/
     description: Production
-  - url: https://raplp.sandbox.digg.se/api/v1/
-    description: Sandbox
-  - url: https://{environment}.digg.se/api/{version}
-    description: Staging
 tags:
   - name: validation
     description: Operations for validating OpenAPI specifications and generating reports.
@@ -867,3 +863,4 @@ components:
             $ref: '#/components/schemas/DiagnosticReport'
       required:
         - report
+        
