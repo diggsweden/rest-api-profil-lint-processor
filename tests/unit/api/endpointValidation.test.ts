@@ -76,7 +76,7 @@ jest.mock('../../../src/routes/validate.js', () => ({
             kind: 'rule-validation',
             payload: {
               result: [{ id: 'FOR.02', area: 'Förutsättningar', severity: 'ERROR' }],
-              report: [{"Notering":"Ej Godkända regler - RAP-LP","regler":[{"id":"FOR.02","area":"Förutsättningar","status":"EJ OK"}]}],
+              report: [{"note":"Ej Godkända regler - RAP-LP","rules":[{"id":"FOR.02","area":"Förutsättningar","status":"EJ OK"}]}],
             },
           });
         }
@@ -85,7 +85,7 @@ jest.mock('../../../src/routes/validate.js', () => ({
         return res.status(200).json({
           ok: true,
           payload: {
-              report: [{"Notering":"Godkända regler - RAP-LP","regler":[{"id":"FOR.02","area":"Förutsättningar","status":"OK"}]}],
+              report: [{"note":"Godkända regler - RAP-LP","rules":[{"id":"FOR.02","area":"Förutsättningar","status":"OK"}]}],
           },
         });
       }
