@@ -33,7 +33,7 @@ export class Ufn01 extends BaseRuleset {
       function: pattern,
       functionOptions: {
         match:
-          '^(?<protocol>https?:\\/\\/)(?<host>[^\\/]+)\\/(?<api>[^\\/]+)\\/(?<version>v[0-9]+|\\{version\\})(?<end>\\/$|$)',
+          '^(?<protocol>^[^/]*://)+(?<host>(?<=://)[^/]+/)+(?<api>(?<=/)[^/]+?/)(?<version>v[0-9]+|\\{version\\})(?<end>\\/$|$)',
       },
     },
     {
