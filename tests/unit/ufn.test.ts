@@ -544,6 +544,20 @@ testRule('Ufn01', [
     errors: [],
   },
   {
+  name: 'giltigt testfall - server variables environment och version',
+  document: {
+    openapi: '3.1.0',
+    info: { version: '1.0' },
+    paths: { '/exampletest': {} },
+    servers: [
+      {
+        url: 'https://{environment}.authority.se:443/demand/{version}',
+      },
+    ],
+  },
+  errors: [],
+  },
+  {
     name: 'ogiltigt testfall - fel format på protokoll',
     document: {
       openapi: '3.1.0',
@@ -655,4 +669,24 @@ testRule('Ufn01', [
       },
     ],
   },
+  {
+    name: 'ogiltigt testfall - fel server variable för version',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: { '/exampletest232323': {} },
+      servers: [
+        {
+          url: 'https://{environment}.authority.se:443/demand/{majorVersion}',
+        },
+      ],
+    },
+    errors: [
+      {
+        message:
+          'En URL för ett API BÖR följa namnstandarden nedan: {protokoll}://{domännamn}/{api}/{version}/{resurs}/{identifierare}?{parametrar}',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },  
 ]);
