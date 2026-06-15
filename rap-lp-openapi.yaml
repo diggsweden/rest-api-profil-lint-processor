@@ -20,7 +20,7 @@ info:
   contact:
     name: Digg
     url: https://github.com/diggsweden/rest-api-profil-lint-processor/
-    email: apiteam@digg.se
+    email: raplp-maintenance@digg.se
   license:
     name: EUPL-1.2
     url: https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
@@ -33,8 +33,8 @@ servers:
     description: Production
   - url: https://raplp.sandbox.digg.se/api/v1/
     description: Sandbox
-  - url: http://localhost:3000/api/v1/
-    description: Local development
+  - url: https://{environment}.digg.se/api/{version}
+    description: Staging
 tags:
   - name: validation
     description: Operations for validating OpenAPI specifications and generating reports.
@@ -208,7 +208,7 @@ paths:
                       result:
                         - id: AME.04
                           area: API Message
-                          requirement: För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.
+                          requirement: För faltnamn i request och response body BÖR camelCase eller snake_case notation anvandas.
                           severity: WARNING
                           path:
                             - components
@@ -374,7 +374,7 @@ paths:
                       result:
                         - id: AME.04
                           area: API Message
-                          requirement: För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.
+                          requirement: For faltnamn i request och response body BÖR camelCase eller snake_case notation anvandas.
                           severity: WARNING
                           path:
                             - components
@@ -382,7 +382,7 @@ paths:
                             - Example
                             - properties
                             - problemField
-                          range:
+                          omfattning:
                             start:
                               line: 10
                               character: 8
@@ -459,9 +459,9 @@ paths:
               description: Excel media type.
               schema:
                 type: string
-                example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet # Yes, we violate rule AME.01, but ok for the purpose ;)
+                example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet 
           content:
-            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: # Yes, we violate rule AME.01, but ok for the purpose ;)
               schema:
                 type: string
                 format: binary
@@ -563,6 +563,19 @@ components:
         apiName:
           type: string
           example: RAP-LP API
+        _links:
+          type: object
+          properties:
+            self:
+              type: object
+              properties:
+                href:
+                  type: string
+            rules:
+              type: object
+              properties:
+                href:
+                  type: string   
         apiVersion:
           type: string
           description: Semantic version of this API.
@@ -739,7 +752,7 @@ components:
           items:
             type: string
           nullable: true
-        range:
+        omfattning:
           $ref: '#/components/schemas/Range'
         tags:
           type: array
