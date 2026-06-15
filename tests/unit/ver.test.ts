@@ -34,6 +34,39 @@ testRule('Ver05', [
     errors: [],
   },
   {
+    name: "giltigt testfall - OpenAPI server variable {version}",
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [
+        {
+          url: 'https://api.example.com/{version}/my-api',
+        },
+      ],
+    },
+    errors: [],
+  },  
+  {
+    name: "ogiltigt testfall - felaktig server variable för version",
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [
+        {
+          url: 'https://api.example.com/{majorVersion}/my-api',
+        },
+      ],
+    },
+    errors: [
+      {
+        message:
+          "Version BÖR anges i URL enligt formatet v[x] där 'v' avser förkortning för version och x avser ett och bara ett nummer (0-n) för major-version",
+        path: ['servers', '0', 'url'],
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },  
+  {
     name: "ogiltigt testfall - major version måste börja med 'v'",
     document: {
       openapi: '3.1.0',
