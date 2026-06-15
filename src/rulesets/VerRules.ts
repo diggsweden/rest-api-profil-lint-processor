@@ -55,15 +55,12 @@ export class Ver05 extends BaseRuleset {
     {
       function: (targetVal: string, _opts: string, paths: string[]) => {
         const split = targetVal.split('/').filter((removeEmpty) => removeEmpty);
-
         let valid: boolean = false;
         split.forEach(function (part) {
-          // regexp : Allow 'v', (and not allow explicit chars '_','-','.' before version number)
-          const containsVersion = /(v)[0-9][1-9]*(?![\.\-_])/g;
-
-          if (containsVersion.test(part)) {
-            valid = true;
-          }
+          const containsVersion = /(v[0-9][1-9]*(?![\.\-_])|\{version\})/;
+            if (containsVersion.test(part)) {
+              valid = true;
+            }
         });
 
         if (!valid) {
