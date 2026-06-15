@@ -210,7 +210,6 @@ export class Ame02 extends BaseRuleset {
     super.initializeFormats(['OAS3']);
   }
   severity = DiagnosticSeverity.Warning;
-  private 
 }
 export class Ame05 extends BaseRuleset {
   static customProperties: CustomProperties = {
