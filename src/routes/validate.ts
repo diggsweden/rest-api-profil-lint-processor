@@ -177,7 +177,7 @@ export const registerValidationRoutes = (app: Express) => {
         () => processApiSpec(context, rules, apiSpecDocument)
       );
       const hasRuleViolations = result.result.some(
-        d =>d.allvarlighetsgrad === 'ERROR' || d.allvarlighetsgrad === 'WARNING'
+        d =>d.severity === 'ERROR' || d.severity === 'WARNING'
       );
       if (hasRuleViolations) {
          //Rulevalidation occured in RapLP-ruleengine

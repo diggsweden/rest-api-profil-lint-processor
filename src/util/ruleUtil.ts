@@ -6,16 +6,6 @@ import { RuleCategoryError } from './RapLPBaseApiErrorHandling.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
 import { RuleModuleName } from '../rulesets/util/ruleModules.js';
 
-// ruleUtil.ts
-interface CustomSchema {
-  id: string;
-  krav: string;
-  sökväg: string[];
-  allvarlighetsgrad: number;
-  omfattning: { start: Record<string, unknown>; end: Record<string, unknown> };
-  kategori: string;
-  typ: string;
-}
 /**
  *  Add other rule modules when applying new rules to RAP-LP
  *  Modules are loaded as default ones when no explicit category is choosed from the command line

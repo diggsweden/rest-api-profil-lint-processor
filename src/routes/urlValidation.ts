@@ -198,7 +198,7 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
       );
 
       const hasRuleViolations = result.result.some(
-        d =>d.allvarlighetsgrad === 'ERROR' || d.allvarlighetsgrad === 'WARNING'
+        d =>d.severity === 'ERROR' || d.severity === 'WARNING'
       );
       if (hasRuleViolations) {
          //Rulevalidation occured in RapLP-ruleengine
@@ -244,7 +244,7 @@ export const registerUrlValidationFallbackRoutes = (app: Express) => {
     next(
       new RapLPBaseApiError(
         'Conflict',
-        'This feature is currenctly dissabled due to server configuration. Contact your administrator if you think this is a misstake.',
+        'This feature is currently disabled due to server configuration. Contact your administrator if you think this is a mistake.',
         ERROR_TYPE.CONFLICT,
       ),
     );

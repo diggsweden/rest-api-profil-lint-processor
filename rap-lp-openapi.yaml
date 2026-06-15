@@ -15,8 +15,8 @@ info:
 
     This specification describes the linter API itself.
 
-    Begransningar och problem: URL-baserad validering kan vara avstangd via serverkonfiguration,
-    och generate-report returnerar en binar Excel-fil medan ovriga resurser returnerar JSON.
+    Begränsningar och problem: URL-baserad validering kan vara avstängd via serverkonfiguration,
+    och generate-report returnerar en binär Excel-fil medan övriga resurser returnerar JSON.
   contact:
     name: Digg
     url: https://github.com/diggsweden/rest-api-profil-lint-processor/
@@ -157,10 +157,10 @@ paths:
                     payload:
                       result: []
                       report:
-                        - Notering: Godkanda regler - RAP-LP
-                          regler:
+                        - note: Godkända regler - RAP-LP
+                          rules:
                             - id: DOK.03
-                              område: Dokumentation
+                              area: Dokumentation
                               status: OK
         '400':
           description: The specification was invalid or violated one or more rules.
@@ -207,16 +207,16 @@ paths:
                     payload:
                       result:
                         - id: AME.04
-                          område: API Message
-                          krav: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
-                          allvarlighetsgrad: WARNING
-                          sökväg:
+                          area: API Message
+                          requirement: För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.
+                          severity: WARNING
+                          path:
                             - components
                             - schemas
                             - Example
                             - properties
                             - problemField
-                          omfattning:
+                          range:
                             start:
                               line: 10
                               character: 8
@@ -224,10 +224,10 @@ paths:
                               line: 10
                               character: 20
                       report:
-                        - Notering: Ej godkanda regler - RAP-LP
-                          regler:
+                        - note: Ej godkända regler - RAP-LP
+                          rules:
                             - id: AME.04
-                              område: API Message
+                              area: API Message
                               status: EJ OK
         '500':
           description: Internal server error.
@@ -288,10 +288,10 @@ paths:
                     payload:
                       result: []
                       report:
-                        - Notering: Godkanda regler - RAP-LP
-                          regler:
+                        - note: Godkända regler - RAP-LP
+                          rules:
                             - id: DOK.03
-                              område: Dokumentation
+                              area: Dokumentation
                               status: OK
         '400':
           description: Invalid request, invalid URL, invalid remote response, strict validation error or rule validation error.
@@ -373,16 +373,16 @@ paths:
                     payload:
                       result:
                         - id: AME.04
-                          område: API Message
-                          krav: For faltnamn i request och response body BOR camelCase eller snake_case notation anvandas.
-                          allvarlighetsgrad: WARNING
-                          sökväg:
+                          area: API Message
+                          requirement: För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.
+                          severity: WARNING
+                          path:
                             - components
                             - schemas
                             - Example
                             - properties
                             - problemField
-                          omfattning:
+                          range:
                             start:
                               line: 10
                               character: 8
@@ -390,10 +390,10 @@ paths:
                               line: 10
                               character: 20
                       report:
-                        - Notering: Ej godkanda regler - RAP-LP
-                          regler:
+                        - note: Ej godkända regler - RAP-LP
+                          rules:
                             - id: AME.04
-                              område: API Message
+                              area: API Message
                               status: EJ OK
         '409':
           description: URL validation is disabled by server configuration.
@@ -407,7 +407,7 @@ paths:
                     type: https://raplp.digg.se/problems/conflict
                     title: Conflict
                     status: 409
-                    detail: This feature is currenctly dissabled due to server configuration. Contact your administrator if you think this is a misstake.
+                    detail: This feature is currently disabled due to server configuration. Contact your administrator if you think this is a mistake.
                     instance: /api/v1/validation/url
         '500':
           description: Internal server error.
@@ -441,10 +441,10 @@ paths:
               precomputedReport:
                 value:
                   report:
-                    - Notering: Godkanda regler - RAP-LP
-                      regler:
+                    - note: Godkända regler - RAP-LP
+                      rules:
                         - id: UFN.05
-                          område: URL Format och namngivning
+                          area: URL Format och namngivning
                           status: OK
       responses:
         '200':
@@ -459,7 +459,7 @@ paths:
               description: Excel media type.
               schema:
                 type: string
-                example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet # Yes, we violate rule AME.01, but ok for the purpose ;)
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
               schema:
@@ -720,13 +720,13 @@ components:
         id:
           type: string
           nullable: true
-        område:
+        area:
           type: string
           nullable: true
-        krav:
+        requirement:
           type: string
           nullable: true
-        allvarlighetsgrad:
+        severity:
           type: string
           nullable: true
           enum:
@@ -734,12 +734,12 @@ components:
             - INFORMATION
             - WARNING
             - ERROR
-        sökväg:
+        path:
           type: array
           items:
             type: string
           nullable: true
-        omfattning:
+        range:
           $ref: '#/components/schemas/Range'
         tags:
           type: array
@@ -802,12 +802,12 @@ components:
         id:
           type: string
           example: UFN.05
-        område:
+        area:
           type: string
           example: URL Format och namngivning
       required:
         - id
-        - område
+        - area
     PopulatedDiagnosticRuleInfo:
       type: object
       additionalProperties: false
@@ -815,35 +815,35 @@ components:
         id:
           type: string
           example: UFN.05
-        område:
+        area:
           type: string
           example: URL Format och namngivning
         helpUrl:
           type: string
           format: uri
-        krav:
+        requirement:
           type: string
         status:
           type: string
           example: OK
       required:
         - id
-        - område
+        - area
         - status
     DiagnosticReport:
       type: object
       additionalProperties: false
       properties:
-        Notering:
+        note:
           type: string
-          example: Godkanda regler - RAP-LP
-        regler:
+          example: Godkända regler - RAP-LP
+        rules:
           type: array
           items:
             $ref: '#/components/schemas/PopulatedDiagnosticRuleInfo'
       required:
-        - Notering
-        - regler
+        - note
+        - rules
     GenerateReportRequest:
       type: object
       additionalProperties: false

@@ -51,7 +51,7 @@ class RapLPDiagnostic {
         const message = rules[className]?.message ?? ''; // Lookup instance message
         // Check if rule is found in Spectral results
         const spectralResult = spectralResults.find((result) => {
-          return result.område === customProperties.område && result.id === customProperties.id;
+          return result.area === customProperties.område && result.id === customProperties.id;
         });
         if (spectralResult) {
           //We have a match, that means there is an error
@@ -59,9 +59,9 @@ class RapLPDiagnostic {
             if (!executedRuleIdsWithError.has(customProperties.id)) {
               this._ruleSets.executedUniqueRulesWithError.push({
                 id: customProperties.id, // Store some more diagnostic info (Duplicate NOT OK)
-                område: customProperties.område,
+                area: customProperties.område,
                 helpUrl: customProperties.id ? buildRuleHelpUrl(customProperties.id) : undefined,
-                krav: message,
+                requirement: message,
               });
             }
           }
@@ -73,9 +73,9 @@ class RapLPDiagnostic {
           if (!executedRuleIds.has(customProperties.id)) {
             this._ruleSets.executedUniqueRules.push({
               id: customProperties.id, // Store some more diagnostic info (Duplicate OK)
-              område: customProperties.område,
+              area: customProperties.område,
               helpUrl: customProperties.id ? buildRuleHelpUrl(customProperties.id) : undefined,
-              krav: message,
+              requirement: message,
             });
           }
           executedRuleIds.add(customProperties.id); // Store current ID of rule with NO error
@@ -86,23 +86,23 @@ class RapLPDiagnostic {
     for (const key of instanceCategoryMap.keys()) {
       const customProperties = instanceCategoryMap.get(key).customProperties;
       const exists = this._ruleSets.notApplicableRules.some((rule) => {
-        return rule.id === customProperties.id && rule.område === customProperties.område;
+        return rule.id === customProperties.id && rule.area === customProperties.område;
       });
       if (!ruleIdsNotApplicable.has(customProperties.id) && !exists) {
         // If not present, store the id and område in the not applicableRules
         this._ruleSets.notApplicableRules.push({
           id: customProperties.id,
-          område: customProperties.område,
-          krav: rules[key]?.message ?? '',
+          area: customProperties.område,
+          requirement: rules[key]?.message ?? '',
           helpUrl: customProperties.id ? buildRuleHelpUrl(customProperties.id) : undefined,
         }); // Rules
       }
     }
   }
-  setFromPrecomputedReport(reports: { Notering: string; regler: { id: string; område: string; krav?: string; helpUrl?: string; status: string }[] }[]): void {
+  setFromPrecomputedReport(reports: { note: string; rules: { id: string; area: string; requirement?: string; helpUrl?: string; status: string }[] }[]): void {
     for (const report of reports) {
-      for (const regel of report.regler) {
-        const ruleInfo = { id: regel.id, område: regel.område, krav: regel.krav ?? '', helpUrl: regel.helpUrl };
+      for (const regel of report.rules) {
+        const ruleInfo = { id: regel.id, area: regel.area, requirement: regel.requirement ?? '', helpUrl: regel.helpUrl };
         if (regel.status === 'OK') {
           this._ruleSets.executedUniqueRules.push(ruleInfo);
         } else if (regel.status === 'EJ OK') {
@@ -160,7 +160,7 @@ class RapLPDiagnostic {
     status: string,
     area: string,
     identificationNumber: string,
-    notering: string,
+    note: string,
   ): DiagnosticReport {
     // Map each rule to a PopulatedDiagnosticRuleInfo object
     const populatedRules: PopulatedDiagnosticRuleInfo[] = rules.map((rule) => ({
@@ -170,8 +170,8 @@ class RapLPDiagnostic {
     }));
     // Construct the diagnostic report for current DiagnosticRuleInfo[]
     const report: DiagnosticReport = {
-      Notering: notering,
-      regler: populatedRules,
+      note: note,
+      rules: populatedRules,
     };
     return report;
   }
@@ -187,8 +187,8 @@ interface DiagnosticRuleinfoSet {
 }
 interface DiagnosticRuleInfo {
   id: string;
-  område: string;
-  krav: string;
+  area: string;
+  requirement: string;
   /**Helper Url for guidelines */
   helpUrl?: string;
 }
@@ -196,9 +196,9 @@ interface PopulatedDiagnosticRuleInfo extends DiagnosticRuleInfo {
   status: string;
 }
 interface NoteringField {
-  Notering: string;
+  note: string;
 }
 export interface DiagnosticReport {
-  Notering: string;
-  regler: PopulatedDiagnosticRuleInfo[];
+  note: string;
+  rules: PopulatedDiagnosticRuleInfo[];
 }
