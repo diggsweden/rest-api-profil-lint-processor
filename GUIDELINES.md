@@ -229,7 +229,6 @@ $
 Regeln förutsätter att det finns en förekomst av minst ett av objekten `info.termsOfService`, `info.x-sla` eller `externalDocs` med följande strukturer:
 
 - info
-
   - termsOfService
   - x-sla
     - availability
@@ -1240,7 +1239,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar
 **JSON Path Plus-uttryck:**
 
 ```
-$.servers
+$.servers[*].url
 ```
 
 **Förklaring:**
