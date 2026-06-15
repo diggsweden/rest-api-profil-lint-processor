@@ -23,6 +23,19 @@ testRule('Sak01', [
     errors: [],
   },
   {
+    name: 'giltigt testfall - en server finns innehållandes tillåtna variabler i url:en',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [
+        {
+          url: 'https://{environment}.digg.se/api/{version}',
+        },
+      ],
+    },
+    errors: [],
+  },
+  {
     name: 'ogiltigt testfall - två servrar finns med en inkorrekt url',
     document: {
       openapi: '3.1.0',

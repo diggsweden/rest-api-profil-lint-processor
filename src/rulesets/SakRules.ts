@@ -18,15 +18,13 @@ export class Sak01 extends BaseRuleset {
     id: 'SAK.01',
   };
   message = 'All transport SKALL ske över HTTPS med minst TLS 1.2.';
-  given = '$.servers';
+  given = '$.servers[*].url';
   then = [
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {
-        const urlPattern = new RegExp(
-          '^https://((localhost|\\d{1,3}(\\.\\d{1,3}){3})|([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,})(:\\d+)?(\\/\\S*)?$',
-        );
+        const urlPattern = new RegExp('^https://.+$');
 
-        const valid = targetVal.every((server) => urlPattern.test(server.url));
+        const valid = urlPattern.test(targetVal);
 
         if (valid) {
           return [];
