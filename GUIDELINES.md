@@ -229,7 +229,6 @@ $
 Regeln förutsätter att det finns en förekomst av minst ett av objekten `info.termsOfService`, `info.x-sla` eller `externalDocs` med följande strukturer:
 
 - info
-
   - termsOfService
   - x-sla
     - availability
@@ -823,7 +822,7 @@ $.components.schemas.properties[*]~
 ```
 
 **Förklaring:**
-Regeln förutsätter att den namnsättning som används för egenskaper beskrivna i request/responsebodyn beskrivs med camelCase eller snake_case notation.
+Regeln förutsätter att den namnsättning som används för egenskaper beskrivna i request/responsebodyn beskrivs med camelCase eller snake_case notation, men standardiserade hypermediafält enligt HAL undantas.
 
 **Exempel:**
 
