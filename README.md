@@ -461,13 +461,13 @@ Vid körning i API-läge från en lokal server kan RAP-LP konfigureras med hjäl
 
 | Miljövariabel                         | Beskrivning                                                                                                                                                                                                            |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| RAP_LP_JSON_BODY_LIMIT                | Maximalt tillåten storlek på JSON-requests. Defaultvärdet är `3mb`                                                                                                                                                                            |
-| RAP_LP_MAX_CONCURRENT_REPORTS         | Maximalt antal samtidiga rapportgenereringar som får bearbetas samtidigt. Defaultvärdet är `4`                                                                                                                                              |
-| RAP_LP_MAX_CONCURRENT_VALIDATIONS     | Maximalt antal samtidiga valideringar som får bearbetas samtidigt. Defaultvärdet är `4`                                                                                                                                                        |
-| RAP_LP_PERF_LOGGING                   | Anger om prestandaloggning ska användas, kan sättas till `true` eller `false`. Funktionen är inaktiverad som standard.                                                                                                                                          |
-| RAP_LP_LOG_TARGET                     | Anger var serverloggar ska skrivas, exempelvis `stdout` eller `stderr`. Defaultvärdet är `stderr`                                                                                                                                                       |
+| RAP_LP_JSON_BODY_LIMIT                | Maximalt tillåten storlek på JSON-requests. Defaultvärdet är `3mb`                                                                                                                                                     |
+| RAP_LP_MAX_CONCURRENT_REPORTS         | Maximalt antal samtidiga rapportgenereringar som får bearbetas samtidigt. Defaultvärdet är `4`                                                                                                                         |
+| RAP_LP_MAX_CONCURRENT_VALIDATIONS     | Maximalt antal samtidiga valideringar som får bearbetas samtidigt. Defaultvärdet är `4`                                                                                                                                |
+| RAP_LP_PERF_LOGGING                   | Anger om prestandaloggning ska användas, kan sättas till `true` eller `false`. Funktionen är inaktiverad som standard.                                                                                                 |
+| RAP_LP_LOG_TARGET                     | Anger var serverloggar ska skrivas, exempelvis `stdout` eller `stderr`. Defaultvärdet är `stderr`                                                                                                                      |
 | RAP_LP_ALLOW_LOCALHOST_URL_VALIDATION | Anger om validering av specifikationer som lagras lokalt på localhost är tillåten. Inställningen används främst vid lokal utveckling och kan sättas till `true` eller `false`. Funktionen är inaktiverad som standard. |
-| RAP_LP_PORT                           | Portkonfiguration för vilken port servern ska starta på och lyssna på inkommande requests. Defaultvärdet är `3000`.                                                                                                        |
+| RAP_LP_PORT                           | Portkonfiguration för vilken port servern ska starta på och lyssna på inkommande requests. Defaultvärdet är `3000`.                                                                                                    |
 
 ---
 
@@ -501,10 +501,10 @@ Accept: application/json
 curl -X POST http://localhost:3000/api/v1/validation/validatespec \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
-  -d "{ 
+  -d "{
     \"spec\": \"$(base64 -w 0 openapi.yaml)\",
     \"categories\": [\"DokRules\", \"UfnRules\"],
-    \"strict\": true 
+    \"strict\": true
   }"
 ```
 
@@ -561,8 +561,26 @@ Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 
 ```json
 {
-  "result": [],
-  "categories": ["DokRules", "UfnRules"]
+   "report":[
+      {
+         "note":"Godkända regler - RAP-LP",
+         "rules":[
+            ...
+         ]
+      },
+      {
+         "note":"Ej godkända regler - RAP-LP",
+         "rules":[
+           ...
+         ]
+      },
+      {
+         "note":"Ej tillämpade regler - RAP-LP",
+         "rules":[
+           ...
+         ]
+      }
+   ]
 }
 ```
 
