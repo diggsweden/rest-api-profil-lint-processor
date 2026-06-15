@@ -293,6 +293,72 @@ testRule('Ame04', [
     errors: [],
   },
   {
+    name: 'giltigt testfall - reserverat HAL-fält _links',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      components: {
+        schemas: {
+          Error: {
+            type: 'object',
+            properties: {
+              _links: {
+                type: 'object',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - reserverat HAL-fält _embedded',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      components: {
+        schemas: {
+          Error: {
+            type: 'object',
+            properties: {
+              _embedded: {
+                type: 'object',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
+  },  
+  {
+    name: 'ogiltigt testfall - ej reserverat fält med inledande underscore',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      components: {
+        schemas: {
+          Error: {
+            type: 'object',
+            properties: {
+              _link: {
+                type: 'object',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message: 'För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.',
+        path: ['components', 'schemas', 'Error', 'properties', '_link'],
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },    
+  {
     name: 'ogiltigt testfall - test av snakecase',
     document: {
       openapi: '3.1.0',
