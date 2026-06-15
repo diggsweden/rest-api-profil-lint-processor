@@ -563,6 +563,19 @@ components:
         apiName:
           type: string
           example: RAP-LP API
+        _links:
+          type: object
+          properties:
+            self:
+              type: object
+              properties:
+                href:
+                  type: string
+            rules:
+              type: object
+              properties:
+                href:
+                  type: string   
         apiVersion:
           type: string
           description: Semantic version of this API.
