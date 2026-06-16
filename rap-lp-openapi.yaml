@@ -12,13 +12,13 @@ info:
     RAP-LP validates structure, semantics and design rules, and can also generate an
     Excel report from a precomputed validation report.
     This specification describes the linter API itself.
-    
+
     Limitations: URL-based validation may be disabled via server configuration and generate-report returns a binary Excel file while other resources return JSON.
 
     RAP-LP (REST API-profil Lint Processor) validerar en OpenAPI-specifikation mot den nationella REST API-profilen och ytterligare RAP-LP-designregler.
     RAP-LP validerar struktur, semantik och designregler, och kan även generera en Excel-rapport från en förberäknad valideringsrapport.
     Denna specifikation beskriver själva linter API:et.
-    
+
     Begränsningar: URL-baserad validering kan vara avstängd via serverkonfiguration,
     och generate-report returnerar en binär Excel-fil medan övriga resurser returnerar JSON.
   contact:
