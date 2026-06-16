@@ -4,30 +4,33 @@
 openapi: 3.1.0
 info:
   title: RAP-LP API
-  version: 1.0.11
+  version: 1.0.0
   summary: API for validating OpenAPI specifications against the Swedish REST API profile.
   description: |
     RAP-LP (REST API-profil Lint Processor) validates an OpenAPI specification against
     the national REST API profile and additional RAP-LP design rules.
-
     RAP-LP validates structure, semantics and design rules, and can also generate an
     Excel report from a precomputed validation report.
-
     This specification describes the linter API itself.
+    
+    Limitations: URL-based validation may be disabled via server configuration and generate-report returns a binary Excel file while other resources return JSON.
 
-    Begränsningar och problem: URL-baserad validering kan vara avstängd via serverkonfiguration,
+    RAP-LP (REST API-profil Lint Processor) validerar en OpenAPI-specifikation mot den nationella REST API-profilen och ytterligare RAP-LP-designregler.
+    RAP-LP validerar struktur, semantik och designregler, och kan även generera en Excel-rapport från en förberäknad valideringsrapport.
+    Denna specifikation beskriver själva linter API:et.
+    
+    Begränsningar: URL-baserad validering kan vara avstängd via serverkonfiguration,
     och generate-report returnerar en binär Excel-fil medan övriga resurser returnerar JSON.
   contact:
-    name: Digg
-    url: https://github.com/diggsweden/rest-api-profil-lint-processor/
-    email: apiteam@digg.se
+    name: REST API-profil Lint Processor
+    url: https://raplp.digg.se/
+    email: raplp-maintenance@digg.se
   license:
     name: EUPL-1.2
     url: https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
-  termsOfService: https://www.dataportal.se/terms
 externalDocs:
-  description: RAP-LP documentation and service level agreement information.
-  url: https://www.dataportal.se/rest-api-profil
+  description: RAP-LP API documentation
+  url: https://github.com/diggsweden/rest-api-profil-lint-processor/blob/main/README.md#api-l%C3%A4ge
 servers:
   - url: https://raplp.digg.se/api/v1/
     description: Production
