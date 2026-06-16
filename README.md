@@ -447,11 +447,12 @@ Verktyget kan även köras som en lokal HTTP-server, via API (Applikation Progra
 
 | Endpoint                             | Beskrivning                                                                          |
 | ------------------------------------ | ------------------------------------------------------------------------------------ |
+| `/api/v1/docs`                       | Används för att hämta aktuell API-dokumentation med Swagger UI.                      |
+| `/api/v1/api-info`                   | Används för att hämta information om API:et.                                         |
 | `/api/v1/validation/rules`           | Används för att hämta lista med tillgängliga regelkategorier som stöds av verktyget. |
 | `/api/v1/validation/validatespec`    | Används för att validera en OpenAPI-specifikation mot REST API-profilens regler.     |
 | `/api/v1/validation/url`             | Används för att validera en OpenAPI-specifikation från en angiven URL.               |
 | `/api/v1/validation/generate-report` | Används för att generera en rapport baserad på ett valideringsresultat.              |
-| `/api/v1/api-info`                   | Används för att hämta information om API:et.                                         |
 
 ---
 
