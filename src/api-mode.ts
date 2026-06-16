@@ -8,6 +8,8 @@ import { registerUrlValidationFallbackRoutes, registerUrlValidationRoutes } from
 import { errorHandler } from './util/RapLPBaseApiErrorHandling.js';
 import OpenApiValidator from 'express-openapi-validator';
 import path from 'path';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
 
 export type ApiArgs = {
   enableUrlValidation?: boolean;
@@ -19,11 +21,19 @@ export async function startServer<T extends ApiArgs>(args: T) {
   const app = express();
   const DEFAULT_PORT = 3000;
 
-  const port = Number(
-    process.env.RAP_LP_PORT ?? DEFAULT_PORT,
-  );
+  const port = Number(process.env.RAP_LP_PORT ?? DEFAULT_PORT);
   const bodyLimit = process.env.RAP_LP_JSON_BODY_LIMIT || '3mb';
 
+  const swaggerDocument = YAML.load('./rap-lp-openapi.yaml');
+  app.use(
+    '/api/v1/docs',
+    swaggerUi.serve,
+    swaggerUi.setup(null, {
+      swaggerOptions: {
+        url: '/api/v1/rap-lp-openapi.yaml',
+      },
+    }),
+  );
   app.use('/api/v1/rap-lp-openapi.yaml', express.static(path.join(process.cwd(), 'rap-lp-openapi.yaml')));
 
   // For the case of content upload
