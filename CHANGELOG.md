@@ -5,11 +5,122 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-06-16
+
+### Added
+
+- Add swagger ui (#648)
+- * feat: add concurrency handling and logging (#606)
+- Add categories array to GenerateReportRequest in spec (#601)
+- Add CODEOWNERS file (#605)
+- Add api mode (#561)
+- Add stderr for errors when writing to excel file (#485)
+
+### Changed
+
+- Update artifacts.yml
+- Update with version info (#647)
+- Adjust example under api request (#643)
+- Change of schemaattributes
+- Update spectral (#632)
+- Update dev dependencies to v24.13.2 (#633)
+- Update github actions to v6.0.3 (#631)
+- Adjust readme to reflect recent merge changes (#598)
+- Update dev dependencies to v24.13.1 (#617)
+- Update x2 to make sure no external schemarefs allowed (#623)
+- Update core dependencies to v4.2.0 (#616)
+- Replace team with individuals in CODEOWNERS file (#613)
+- Update node.js to <=24.16.0 (#603)
+- Update dependency node to v24.16.0 (#602)
+- Update dependency ts-jest to v29.4.11 (#595)
+- Update dependency @stoplight/spectral-rulesets to v1.22.3 (#594)
+- Pin dependencies (#593)
+- Update spectral (#590)
+- Update dependency fast-xml-parser to v5.8.0 (#589)
+- Update diggsweden/reusable-ci action to v2.8.3 (#588)
+- Update dev dependencies (#587)
+- Update dev dependencies (#584)
+- Update dependency fast-xml-parser to v5.7.3 (#583)
+- Bump reusable-ci to v2.8.2
+- Update actions/setup-node action to v6.4.0 (#576)
+- Update dependency fast-xml-parser to v5.7.2 (#575)
+- Update node.js to <=24.15.0 (#571)
+- Update dependency node to v24.15.0 (#570)
+- Update dependency jsonpath-plus to v10.4.0 (#551)
+- Lock file maintenance (#556)
+- Update spectral (#554)
+- Update node.js to <=24.14.1 (#553)
+- Update github actions (#552)
+- Update dependency fast-xml-parser to v5.6.0 (#550)
+- Update dev dependencies (#549)
+- Bump reusable ci v2.7.9 (#546)
+- Upgrade to reusable-ci 2.7.7 (#544)
+- Upgrade to reusable-ci 2.7.7 (#543)
+- Lock file maintenance (#468)
+- Bump glob in the npm_and_yarn group across 1 directory (#462)
+- Update actions/checkout action to v6 (#467)
+- Update dependency fast-xml-parser to v5.5.7 [security] (#497)
+- Update dependency @stoplight/spectral-core to v1.21.0 (#519)
+- Feature/487 uppdatera meddelande excel (#529)
+- Set least permissions for workflow (#533)
+- Reusable-ci 2.7.3 (#532)
+- Update dependency @types/node to v24.11.0 (#498)
+- Update dev dependencies (#489)
+- Update node.js to <=24.13.0 (#491)
+- Update github actions (#490)
+- Update dependency express-openapi-validator to v5.6.2 (#488)
+- Pin dependency @stoplight/spectral-formats to 1.8.2 (#483)
+- Pin dependencies (#465)
+- Update dependency body-parser to v2.2.2 (#482)
+- Update diggsweden/reusable-ci action to v2.6.0 (#481)
+- Update node.js to <=24.12.0 (#479)
+- Update github actions (#478)
+- Update dependency fast-xml-parser to v5.3.3 (#477)
+- Feature/393 schemavalidering (#470)
+- Update github actions (#476)
+- Update diggsweden/reusable-ci action to v2.3.8 (#472)
+- Update core dependencies to v5.0.6 (#471)
+- Feature/394 dok21 (#447)
+- Update dependency express to v5.2.0 [security] (#469)
+- Update diggsweden/reusable-ci action to v2.3.1 (#466)
+- Update dependency body-parser to v2.2.1 [security] (#464)
+- Update node.js to <=24.11.1 (#463)
+- Update github actions (#461)
+- Lock file maintenance (#459)
+- Update dependency js-yaml to v4.1.1 [security] (#457)
+- Feature/update node versions (#455)
+- Update dependency @types/node to v24 (#444)
+- Update node.js to v24 (#445)
+- Lock file maintenance (#454)
+- Update node.js to <=22.21.1 (#453)
+- Update dependency node to v22.21.1 (#452)
+
+### Fixed
+
+- Adoption-of-dynamic-url-var-setting-for-versioning (#644)
+- Update given path to target each server url directly and simplify regexp
+- Update of schema attributes (#645)
+- Adoption-of-dynamic-url-var-setting (#638)
+- Allow-hateoas-hal-fix (#634)
+- Update ApiInfo object with correct data before release (#622)
+- Correct severitys for Dok03 (#620)
+- Generate report buffer without writing to file system (#611)
+- Correct references to openapi.yaml (#597)
+- Update package-lock.json (#557)
+- Fix broken link (#521)
+- Fix project with just lint-fix, ignore some rules for now (#501)
+- Upgrade to reuseable-ci 2.6.x and just (#475)
+
+### Removed
+
+- Remove categories from generate report request in spec (#608)
+
 ## [1.1.1] - 2025-11-06
 
 ### Fixed
 
 - Publish npm package to gh (#448)
+
 
 ## [1.1.0] - 2025-11-06
 
@@ -118,6 +229,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial commit
 
+[2.0.0]: https://github.com/diggsweden/rest-api-profil-lint-processor/compare/v1.1.1..v2.0.0
 [1.1.1]: https://github.com/diggsweden/rest-api-profil-lint-processor/compare/v1.1.0..v1.1.1
 [1.1.0]: https://github.com/diggsweden/rest-api-profil-lint-processor/compare/v1.0.0..v1.1.0
 
