@@ -26,6 +26,7 @@ import { AggregateError } from '../util/RapLPCustomErrorInfo.js';
 
 import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js';
 import { measure } from '../util/performance.js';
+import { recordRuleStats } from '../util/statsDb.js';
 import crypto from 'node:crypto';
 import { resolveLocale, translator } from '../i18n.js';
 
@@ -196,7 +197,14 @@ export const registerValidationRoutes = (app: Express) => {
         const result = await measure({ requestId, operation: 'processApiSpec' }, () =>
           processApiSpec(context, rules, apiSpecDocument),
         );
-        const hasRuleViolations = result.result.some((d) => d.severity === 'ERROR' || d.severity === 'WARNING');
+        const violations = result.result.filter((d) => d.severity === 'ERROR' || d.severity === 'WARNING');
+
+        recordRuleStats(
+          violations.map((d) => ({ ruleId: d.id ?? 'unknown', severity: d.severity ?? 'unknown' })),
+          { restApiProfilVersion: pkg.version, rapLpVersion: pkg.version },
+        );
+
+        const hasRuleViolations = violations.length > 0;
         if (hasRuleViolations) {
           //Rulevalidation occured in RapLP-ruleengine
           return sendProblem(
