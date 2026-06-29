@@ -1,9 +1,10 @@
-// SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
+// SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
 //
 // SPDX-License-Identifier: EUPL-1.2
 
 import express from 'express';
 import { registerValidationRoutes } from './routes/validate.js';
+import { registerStatsRoutes } from './routes/stats.js';
 import { registerUrlValidationFallbackRoutes, registerUrlValidationRoutes } from './routes/urlValidation.js';
 import { errorHandler } from './util/RapLPBaseApiErrorHandling.js';
 import OpenApiValidator from 'express-openapi-validator';
@@ -35,6 +36,8 @@ export async function startServer<T extends ApiArgs>(args: T) {
     }),
   );
   app.use('/api/v1/rap-lp-openapi.yaml', express.static(path.join(process.cwd(), 'rap-lp-openapi.yaml')));
+
+  registerStatsRoutes(app);
 
   // For the case of content upload
   app.use(express.json({ limit: bodyLimit }));
