@@ -4,7 +4,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { DatabaseSync } from 'node:sqlite';
+import Database from 'better-sqlite3';
 
 export type RuleStat = {
   ruleId: string;
@@ -19,18 +19,18 @@ export type StatVersions = {
 const dataDir = process.env.RAP_LP_DATA_DIR ?? '/app/data';
 const dbPath = path.join(dataDir, 'statistics.db');
 
-let db: DatabaseSync | undefined;
+let db: Database.Database | undefined;
 let disabled = false;
 
-function getDb(): DatabaseSync | undefined {
+function getDb(): Database.Database | undefined {
   if (db || disabled) {
     return db;
   }
 
   try {
     fs.mkdirSync(dataDir, { recursive: true });
-    db = new DatabaseSync(dbPath);
-    db.exec('PRAGMA journal_mode = WAL;');
+    db = new Database(dbPath);
+    db.pragma('journal_mode = WAL');
     db.exec(`
       CREATE TABLE IF NOT EXISTS rule_stats (
         id                       INTEGER PRIMARY KEY AUTOINCREMENT,
