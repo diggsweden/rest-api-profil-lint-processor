@@ -53,6 +53,7 @@ const ruleTypes = [
   SakRules.Sak15,
   SakRules.Sak16,
   SakRules.Sak18,
+  SakRules.Sak29,
   VerRules.Ver05,
   VerRules.Ver06,
   FnsRules.Fns01,
