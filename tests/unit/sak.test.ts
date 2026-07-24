@@ -310,3 +310,81 @@ testRule('Sak18', [
     ],
   },
 ]);
+testRule('Sak29', [
+  {
+    name: 'giltigt testfall - regeln är inte applicerbar när requestBody saknas',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/users': {
+          post: {
+            responses: {
+              '200': {
+                description: 'OK',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - requestBody och 415 response',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/users': {
+          post: {
+            requestBody: {
+              content: {
+                'application/json': {},
+              },
+            },
+            responses: {
+              '201': {
+                description: 'Created',
+              },
+              '415': {
+                description: 'Unsupported Media Type',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall - requestBody finns, utan 415 response',
+    document: {
+      openapi: '3.1.0',
+      info: { version: 1.0 },
+      paths: {
+        '/users': {
+          post: {
+            requestBody: {
+              content: {
+                'application/json': {},
+              },
+            },
+            responses: {
+              '201': {
+                description: 'Created',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message:
+          'Man BÖR (SAK.29) respektera angiven Content-Type i header. Förfrågningar som innehåller oväntade eller saknade Content-Type headers bör avvisas med HTTP-status 415 Unsupported Media Type.',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
+]);
