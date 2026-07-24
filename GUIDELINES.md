@@ -1370,6 +1370,31 @@ I exemplet ovan så kommer regeln att ge ett negativt utfall eftersom clientCred
 
 ---
 
+### ID: SAK.29
+
+**Krav:** Man BÖR respektera angiven Content-Type i header. Förfrågningar som innehåller oväntade eller saknade Content-Type headers bör avvisas med HTTP-status 415 Unsupported Media Type.
+
+**Typ:** BÖR
+
+**JSON Path Plus-uttryck:**
+
+```
+$.paths[*][post,put,patch,delete,options]
+```
+
+**Förklaring**
+Regeln kontrollerar att HTTP-operationer som definierar en requestBody även dokumenterar ett svar för HTTP-statuskod 415 `Unsupported Media Type`.
+
+Eftersom regeln validerar API-kontraktet och inte den faktiska implementationen kan den inte verifiera att API:et verkligen avvisar felaktiga eller saknade Content-Type-headers. Regeln säkerställer därför att detta beteende är dokumenterat i API-specifikationen.
+
+Om en operation innehåller en requestBody men saknar ett definierat 415-svar ger regeln ett negativt utfall.
+
+**Exempel**
+
+![alt text](images/sak29.png)
+
+---
+
 ## Område: Förutsättningar
 
 **Täckningsgrad: 100%**
