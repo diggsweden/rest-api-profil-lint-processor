@@ -1,0 +1,151 @@
+# SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: 3.0.0
+
+info:
+  title: Exempel API - Spårbarhet
+  version: 1.0.0
+  description: |
+    Exempel på implementation av spårbarhetskrav (SPA)
+    enligt W3C Trace Context.
+
+servers:
+  - url: https://api.example.se/v1
+
+paths:
+  /organisationer/{organisationsnummer}:
+    get:
+      summary: Hämta organisation
+      description: |
+        API:t stödjer spårning enligt W3C Trace Context.
+
+        SPA.01 - API-producenter SKALL stödja spårning enligt W3C Trace Context.
+        SPA.02 - traceparent SKALL accepteras och propageras vidare.
+        SPA.04 - traceparent BÖR returneras i svaret.
+      operationId: getOrganisation
+
+      parameters:
+        - $ref: '#/components/parameters/TraceParent'
+        - $ref: '#/components/parameters/TraceState'
+        - $ref: '#/components/parameters/XRequestId'
+
+      responses:
+        '200':
+          description: Organisation hittad
+
+          headers:
+            traceparent:
+              $ref: '#/components/headers/TraceParent'
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisation'
+
+        '400':
+          description: Felaktigt anrop
+
+          headers:
+            traceparent:
+              $ref: '#/components/headers/TraceParent'
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+
+  parameters:
+
+    TraceParent:
+      name: traceparent
+      in: header
+      required: false
+      description: |
+        W3C Trace Context.
+
+        SPA.02:
+        Om headern finns SKALL den accepteras och
+        propageras vidare.
+
+        SPA.03:
+        Om headern saknas SKALL API:t generera
+        en ny traceparent.
+      schema:
+        type: string
+        example: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
+
+    TraceState:
+      name: tracestate
+      in: header
+      required: false
+      description: |
+        Organisationsspecifik spårningsinformation.
+
+        SPA.05:
+        KAN användas enligt W3C Trace Context.
+      schema:
+        type: string
+        example: "digg=miljo:prod"
+
+    XRequestId:
+      name: x-request-id
+      in: header
+      required: false
+      description: |
+        Alternativ intern identifierare.
+
+        SPA.07:
+        Får användas som komplement men
+        SKALL INTE ersätta traceparent.
+      schema:
+        type: string
+        format: uuid
+        example: "9f47c1fd-2c6a-4f77-8d1b-c8a927e3f9d1"
+
+  headers:
+
+    TraceParent:
+      description: |
+        Trace Context som returneras till klient.
+
+        SPA.04:
+        API-producenten BÖR inkludera
+        traceparent i svaret.
+      schema:
+        type: string
+        example: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
+
+  schemas:
+
+    Organisation:
+      type: object
+      properties:
+        organisationsnummer:
+          type: string
+          example: "2021005489"
+
+        namn:
+          type: string
+          example: "Exempelmyndigheten"
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+
+      properties:
+        code:
+          type: integer
+
+        message:
+          type: string
+
+tags:
+  - name: traceability
+    description: |
+      Spårbarhet enligt W3C Trace Context.

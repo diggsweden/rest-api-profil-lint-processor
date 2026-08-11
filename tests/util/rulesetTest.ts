@@ -8,6 +8,7 @@
  */
 import * as UfnRules from '../../src/rulesets/UfnRules.js';
 import * as SakRules from '../../src/rulesets/SakRules.js';
+import * as SpaRules from '../../src/rulesets/SpaRules.js';
 import * as VerRules from '../../src/rulesets/VerRules.js';
 import * as FnsRules from '../../src/rulesets/FnsRules.js';
 import * as ArqRules from '../../src/rulesets/ArqRules.js';
@@ -53,6 +54,7 @@ const ruleTypes = [
   SakRules.Sak15,
   SakRules.Sak16,
   SakRules.Sak18,
+  SpaRules.Spa04,
   VerRules.Ver05,
   VerRules.Ver06,
   FnsRules.Fns01,
