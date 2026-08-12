@@ -1228,7 +1228,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar
 
 ## Område: Säkerhet
 
-**Täckningsgrad: 16%**
+**Täckningsgrad: 19%**
 
 ### ID: SAK.01
 
@@ -1319,8 +1319,6 @@ Regeln kontrollerar, under förutsättning att ett security scheme är definiera
 ![alt text](images/sak15.png)
 
 I exemplet ovan ger regeln ett negativt utfall, eftersom det definierade säkerhetsschemat 'ApiKeyQuery' har typen 'apiKey' och parametern 'in' är satt till 'query', vilket strider mot regeln.
-
----
 
 ---
 
