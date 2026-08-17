@@ -1,13 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>diggsweden/.github:renovate-base",
-    ":maintainLockFilesWeekly"
-  ],
-  "enabledManagers": [
-    "github-actions",
-    "npm"
-  ],
+  "extends": ["local>diggsweden/.github:renovate-base", ":maintainLockFilesWeekly"],
+  "enabledManagers": ["github-actions", "npm"],
   "platformAutomerge": false,
   "automergeSchedule": ["0 9-21 * * 6"],
   "packageRules": [
@@ -15,6 +9,10 @@
       "description": "Automerge endast patch",
       "matchUpdateTypes": ["patch"],
       "automerge": true
+    },
+    {
+      "description": "Minimum release age",
+      "minimumReleaseAge": "7 days"
     },
     {
       "description": "Node.js dependencies - Major updates",
