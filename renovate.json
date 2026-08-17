@@ -6,23 +6,17 @@
   "automergeSchedule": ["0 9-21 * * 6"],
   "packageRules": [
     {
-      "description": "Minimum release age",
-      "minimumReleaseAge": "7 days"
-    },
-    {
       "description": "Automerge endast patch",
       "matchUpdateTypes": ["patch"],
-      "automerge": true
-    },
-    {
-      "description": "Minimum release age",
+      "automerge": true,
       "minimumReleaseAge": "7 days"
     },
     {
       "description": "Node.js dependencies - Major updates",
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["major"],
-      "addLabels": ["dependencies", "major-update"]
+      "addLabels": ["dependencies", "major-update"],
+      "minimumReleaseAge": "7 days"
     },
     {
       "description": "Development dependencies",
@@ -30,7 +24,8 @@
       "matchDepTypes": ["devDependencies"],
       "groupName": "dev dependencies",
       "addLabels": ["dev-deps"],
-      "matchPackageNames": ["!@stoplight/spectral-formats"]
+      "matchPackageNames": ["!@stoplight/spectral-formats"],
+      "minimumReleaseAge": "7 days"
     },
     {
       "description": "Core dependencies",
@@ -38,13 +33,15 @@
       "matchDepTypes": ["dependencies"],
       "groupName": "core dependencies",
       "addLabels": ["core-deps"],
-      "matchPackageNames": ["!/^@stoplight/spectral/"]
+      "matchPackageNames": ["!/^@stoplight/spectral/"],
+      "minimumReleaseAge": "7 days"
     },
     {
       "description": "Spectral dependencies",
       "groupName": "spectral",
       "labels": ["spectral"],
-      "matchPackageNames": ["/^@stoplight/spectral/"]
+      "matchPackageNames": ["/^@stoplight/spectral/"],
+      "minimumReleaseAge": "7 days"
     },
     {
       "description": "Node.js engine",
@@ -53,7 +50,8 @@
       "matchPackageNames": ["node"],
       "enabled": true,
       "rangeStrategy": "replace",
-      "labels": ["node-engine"]
+      "labels": ["node-engine"],
+      "minimumReleaseAge": "7 days"
     }
   ]
 }
