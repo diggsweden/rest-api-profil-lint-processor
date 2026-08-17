@@ -4,12 +4,12 @@
   "enabledManagers": ["github-actions", "npm"],
   "platformAutomerge": false,
   "automergeSchedule": ["0 9-21 * * 6"],
+  "minimumReleaseAge": "7 days",
   "packageRules": [
     {
       "description": "Automerge endast patch",
       "matchUpdateTypes": ["patch"],
-      "automerge": true,
-      "minimumReleaseAge": "7 days"
+      "automerge": true
     },
     {
       "description": "Node.js dependencies - Major updates",
