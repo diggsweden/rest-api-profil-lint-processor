@@ -8,10 +8,7 @@
     {
       "description": "Automerge endast patch",
       "matchUpdateTypes": ["patch"],
-      "automerge": true
-    },
-    {
-      "description": "Minimum release age",
+      "automerge": true,
       "minimumReleaseAge": "7 days"
     },
     {
