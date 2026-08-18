@@ -38,7 +38,8 @@ export function getRuleModules() {
  * @returns Promise object with enabled rules in RAP-LP to run
  */
 export async function importAndCreateRuleInstances(
-  context: RuleExecutionContext, ruleCategories: RuleModuleName[],
+  context: RuleExecutionContext,
+  ruleCategories: RuleModuleName[],
 ): Promise<{ rules: Record<string, any>; instanceCategoryMap: Map<string, any> }> {
   const ruleInstances: Record<string, any> = {}; // store instances of rule classes
   const ruleTypes: any[] = []; // array to store rule classes.
@@ -113,7 +114,7 @@ export async function importAndCreateRuleInstances(
       ruleInstances[RuleClass.name] = instance;
       instanceCategoryMap.set(RuleClass.name, RuleClass); // Do we have name of ruleClass ?
     } catch (error: any) {
-      console.error(`Fel vid skapande av instans för regelklass ${RuleClass.name}:`, error.message);
+      console.error('Fel vid skapande av instans för regelklass %s:', RuleClass.name, error.message);
     }
   });
   return { rules: ruleInstances, instanceCategoryMap };
