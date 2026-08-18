@@ -1081,7 +1081,14 @@ Regeln förutsätter att varje dokumenterat API-svar innehåller HTTP-headern `t
 Regeln kontrollerar **endast** att headern är dokumenterad i API-specifikationen. Den kontrollerar inte hur spårningsinformationen hanteras via körning, exempelvis att en ny spårkedja initeras enligt W3C Trace Context eller att samma `traceparent` returneras som i det inkommande anropet.
 
 **Exempel:**
-I exemplet ovan kontrolleras att `traceparent` finns bland de headers som dokumenterats för API-svaret. Headern kan även definieras genom en `$ref` till `components.headers`.
+
+![alt text](images/spa04-1.png)
+
+I exemplet ovan kontrolleras att `traceparent` finns bland de headers som dokumenterats för API-svaret.
+
+![alt text](images/spa04-2.png)
+
+Headern kan även definieras genom en `$ref` till `components.headers`.
 
 ---
 
