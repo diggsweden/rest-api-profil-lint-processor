@@ -74,7 +74,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
 9. [Område: Versionhantering](#område-versionhantering)
    - [ID: VER.05](#id-ver05)
    - [ID: VER.06](#id-ver06)
-10. [Område: Spårbarhet](#område-spårbarhet)
+10. [Område: Spårbarhet och korrelation](#område-spårbarhet-och-korrelation)
     - [ID: SPA.04](#id-spa04)
 11. [Område: Filtrering, paginering och sökparametrar](#område-filtrering-paginering-och-sökparametrar)
     - [ID: FNS.01](#id-fns01)
