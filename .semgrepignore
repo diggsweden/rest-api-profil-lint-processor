@@ -4,5 +4,5 @@
 
 # These workflows are owned by diggsweden/reusable-ci. Remove this ignore when upstream stops requiring it.
 .github/workflows/pullrequest-workflow.yml
-.github/workflows/release-workflow-dev.yml
+.github/workflows/release-dev-workflow.yml
 .github/workflows/release-workflow.yml
