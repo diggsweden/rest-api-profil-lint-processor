@@ -43,7 +43,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: DOK.20](#id-dok20)
    - [ID: DOK.21](#id-dok21)
 2. [Område: Datum- och tidsformat](#område-datum--och-tidsformat)
-   - [ID: DOT.01](#id-dot01)
+   - [ID: DOT.02](#id-dot02)
    - [ID: DOT.04](#id-dot04)
 3. [Område: Resurser](#område-resurser)
    - [ID: RES.02](#id-res02)
@@ -436,7 +436,27 @@ _Om säkerhet saknas så bör det signaleras genom att tilldela security-objekte
 
 **Täckningsgrad: 50%**
 
-### ID: DOT.01
+### ID: DOT.02
+
+**Krav:** Datum och tid SKALL (DOT.02) anges enligt [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339) som bygger på ISO-8601.
+
+**Typ:** SKALL
+
+**Förklaring:**
+Regeln förutsätter att det finns datum- eller tidsvärden angivna som exempel i API-specifikationen. Exempelvärdet kontrolleras mot RFC 3339-formatet.
+
+Datum anges enligt `YYYY-MM-DD` och tid enligt formatet `hh:mm:ss`, där delar av en sekund är valfritt.
+
+Datum och tid kombineras enligt följande format:
+`YYYY-MM-DDThh:mm:ss:ff` där `T` separerar datum från tid och `ff` anger delar av en sekund.
+
+**Exempel:**
+
+![alt text](images/dot02.png)
+
+Exemplet ovan föreställer ett datum- och tidsvärde som anges enligt RFC 3339. Exempelvärdet `1907-04-01T04:00:09.12` innehåller år, månad, dag, timme, minut, sekund samt delar av en sekund.
+
+<!-- ### ID: DOT.01
 
 **Krav:** Datum och tid SKALL hanteras enligt följande, använd alltid RFC 3339 för datum och tid, acceptera alla tidszoner i API:er returnera datum och tid i UTC och använd inte tidsdelen om du inte behöver den.
 
@@ -457,7 +477,7 @@ Regeln förutsätter att det finns förekomster av fält i retursvar och som bes
 
 I exemplet ovan, så exemplifieras regeln med en POST operation, där regeln förutsätter att det finns en förekomst av fältet examples under i detta fall attributet ”postedTime ”. Ifall man refererar en schema definition med hjälp av nyckelordet $ref, så ignoreras övriga element på aktuell nivå. Detta innebär att om det finns ett exempel fält på schema nivå så ”overridar” den ett ev. ”inline” exempelfält.
 
----
+--- -->
 
 ### ID: DOT.04
 
