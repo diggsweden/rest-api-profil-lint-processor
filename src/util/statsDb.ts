@@ -66,15 +66,17 @@ export function recordRuleStats(rules: RuleStat[], versions: StatVersions): void
       VALUES (?, ?, ?, ?, ?)
     `);
     const createdAt = new Date().toISOString();
-    for (const rule of rules) {
-      insert.run(
-        createdAt,
-        rule.ruleId,
-        rule.severity.toLowerCase(),
-        versions.restApiProfilVersion,
-        versions.rapLpVersion,
-      );
-    }
+    database.transaction(() => {
+      for (const rule of rules) {
+        insert.run(
+          createdAt,
+          rule.ruleId,
+          rule.severity.toLowerCase(),
+          versions.restApiProfilVersion,
+          versions.rapLpVersion,
+        );
+      }
+    })();
   } catch (err) {
     console.warn('Failed to record statistics:', err instanceof Error ? err.message : err);
   }
