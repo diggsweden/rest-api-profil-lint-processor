@@ -10,6 +10,7 @@ import OpenApiValidator from 'express-openapi-validator';
 import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
+import { registerHealthRoutes } from './routes/health.js';
 
 export type ApiArgs = {
   enableUrlValidation?: boolean;
@@ -53,6 +54,9 @@ export async function startServer<T extends ApiArgs>(args: T) {
 
   // API Endpoint, t.ex. för att validera en YAML-fil
   registerValidationRoutes(app);
+
+  // Health endpoints
+  registerHealthRoutes(app);
 
   if (args.enableUrlValidation) {
     registerUrlValidationRoutes(app, args.urlValidationConfigFile);
