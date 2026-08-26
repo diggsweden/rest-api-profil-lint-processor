@@ -30,7 +30,8 @@ function getDb(): Database.Database | undefined {
   try {
     fs.mkdirSync(dataDir, { recursive: true });
     db = new Database(dbPath);
-    db.pragma('journal_mode = WAL');
+    db.pragma('journal_mode = DELETE');
+    db.pragma('busy_timeout = 5000');
     db.exec(`
       CREATE TABLE IF NOT EXISTS rule_stats (
         id                       INTEGER PRIMARY KEY AUTOINCREMENT,
