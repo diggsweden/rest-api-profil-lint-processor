@@ -7,7 +7,7 @@ import testRule from '../util/helperTest.js';
 
 testRule('Spa04', [
   {
-    name: 'giltigt testfall - traceparent finns',
+    name: 'giltigt testfall - traceparent finns med schema',
     document: {
       openapi: '3.1.0',
       info: { version: '1.0' },
@@ -22,6 +22,30 @@ testRule('Spa04', [
                     schema: {
                       type: 'string',
                     },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - traceparent finns via ref',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/users': {
+          get: {
+            responses: {
+              '200': {
+                description: 'OK',
+                headers: {
+                  traceparent: {
+                    $ref: '#/components/headers/Traceparent',
                   },
                 },
               },
