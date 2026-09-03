@@ -74,7 +74,9 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
 9. [Område: Versionhantering](#område-versionhantering)
    - [ID: VER.05](#id-ver05)
    - [ID: VER.06](#id-ver06)
-10. [Område: Filtrering, paginering och sökparametrar](#område-filtrering-paginering-och-sökparametrar)
+10. [Område: Spårbarhet och korrelation](#område-spårbarhet-och-korrelation)
+    - [ID: SPA.04](#id-spa04)
+11. [Område: Filtrering, paginering och sökparametrar](#område-filtrering-paginering-och-sökparametrar)
     - [ID: FNS.01](#id-fns01)
     - [ID: FNS.03](#id-fns03)
     - [ID: FNS.05](#id-fns05)
@@ -82,14 +84,14 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
     - [ID: FNS.07](#id-fns07)
     - [ID: FNS.08](#id-fns08)
     - [ID: FNS.09](#id-fns09)
-11. [Område: Säkerhet](#område-säkerhet)
+12. [Område: Säkerhet](#område-säkerhet)
     - [ID: SAK.01](#id-sak01)
     - [ID: SAK.09](#id-sak09)
     - [ID: SAK.10](#id-sak10)
     - [ID: SAK.15](#id-sak15)
     - [ID: SAK.16](#id-sak16)
     - [ID: SAK.18](#id-sak18)
-12. [Område: Förutsättningar](#område-förutsättningar)
+13. [Område: Förutsättningar](#område-förutsättningar)
     - [ID: FOR.02](#id-for02)
 
 ## Område: Dokumentation
@@ -1054,6 +1056,41 @@ Regeln förutsätter att resursen `api-info` finns tillgänglig under själva ro
 ![alt text](images/ver6.png)
 
 I exemplet ovan, så exemplifieras regeln med en kontroll att den specificerade URL:en följer den semantiska versioneringen korrekt.
+
+---
+
+## Område: Spårbarhet och korrelation
+
+**Täckningsgrad: 14%**
+
+### ID: SPA.04
+
+**Krav:** API-producenten BÖR (SPA.04) inkludera HTTP-headern traceparent i ett API-svar.
+
+**Typ:** BÖR
+
+**JSON Path Plus-uttryck:**
+
+```
+$.paths[*][get,put,post,delete,patch].responses[*]
+```
+
+**Förklaring:**
+Regeln förutsätter att varje dokumenterat API-svar innehåller HTTP-headern `traceparent`. Headern kan definieras direkt under `headers` eller via `$ref` till en header som definierats under `components.headers`.
+
+Regeln kontrollerar **endast** att headern är dokumenterad i API-specifikationen. Den kontrollerar inte hur spårningsinformationen hanteras via körning, exempelvis att en ny spårkedja initeras enligt W3C Trace Context eller att samma `traceparent` returneras som i det inkommande anropet.
+
+**Exempel:**
+
+![alt text](images/spa04-1.png)
+
+I exemplet ovan kontrolleras att `traceparent` finns bland de headers som dokumenterats för API-svaret.
+
+![alt text](images/spa04-2.png)
+
+Headern kan även definieras genom en `$ref` till `components.headers`.
+
+---
 
 ## Område: Filtrering, paginering och sökparametrar
 
