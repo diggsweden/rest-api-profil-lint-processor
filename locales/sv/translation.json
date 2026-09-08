@@ -7,8 +7,8 @@
   },
   "api": {
     "invalidRequest": "Invalid Request",
-    "unexpectedError": "Ett oväntat fel uppstod.",
-    "unknownError": "Ett okänt fel uppstod.",
+    "unexpectedError": "An unexpected error occurred",
+    "unknownError": "An unknown error occurred.",
     "requiredField": "Required field missing: {{fields}}"
   }
 }

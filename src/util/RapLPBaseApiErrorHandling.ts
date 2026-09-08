@@ -50,7 +50,7 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  const t = translator(res.locals.locale ?? resolveLocale());
+  const t = translator(res.locals?.locale ?? resolveLocale());
 
 // SpecParseError --> 400 adapter impl
 if (err instanceof SpecParseError) {
