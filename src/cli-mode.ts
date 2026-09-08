@@ -22,6 +22,7 @@ import { SpecParseError } from './util/RapLPSpecParseError.js';
 import * as path from 'node:path';
 import { RuleExecutionContext } from './util/RuleExecutionContext.js';
 import { parseRuleCategories,resolveRuleCategories } from './rulesets/util/ruleModules.js';
+import { resolveLocale, translator, type Locale } from './i18n.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -39,9 +40,11 @@ export type CliArgs = {
   logDiagnostic?: string;
   dex?: string;
   strict?: boolean;
+  lang?: string;
 };
 
 export async function execCLI<T extends CliArgs>(argv: T) {
+  const t = translator(resolveLocale(argv.lang ?? process.env.RAP_LP_LANG));
   try {
     // Parse command-line arguments using yargs
     const apiSpecFileName = (argv.file as string) || '';
@@ -81,7 +84,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         const formattedDate = new Date().toISOString();
         const logData = {
           timeStamp: formattedDate,
-          message: 'Fel vid parsing av API-specifikationen.',
+          message: t('cli.parseError'),
           error: err.toJSON ? err.toJSON() : { message: String(err) },
         };
 
@@ -106,7 +109,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           }
         } else {
           // No log file specified - write to stdout
-          console.error(chalk.red('<<< Parserfel i API-specifikationen >>>'));
+          console.error(chalk.red(t('cli.parserErrorHeader')));
           console.error(chalk.red(`Fel: ${err.message}`));
           if (err.line || err.column) {
             console.error(chalk.yellow(`Rad: ${err.line ?? '-'}, Kolumn: ${err.column ?? '-'}`));
@@ -283,7 +286,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
   } catch (error: any) {
     logErrorToFile(error);
     console.error(
-      chalk.red('Ett oväntat fel uppstod! Undersök felloggen för RAP-LP för mer information om felet', error.message),
+      chalk.red(`${t('cli.unexpectedError')} Undersök felloggen för RAP-LP för mer information om felet`, error.message),
     );
   }
   function logErrorToFile(error: any) {

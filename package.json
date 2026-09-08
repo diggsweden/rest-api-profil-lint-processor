@@ -14,7 +14,8 @@
     "dist",
     "README.md",
     "GUIDELINES.md",
-    "document/**"
+    "document/**",
+    "locales/**"
   ],
   "repository": {
     "type": "git",
@@ -60,6 +61,7 @@
     "express": "^5.0.0",
     "express-openapi-validator": "^5.3.7",
     "fast-xml-parser": "^5.0.0",
+    "i18next": "^25.10.10",
     "js-yaml": "^4.1.0",
     "path": "^0.12.7",
     "prom-client": "^15.1.3",

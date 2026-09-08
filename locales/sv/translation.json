@@ -1,0 +1,14 @@
+{
+  "cli": {
+    "missingFile": "Saknar obligatoriskt argument för cli-läge: --file <path>",
+    "parseError": "Fel vid parsing av API-specifikationen.",
+    "parserErrorHeader": "<<< Parserfel i API-specifikationen >>>",
+    "unexpectedError": "Ett oväntat fel uppstod!"
+  },
+  "api": {
+    "invalidRequest": "Invalid Request",
+    "unexpectedError": "Ett oväntat fel uppstod.",
+    "unknownError": "Ett okänt fel uppstod.",
+    "requiredField": "Required field missing: {{fields}}"
+  }
+}

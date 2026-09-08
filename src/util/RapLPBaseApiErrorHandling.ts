@@ -5,6 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
 import { SpecParseError } from './RapLPSpecParseError.js';
+import { translator, resolveLocale } from '../i18n.js';
 
 export const sendProblem = (res: Response, status: number, body: ProblemDetailsDTO) =>
   res.status(status).set('Content-Type', 'application/problem+json').json(body);
@@ -49,6 +50,7 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  const t = translator(res.locals.locale ?? resolveLocale());
 
 // SpecParseError --> 400 adapter impl
 if (err instanceof SpecParseError) {
@@ -86,7 +88,7 @@ if (err instanceof SpecParseError) {
 }
   const status = err.errorType || err.status || ERROR_TYPE.INTERNAL_SERVER_ERROR;
   const isValidatorError = Array.isArray(err.errors);
-  const title = err.title || (isValidatorError ? 'Invalid Request' : 'An unexpected error occurred');
+  const title = err.title || (isValidatorError ? t('api.invalidRequest') : t('api.unexpectedError'));
 
   let detail = err.message || 'An unknown error occurred.';
   if (isValidatorError) {
@@ -99,7 +101,7 @@ if (err instanceof SpecParseError) {
       })
       .filter(Boolean);
     if (missingFields.length > 0) {
-      detail = `Required field missing: ${missingFields.join(', ')}`;
+      detail = t('api.requiredField', { fields: missingFields.join(', ') });
     }
   }
 
@@ -107,7 +109,7 @@ if (err instanceof SpecParseError) {
     type: PROBLEM_TYPE[status as ERROR_TYPE] ?? 'about:blank',
     status,
     title,
-    detail,
+    detail: detail || t('api.unknownError'),
     instance: req.originalUrl,
   });
 

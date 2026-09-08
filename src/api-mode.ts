@@ -11,6 +11,7 @@ import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import { registerHealthRoutes } from './routes/health.js';
+import { localeFromAcceptLanguage } from './i18n.js';
 
 export type ApiArgs = {
   enableUrlValidation?: boolean;
@@ -24,6 +25,11 @@ export async function startServer<T extends ApiArgs>(args: T) {
 
   const port = Number(process.env.RAP_LP_PORT ?? DEFAULT_PORT);
   const bodyLimit = process.env.RAP_LP_JSON_BODY_LIMIT || '3mb';
+  app.use((req, res, next) => {
+    res.locals.locale = localeFromAcceptLanguage(req.header('Accept-Language'));
+    res.append('Vary', 'Accept-Language');
+    next();
+  });
 
   const swaggerDocument = YAML.load('./rap-lp-openapi.yaml');
   app.use(

@@ -18,6 +18,7 @@ import { hideBin } from 'yargs/helpers';
 import { startServer } from './api-mode.js';
 import { execCLI } from './cli-mode.js';
 import { getRuleModules } from './util/ruleUtil.js';
+import { resolveLocale, translator } from './i18n.js';
 
 async function main() {
   const argv = await yargs(hideBin(process.argv))
@@ -78,11 +79,16 @@ async function main() {
         'Aktivera strict mode för validering av semantik och struktur.',
       type: 'boolean',
       default: false,
-    })    
+    })
+    .option('lang', {
+      describe: 'Språk för CLI-utdata (sv eller en)',
+      choices: ['sv', 'en'],
+      type: 'string',
+    })
     .check(function (argv) {
       if (argv.mode !== 'api') {
         if (!argv.file) {
-          throw new Error('Saknar obligatoriskt argument för cli-läge: --file <path>');
+          throw new Error(translator(resolveLocale(argv.lang ?? process.env.RAP_LP_LANG))('cli.missingFile'));
         }
         return true;
       }

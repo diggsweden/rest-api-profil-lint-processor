@@ -1,0 +1,14 @@
+{
+  "cli": {
+    "missingFile": "Missing required argument for CLI mode: --file <path>",
+    "parseError": "Error parsing the API specification.",
+    "parserErrorHeader": "<<< Error parsing the API specification >>>",
+    "unexpectedError": "An unexpected error occurred!"
+  },
+  "api": {
+    "invalidRequest": "Invalid request",
+    "unexpectedError": "An unexpected error occurred.",
+    "unknownError": "An unknown error occurred.",
+    "requiredField": "Required field missing: {{fields}}"
+  }
+}
