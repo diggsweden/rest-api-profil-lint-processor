@@ -4,6 +4,7 @@
 
 import { ERROR_TYPE, errorHandler, RapLPBaseApiError } from '../../../src/util/RapLPBaseApiErrorHandling';
 import { ProblemDetailsDTO } from '../../../src/model/ProblemDetailsDto';
+import { SpecParseError } from '../../../src/util/RapLPSpecParseError';
 import { Request, Response, NextFunction } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
@@ -19,6 +20,7 @@ describe('errorHandler middleware', () => {
       originalUrl: '/example',
     } as Request;
     res = {
+      locals: {},
       status: jest.fn().mockReturnThis(),
       set: jest.fn().mockReturnThis(),
       json: jest.fn(),
@@ -96,6 +98,45 @@ describe('errorHandler middleware', () => {
       status: 500,
       detail: 'Internal server error',
       instance: '/example',
+    });
+  });
+
+  it('should localize validator errors using the response locale', () => {
+    res.locals.locale = 'en';
+    const error = {
+      status: 400,
+      errors: [
+        {
+          errorCode: 'required.openapi.requestValidation',
+          params: { missingProperty: 'spec' },
+        },
+      ],
+    };
+
+    errorHandler(error, req, res, next);
+
+    const sendMock = res.json as jest.Mock;
+    const sentResponse = sendMock.mock.calls[0][0] as ProblemDetailsDTO;
+
+    expect(sentResponse).toMatchObject({
+      title: 'Invalid request',
+      detail: 'Required field missing: spec',
+    });
+  });
+
+  it('should localize SpecParseError titles using the response locale', () => {
+    res.locals.locale = 'en';
+    const error = new SpecParseError('Could not parse YAML content.', { source: 'yaml', stage: 'sanity' });
+
+    errorHandler(error, req, res, next);
+
+    const sendMock = res.json as jest.Mock;
+    const sentResponse = sendMock.mock.calls[0][0] as ProblemDetailsDTO;
+
+    expect(sentResponse).toMatchObject({
+      title: 'Unknown error while parsing the API specification',
+      detail: 'Could not parse YAML content.',
+      kind: 'spec-parse',
     });
   });
 });

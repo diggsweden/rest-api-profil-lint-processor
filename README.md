@@ -25,10 +25,11 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 
 ### Språkstöd
 
-CLI-utdata är svenska som standard. Använd `--lang en` eller miljövariabeln
-`RAP_LP_LANG=en` för engelska utdata. Flaggan `--lang` har företräde framför
-miljövariabeln. API-svar använder `Accept-Language` och faller tillbaka till svenska.
-Nya översättningar läggs till som `locales/<locale>/translation.json`.
+CLI-utdata som är ansluten till i18n är svenska som standard. Använd `--lang en`
+eller miljövariabeln `RAP_LP_LANG=en` för engelska utdata. Flaggan `--lang` har
+företräde framför miljövariabeln. API-fel som hanteras av den gemensamma
+felhanteraren använder `Accept-Language` och faller tillbaka till svenska. Nya
+översättningar läggs till som `locales/<locale>/translation.json`.
 
 ## Innehållsförteckning
 

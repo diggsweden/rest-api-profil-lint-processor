@@ -20,68 +20,72 @@ import { execCLI } from './cli-mode.js';
 import { getRuleModules } from './util/ruleUtil.js';
 import { resolveLocale, translator } from './i18n.js';
 
+function getRawOptionValue(args: string[], name: string): string | undefined {
+  const prefix = `--${name}=`;
+  const assignment = args.find((arg) => arg.startsWith(prefix));
+  if (assignment) return assignment.slice(prefix.length);
+
+  const index = args.indexOf(`--${name}`);
+  return index >= 0 ? args[index + 1] : undefined;
+}
+
 async function main() {
-  const argv = await yargs(hideBin(process.argv))
+  const rawArgs = hideBin(process.argv);
+  const t = translator(resolveLocale(getRawOptionValue(rawArgs, 'lang') ?? process.env.RAP_LP_LANG));
+
+  const argv = await yargs(rawArgs)
     .version('1.2.0')
     .option('mode', {
       alias: 'm',
-      describe: 'Körläget för applikationen api',
+      describe: t('cli.help.mode'),
       choices: ['api'],
     })
     .option('file', {
       alias: 'f',
-      describe: '[cli mode] Path to the YAML file',
+      describe: t('cli.help.file'),
       type: 'string',
       coerce: (file: string) => path.resolve(file), // convert to absolute path
     })
     .option('categories', {
       alias: 'c',
-      describe: `[cli mode] Regelkategorier separerade med kommatecken.\nAvailable categories:\r ${getRuleModules().join(
-        ',',
-      )}`,
+      describe: `${t('cli.help.categories')}\n${t('cli.help.availableCategories')}\r ${getRuleModules().join(',')}`,
       type: 'string',
     })
     .option('logError', {
       alias: 'l',
-      describe:
-        'Sökväg till fil med information för eventuell felloggningsinformation från RAP-LP. Om ej specificerad, så kommer felet att skrivas ut till stdout.',
+      describe: t('cli.help.logError'),
       type: 'string',
     })
     .option('append', {
       alias: 'a',
-      describe:
-        'Utöka loginformationen i filen för felloggningsiformation. Utökda loginformation till befintlig fil för loggning av fel( om specificerad ).',
+      describe: t('cli.help.append'),
       type: 'boolean',
       default: false,
     })
     .option('logDiagnostic', {
       alias: 'd',
-      describe:
-        'Sökväg till fil för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i JSON format.',
+      describe: t('cli.help.logDiagnostic'),
       type: 'string',
     })
     .option('dex', {
-      describe:
-        'Sökväg till fil för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i Excel format.',
+      describe: t('cli.help.dex'),
       type: 'string',
     })
     .option('enableUrlValidation', {
       type: 'boolean',
-      describe: '[api-mode] Möjliggör validering av filer givet url.',
+      describe: t('cli.help.enableUrlValidation'),
     })
     .option('urlValidationConfigFile', {
       type: 'string',
-      describe:
-        '[api-mode] Sökväg till fil för configuration av urlValidation funktionalliteten faller tillbaka på ./urlValidationConfig.cjs',
+      describe: t('cli.help.urlValidationConfigFile'),
     })
     .option('strict', {
-      describe: 
-        'Aktivera strict mode för validering av semantik och struktur.',
+      describe: t('cli.help.strict'),
       type: 'boolean',
       default: false,
     })
     .option('lang', {
-      describe: 'Språk för CLI-utdata (sv eller en)',
+      describe: t('cli.help.lang'),
       choices: ['sv', 'en'],
       type: 'string',
     })
@@ -100,7 +104,7 @@ async function main() {
         );
 
         if (hasForbiddenArgs.length > 0) {
-          throw new Error('I API-läge är endast --enableUrlValidation och --urlValidationConfigFile tillåtna. ');
+          throw new Error(t('cli.apiModeForbiddenArgs'));
         }
       }
 
@@ -118,5 +122,6 @@ async function main() {
 
 // Starta huvudprocessen
 main().catch((err) => {
-  console.error('Ett oväntat fel uppstod:', err);
+  const t = translator(resolveLocale(process.env.RAP_LP_LANG));
+  console.error(`${t('cli.unexpectedError')}:`, err);
 });

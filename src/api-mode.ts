@@ -53,7 +53,7 @@ export async function startServer<T extends ApiArgs>(args: T) {
     OpenApiValidator.middleware({
       apiSpec, // Path to OpenAPI spec
       validateRequests: true, // Automatically validate request bodies
-      validateResponses: true, // Automatically validate responses
+      validateResponses: true, // Automatically validate response bodies
       ignorePaths: /\/api\/v1\/validation\/validatespec/,
     }),
   );

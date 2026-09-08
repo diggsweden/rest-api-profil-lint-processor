@@ -44,36 +44,28 @@ class RuleCategoryError extends RapLPBaseApiError {
 
 // Express.js middleware to map Extended
 
-const errorHandler = (
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   const t = translator(res.locals?.locale ?? resolveLocale());
 
-// SpecParseError --> 400 adapter impl
-if (err instanceof SpecParseError) {
-
-    const isRuleEngineCase = err.stage === 'rule-engine';  
+  // SpecParseError --> 400 adapter impl
+  if (err instanceof SpecParseError) {
+    const isRuleEngineCase = err.stage === 'rule-engine';
     const isStrictCase = err.stage === 'strict';
     const isSecurityCase = err.stage === 'security';
 
     const problemDetails = new ProblemDetailsDTO({
-      type: isRuleEngineCase || isSecurityCase
-        ? 'https://raplp.digg.se/problems/spec-validation'
-        : 'https://raplp.digg.se/problems/spec-parse-error',
+      type:
+        isRuleEngineCase || isSecurityCase
+          ? 'https://raplp.digg.se/problems/spec-validation'
+          : 'https://raplp.digg.se/problems/spec-parse-error',
 
-      title: isRuleEngineCase || isStrictCase || isSecurityCase
-        ? 'Specifikationen kunde inte utvärderas fullt ut'
-        : 'Okänt fel vid parsning av API-specifikationen',
+      title:
+        isRuleEngineCase || isStrictCase || isSecurityCase ? t('api.specEvaluationFailed') : t('api.specParseUnknown'),
       status: ERROR_TYPE.BAD_REQUEST,
       detail: err.message,
       instance: req.originalUrl,
-      cause: err.cause instanceof Error
-        ? { name: err.cause.name, message: err.cause.message }
-        : undefined,
-      /**Extra fields**/ 
+      cause: err.cause instanceof Error ? { name: err.cause.name, message: err.cause.message } : undefined,
+      /**Extra fields**/
       kind: isRuleEngineCase || isStrictCase || isSecurityCase ? 'spec-validation' : 'spec-parse',
       line: err.line,
       column: err.column,
@@ -85,7 +77,7 @@ if (err instanceof SpecParseError) {
     });
 
     return sendProblem(res, ERROR_TYPE.BAD_REQUEST, problemDetails);
-}
+  }
   const status = err.errorType || err.status || ERROR_TYPE.INTERNAL_SERVER_ERROR;
   const isValidatorError = Array.isArray(err.errors);
   const title = err.title || (isValidatorError ? t('api.invalidRequest') : t('api.unexpectedError'));
@@ -93,8 +85,8 @@ if (err instanceof SpecParseError) {
   let detail = err.message || 'An unknown error occurred.';
   if (isValidatorError) {
     const missingFields = (err.errors as any[])
-      .filter(e => e.errorCode?.startsWith('required.'))
-      .map(e => {
+      .filter((e) => e.errorCode?.startsWith('required.'))
+      .map((e) => {
         if (e.params?.missingProperty) return e.params.missingProperty;
         const match = e.message?.match(/required property '(\w+)'/);
         return match?.[1];
