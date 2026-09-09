@@ -5,332 +5,69 @@
 openapi: 3.1.0
 
 info:
-  title: RAP-LP API - Testing traceability and correlation
+  title: REST API Profile - Traceability and correlation example
   version: 1.0.0
-  summary: API for validating OpenAPI specifications against the Swedish REST API profile.
+  summary: Example API demonstrating correct implementation of rules for traceability and correlation.
   description: |
-    This specification is a test artefact for validating the traceability and
-    correlation requirements of the national REST API Profile.
+    This is a deliberately simple reference example for the chapter "Traceability and correlation" in the Swedish REST API Profile.
 
-    It demonstrates support for W3C Trace Context, including:
-    - accepting and propagating the traceparent header;
-    - generating a new traceparent when none is received;
-    - optional use of tracestate for organization-specific tracing information;
-    - correlation of trace-id with application and audit logs;
-    - use of x-request-id as an additional identifier without replacing traceparent.
+    SPA.04:
+    The producer of the API SHOULD include the HTTP traceparent header in the response.
 
-    Known limitations and problems:
-    - This specification is a test artefact and does not represent a complete production API.
-    - Trace propagation to downstream systems is described but cannot be verified
-      from the OpenAPI document alone.
-    - Log correlation is described but cannot be verified from the OpenAPI document alone.
-    - The API does not define a specific downstream system for propagation tests.
+    The example shows a traceparent header returned by the API.
 
-    Denna specifikation är en testartefakt för validering av kraven på spårbarhet
-    och korrelation i den nationella REST API-profilen.
+    This example is intentionally simplified and is not intended to represent a complete production API.
 
-    Den demonstrerar stöd för W3C Trace Context, inklusive propaginering av
-    traceparent, valfri användning av tracestate samt användning av x-request-id
-    utan att ersätta traceparent.
+    Detta är ett avsiktligt förenklat referensexempel för kapitlet "Spårbarhet och korrelation" i den svenska REST API-profilen.
 
-  contact:
-    name: REST API-profil Lint Processor
-    url: https://raplp.digg.se/
-    email: raplp-maintenance@digg.se
+    SPA.04:
+    API-producenten BÖR inkludera HTTP-headern traceparent i ett API-svar.
 
-  license:
-    name: EUPL-1.2
-    url: https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+    Exemplet visar en traceparent-header som returneras av API:et.
 
-externalDocs:
-  description: RAP-LP API documentation
-  url: https://github.com/diggsweden/rest-api-profil-lint-processor/blob/main/README.md
+    Exemplet är avsiktligt förenklat och är inte avsett att representera ett komplett produktions-API.
 
 servers:
-  - url: https://raplp.digg.se/api/v1/
-    description: Production
-
-security:
-  - bearerAuth: []
-
-tags:
-  - name: traceability
-    description: Operations for validating traceability and correlation requirements.
+  - url: https://api.example.se
 
 paths:
-  /validation/rules:
+  /orders/{orderId}:
     get:
-      tags:
-        - traceability
-      summary: List available validation rule categories.
-      description: |
-        Returns the available rule categories.
+      summary: Get an order.
+      operationId: getOrder
 
-        The operation accepts the W3C Trace Context traceparent header.
-        If traceparent is received, its tracing context is propagated according
-        to W3C Trace Context when the API communicates with downstream systems.
-        If traceparent is absent, the API generates a new traceparent.
-
-        The trace-id from traceparent is used as a correlation identifier in
-        application and audit logs.
-
-        tracestate may contain organization-specific tracing information.
-        x-request-id may be used as an additional identifier but never replaces
-        traceparent for tracing between systems or organizations.
-      operationId: listValidationRules
       parameters:
-        - $ref: '#/components/parameters/Traceparent'
-        - $ref: '#/components/parameters/Tracestate'
-        - $ref: '#/components/parameters/XRequestId'
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: '12345'
+
       responses:
         '200':
-          description: Available rule categories were returned.
+          description: Order returned successfully.
           headers:
             traceparent:
               $ref: '#/components/headers/Traceparent'
+
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationRules'
-              examples:
-                default:
-                  summary: Complete response example
-                  value:
-                    - rule: DokRules
-                      description: Dokumentation
-                    - rule: UfnRules
-                      description: URL Format och namngivning
-                    - rule: ForRules
-                      description: Förutsättningar
-
-  /validation/validatespec:
-    post:
-      tags:
-        - traceability
-      summary: Validate an OpenAPI specification.
-      description: |
-        Validates a base64-encoded OpenAPI specification.
-
-        The operation accepts and propagates W3C Trace Context information.
-        If traceparent is absent, a new traceparent is generated.
-        The trace-id is used for correlation with application and audit logs.
-
-        tracestate may be used for organization-specific tracing information.
-        x-request-id may be used as an additional identifier but does not replace
-        traceparent.
-
-        Trace information is propagated to downstream systems when the API
-        communicates with such systems.
-      operationId: validateSpec
-      parameters:
-        - $ref: '#/components/parameters/Traceparent'
-        - $ref: '#/components/parameters/Tracestate'
-        - $ref: '#/components/parameters/XRequestId'
-      requestBody:
-        required: true
-        description: Base64-encoded OpenAPI specification and optional validation settings.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SpecValidationRequest'
-            examples:
-              default:
-                summary: Complete request example
-                value:
-                  spec: b3BlbmFwaTogMy4xLjAKaW5mbzoKICB0aXRsZTogRXhhbXBsZQogIHZlcnNpb246IDEuMC4wCnBhdGhzOiB7fQo=
-                  strict: true
-                  categories:
-                    - DokRules
-                    - UfnRules
-      responses:
-        '200':
-          description: Validation completed without rule violations.
-          headers:
-            traceparent:
-              $ref: '#/components/headers/Traceparent'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationResponse'
-              examples:
-                default:
-                  summary: Complete response example
-                  value:
-                    ok: true
-                    stage: rule-engine
-                    format: yaml
-                    payload:
-                      result: []
-                      report:
-                        - note: Godkända regler - RAP-LP
-                          rules:
-                            - id: DOK.15
-                              area: Dokumentation
-                              status: OK
-                    _links:
-                      self:
-                        href: https://raplp.digg.se/api/v1/validation/validatespec
-                        method: POST
-                      rules:
-                        href: https://raplp.digg.se/api/v1/validation/rules
-                        method: GET
+                type: object
+                properties:
+                  orderId:
+                    type: string
+                  status:
+                    type: string
+                required:
+                  - orderId
+                  - status
 
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
-  parameters:
-    Traceparent:
-      name: traceparent
-      in: header
-      required: false
-      description: |
-        W3C Trace Context traceparent header.
-
-        If supplied, the tracing context is accepted and propagated according
-        to W3C Trace Context. If absent, the API generates a new traceparent.
-      schema:
-        type: string
-      example: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-
-    Tracestate:
-      name: tracestate
-      in: header
-      required: false
-      description: |
-        Optional W3C Trace Context tracestate header for organization-specific
-        tracing information.
-      schema:
-        type: string
-      example: digg=prod
-
-    XRequestId:
-      name: x-request-id
-      in: header
-      required: false
-      description: |
-        Optional additional request identifier. It may be used for internal
-        correlation but must not replace traceparent for tracing API calls
-        between systems or organizations.
-      schema:
-        type: string
-      example: 7f3d8c7a-2b7e-4f61-ae55-3c8b7e4c2d10
-
   headers:
     Traceparent:
-      description: W3C Trace Context traceparent header returned with the response.
+      description: |
+        The traceparent header defined by W3C Trace Context and returned by the API.
       schema:
         type: string
-      example: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-
-  schemas:
-    ValidationRules:
-      type: array
-      description: Available validation rule categories.
-      items:
-        $ref: '#/components/schemas/ValidationRule'
-
-    ValidationRule:
-      type: object
-      additionalProperties: false
-      properties:
-        rule:
-          type: string
-          description: Rule category identifier.
-          example: UfnRules
-        description:
-          type: string
-          description: Human-readable description of the rule category.
-          example: URL Format och namngivning
-      required:
-        - rule
-        - description
-
-    SpecValidationRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        spec:
-          type: string
-          description: Base64-encoded OpenAPI specification content.
-        strict:
-          type: boolean
-          description: Enables strict parsing and semantic validation.
-          default: true
-        categories:
-          type: array
-          description: Optional subset of rule categories to execute.
-          items:
-            type: string
-      required:
-        - spec
-
-    ValidationResponse:
-      type: object
-      additionalProperties: false
-      properties:
-        ok:
-          type: boolean
-          const: true
-        stage:
-          type: string
-          enum:
-            - rule-engine
-        format:
-          type: string
-          enum:
-            - yaml
-            - json
-        payload:
-          type: object
-          additionalProperties: false
-          properties:
-            result:
-              type: array
-              items:
-                type: object
-            report:
-              type: array
-              items:
-                type: object
-          required:
-            - result
-            - report
-        _links:
-          type: object
-          description: Hypermedia links for related API operations.
-          properties:
-            self:
-              type: object
-              properties:
-                href:
-                  type: string
-                  format: uri
-                method:
-                  type: string
-              required:
-                - href
-                - method
-            rules:
-              type: object
-              properties:
-                href:
-                  type: string
-                  format: uri
-                method:
-                  type: string
-              required:
-                - href
-                - method
-          required:
-            - self
-            - rules
-      required:
-        - ok
-        - stage
-        - format
-        - payload
-        - _links
