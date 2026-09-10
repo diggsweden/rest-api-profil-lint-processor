@@ -94,7 +94,7 @@ describe('errorHandler middleware', () => {
     // Validate the structure and content of the sent response
     expect(sentResponse).toMatchObject({
       type: 'https://raplp.digg.se/problems/internal-server-error',
-      title: 'An unexpected error occurred',
+      title: 'Ett oväntat fel uppstod',
       status: 500,
       detail: 'Internal server error',
       instance: '/example',

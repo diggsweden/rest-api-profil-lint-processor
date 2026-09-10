@@ -19,19 +19,11 @@ import { startServer } from './api-mode.js';
 import { execCLI } from './cli-mode.js';
 import { getRuleModules } from './util/ruleUtil.js';
 import { resolveLocale, translator } from './i18n.js';
-
-function getRawOptionValue(args: string[], name: string): string | undefined {
-  const prefix = `--${name}=`;
-  const assignment = args.find((arg) => arg.startsWith(prefix));
-  if (assignment) return assignment.slice(prefix.length);
-
-  const index = args.indexOf(`--${name}`);
-  return index >= 0 ? args[index + 1] : undefined;
-}
+import { cliLocale } from './cliLocale.js';
 
 async function main() {
   const rawArgs = hideBin(process.argv);
-  const t = translator(resolveLocale(getRawOptionValue(rawArgs, 'lang') ?? process.env.RAP_LP_LANG));
+  const t = translator(cliLocale(rawArgs));
 
   const argv = await yargs(rawArgs)
     .version('1.2.0')
@@ -122,6 +114,6 @@ async function main() {
 
 // Starta huvudprocessen
 main().catch((err) => {
-  const t = translator(resolveLocale(process.env.RAP_LP_LANG));
+  const t = translator(cliLocale(hideBin(process.argv)));
   console.error(`${t('cli.unexpectedError')}:`, err);
 });

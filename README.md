@@ -25,11 +25,13 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 
 ### Språkstöd
 
-CLI-utdata som är ansluten till i18n är svenska som standard. Använd `--lang en`
-eller miljövariabeln `RAP_LP_LANG=en` för engelska utdata. Flaggan `--lang` har
-företräde framför miljövariabeln. API-fel som hanteras av den gemensamma
-felhanteraren använder `Accept-Language` och faller tillbaka till svenska. Nya
-översättningar läggs till som `locales/<locale>/translation.json`.
+Svenska är standardspråk. CLI-hjälp, användningsinformation och utvalda generella
+CLI-fel kan visas på engelska med `--lang en` eller miljövariabeln
+`RAP_LP_LANG=en`. Flaggan `--lang` har företräde framför miljövariabeln. Generella
+API-fel använder `Accept-Language` och faller tillbaka till svenska. Regel-ID:n,
+regelbeskrivningar och profilinnehåll förblir svenska. Lägg till översättningar i
+`locales/<locale>/translation.json`. Locale-katalogerna följer med npm-paketet
+och laddas även när RAP-LP körs från en annan aktuell katalog.
 
 ## Innehållsförteckning
 

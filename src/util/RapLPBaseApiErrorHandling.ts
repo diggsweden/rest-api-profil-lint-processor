@@ -82,7 +82,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
   const isValidatorError = Array.isArray(err.errors);
   const title = err.title || (isValidatorError ? t('api.invalidRequest') : t('api.unexpectedError'));
 
-  let detail = err.message || 'An unknown error occurred.';
+  let detail = err.message || t('api.unknownError');
   if (isValidatorError) {
     const missingFields = (err.errors as any[])
       .filter((e) => e.errorCode?.startsWith('required.'))
