@@ -2,150 +2,72 @@
 #
 # SPDX-License-Identifier: EUPL-1.2
 
-openapi: 3.0.0
+openapi: 3.1.0
 
 info:
-  title: Exempel API - Spårbarhet
+  title: REST API Profile - Traceability and correlation example
   version: 1.0.0
+  summary: Example API demonstrating correct implementation of rules for traceability and correlation.
   description: |
-    Exempel på implementation av spårbarhetskrav (SPA)
-    enligt W3C Trace Context.
+    This is a deliberately simple reference example for the chapter "Traceability and correlation" in the Swedish REST API Profile.
+
+    SPA.04:
+    The producer of the API SHOULD include the HTTP traceparent header in the response.
+
+    The example shows a traceparent header returned by the API.
+
+    This example is intentionally simplified and is not intended to represent a complete production API.
+
+    Detta är ett avsiktligt förenklat referensexempel för kapitlet "Spårbarhet och korrelation" i den svenska REST API-profilen.
+
+    SPA.04:
+    API-producenten BÖR inkludera HTTP-headern traceparent i ett API-svar.
+
+    Exemplet visar en traceparent-header som returneras av API:et.
+
+    Exemplet är avsiktligt förenklat och är inte avsett att representera ett komplett produktions-API.
 
 servers:
-  - url: https://api.example.se/v1
+  - url: https://api.example.se
 
 paths:
-  /organisationer/{organisationsnummer}:
+  /orders/{orderId}:
     get:
-      summary: Hämta organisation
-      description: |
-        API:t stödjer spårning enligt W3C Trace Context.
-
-        SPA.01 - API-producenter SKALL stödja spårning enligt W3C Trace Context.
-        SPA.02 - traceparent SKALL accepteras och propageras vidare.
-        SPA.04 - traceparent BÖR returneras i svaret.
-      operationId: getOrganisation
+      summary: Get an order.
+      operationId: getOrder
 
       parameters:
-        - $ref: '#/components/parameters/TraceParent'
-        - $ref: '#/components/parameters/TraceState'
-        - $ref: '#/components/parameters/XRequestId'
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: '12345'
 
       responses:
         '200':
-          description: Organisation hittad
-
+          description: Order returned successfully.
           headers:
             traceparent:
-              $ref: '#/components/headers/TraceParent'
+              $ref: '#/components/headers/Traceparent'
 
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organisation'
-
-        '400':
-          description: Felaktigt anrop
-
-          headers:
-            traceparent:
-              $ref: '#/components/headers/TraceParent'
-
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                properties:
+                  orderId:
+                    type: string
+                  status:
+                    type: string
+                required:
+                  - orderId
+                  - status
 
 components:
-
-  parameters:
-
-    TraceParent:
-      name: traceparent
-      in: header
-      required: false
-      description: |
-        W3C Trace Context.
-
-        SPA.02:
-        Om headern finns SKALL den accepteras och
-        propageras vidare.
-
-        SPA.03:
-        Om headern saknas SKALL API:t generera
-        en ny traceparent.
-      schema:
-        type: string
-        example: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
-
-    TraceState:
-      name: tracestate
-      in: header
-      required: false
-      description: |
-        Organisationsspecifik spårningsinformation.
-
-        SPA.05:
-        KAN användas enligt W3C Trace Context.
-      schema:
-        type: string
-        example: "digg=miljo:prod"
-
-    XRequestId:
-      name: x-request-id
-      in: header
-      required: false
-      description: |
-        Alternativ intern identifierare.
-
-        SPA.07:
-        Får användas som komplement men
-        SKALL INTE ersätta traceparent.
-      schema:
-        type: string
-        format: uuid
-        example: "9f47c1fd-2c6a-4f77-8d1b-c8a927e3f9d1"
-
   headers:
-
-    TraceParent:
+    Traceparent:
       description: |
-        Trace Context som returneras till klient.
-
-        SPA.04:
-        API-producenten BÖR inkludera
-        traceparent i svaret.
+        The traceparent header defined by W3C Trace Context and returned by the API.
       schema:
         type: string
-        example: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
-
-  schemas:
-
-    Organisation:
-      type: object
-      properties:
-        organisationsnummer:
-          type: string
-          example: "2021005489"
-
-        namn:
-          type: string
-          example: "Exempelmyndigheten"
-
-    Error:
-      type: object
-      required:
-        - code
-        - message
-
-      properties:
-        code:
-          type: integer
-
-        message:
-          type: string
-
-tags:
-  - name: traceability
-    description: |
-      Spårbarhet enligt W3C Trace Context.
