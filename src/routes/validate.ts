@@ -26,6 +26,7 @@ import { AggregateError } from '../util/RapLPCustomErrorInfo.js';
 import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js';
 import { measure } from '../util/performance.js';
 import crypto from 'node:crypto';
+import { resolveLocale, translator } from '../i18n.js';
 
 const pkg = JSON.parse(fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));
 
@@ -47,6 +48,7 @@ export const registerValidationRoutes = (app: Express) => {
     '/api/v1/validation/generate-report',
     validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_REPORTS ?? 4)),
     async (req, res, next): Promise<any> => {
+      const t = translator(res.locals?.locale ?? resolveLocale());
       try {
         const data = req.body;
         const context = new RuleExecutionContext();
@@ -66,9 +68,9 @@ export const registerValidationRoutes = (app: Express) => {
             500,
             new ProblemDetailsDTO({
               type: 'https://raplp.digg.se/problems/internal-server-error',
-              title: 'Failed to generate report',
+              title: t('api.failedGenerateReportTitle'),
               status: 500,
-              detail: 'Failed to generate report.',
+              detail: t('api.failedGenerateReportDetail'),
               instance: req.originalUrl,
             }),
           );
@@ -86,6 +88,7 @@ export const registerValidationRoutes = (app: Express) => {
     '/api/v1/validation/validatespec',
     validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_VALIDATIONS ?? 4)),
     async (req, res, next) => {
+      const t = translator(res.locals?.locale ?? resolveLocale());
       let strict = true;
       try {
         const requestId = crypto.randomUUID();
@@ -94,13 +97,17 @@ export const registerValidationRoutes = (app: Express) => {
 
         //0.1 Check input
         if (!body.spec) {
-          throw new RapLPBaseApiError('Invalid Request', 'Required field missing: spec', ERROR_TYPE.BAD_REQUEST);
+          throw new RapLPBaseApiError(
+            t('api.invalidRequest'),
+            t('api.requiredField', { fields: 'spec' }),
+            ERROR_TYPE.BAD_REQUEST,
+          );
         }
         //0.2 Check input
         if (typeof body.spec !== 'string') {
           throw new RapLPBaseApiError(
-            'Invalid Request',
-            'Field "spec" must be a base64 encoded string',
+            t('api.invalidRequest'),
+            t('api.fieldMustBeBase64', { field: 'spec' }),
             ERROR_TYPE.BAD_REQUEST,
           );
         }
@@ -130,9 +137,9 @@ export const registerValidationRoutes = (app: Express) => {
             400,
             new ProblemDetailsDTO({
               type: 'https://raplp.digg.se/problems/semantic-validation',
-              title: 'Rule validation failed',
+              title: t('api.ruleValidationFailed'),
               status: 400,
-              detail: 'Specifikationen innehåller strukturella eller semantiska fel',
+              detail: t('api.semanticValidationDetail'),
               instance: req.originalUrl,
 
               // Put in kind field to indicate violation
@@ -171,9 +178,9 @@ export const registerValidationRoutes = (app: Express) => {
             400,
             new ProblemDetailsDTO({
               type: 'https://raplp.digg.se/problems/rule-validation',
-              title: 'Rule validation failed',
+              title: t('api.ruleValidationFailed'),
               status: 400,
-              detail: 'API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.',
+              detail: t('api.ruleValidationDetail'),
               instance: req.originalUrl,
 
               // Put in kind field to indicate violation

@@ -5,6 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
 import { SpecParseError } from './RapLPSpecParseError.js';
+import { translator, resolveLocale } from '../i18n.js';
 
 export const sendProblem = (res: Response, status: number, body: ProblemDetailsDTO) =>
   res.status(status).set('Content-Type', 'application/problem+json').json(body);
@@ -43,35 +44,28 @@ class RuleCategoryError extends RapLPBaseApiError {
 
 // Express.js middleware to map Extended
 
-const errorHandler = (
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+  const t = translator(res.locals?.locale ?? resolveLocale());
 
-// SpecParseError --> 400 adapter impl
-if (err instanceof SpecParseError) {
-
-    const isRuleEngineCase = err.stage === 'rule-engine';  
+  // SpecParseError --> 400 adapter impl
+  if (err instanceof SpecParseError) {
+    const isRuleEngineCase = err.stage === 'rule-engine';
     const isStrictCase = err.stage === 'strict';
     const isSecurityCase = err.stage === 'security';
 
     const problemDetails = new ProblemDetailsDTO({
-      type: isRuleEngineCase || isSecurityCase
-        ? 'https://raplp.digg.se/problems/spec-validation'
-        : 'https://raplp.digg.se/problems/spec-parse-error',
+      type:
+        isRuleEngineCase || isSecurityCase
+          ? 'https://raplp.digg.se/problems/spec-validation'
+          : 'https://raplp.digg.se/problems/spec-parse-error',
 
-      title: isRuleEngineCase || isStrictCase || isSecurityCase
-        ? 'Specifikationen kunde inte utvärderas fullt ut'
-        : 'Okänt fel vid parsning av API-specifikationen',
+      title:
+        isRuleEngineCase || isStrictCase || isSecurityCase ? t('api.specEvaluationFailed') : t('api.specParseUnknown'),
       status: ERROR_TYPE.BAD_REQUEST,
       detail: err.message,
       instance: req.originalUrl,
-      cause: err.cause instanceof Error
-        ? { name: err.cause.name, message: err.cause.message }
-        : undefined,
-      /**Extra fields**/ 
+      cause: err.cause instanceof Error ? { name: err.cause.name, message: err.cause.message } : undefined,
+      /**Extra fields**/
       kind: isRuleEngineCase || isStrictCase || isSecurityCase ? 'spec-validation' : 'spec-parse',
       line: err.line,
       column: err.column,
@@ -83,23 +77,23 @@ if (err instanceof SpecParseError) {
     });
 
     return sendProblem(res, ERROR_TYPE.BAD_REQUEST, problemDetails);
-}
+  }
   const status = err.errorType || err.status || ERROR_TYPE.INTERNAL_SERVER_ERROR;
   const isValidatorError = Array.isArray(err.errors);
-  const title = err.title || (isValidatorError ? 'Invalid Request' : 'An unexpected error occurred');
+  const title = err.title || (isValidatorError ? t('api.invalidRequest') : t('api.unexpectedError'));
 
-  let detail = err.message || 'An unknown error occurred.';
+  let detail = err.message || t('api.unknownError');
   if (isValidatorError) {
     const missingFields = (err.errors as any[])
-      .filter(e => e.errorCode?.startsWith('required.'))
-      .map(e => {
+      .filter((e) => e.errorCode?.startsWith('required.'))
+      .map((e) => {
         if (e.params?.missingProperty) return e.params.missingProperty;
         const match = e.message?.match(/required property '(\w+)'/);
         return match?.[1];
       })
       .filter(Boolean);
     if (missingFields.length > 0) {
-      detail = `Required field missing: ${missingFields.join(', ')}`;
+      detail = t('api.requiredField', { fields: missingFields.join(', ') });
     }
   }
 
@@ -107,7 +101,7 @@ if (err instanceof SpecParseError) {
     type: PROBLEM_TYPE[status as ERROR_TYPE] ?? 'about:blank',
     status,
     title,
-    detail,
+    detail: detail || t('api.unknownError'),
     instance: req.originalUrl,
   });
 
