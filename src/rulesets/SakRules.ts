@@ -242,4 +242,58 @@ export class Sak18 extends BaseRuleset {
   }
   severity = DiagnosticSeverity.Warning;
 }
-export default { Sak09, Sak10, Sak15, Sak16, Sak18 };
+
+export class Sak29 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: 'Säkerhet',
+    id: 'SAK.29',
+  };
+  description = '';
+  message =
+    'Man BÖR (SAK.29) respektera angiven Content-Type i header. Förfrågningar som innehåller oväntade eller saknade Content-Type headers bör avvisas med HTTP-status 415 Unsupported Media Type.';
+  given = '$.paths[*][post,put,patch,delete,options]';
+  then = [
+    {
+      function: (targetVal: any, _opts: string, paths: string[]) => {
+        if (!targetVal?.requestBody) {
+          return [];
+        }
+
+        const response415 = targetVal.responses && (targetVal.responses['415'] || targetVal.responses[415]);
+
+        if (response415) {
+          return [];
+        }
+
+        return [
+          {
+            message: this.message,
+            severity: this.severity,
+            paths,
+          },
+        ];
+      },
+    },
+    {
+      function: (targetVal: any, _opts: string, paths: string[]) => {
+        this.trackRuleExecutionHandler(
+          JSON.stringify(targetVal, null, 2),
+          _opts,
+          paths,
+          this.severity,
+          this.constructor.name,
+          moduleName,
+          Sak29.customProperties,
+        );
+      },
+    },
+  ];
+
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
+  }
+
+  severity = DiagnosticSeverity.Warning;
+}
+export default { Sak09, Sak10, Sak15, Sak16, Sak18, Sak29 };
