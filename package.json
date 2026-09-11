@@ -38,13 +38,13 @@
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
     "@types/node": "24.13.2",
-    "@types/supertest": "6.0.3",
+    "@types/supertest": "7.2.1",
     "jest": "30.4.2",
     "standard-version": "9.5.0",
     "supertest": "7.2.2",
     "ts-jest": "29.4.11",
     "ts-node": "10.9.2",
-    "typescript": "5.9.3"
+    "typescript": "7.0.2"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^12.1.0",
