@@ -101,6 +101,94 @@ paths:
                   - customerId
                   - name
 
+    put:
+      summary: Uppdatera organisation
+      description: |
+        SPA.07 - x-request-id anges inline medan traceparent hämtas från
+        components.parameters. Blandade former är likvärdiga för regeln.
+      operationId: updateOrganisation
+      parameters:
+        - name: x-request-id
+          in: header
+          required: false
+          description: Alternativ intern identifierare, komplement till traceparent.
+          schema:
+            type: string
+            format: uuid
+            example: '9f47c1fd-2c6a-4f77-8d1b-c8a927e3f9d1'
+        - $ref: '#/components/parameters/TraceParent'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organisation'
+
+      responses:
+        '200':
+          description: Organisation uppdaterad
+
+          headers:
+            traceparent:
+              $ref: '#/components/headers/TraceParent'
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisation'
+
+  /organisationer:
+    parameters:
+      - $ref: '#/components/parameters/TraceParent'
+      - $ref: '#/components/parameters/XRequestId'
+
+    get:
+      summary: Lista organisationer
+      description: |
+        SPA.07 - x-request-id används som internt komplement och ersätter
+        alltså inte traceparent. Båda headers är definierade på path-nivå.
+      operationId: listOrganisationer
+      responses:
+        '200':
+          description: Lista med organisationer
+
+          headers:
+            traceparent:
+              $ref: '#/components/headers/TraceParent'
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organisation'
+
+    post:
+      summary: Skapa organisation
+      description: |
+        SPA.07 - ärver traceparent och x-request-id från path-nivån.
+      operationId: createOrganisation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organisation'
+
+      responses:
+        '201':
+          description: Organisation skapad
+
+          headers:
+            traceparent:
+              $ref: '#/components/headers/TraceParent'
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisation'
+
 components:
   headers:
     Traceparent:
