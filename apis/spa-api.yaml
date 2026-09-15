@@ -31,6 +31,7 @@ servers:
   - url: https://api.example.se
 
 paths:
+  # Example 1: Traceparent defined directly as a Header Object // Exempel 1: Traceparent definieras direkt som Header Object
   /orders/{orderId}:
     get:
       summary: Get an order.
@@ -49,7 +50,9 @@ paths:
           description: Order returned successfully.
           headers:
             traceparent:
-              $ref: '#/components/headers/Traceparent'
+              description: The traceparent header defined by W3C Trace Context.
+              schema:
+                type: string
 
           content:
             application/json:
@@ -63,6 +66,40 @@ paths:
                 required:
                   - orderId
                   - status
+
+  # Example 2: Traceparent defined via $ref // Traceparent definieras via $ref
+  /customers/{customerId}:
+    get:
+      summary: Get a customer.
+      operationId: getCustomer
+
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: '12345'
+
+      responses:
+        '200':
+          description: Customer returned successfully.
+          headers:
+            traceparent:
+              $ref: '#/components/headers/Traceparent'
+
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customerId:
+                    type: string
+                  name:
+                    type: string
+                required:
+                  - customerId
+                  - name
 
 components:
   headers:
