@@ -76,6 +76,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: VER.06](#id-ver06)
 10. [Område: Spårbarhet och korrelation](#område-spårbarhet-och-korrelation)
     - [ID: SPA.04](#id-spa04)
+    - [ID: SPA.07](#id-spa07)
 11. [Område: Filtrering, paginering och sökparametrar](#område-filtrering-paginering-och-sökparametrar)
     - [ID: FNS.01](#id-fns01)
     - [ID: FNS.03](#id-fns03)
@@ -231,6 +232,7 @@ $
 Regeln förutsätter att det finns en förekomst av minst ett av objekten `info.termsOfService`, `info.x-sla` eller `externalDocs` med följande strukturer:
 
 - info
+
   - termsOfService
   - x-sla
     - availability
@@ -1081,7 +1083,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll att den specificerade 
 
 ## Område: Spårbarhet och korrelation
 
-**Täckningsgrad: 14%**
+**Täckningsgrad: 29%**
 
 ### ID: SPA.04
 
@@ -1109,6 +1111,53 @@ I exemplet ovan kontrolleras att `traceparent` finns bland de headers som dokume
 ![alt text](images/spa04-2.png)
 
 Headern kan även definieras genom en `$ref` till `components.headers`.
+
+---
+
+### ID: SPA.07
+
+**Krav:** Alternativa identifierare, såsom x-request-id, KAN användas som komplement för interna behov, men SKALL INTE ersätta traceparent vid spårning av API-anrop mellan system och organisationer.
+
+**Typ:** SKALL INTE
+
+**JSON Path Plus-uttryck:**
+
+```
+$.paths[*]
+```
+
+**Förklaring:**
+Regeln förutsätter att om en HTTP-operation använder en alternativ identifierare för spårning, exempelvis `x-request-id`, så SKALL även `traceparent` vara definierad som request-header för samma operation.
+
+Kontrollen utförs på operationens request-headers, det vill säga de parametrar som har `in: header`. Både parametrar som är definierade på path-nivå och parametrar som är definierade på operationsnivå ingår i kontrollen, eftersom parametrar på path-nivå gäller för samtliga operationer under samma path.
+
+Headern kan vara definierad direkt på operationen eller på path, alternativt genom en `$ref` till `components.parameters`.
+
+Regeln kontrollerar följande:
+
+- Om request-headern `x-request-id` förekommer SKALL även request-headern `traceparent` förekomma.
+- `traceparent` ska vara definierad med `in: header` och `name: traceparent`.
+- `x-request-id` ska vara definierad med `in: header` och `name: x-request-id`.
+
+Om en alternativ identifierare, exempelvis `x-request-id`, används utan att `traceparent` samtidigt är definierad är det ett brott mot regeln. En operation som varken använder en alternativ identifierare eller `traceparent` berörs inte av regeln.
+
+Namnen på headers jämförs skiftlägesokänsligt eftersom HTTP-headers inte är skiftlägeskänsliga.
+
+Regeln kontrollerar **endast** att headers är dokumenterade i API-specifikationen. Den kontrollerar inte hur spårningsinformationen hanteras via körning.
+
+**Exempel:**
+
+![alt text](images/spa07-1.png)
+
+I exemplet ovan används `x-request-id` utan att `traceparent` är definierad, vilket är ett brott mot regeln.
+
+![alt text](images/spa07-2.png)
+
+I exemplet ovan används `x-request-id` som komplement till `traceparent`, vilket är tillåtet.
+
+![alt text](images/spa07-3.png)
+
+Parametrar som är definierade på path-nivå gäller för samtliga operationer under samma path. I exemplet ovan ärver både `get` och `post` de två headers som är definierade på path-nivå, och båda operationerna uppfyller därmed regeln.
 
 ---
 
