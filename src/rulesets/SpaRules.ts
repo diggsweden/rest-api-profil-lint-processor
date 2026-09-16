@@ -9,11 +9,82 @@ import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 
 const moduleName = 'SpaRules.js';
 
-const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'patch', 'options', 'head', 'trace'];
+const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'patch'];
 
 const TRACEPARENT_HEADER = 'traceparent';
 
 const ALTERNATIVE_TRACE_HEADERS = ['x-request-id'];
+
+export class Spa02 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: 'Spåbarhet',
+    id: 'SPA.02',
+  };
+
+  message = 'API-producenter SKALL acceptera HTTP-headern traceparent i inkommande anrop och propagera spårningsinformationen vidare enligt W3C Trace Context vid vidare anrop till andra system.';
+  given = '$.paths[*]';
+
+  then = [
+    {
+      function: (targetVal: any, _opts: string, context: { path: (string | number)[] }) => {
+        const results: { message: string; path: (string | number)[] }[] = [];
+
+        const pathParameters = Array.isArray(targetVal?.parameters) ? targetVal.parameters : [];
+
+        for (const method of HTTP_METHODS) {
+          const operation = targetVal?.[method];
+
+          if (!operation) {
+            continue;
+          }
+
+          const operationParameters = Array.isArray(operation.parameters) ? operation.parameters : [];
+
+          const hasTraceparent = this.hasTraceparentParameter([...pathParameters, ...operationParameters]);
+
+          if (!hasTraceparent) {
+            results.push({
+              message: this.message,
+              path: [...context.path, method],
+            });
+          }
+        }
+
+        return results;
+      },
+    },
+    {
+      function: (targetVal: string, _opts: string, paths: string[]) => {
+        this.trackRuleExecutionHandler(
+          JSON.stringify(targetVal, null, 2),
+          _opts,
+          paths,
+          this.severity,
+          this.constructor.name,
+          moduleName,
+          Spa02.customProperties,
+        );
+      },
+    },
+  ];
+
+  private hasTraceparentParameter(parameters: any[]): boolean {
+    return parameters.some((parameter) => {
+      return (
+        parameter?.in === 'header' &&
+        typeof parameter.name === 'string' &&
+        parameter.name.toLowerCase() === 'traceparent'
+      );
+    });
+  }
+
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
+  }
+
+  severity = DiagnosticSeverity.Error;
+}
 
 export class Spa04 extends BaseRuleset {
   static customProperties: CustomProperties = {
@@ -144,6 +215,7 @@ export class Spa07 extends BaseRuleset {
 }
 
 export default {
+  Spa02,
   Spa04,
   Spa07,
 };
