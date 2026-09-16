@@ -55,6 +55,7 @@ const ruleTypes = [
   SakRules.Sak16,
   SakRules.Sak18,
   SakRules.Sak29,
+  SpaRules.Spa02,
   SpaRules.Spa04,
   SpaRules.Spa07,
   VerRules.Ver05,
