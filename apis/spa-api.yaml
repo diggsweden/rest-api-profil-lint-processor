@@ -13,6 +13,11 @@ info:
 
     These are deliberately simple reference examples for the chapter "Traceability and correlation" in the Swedish REST API Profile. They are not intended to represent a complete production API.
 
+    SPA.02:
+    The API producer MUST accept the HTTP traceparent header in incoming requests and propagate the trace information according to W3C Trace Context when making subsequent requests to other systems.
+
+    The example shows a traceparent header accepted by the API, defined either directly on an operation, on path level, or via a reference to components.parameters.
+    
     SPA.04:
     The producer of the API SHOULD include the HTTP traceparent header in the response.
 
@@ -26,6 +31,11 @@ info:
     ## Svenska
 
     Dessa är avsiktligt förenklade referensexempel för kapitlet "Spårbarhet och korrelation" i den svenska REST API-profilen. De är inte avsedda att representera ett komplett produktions-API.
+
+    SPA.02:
+    API-producenten SKALL acceptera HTTP-headern traceparent i inkommande anrop och propagera spårningsinformationen vidare enligt W3C Trace Context vid vidare anrop till andra system.
+
+    Exemplet visar en traceparent-header som accepteras av API:et, definierad antingen direkt på en operation, på path-nivå eller via en referens till components.parameters.
 
     SPA.04:
     API-producenten BÖR inkludera HTTP-headern traceparent i ett API-svar.
@@ -54,6 +64,12 @@ paths:
           schema:
             type: string
           example: '12345'
+
+        - name: traceparent
+          in: header
+          required: false
+          schema:
+            type: string
 
       responses:
         '200':
@@ -90,6 +106,8 @@ paths:
           schema:
             type: string
           example: '12345'
+
+        - $ref: '#/components/parameters/Traceparent'
 
       responses:
         '200':
@@ -186,6 +204,49 @@ paths:
                   required:
                     - customerId
                     - name
+
+  # Example 1 - SPA.02: Traceparent defined on path level // Exempel 3: Traceparent definieras på path-nivå
+  /organisations/{organisationId}:
+    parameters:
+      - name: traceparent
+        in: header
+        required: false
+        schema:
+          type: string
+
+    get:
+      summary: Get an organisation.
+      operationId: getOrganisation
+
+      parameters:
+        - name: organisationId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: '12345'
+
+      responses:
+        '200':
+          description: Organisation returned successfully.
+          headers:
+            traceparent:
+              description: The traceparent header defined by W3C Trace Context.
+              schema:
+                type: string
+
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  organisationId:
+                    type: string
+                  name:
+                    type: string
+                required:
+                  - organisationId
+                  - name
 
 components:
   headers:
