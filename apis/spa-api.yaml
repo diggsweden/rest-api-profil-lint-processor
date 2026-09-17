@@ -45,6 +45,12 @@ paths:
             type: string
           example: '12345'
 
+        - name: traceparent
+          in: header
+          required: false
+          schema:
+            type: string
+
       responses:
         '200':
           description: Order returned successfully.
@@ -81,6 +87,8 @@ paths:
             type: string
           example: '12345'
 
+        - $ref: '#/components/parameters/Traceparent'
+
       responses:
         '200':
           description: Customer returned successfully.
@@ -106,5 +114,15 @@ components:
     Traceparent:
       description: |
         The traceparent header defined by W3C Trace Context and returned by the API.
+      schema:
+        type: string
+
+  parameters:
+    Traceparent:
+      name: traceparent
+      in: header
+      required: false
+      description: |
+        The traceparent header defined by W3C Trace Context.
       schema:
         type: string
