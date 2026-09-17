@@ -39,7 +39,7 @@ testRule('Spa02', [
     errors: [],
   },
   {
-    name: 'giltigt testfall - headers definierade via $ref till components.parameters',
+    name: 'giltigt testfall - traceparent definierad via $ref till components.parameters',
     document: {
       openapi: '3.1.0',
       info: { version: '1.0' },
