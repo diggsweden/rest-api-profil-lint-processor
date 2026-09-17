@@ -14,7 +14,8 @@
     "dist",
     "README.md",
     "GUIDELINES.md",
-    "document/**"
+    "document/**",
+    "locales/**"
   ],
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   "description": "A command-line tool to lint OpenAPI v3 definitions using Spectral",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "pretest": "npm run build",
     "test": "jest",
     "test:integration": "node --experimental-vm-modules ./node_modules/.bin/jest --config jest.integration.config.cjs ",
     "prepare": "test -f dist/cli.js || npm run build",
@@ -60,6 +62,7 @@
     "express": "^5.0.0",
     "express-openapi-validator": "^5.3.7",
     "fast-xml-parser": "^5.0.0",
+    "i18next": "^25.10.10",
     "js-yaml": "^4.1.0",
     "path": "^0.12.7",
     "prom-client": "^15.1.3",
