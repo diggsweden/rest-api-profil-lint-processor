@@ -13,6 +13,7 @@ import { RuleModuleName } from '../rulesets/util/ruleModules.js';
 const ruleModules = [
   'UfnRules',
   'SakRules',
+  'SpaRules',
   'VerRules',
   'FnsRules',
   'ArqRules',

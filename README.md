@@ -29,7 +29,9 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 <summary><strong>Installationsguide</strong></summary>
 
 - [Installationsguide](#installationsguide)
+
   - [Installera via npm](#installera-via-npm)
+
     - [Installera globalt med NPM](#installera-globalt-med-npm)
 
     - [Installera lokalt som npm run script](#installera-lokalt-som-npm-run-script)
@@ -50,6 +52,7 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 <summary><strong>Introduktion</strong></summary>
 
 - [Introduktion](#introduktion)
+
   - [Regelfiltrering](#regelfiltrering)
 
   - [Strikt läge (OAS3 Validering)](#strikt-läge-oas3-validering)
@@ -60,6 +63,7 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 <summary><strong>CLI-läge</strong></summary>
 
 - [CLI-läge](#cli-läge)
+
   - [Flaggor för CLI-läge](#flaggor-för-cli-läge)
 
   - [Loggning i CLI-läge](#loggning-i-cli-läge)
@@ -72,6 +76,7 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 <summary><strong>API-läge</strong></summary>
 
 - [API-läge](#api-läge)
+
   - [Flaggor för API-läge](#flaggor-för-api-läge)
 
   - [Endpoints för API-läge](#endpoints-för-api-läge)
@@ -88,6 +93,7 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 <summary><strong>Mer information</strong></summary>
 
 - [Mer information](#mer-information)
+
   - [Versioner](#versioner)
 
   - [Riktlinjer och förklaringar](#riktlinjer-och-förklaringar)
@@ -95,11 +101,13 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
   - [Begränsningar](#begränsningar)
 
   - [Exempel på regelutfall](#exempel-på-regelutfall)
+
     - [Förklaring av översikt för regelutfall](#förklaring-av-översikt-för-regelutfall)
 
     - [Förklaring av detaljering för regelutfall](#förklaring-av-detaljering-för-regelutfall)
 
   - [FAQ](#faq)
+
     - [Hur skapar jag ett GitHub Personal Access Token (PAT)?](#hur-skapar-jag-ett-github-personal-access-token-pat)
 
     - [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container)
@@ -271,6 +279,7 @@ I dagsläget är följande regelkategorier från REST API-profilen tillgängliga
 | UfnRules | URL Format och namngivning               |
 | MogRules | Mognad                                   |
 | SakRules | Säkerhet                                 |
+| SpaRules | Spårbarhet och korrelation               |
 | AmeRules | API Message                              |
 | ArqRules | API Request                              |
 | FelRules | Felhantering                             |
@@ -309,10 +318,10 @@ Strict validation reported issues:
 
 ### Flaggor för CLI-läge
 
-| Flagga             | Beskrivning                                                                                                                                                                         | Typ    | Standard | Obligatorisk |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | -------- | ------------ |
-| `-f, --file`       | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                                      | String | –        | Ja           |
-| `-c, --categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `DokRules, DotRules, ResRules, UfnRules, MogRules, SakRules, AmeRules, ArqRules, FelRules, VerRules, FnsRules, ForRules`. | String | –        | Nej          |
+| Flagga             | Beskrivning                                                                                                                                                                                   | Typ    | Standard | Obligatorisk |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | -------- | ------------ |
+| `-f, --file`       | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                                                | String | –        | Ja           |
+| `-c, --categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `DokRules, DotRules, ResRules, UfnRules, MogRules, SakRules, SpaRules, AmeRules, ArqRules, FelRules, VerRules, FnsRules, ForRules`. | String | –        | Nej          |
 
 ### Loggning i CLI-läge
 
