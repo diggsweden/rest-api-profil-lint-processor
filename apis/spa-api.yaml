@@ -9,23 +9,33 @@ info:
   version: 1.0.0
   summary: Example API demonstrating correct implementation of rules for traceability and correlation.
   description: |
-    This is a deliberately simple reference example for the chapter "Traceability and correlation" in the Swedish REST API Profile.
+    ## English
+
+    These are deliberately simple reference examples for the chapter "Traceability and correlation" in the Swedish REST API Profile. They are not intended to represent a complete production API.
 
     SPA.04:
     The producer of the API SHOULD include the HTTP traceparent header in the response.
 
-    The example shows a traceparent header returned by the API.
+    Examples 1-2 show a traceparent header returned by the API, defined directly as a Header Object and via $ref.
 
-    This example is intentionally simplified and is not intended to represent a complete production API.
+    SPA.07:
+    Alternative identifiers, such as x-request-id, MAY be used as a complement for internal needs, but SHALL NOT replace traceparent when tracing API calls between systems and organisations.
 
-    Detta är ett avsiktligt förenklat referensexempel för kapitlet "Spårbarhet och korrelation" i den svenska REST API-profilen.
+    Examples 3-4 show x-request-id used together with traceparent as request headers, defined inline on operation level and via $ref on path level.
+
+    ## Svenska
+
+    Dessa är avsiktligt förenklade referensexempel för kapitlet "Spårbarhet och korrelation" i den svenska REST API-profilen. De är inte avsedda att representera ett komplett produktions-API.
 
     SPA.04:
     API-producenten BÖR inkludera HTTP-headern traceparent i ett API-svar.
 
-    Exemplet visar en traceparent-header som returneras av API:et.
+    Exempel 1-2 visar en traceparent-header som returneras av API:et, definierad direkt som Header Object och via $ref.
 
-    Exemplet är avsiktligt förenklat och är inte avsett att representera ett komplett produktions-API.
+    SPA.07:
+    Alternativa identifierare, såsom x-request-id, KAN användas som komplement för interna behov, men SKALL INTE ersätta traceparent vid spårning av API-anrop mellan system och organisationer.
+
+    Exempel 3-4 visar x-request-id som används tillsammans med traceparent som request-headers, definierade inline på operationsnivå och via $ref på path-nivå.
 
 servers:
   - url: https://api.example.se
@@ -67,7 +77,7 @@ paths:
                   - orderId
                   - status
 
-  # Example 2: Traceparent defined via $ref // Traceparent definieras via $ref
+  # Example 2: Traceparent defined via $ref // Exempel 2: Traceparent definieras via $ref
   /customers/{customerId}:
     get:
       summary: Get a customer.
@@ -101,93 +111,81 @@ paths:
                   - customerId
                   - name
 
-    put:
-      summary: Uppdatera organisation
-      description: |
-        SPA.07 - x-request-id anges inline medan traceparent hämtas från
-        components.parameters. Blandade former är likvärdiga för regeln.
-      operationId: updateOrganisation
+  # Example 3: x-request-id and traceparent defined inline on operation level // Exempel 3: x-request-id och traceparent definieras inline på operationsnivå
+  /orders:
+    get:
+      summary: List orders.
+      operationId: listOrders
+
       parameters:
+        - name: traceparent
+          in: header
+          required: true
+          description: The traceparent header defined by W3C Trace Context.
+          schema:
+            type: string
+          example: '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01'
         - name: x-request-id
           in: header
           required: false
-          description: Alternativ intern identifierare, komplement till traceparent.
+          description: Alternative identifier for internal needs, used as a complement to traceparent.
           schema:
             type: string
-            format: uuid
-            example: '9f47c1fd-2c6a-4f77-8d1b-c8a927e3f9d1'
-        - $ref: '#/components/parameters/TraceParent'
-
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Organisation'
+          example: '9f47c1fd-2c6a-4f77-8d1b-c8a927e3f9d1'
 
       responses:
         '200':
-          description: Organisation uppdaterad
-
+          description: Orders returned successfully.
           headers:
             traceparent:
-              $ref: '#/components/headers/TraceParent'
-
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Organisation'
-
-  /organisationer:
-    parameters:
-      - $ref: '#/components/parameters/TraceParent'
-      - $ref: '#/components/parameters/XRequestId'
-
-    get:
-      summary: Lista organisationer
-      description: |
-        SPA.07 - x-request-id används som internt komplement och ersätter
-        alltså inte traceparent. Båda headers är definierade på path-nivå.
-      operationId: listOrganisationer
-      responses:
-        '200':
-          description: Lista med organisationer
-
-          headers:
-            traceparent:
-              $ref: '#/components/headers/TraceParent'
+              $ref: '#/components/headers/Traceparent'
 
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Organisation'
+                  type: object
+                  properties:
+                    orderId:
+                      type: string
+                    status:
+                      type: string
+                  required:
+                    - orderId
+                    - status
 
-    post:
-      summary: Skapa organisation
-      description: |
-        SPA.07 - ärver traceparent och x-request-id från path-nivån.
-      operationId: createOrganisation
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Organisation'
+  # Example 4: x-request-id and traceparent defined via $ref on path level // Exempel 4: x-request-id och traceparent definieras via $ref på path-nivå
+  /customers:
+    parameters:
+      - $ref: '#/components/parameters/Traceparent'
+      - $ref: '#/components/parameters/XRequestId'
+
+    get:
+      summary: List customers.
+      operationId: listCustomers
 
       responses:
-        '201':
-          description: Organisation skapad
-
+        '200':
+          description: Customers returned successfully.
           headers:
             traceparent:
-              $ref: '#/components/headers/TraceParent'
+              $ref: '#/components/headers/Traceparent'
 
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organisation'
+                type: array
+                items:
+                  type: object
+                  properties:
+                    customerId:
+                      type: string
+                    name:
+                      type: string
+                  required:
+                    - customerId
+                    - name
 
 components:
   headers:
@@ -196,3 +194,22 @@ components:
         The traceparent header defined by W3C Trace Context and returned by the API.
       schema:
         type: string
+
+  parameters:
+    Traceparent:
+      name: traceparent
+      in: header
+      required: true
+      description: The traceparent header defined by W3C Trace Context.
+      schema:
+        type: string
+      example: '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01'
+
+    XRequestId:
+      name: x-request-id
+      in: header
+      required: false
+      description: Alternative identifier for internal needs, used as a complement to traceparent.
+      schema:
+        type: string
+      example: '9f47c1fd-2c6a-4f77-8d1b-c8a927e3f9d1'
