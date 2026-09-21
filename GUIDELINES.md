@@ -75,6 +75,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
    - [ID: VER.05](#id-ver05)
    - [ID: VER.06](#id-ver06)
 10. [Område: Spårbarhet och korrelation](#område-spårbarhet-och-korrelation)
+    - [ID: SPA.02](#id-spa02)
     - [ID: SPA.04](#id-spa04)
 11. [Område: Filtrering, paginering och sökparametrar](#område-filtrering-paginering-och-sökparametrar)
     - [ID: FNS.01](#id-fns01)
@@ -1081,7 +1082,51 @@ I exemplet ovan, så exemplifieras regeln med en kontroll att den specificerade 
 
 ## Område: Spårbarhet och korrelation
 
-**Täckningsgrad: 14%**
+**Täckningsgrad: 29%**
+
+### ID: SPA.02
+
+**Krav:** API-producenter SKALL (SPA.02) acceptera HTTP-headern traceparent i inkommande anrop och propagera spårningsinformationen vidare enligt W3C Trace Context vid vidare anrop till andra system..
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+$.paths[*]
+```
+
+**Förklaring:**
+Regeln kontrollerar varje dokumenterad GET-, PUT-, POST-, DELETE- och PATCH-operation under respektive path.
+
+Kontrollen utgår från path-nivån för att kunna hantera att request-headern `traceparent` antingen definieras direkt på operationen eller ärvs från path-nivån.
+
+`traceparent` ska vara definierad som en headerparameter med:
+
+- `in: header`
+- `name: traceparent`
+
+`traceparent` får inte definieras med required: true. Om traceparent saknas i ett inkommande anrop ska API-producenten enligt SPA.03 generera en ny traceparent
+
+Headern kan definieras direkt eller via `$ref` till `components.parameters`.
+
+**Exempel:**
+
+![alt text](images/spa02-1.png)
+
+I exemplet ovan saknas `traceparent` bland headers, vilket är ett brott mot regeln.
+
+![alt text](images/spa02-2.png)
+
+I exemplet ovan definieras headern genom en `$ref` till `components.parameters`. Parametern har `required: false`, vilket innebär att `traceparent` inte är obligatorisk i det inkommande anropet.
+
+![alt text](images/spa02-3.png)
+
+Parametrar som är definierade på path-nivå gäller för samtliga operationer under samma path. I exemplet ovan ärver både `get` och `post` de headers som är definierade på path-nivå, och båda operationerna uppfyller därmed regeln.
+
+![alt text](images/spa02-4.png)
+
+I exemplet ovan är `traceparent` definierad med `required: true`, vilket är ett brott mot regeln. traceparent får inte vara obligatorisk eftersom API-producenten enligt SPA.03 ska kunna hantera inkommande anrop där headern saknas
 
 ### ID: SPA.04
 
