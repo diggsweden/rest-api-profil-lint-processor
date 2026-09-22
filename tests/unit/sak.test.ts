@@ -181,6 +181,106 @@ testRule('Sak10', [
     ],
   },
 ]);
+
+testRule('Sak11', [
+  {
+    name: 'giltigt testfall - refreshUrl är korrekt definierad',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      components: {
+        securitySchemes: {
+          oAuth2: {
+            type: 'oauth2',
+            flows: {
+              clientCredentials: {
+                tokenUrl: 'https://example.com/token',
+                refreshUrl: 'https://example.com/refresh',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall - refreshUrl saknas',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      components: {
+        securitySchemes: {
+          oAuth2: {
+            type: 'oauth2',
+            flows: {
+              clientCredentials: {
+                tokenUrl: 'https://example.com/token',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message:
+          'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.',
+        severity: DiagnosticSeverity.Error,
+        path: ['components', 'securitySchemes', 'oAuth2', 'flows', 'clientCredentials'],
+      },
+    ],
+  },
+  {
+    name: 'giltigt testfall - annan typ av security scheme',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      components: {
+        securitySchemes: {
+          basicAuth: {
+            type: 'http',
+            scheme: 'basic',
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall - flera oauth2-flows där refreshUrl saknas i ett flow',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      components: {
+        securitySchemes: {
+          oAuth2: {
+            type: 'oauth2',
+            flows: {
+              clientCredentials: {
+                tokenUrl: 'https://example.com/token',
+                refreshUrl: 'https://example.com/refresh',
+              },
+              authorizationCode: {
+                authorizationUrl: 'https://example.com/authorize',
+                tokenUrl: 'https://example.com/token',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message:
+          'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.',
+        severity: DiagnosticSeverity.Error,
+        path: ['components', 'securitySchemes', 'oAuth2', 'flows', 'authorizationCode'],
+      },
+    ],
+  },
+]);
+
 testRule('Sak15', [
   {
     name: 'giltigt testfall',
