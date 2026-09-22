@@ -50,6 +50,7 @@ const ruleTypes = [
   SakRules.Sak01,
   SakRules.Sak09,
   SakRules.Sak10,
+  SakRules.Sak11,
   SakRules.Sak15,
   SakRules.Sak16,
   SakRules.Sak18,
