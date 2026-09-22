@@ -143,6 +143,74 @@ export class Sak10 extends BaseRuleset {
   }
   severity = DiagnosticSeverity.Error;
 }
+
+export class Sak11 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: 'Säkerhet',
+    id: 'SAK.11',
+  };
+
+  description = 'OAuth 2.0-flow SKALL ha attributet refreshUrl definierat.';
+
+  message =
+    'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.';
+
+  given = [
+    '$.components.securitySchemes[?(@.type=="oauth2")]',
+    '$.components.securitySchemes[?(@.type=="oauth2")].flows[*]',
+  ];
+
+  then = [
+    {
+      function: (targetVal: any, _opts: string, context: any) => {
+        const result: any[] = [];
+
+        if (targetVal?.type === 'oauth2') {
+          if (!targetVal.flows || Object.keys(targetVal.flows).length === 0) {
+            result.push({
+              message: 'OAuth 2.0 security scheme SKALL ha minst ett flow definierat.',
+              severity: this.severity,
+              path: [...context.path, 'flows'],
+            });
+          }
+
+          return result;
+        }
+
+        if (!targetVal?.refreshUrl) {
+          result.push({
+            message: this.message,
+            severity: this.severity,
+            path: [...context.path, 'refreshUrl'],
+          });
+        }
+
+        return result;
+      },
+    },
+    {
+      function: (targetVal: any, _opts: string, paths: string[]) => {
+        this.trackRuleExecutionHandler(
+          JSON.stringify(targetVal, null, 2),
+          _opts,
+          paths,
+          this.severity,
+          this.constructor.name,
+          moduleName,
+          Sak11.customProperties,
+        );
+      },
+    },
+  ];
+
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
+  }
+
+  severity = DiagnosticSeverity.Error;
+}
+
 export class Sak15 extends SakBaseApiKeyRule {
   static customProperties: CustomProperties = {
     område: 'Säkerhet',
@@ -172,9 +240,7 @@ export class Sak15 extends SakBaseApiKeyRule {
     return moduleName;
   }
 }
-/**
- *
- */
+
 export class Sak16 extends SakBaseApiKeyRule {
   static customProperties: CustomProperties = {
     område: 'Säkerhet',
@@ -242,4 +308,4 @@ export class Sak18 extends BaseRuleset {
   }
   severity = DiagnosticSeverity.Warning;
 }
-export default { Sak09, Sak10, Sak15, Sak16, Sak18 };
+export default { Sak09, Sak10, Sak11, Sak15, Sak16, Sak18 };
