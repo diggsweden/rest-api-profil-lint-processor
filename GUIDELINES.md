@@ -1299,6 +1299,34 @@ I exemplet ovan så kommer regeln att ge ett positivt utfall eftersom det finns 
 
 ---
 
+### ID: SAK.11
+
+**Krav:** En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+ $.components.securitySchemes[?(@.type=="oauth2")]
+ $.components.securitySchemes[?(@.type=="oauth2")].flows[*]
+```
+
+**Förklaring:**
+Regeln förutsätter att API använder OAuth 2.0 för autentisering eller auktorisering.
+
+För OAuth 2.0 ska minst ett flow vara definierat. Varje definierat OAuth 2.0-flow SKALL ha attributet `refreshUrl` definierat. Attributet används för att dokumentera den endpoint där en uppdateringstoken kan användas för att erhålla en ny åtkomsttoken utan att användaren behöver autentisera sig på nytt.
+
+Regeln kontrollerar endast att `refreshUrl` är definierat i API-beskrivningen. Regeln kan inte kontrollera om uppdateringstoken faktiskt utfärdas eller om endpointen fungerar.
+
+**Exempel:**
+
+![alt text](images/sak11.png)
+
+I exemplet ovan kommer regeln att ge ett positivt utfall eftersom securityschemat är av typen OAuth 2.0 och har ett definierat flow med attributet `refreshUrl`.
+
+---
+
 ### ID: SAK.15
 
 **Krav:** API-nycklar SKALL INTE inkluderas i URL eller querysträngen.
