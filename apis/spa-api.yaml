@@ -11,6 +11,16 @@ info:
   description: |
     This is a deliberately simple reference example for the chapter "Traceability and correlation" in the Swedish REST API Profile.
 
+    SPA.02:
+    The API producer MUST accept the HTTP traceparent header in incoming requests and propagate the trace information according to W3C Trace Context when making subsequent requests to other systems.
+
+    The example shows a traceparent header accepted by the API, defined either directly on an operation, on path level, or via a reference to components.parameters.
+
+    SPA.02:
+    API-producenten SKALL acceptera HTTP-headern traceparent i inkommande anrop och propagera spårningsinformationen vidare enligt W3C Trace Context vid vidare anrop till andra system.
+
+    Exemplet visar en traceparent-header som accepteras av API:et, definierad antingen direkt på en operation, på path-nivå eller via en referens till components.parameters.
+    
     SPA.04:
     The producer of the API SHOULD include the HTTP traceparent header in the response.
 
@@ -73,7 +83,7 @@ paths:
                   - orderId
                   - status
 
-  # Example 2: Traceparent defined via $ref // Traceparent definieras via $ref
+  # Example 2: Traceparent defined via $ref // Exempel 2: Traceparent definieras via $ref
   /customers/{customerId}:
     get:
       summary: Get a customer.
@@ -107,6 +117,49 @@ paths:
                     type: string
                 required:
                   - customerId
+                  - name
+
+  # Example 3: Traceparent defined on path level // Exempel 3: Traceparent definieras på path-nivå
+  /organisations/{organisationId}:
+    parameters:
+      - name: traceparent
+        in: header
+        required: false
+        schema:
+          type: string
+
+    get:
+      summary: Get an organisation.
+      operationId: getOrganisation
+
+      parameters:
+        - name: organisationId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: '12345'
+
+      responses:
+        '200':
+          description: Organisation returned successfully.
+          headers:
+            traceparent:
+              description: The traceparent header defined by W3C Trace Context.
+              schema:
+                type: string
+
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  organisationId:
+                    type: string
+                  name:
+                    type: string
+                required:
+                  - organisationId
                   - name
 
 components:
