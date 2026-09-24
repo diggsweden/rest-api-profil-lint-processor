@@ -71,7 +71,8 @@ export class Spa02 extends BaseRuleset {
       return (
         parameter?.in === 'header' &&
         typeof parameter.name === 'string' &&
-        parameter.name.toLowerCase() === 'traceparent'
+        parameter.name.toLowerCase() === 'traceparent' &&
+        parameter.required !== true
       );
     });
   }
