@@ -205,6 +205,7 @@ paths:
                     - customerId
                     - name
 
+
   # Example 1 - SPA.02: Traceparent defined on path level // Exempel 3: Traceparent definieras på path-nivå
   /organisations/{organisationId}:
     parameters:
@@ -247,6 +248,7 @@ paths:
                 required:
                   - organisationId
                   - name
+
 
 components:
   headers:
