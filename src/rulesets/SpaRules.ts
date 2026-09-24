@@ -13,7 +13,7 @@ const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'patch', 'options', 'head'
 
 export class Spa02 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Spåbarhet',
+    område: 'Spårbarhet och korrelation',
     id: 'SPA.02',
   };
 
@@ -87,7 +87,7 @@ export class Spa02 extends BaseRuleset {
 
 export class Spa04 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Spårbarhet',
+    område: 'Spårbarhet och korrelation',
     id: 'SPA.04',
   };
 
