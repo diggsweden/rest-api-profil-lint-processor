@@ -14,7 +14,7 @@ testRule('Spa02', [
       paths: {
         '/users': {
           get: {
-            parameters: [{ name: 'traceparent', in: 'header', schema: { type: 'string' } }],
+            parameters: [{ name: 'traceparent', in: 'header', required: false, schema: { type: 'string' } }],
             responses: { '200': { description: 'OK' } },
           },
         },
@@ -29,7 +29,7 @@ testRule('Spa02', [
       info: { version: '1.0' },
       paths: {
         '/users': {
-          parameters: [{ name: 'traceparent', in: 'header', schema: { type: 'string' } }],
+          parameters: [{ name: 'traceparent', in: 'header', required: false, schema: { type: 'string' } }],
           get: {
             responses: { '200': { description: 'OK' } },
           },
@@ -83,6 +83,36 @@ testRule('Spa02', [
         severity: DiagnosticSeverity.Error,
       },
     ],
+  },
+  {
+  name: 'ogiltigt testfall - traceparent är required',
+  document: {
+    openapi: '3.1.0',
+    info: { version: '1.0' },
+    paths: {
+      '/users': {
+        get: {
+          parameters: [
+            {
+              name: 'traceparent',
+              in: 'header',
+              required: true,
+              schema: { type: 'string' },
+            },
+          ],
+          responses: {
+            '200': { description: 'OK' },
+          },
+        },
+      },
+    },
+  },
+  errors: [
+    {
+      message: 'API-producenter SKALL acceptera HTTP-headern traceparent i inkommande anrop och propagera spårningsinformationen vidare enligt W3C Trace Context vid vidare anrop till andra system.',
+      severity: DiagnosticSeverity.Error,
+    },
+  ],
   },
   {
     name: 'ogiltigt testfall - headers felaktig definierade via $ref till components.parameters',
