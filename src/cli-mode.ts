@@ -39,6 +39,7 @@ export type CliArgs = {
   logDiagnostic?: string;
   dex?: string;
   strict?: boolean;
+  quiet?: boolean;
 };
 
 export async function execCLI<T extends CliArgs>(argv: T) {
@@ -148,10 +149,30 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.rules,enabledRulesAndCategorys.instanceCategoryMap);
         const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
         if (argv.dex != null) {
-          const reportHandler = new ExcelReportProcessor({
-            outputFilePath: argv.dex,
-          });
-          reportHandler.generateReportDocument(customDiagnostic);
+          try {
+            const reportHandler = new ExcelReportProcessor({
+              outputFilePath: argv.dex,
+            });
+            reportHandler.generateReportDocument(customDiagnostic);
+            if (reportHandler.lockedFilePath) {
+              console.log(
+                chalk.yellow(
+                  `Avstämningsfilen ${reportHandler.lockedFilePath} är låst (öppen i Excel?), skriver till ${reportHandler.outputFilePath} i stället`,
+                ),
+              );
+            } else if (reportHandler.isBasedOnExistingFile) {
+              console.log(
+                chalk.green(
+                  `Uppdaterar avstämningsfil ${reportHandler.outputFilePath}, kommentarer och övriga ändringar bevaras`,
+                ),
+              );
+            } else {
+              console.log(chalk.green(`Skriver avstämningsfil i Excel-format från RAP-LP till ${reportHandler.outputFilePath}`));
+            }
+          } catch (excelError: any) {
+            logErrorToFile(excelError);
+            console.error(chalk.red(`Misslyckades att skriva avstämningsfil i Excel-format: ${excelError.message}`));
+          }
         }
 
         /**
@@ -200,6 +221,18 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           //Log to disc
           await writeFileAsync(logDiagnosticFilePath, utf8EncodedContent);
           console.log(chalk.green(`Skriver diagnostiseringsinformation från RAP-LP till ${logDiagnosticFilePath}`));
+        } else if (argv.quiet) {
+          // Only print a summary of the rule statuses.
+          const { executedUniqueRules, executedUniqueRulesWithError, notApplicableRules } =
+            customDiagnostic.diagnosticInformation;
+          console.log(
+            chalk.whiteBright('Regelstatus: ') +
+              chalk.green(`${executedUniqueRules?.length ?? 0} OK`) +
+              ', ' +
+              chalk.red(`${executedUniqueRulesWithError?.length ?? 0} EJ OK`) +
+              ', ' +
+              chalk.grey(`${notApplicableRules?.length ?? 0} N/A`),
+          );
         } else {
           //STDOUT
           if (
@@ -251,6 +284,8 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             await writeFileAsync(logErrorFilePath, utf8EncodedContent);
             console.log(chalk.green(`Skriver inspektion/valideringsinformation från RAP-LP till ${logErrorFilePath}`));
           }
+        } else if (argv.quiet) {
+          console.log(chalk.whiteBright(`Regelutfall: ${result.length} st, använd -l <fil> för att spara detaljerna`));
         } else {
           //Verbose error logging goes here with detailed result
           console.log(chalk.whiteBright('\n<<Regelutfall RAP-LP>> \n'));

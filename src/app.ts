@@ -64,6 +64,12 @@ async function main() {
         'Sökväg till fil för diagnostiseringsinformation från  RAP-LP. Om en specificerad, så kommer diagnostiseringsinformationen att skrivas ut till angiven fil i Excel format.',
       type: 'string',
     })
+    .option('quiet', {
+      alias: 'q',
+      describe: '[cli mode] Skriv endast ut en sammanfattning av regelstatus och regelutfall till stdout.',
+      type: 'boolean',
+      default: false,
+    })
     .option('enableUrlValidation', {
       type: 'boolean',
       describe: '[api-mode] Möjliggör validering av filer givet url.',

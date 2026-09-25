@@ -327,6 +327,7 @@ RAP-LP erbjuder stöd för att logga fel, exportera diagnostiseringsinformation 
 | `-a, --append`        | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används).             | boolean | `false`             | Nej          |
 | `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format.              | string  | –                   | Nej          |
 | `--dex`               | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format.             | string  | –                   | Nej          |
+| `-q, --quiet`         | Skriver endast ut en sammanfattning av regelstatus och regelutfall till stdout.         | boolean | `false`             | Nej          |
 
 </details>
 <br>
@@ -363,7 +364,9 @@ raplp -f openapi.yaml -d logDiagnostic.log
 
 För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, lägg till `--dex`.<br>
 Om en specifik sökväg till avstämningsfilen ska anges, kan denna läggas till.<br>
-Om ingen sökväg anges, genererar verktyget automatiskt en ny avstämningsfil i den katalog där det körs.
+Om ingen sökväg anges, genererar verktyget automatiskt en ny avstämningsfil i den katalog där det körs.<br>
+Om en sökväg anges till en avstämningsfil som redan finns, uppdateras endast status för de regler som RAP-LP har verkställt. Kommentarer och övriga ändringar i filen bevaras.<br>
+För att endast skriva ut en sammanfattning till stdout i stället för status och regelutfall för varje enskild regel, lägg till `-q`.
 
 [Avstämningsfilen](document/Avstaemning_REST_API_profil_v_1_2_0_0.xlsx) i Excel har ett fast format, om en egen version av filen ska användas måste den utpekade resursen hämtas med en kompatibel version av REST API-profilen.
 
