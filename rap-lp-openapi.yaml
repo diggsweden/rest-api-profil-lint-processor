@@ -34,6 +34,13 @@ externalDocs:
 servers:
   - url: https://raplp.digg.se/api/v1/
     description: Production
+  - url: https://{environment}.se:9443/aktivitetskrav/{version}/
+    variables:
+      environment:
+        default: test
+      version:
+        x-default: test
+
 tags:
   - name: validation
     description: Operations for validating OpenAPI specifications and generating reports.
