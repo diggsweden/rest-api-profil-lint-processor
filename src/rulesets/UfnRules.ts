@@ -4,16 +4,6 @@
 
 import { Ufn09Base, Ufn05Base } from './rulesetUtil.js';
 import { BaseRuleset } from './BaseRuleset.js';
-import {
-  enumeration,
-  truthy,
-  falsy,
-  undefined as undefinedFunc,
-  pattern,
-  schema,
-  length,
-  alphabetical,
-} from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
@@ -26,14 +16,72 @@ export class Ufn01 extends BaseRuleset {
     id: 'UFN.01',
   };
   description = '{protokoll}://{domännamn}/{api}/{version}/{resurs}/{identifierare}?{parametrar}';
-  given = '$.servers.[url]';
+  given = '$.servers[*]';
   message = 'En URL för ett API BÖR följa namnstandarden nedan: ' + this.description;
   then = [
     {
-      function: pattern,
-      functionOptions: {
-        match:
-          '^(?<protocol>^[^/]*://)+(?<host>(?<=://)[^/]+/)+(?<api>(?<=/)[^/]+?/)(?<version>v[0-9]+|\\{version\\})(?<end>\\/$|$)',
+      function: (targetVal: any): any => {
+        const url: string = targetVal.url;
+        console.log('URL: ' + url);
+        const urlPattern: RegExp = /^https:\/\/[^/:]+(?::[0-9]+)?\/[^/]+\/(?:v[0-9]+|\{[^}]+\})\/?$/;
+        const variablePattern: RegExp = /\{([^}]+)\}/g;
+
+        function extractVariableNames(url: string): string[] {
+          const matches = url.matchAll(variablePattern);
+          return Array.from(matches, (m) => m[1]);
+        }
+
+        const match = url.match(urlPattern);
+        if (!match) {
+          console.log('Ingen match');
+          return [
+            {
+              message: this.message,
+              severity: this.severity,
+            },
+          ];
+        }
+
+        const variables = extractVariableNames(url);
+
+        const variablesField = targetVal.variables;
+
+        if (variables) {
+          let missing = false;
+          variables.some((v) => {
+            console.log('VARIABLE: ' + v);
+            if (!Object.prototype.hasOwnProperty.call(variablesField, v)) {
+              console.log(v + ' SAKNAS');
+              missing = true;
+              return true;
+            } else {
+              console.log(v + ' FINNS');
+              const variable = variablesField[v];
+              if (
+                variable === null ||
+                typeof variable !== 'object' ||
+                !Object.prototype.hasOwnProperty.call(variable, 'default')
+              ) {
+                console.log('default-värde saknas');
+                missing = true;
+                return true;
+              }
+            }
+            return false;
+          });
+
+          if (missing) {
+            return [
+              {
+                message: this.message,
+                severity: this.severity,
+              },
+            ];
+          }
+        }
+
+        console.log('klart');
+        return [];
       },
     },
     {
