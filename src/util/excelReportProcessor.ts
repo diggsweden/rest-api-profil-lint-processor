@@ -44,6 +44,42 @@ const DEFAULT_CONFIG: ExcelTemplateConfig = {
   outputFilePath: path.resolve(process.cwd(), 'Avstaemning_REST_API_profil_generated.xlsx'),
 };
 
+const STATUS_OPTIONS = ['-', 'OK', 'NOK', 'N/A', 'Pågående'];
+
+const ARRAY_PATHS = new Set([
+  'workbook.sheets.sheet',
+  'Relationships.Relationship',
+  'sst.si',
+  'sst.si.r',
+  'worksheet.cols.col',
+  'worksheet.sheetData.row',
+  'worksheet.sheetData.row.c',
+]);
+
+const ELEMENTS_AFTER_CALC_PR = [
+  'oleSize',
+  'customWorkbookViews',
+  'pivotCaches',
+  'smartTagPr',
+  'smartTagTypes',
+  'webPublishing',
+  'fileRecoveryPr',
+  'webPublishObjects',
+  'extLst',
+];
+
+const textOf = (item: any): string => {
+  if (item == null) return '';
+  const toText = (t: any): string => (t == null ? '' : typeof t === 'object' ? String(t['#text'] ?? '') : String(t));
+  if (item.t != null) return toText(item.t);
+  return (item.r ?? []).map((run: any) => toText(run.t)).join('');
+};
+
+const columnOf = (cell: any): string => /^[A-Z]+/.exec(cell?.['@_r'] ?? '')?.[0] ?? '';
+
+const columnIndex = (column: string): number =>
+  [...column].reduce((res, char) => res * 26 + (char.charCodeAt(0) - 64), 0);
+
 const isFileAccessible = (filePath: string): boolean => {
   try {
     const fd = fs.openSync(filePath, 'r+');
@@ -65,9 +101,16 @@ const isFileAccessible = (filePath: string): boolean => {
 export class ExcelReportProcessor {
   private config: ExcelTemplateConfig;
 
-  private parser = new XMLParser({ ignoreAttributes: false });
+  private parser = new XMLParser({
+    ignoreAttributes: false,
+    parseTagValue: false,
+    trimValues: false,
+    isArray: (_tagName, jPath) => ARRAY_PATHS.has(String(jPath)),
+  });
   private builder = new XMLBuilder({ ignoreAttributes: false });
   private zip: AdmZip;
+  private sourceFilePath: string;
+  private requestedOutputFilePath: string;
 
   constructor(config?: Partial<ExcelTemplateConfig>) {
     const isPresent = (x?: string): x is string => {
@@ -80,17 +123,46 @@ export class ExcelReportProcessor {
       outputFilePath: isPresent(outputPath) ? outputPath : DEFAULT_CONFIG.outputFilePath,
     };
 
+    this.sourceFilePath =
+      isPresent(outputPath) && fs.existsSync(this.config.outputFilePath)
+        ? this.config.outputFilePath
+        : this.config.reportTemplatePath;
+
+    this.requestedOutputFilePath = this.config.outputFilePath;
     if (fs.existsSync(this.config.outputFilePath) && !isFileAccessible(this.config.outputFilePath)) {
+      // The file is locked (e.g. open in Excel), write to a timestamped sibling named after the requested file.
       const timestamp = new Date().toISOString().replace(/[^\w]/g, '-');
-      const newFileName = `Avstaemning_REST_API_profil_generated_${timestamp}.xlsx`;
-      const newOutputFilePath = path.join(path.dirname(this.config.outputFilePath), newFileName);
-      this.config.outputFilePath = newOutputFilePath;
+      const { dir, name, ext } = path.parse(this.config.outputFilePath);
+      this.config.outputFilePath = path.join(dir, `${name}_${timestamp}${ext || '.xlsx'}`);
     }
 
-    this.zip = new AdmZip(this.config.reportTemplatePath);
+    try {
+      this.zip = new AdmZip(this.sourceFilePath);
+    } catch (error: any) {
+      if (this.isBasedOnExistingFile) {
+        throw new Error(`Kunde inte läsa befintlig avstämningsfil ${this.sourceFilePath}: ${error?.message ?? error}`);
+      }
+      throw error;
+    }
   }
   public get diagnosticInformation(): ExcelTemplateConfig {
     return this.config;
+  }
+
+  public get outputFilePath(): string {
+    return this.config.outputFilePath;
+  }
+
+  public get baseFilePath(): string {
+    return this.sourceFilePath;
+  }
+
+  public get lockedFilePath(): string | undefined {
+    return this.requestedOutputFilePath !== this.config.outputFilePath ? this.requestedOutputFilePath : undefined;
+  }
+
+  public get isBasedOnExistingFile(): boolean {
+    return this.sourceFilePath !== this.config.reportTemplatePath;
   }
 
   public generateReportDocument(result: RapLPDiagnostic) {
@@ -103,11 +175,11 @@ export class ExcelReportProcessor {
     const sharedStrings = this.loadSharedStrings();
 
     if (!sharedStrings || !sheetPath) {
-      return;
+      throw new Error(`Could not load required components from ${this.sourceFilePath}.`);
     }
 
     // From the shared strings, we want to find the indexes of the available status options.
-    const optionIndexMap = this.indexMapOf(['-', 'OK', 'NOK', 'N/A', 'Pågående'], sharedStrings);
+    const optionIndexMap = this.indexMapOf(STATUS_OPTIONS, sharedStrings);
 
     // Update the status column with the results.
     this.updateResultColumn(sheetPath, resultMap, sharedStrings, optionIndexMap);
@@ -131,7 +203,7 @@ export class ExcelReportProcessor {
         throw new Error('Could not load required components from template.');
       }
 
-      const optionIndexMap = this.indexMapOf(['-', 'OK', 'NOK', 'N/A', 'Pågående'], sharedStrings);
+      const optionIndexMap = this.indexMapOf(STATUS_OPTIONS, sharedStrings);
       this.updateResultColumn(sheetPath, resultMap, sharedStrings, optionIndexMap);
       this.enableFullCalcOnLoad(workbook);
 
@@ -191,6 +263,12 @@ export class ExcelReportProcessor {
    * the data column.
    */
   private enableFullCalcOnLoad(workbook): void {
+    if (!workbook.workbook.calcPr) {
+      const entries = Object.entries(workbook.workbook);
+      const index = entries.findIndex(([key]) => ELEMENTS_AFTER_CALC_PR.includes(key));
+      entries.splice(index >= 0 ? index : entries.length, 0, ['calcPr', {}]);
+      workbook.workbook = Object.fromEntries(entries);
+    }
     workbook.workbook.calcPr['@_fullCalcOnLoad'] = '1';
     const xmlString = this.builder.build(workbook);
     const xmlBuffer = Buffer.from(xmlString, 'utf8');
@@ -229,7 +307,7 @@ export class ExcelReportProcessor {
       return;
     }
 
-    return this.parser.parse(sharedzip)?.sst?.si.map((s) => s.t);
+    return this.parser.parse(sharedzip)?.sst?.si?.map(textOf);
   }
 
   /**
@@ -270,25 +348,76 @@ export class ExcelReportProcessor {
    * will be updated with the value from the results object.
    *
    * The result will update the in-memory instance of the file, but will not persist to disc.
+   *
+   * Only the status cells of reported rules are touched, all other cells (e.g. comments) are kept as they are.
    */
-  private updateResultColumn(sheetPath: string, results: { [rule: string]: string }, sharedStrings, valueMap) {
+  private updateResultColumn(
+    sheetPath: string,
+    results: { [rule: string]: string },
+    sharedStrings: string[],
+    valueMap: Record<string, number>,
+  ) {
     const sheet = this.loadSheet(sheetPath);
-    sheet?.worksheet?.sheetData?.row.forEach((row) => {
-      const ruleColumn = row.c.find((col) => col['@_r']?.startsWith(this.config.ruleColumn));
-      const resultColumn = row.c.find((col) => col['@_r']?.startsWith(this.config.statusColumn));
+    sheet?.worksheet?.sheetData?.row?.forEach((row) => {
+      const cells: any[] = row.c ?? [];
+      const ruleCell = cells.find((cell) => columnOf(cell) === this.config.ruleColumn);
 
       // See if the value of the rule column match any reported rule from the result report.
-      const status = results[sharedStrings[ruleColumn?.v]];
+      const status = ruleCell ? results[this.cellText(ruleCell, sharedStrings).trim()] : undefined;
+      if (!status) {
+        return;
+      }
 
-      if (status) {
-        // If so, update the corresponding result column with the correct status.
-        resultColumn.v = valueMap[status];
+      let resultCell = cells.find((cell) => columnOf(cell) === this.config.statusColumn);
+      if (!resultCell) {
+        // Excel may drop empty cells when saving, so the status cell has to be created in column order.
+        if (row['@_r'] == null) {
+          return;
+        }
+        const target = columnIndex(this.config.statusColumn);
+        const columnStyle = sheet.worksheet.cols?.col?.find(
+          (col) => Number(col['@_min']) <= target && target <= Number(col['@_max']),
+        )?.['@_style'];
+        resultCell = {
+          '@_r': `${this.config.statusColumn}${row['@_r']}`,
+          ...(columnStyle ? { '@_s': columnStyle } : {}),
+        };
+        const insertAt = cells.findIndex((cell) => columnIndex(columnOf(cell)) > target);
+        cells.splice(insertAt >= 0 ? insertAt : cells.length, 0, resultCell);
+        row.c = cells;
+      }
+
+      // Update the corresponding result column with the correct status.
+      delete resultCell.f;
+      delete resultCell.is;
+      if (valueMap[status] != null) {
+        resultCell['@_t'] = 's';
+        resultCell.v = String(valueMap[status]);
+      } else {
+        // The status is missing among the shared strings, write it as an inline string instead.
+        delete resultCell.v;
+        resultCell['@_t'] = 'inlineStr';
+        resultCell.is = { t: status };
       }
     });
 
     const xmlString = this.builder.build(sheet);
     const xmlBuffer = Buffer.from(xmlString, 'utf8');
     this.zip.updateFile(sheetPath, xmlBuffer);
+  }
+
+  /**
+   * Resolves the displayed text of a cell, whether it is a shared string, an inline string or a plain value.
+   */
+  private cellText(cell: any, sharedStrings: string[]): string {
+    switch (cell['@_t']) {
+      case 's':
+        return sharedStrings[Number(cell.v)] ?? '';
+      case 'inlineStr':
+        return textOf(cell.is);
+      default:
+        return cell.v == null ? '' : String(cell.v);
+    }
   }
 
   /**
