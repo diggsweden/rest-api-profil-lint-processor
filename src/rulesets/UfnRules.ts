@@ -68,6 +68,11 @@ export class Ufn01 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.description = this.translate('rules.ufn01.description');
+    this.message = this.translate('rules.ufn01.message', {
+      description: this.description,
+    });
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -77,7 +82,6 @@ export class Ufn02 extends BaseRuleset {
     id: 'UFN.02',
   };
   given = '$.servers.[url]';
-  message = 'Alla API:er SKALL exponeras via HTTPS på port 443.';
   then = [
     {
       function: (targetVal): any => {
@@ -120,6 +124,8 @@ export class Ufn02 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.ufn02.message');
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -263,8 +269,6 @@ export class Ufn08 extends BaseRuleset {
   };
 
   given = '$.paths[*]~';
-  message =
-    "Endast bindestreck '-' SKALL användas för att separera ord för att öka läsbarheten samt förenkla för sökmotorer att indexera varje ord för sig (gäller URL-elementen Authority och Path. Mer specifikt API-elementen domännamn, api, resurs, identifierare).";
   then = [
     {
       function: (targetVal: string, _opts: string, paths: string[]) => {
@@ -315,6 +319,8 @@ export class Ufn08 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.ufn08.message');
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -323,9 +329,9 @@ export class Ufn07 extends BaseRuleset {
     område: 'URL Format och namngivning',
     id: 'UFN.07',
   };
-  message =
-    'URL:n SKALL använda dessa tecknen a-z, 0-9, "-", "." samt "~", se vidare i RFC 3986) (gäller URL-elementen Scheme, Authority och Path samt API-elementen protokoll, domännamn, api, version, resurs och identifierare).';
+
   given = '$.';
+  
   then = [
     {
       field: 'servers',
@@ -396,6 +402,8 @@ export class Ufn07 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.ufn07.message');
   }
   severity = DiagnosticSeverity.Error;
 }
