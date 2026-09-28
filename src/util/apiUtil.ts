@@ -51,7 +51,7 @@ export async function processApiSpec(
   },
   apiSpecDocument: Document<unknown, Parsers.YamlParserResult<unknown>>,
 ): Promise<ValidationResponseDto> {
-  const customSpectral = new RapLPCustomSpectral();
+  const customSpectral = new RapLPCustomSpectral(context);
   customSpectral.setCategorys(enabledRulesAndCategorys.instanceCategoryMap);
   customSpectral.setRuleset(enabledRulesAndCategorys.rules);
   const result = await customSpectral.run(apiSpecDocument);

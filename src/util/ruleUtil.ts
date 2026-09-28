@@ -5,6 +5,7 @@
 import { RuleCategoryError } from './RapLPBaseApiErrorHandling.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
 import { RuleModuleName } from '../rulesets/util/ruleModules.js';
+import { translator } from '../i18n.js';
 
 /**
  *  Add other rule modules when applying new rules to RAP-LP
@@ -45,6 +46,7 @@ export async function importAndCreateRuleInstances(
   const ruleInstances: Record<string, any> = {}; // store instances of rule classes
   const ruleTypes: any[] = []; // array to store rule classes.
   const instanceCategoryMap: Map<string, any> = new Map();
+  const t = translator(context.locale);
 
   /**
    *
@@ -61,11 +63,16 @@ export async function importAndCreateRuleInstances(
         return values as any;
       } else {
         //No exports from loaded ruleModule is found for the category
-        throw new Error(`inga exporterade typer hittade i modulen för kategori ${category}`);
+        throw new Error(t('ruleLoader.noExportedTypes', { category }));
       }
     } catch (error: any) {
       //Saftey check in case of error when loading module[s]
-      throw new Error(`Fel vid importering av regler för kategori ${category}:, category ${error.message}`);
+      throw new Error(
+        t('ruleLoader.importError', {
+          category,
+          error: error.message,
+        }),
+      );
     }
   }
   /**
@@ -115,7 +122,12 @@ export async function importAndCreateRuleInstances(
       ruleInstances[RuleClass.name] = instance;
       instanceCategoryMap.set(RuleClass.name, RuleClass); // Do we have name of ruleClass ?
     } catch (error: any) {
-      console.error('Fel vid skapande av instans för regelklass %s:', RuleClass.name, error.message);
+      console.error(
+        t('ruleLoader.instanceCreationError', {
+          ruleClass: RuleClass.name,
+          error: error.message,
+        }),
+      );
     }
   });
   return { rules: ruleInstances, instanceCategoryMap };

@@ -8,6 +8,8 @@ import spectralCore from '@stoplight/spectral-core';
 const { Spectral, Document } = spectralCore;
 import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.js';
 import { buildRuleHelpUrl } from '../rulesets/util/rules-doc.config.js';
+import { RuleExecutionContext } from './RuleExecutionContext.js';
+import { translateRuleArea } from './ruleAreaTranslation.js';
 
 class RapLPCustomSpectral {
   private spectral: SpectralCore.Spectral;
@@ -16,7 +18,7 @@ class RapLPCustomSpectral {
     rules: {},
   };
   private instanceCategoryMap: Map<string, any>;
-  constructor() {
+  constructor(private context: RuleExecutionContext) {
     this.spectral = new Spectral();
     this.rules = {};
     this.instanceCategoryMap = new Map<string, any>();
@@ -53,11 +55,11 @@ class RapLPCustomSpectral {
             const ruleId = ruleClass.customProperties.id;   
 
             const customResult: RapLPCustomSpectralDiagnostic = {
-              id: ruleId,
-              area: ruleClass.customProperties.område,
-              helpUrl: ruleId ? buildRuleHelpUrl(ruleId) : undefined,
-              ...customProperties, // For more copy
+              ...customProperties,
               ...this.mapResultToCustom(result),
+              id: ruleId,
+              helpUrl: ruleId ? buildRuleHelpUrl(ruleId) : undefined,
+              area: translateRuleArea(ruleClass.customProperties.område, this.context.locale),
             };
             customResults.push(customResult);
             break; // Break the loop once a match is found

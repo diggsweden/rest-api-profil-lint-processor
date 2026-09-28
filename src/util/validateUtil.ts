@@ -20,6 +20,8 @@ import type { IParser } from '@stoplight/spectral-parsers';
 import * as IssueHelper from './RapLPIssueHelpers.js';
 import { SpecParseError, SpecParseErrorSource} from './RapLPSpecParseError.js';
 import { Issue } from './Issue.js';
+import { RuleExecutionContext } from './RuleExecutionContext.js';
+import { translator } from '../i18n.js';
 
 /**
  * 
@@ -100,24 +102,26 @@ export function detectSpecFormatPreference(
  * @throws SpecParseError // if the content is not valid JSON or YAML. 
  */
 export async function parseApiSpecInput(input: SpecInput,
-  opts: ParseOptions = {}
+  opts: ParseOptions = {},
+  context: RuleExecutionContext,
 ): Promise<ParseResult> {
 
   const prefer = opts.preferJsonError ?? 'never'; // Standard is YAML focus 
   const maxSnippetLength = opts.maxSnippetLength ?? 5000; 
   const strict = opts.strict ?? false; // Strict flag is normally set to false
+  const t = translator(context.locale);
   
   if ('parsed' in input) { // Checks if content is alreay parsed
     const parsed = input.parsed;
     if (!isOpenApiLike(parsed)) {
-      throw new SpecParseError('Det parsade objektet verkar inte vara en giltig OpenAPI-specifikation.',
+      throw new SpecParseError(t('validation.invalidParsedOpenApi'),
          { source: 'unknown', stage: 'sanity' });
     }
     const serialized = JSON.stringify(parsed, null, 2); // Serialize raw format
     let strictIssues: Issue[] | undefined;
     if (strict) { 
       try {
-        await runStrictValidationIfRequested(parsed, 'json');
+        await runStrictValidationIfRequested(parsed, 'json', t);
       }catch (err: any) {
         const rawForMap = serialized;
         const pretty = prettifySwaggerParserErrorToEditorStyle(
@@ -132,7 +136,7 @@ export async function parseApiSpecInput(input: SpecInput,
   //Step one - Get rawtext from input
   let raw: string;
   try {
-    raw = getRawFromInput(input);
+    raw = getRawFromInput(input, t);
   }catch (e: any) {
     throw new SpecParseError(String(e.message || e), {
     source: 'unknown',
@@ -143,13 +147,13 @@ export async function parseApiSpecInput(input: SpecInput,
   const stripped = stripLeadingCommentsAndWhitespace(raw).trimStart();
 
   // Step three - Quick XML detection: If looks like  XML -> reject
-   ensureIsNotXmlLike(stripped);
+   ensureIsNotXmlLike(stripped, t);
   //Step four - Check if input looks like JSON or YAML 
   const jsonCandidate = looksLikeJson(stripped);
   const yamlCandidate = looksLikeYamlOpenApi(stripped); 
 
   if (!jsonCandidate && !yamlCandidate) {
-    throw new SpecParseError('Innehållet verkar inte vara JSON eller YAML.', { source: 'unknown', stage: 'sanity' });
+    throw new SpecParseError(t('validation.contentNotJsonOrYaml'), { source: 'unknown', stage: 'sanity' });
   }
   // Step five - Decision logic when choosing parser: 
   // - prefer === 'never' => YAML-first (skipped JSON) 
@@ -166,7 +170,7 @@ export async function parseApiSpecInput(input: SpecInput,
   // Step six -  Try parse in choosed order, and return ParseResult or throw SpecParseError
   if (shouldTryJson) {
     try {
-      parsedSpec = tryParseJson(raw);
+      parsedSpec = tryParseJson(raw, t);
       target = 'json';
     } catch (e: any) {
         if (e instanceof SpecParseError) { // Safecheck, should always be SpecParseError
@@ -181,7 +185,7 @@ export async function parseApiSpecInput(input: SpecInput,
   }else if (!parsedSpec && shouldTryYaml) {
     //Step four - Try to parse input as yaml
     try {
-      parsedSpec = tryParseYaml(raw,maxSnippetLength);
+      parsedSpec = tryParseYaml(raw,maxSnippetLength, t);
       target = 'yaml';
     }catch (yamlErr: any) {
       //Check if error is allready a interpreted error (SpecParseError), throw it further 
@@ -189,13 +193,13 @@ export async function parseApiSpecInput(input: SpecInput,
       // Fallback generiskt error - Is there a previous jsonSyntaxErr
       if (lastJsonError) throw lastJsonError; // Tidigare fel 
 
-      throw new SpecParseError('Kunde inte tolka innehållet som JSON eller YAML.', { source: 'unknown', stage: 'sanity'});
+      throw new SpecParseError(t('validation.parseJsonOrYamlFailed'), { source: 'unknown', stage: 'sanity'});
     }
   }
   //Make sure parsed specification is OpenAPI like
-  ensureIsOpenApiLike(parsedSpec,target);
+  ensureIsOpenApiLike(parsedSpec,target, t);
   //Make sure parsed specification is a secure OpenAPI like
-  ensureIsSecureOpenApiLike(parsedSpec,target);
+  ensureIsSecureOpenApiLike(parsedSpec,target, t);
   
   let issues: Issue[] | undefined;
   let prettyLines: string[] = [];
@@ -203,7 +207,7 @@ export async function parseApiSpecInput(input: SpecInput,
   if (strict) {
     try {
       //Run structural validation first (async run)
-      await runStrictValidationIfRequested(parsedSpec, target);
+      await runStrictValidationIfRequested(parsedSpec, target, t);
     }catch (err:any) {
         prettyLines = prettifySwaggerParserErrorToEditorStyle(
           err?.message ?? String(err), raw ?? '');
@@ -216,10 +220,10 @@ export async function parseApiSpecInput(input: SpecInput,
       const apiSpecDocument = new SpectralDocument(raw, parser, '');
 
       //Run sematic validation second(async)
-      spectralDiagnostics = await semanticValidate(apiSpecDocument) as SpectralCore.ISpectralDiagnostic[]; 
+      spectralDiagnostics = await semanticValidate(apiSpecDocument, context) as SpectralCore.ISpectralDiagnostic[]; 
     }catch (e: any) {
       // If semantic validation crashes, log it and continue parsing flow
-      console.error('Spectral semantic validation failed (non-fatal):', e?.message ?? String(e));
+      console.error(t('validation.spectralSemanticValidationFailed'), e?.message ?? String(e));
       spectralDiagnostics = [];
     }
     const finalIssues = IssueHelper.buildIssuesFromPrettyAndSpectral(prettyLines ?? [], spectralDiagnostics, true  /* addOneToLine */);
@@ -279,19 +283,19 @@ function stripLeadingCommentsAndWhitespace(raw: string): string {
   }
   return lines.slice(i).join('\n');
 }
-function ensureIsSecureOpenApiLike(parsed: any, target: any) {
+function ensureIsSecureOpenApiLike(parsed: any, target: any, t: ReturnType<typeof translator>) {
 
   const violations: string[] = [];
   //Look for external $refs
   if (findExternalRefs(parsed).length > 0) {
-    violations.push('Externa $ref-referenser är ej tillåtna.');
+    violations.push(t('validation.externalRefsNotAllowed'));
   }
   /*const details = externalRefs
     .map(ref => `${ref.path}: ${ref.ref}`)
     .join('\n');*/
   if (violations.length > 0) {
     throw new SpecParseError([
-        'API-specifikationen innehåller konstruktioner som inte är tillåtna enligt säkerhetsreglerna:',
+        t('validation.securityRulesViolation'),
         ...violations.map(v => ` * ${v}`),
       ].join('\n'),{
         source: target,
@@ -306,9 +310,9 @@ function ensureIsSecureOpenApiLike(parsed: any, target: any) {
  * Check: parsed object "looks like" OpenAPI (openapi, swagger eller paths+info).
  * Återanvänds när caller redan parsat objektet (eller fått 'parsed' input).
  */
-function ensureIsOpenApiLike(parsed: any, target: any) {
+function ensureIsOpenApiLike(parsed: any, target: any, t: ReturnType<typeof translator>) {
   if (!isOpenApiLike(parsed)) {
-    throw new SpecParseError('Filen verkar inte vara en giltig OpenAPI-specifikation (saknar openapi/swagger eller paths+info).', { source: target, stage: 'sanity' });
+    throw new SpecParseError(t('validation.invalidOpenApiFile'), { source: target, stage: 'sanity' });
   }
 }
 /**
@@ -316,9 +320,9 @@ function ensureIsOpenApiLike(parsed: any, target: any) {
  * Check: parsed object "looks like" OpenAPI (openapi, swagger eller paths+info).
  * @param stripped 
  */
-function ensureIsNotXmlLike(stripped: string) {
+function ensureIsNotXmlLike(stripped: string, t: ReturnType<typeof translator>) {
   if (/^\s*<\?xml|^\s*<[\w-]+[\s>]/i.test(stripped)) {
-    throw SpecParseError.fromXmlNotice();
+    throw SpecParseError.fromXmlNotice(t);
   }
 }
 /**
@@ -345,12 +349,12 @@ function looksLikeYamlOpenApi(stripped: string): boolean {
  * @param raw - raw json
  * @returns return parsed json
  */
-function tryParseJson(raw: string): any {
+function tryParseJson(raw: string, t: ReturnType<typeof translator>): any {
   try {
     return JSON.parse(raw);
   } catch (e: any) {
     // normal JSON parse error -> convert to SpecParseError
-    throw SpecParseError.fromJsonError(e);
+    throw SpecParseError.fromJsonError(e, t);
   }
 }
 
@@ -359,20 +363,20 @@ function tryParseJson(raw: string): any {
  * @param raw - raw yaml
  * @returns return parsed yaml
  */
-function tryParseYaml(raw: string, maxSnippetLength: number): any {
+function tryParseYaml(raw: string, maxSnippetLength: number, t: ReturnType<typeof translator>): any {
   try {
     const parsed = yaml.load(raw);
     return parsed;
   } catch (e: any) {
     if (e && typeof e === 'object' && (e.name === 'YAMLException' || e.mark)) {
-      const spe = SpecParseError.fromYamlError(e);
+      const spe = SpecParseError.fromYamlError(e, t);
       if (spe.snippet && spe.snippet.length > maxSnippetLength) {
         spe.snippet = spe.snippet.slice(0, maxSnippetLength) + '...(truncated)';
       }
       throw spe; // Throw SpecParseError
     }
     // (un)normal JSON parse error -> convert to SpecParseError
-    throw new SpecParseError('Kunde inte tolka YAML-innehållet.', { source: 'yaml', stage: 'sanity'});
+    throw new SpecParseError(t('validation.yamlParseFailed'), { source: 'yaml', stage: 'sanity'});
   }
 }
 function normalizeRaw(raw: string): string {
@@ -387,7 +391,7 @@ function normalizeRaw(raw: string): string {
  * @param input 
  * @returns 
  */
-export function getRawFromInput(input: SpecInput): string {
+export function getRawFromInput(input: SpecInput, t: ReturnType<typeof translator>): string {
 
   if ('filePath' in input) {
     return fs2.readFileSync(input.filePath, 'utf8');
@@ -396,22 +400,22 @@ export function getRawFromInput(input: SpecInput): string {
   } else if ('base64' in input) {
     return decodeBase64String(input.base64);
   } else if ('parsed' in input) {
-    throw new Error('invalid variant to parse with');
+    throw new Error(t('validation.invalidInputVariant'));
   }
-  throw new Error('Unexpected error - invalid input when trying to get raw from input');
+  throw new Error(t('validation.unexpectedInvalidInput'));
 }
 
 /**
  * Helper function (High level)
  * Run strict validation with @apidevtools/swagger-parser.
  */
-async function runStrictValidationIfRequested(parsed: any, source:'yaml' | 'json' | 'xml' | 'unknown' = 'unknown'): Promise<void> {
+async function runStrictValidationIfRequested(parsed: any, source:'yaml' | 'json' | 'xml' | 'unknown' = 'unknown', t: ReturnType<typeof translator>): Promise<void> {
   try {
     await SwaggerParser.validate(parsed);
   } catch (e: any) {
     // Encapsulate errors in SpecParseError so the rest of the system can handle them uniformly
     const msg = e?.message ? String(e.message) : String(e);
-    throw new SpecParseError(`Strict validation failed: ${msg}`, {
+    throw new SpecParseError(t('validation.strictValidationFailed', { message: msg }), {
        source,
        stage: 'strict',
        cause: e,
@@ -432,8 +436,10 @@ async function ensureFetch(): Promise<typeof globalThis.fetch> {
 /**
  * semanticValidate - minimal implementation (Alternativ 1)
  */
-export async function semanticValidate(apiSpecDocument: SpectralDocument): Promise<SpectralCore.ISpectralDiagnostic[]> {
-  const runner = new RapLPCustomSpectral(); 
+export async function semanticValidate(apiSpecDocument: SpectralDocument,
+  context: RuleExecutionContext,
+): Promise<SpectralCore.ISpectralDiagnostic[]> {
+  const runner = new RapLPCustomSpectral(context); 
 
   //Hardcoded rules to extend ( Should be able to config thoose)
   let selectedRules: string[] = ['path-params', 'operation-operationId-unique', 'operation-parameters','oas3-schema'];

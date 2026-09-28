@@ -1,4 +1,11 @@
 {
+  "common": {
+    "ruleStatus": {
+      "ok": "OK",
+      "notOk": "EJ OK",
+      "notApplicable": "N/A"
+    }
+  },
   "cli": {
     "missingFile": "Saknar obligatoriskt argument för cli-läge: --file <path>",
     "parseError": "Fel vid parsing av API-specifikationen.",
@@ -16,6 +23,30 @@
     "parseOrReadError": "Ett fel uppstod vid inläsning/parsing av spec-filen. Se felloggen för mer information.",
     "ruleClassExecutionError": "Ett fel uppstod vid initiering/körning av regelklasser. Undersök felloggen för RAP-LP för mer information om felet.",
     "ruleModuleLoadingError": "Ett fel uppstod vid inläsning av moduler och skapande av regelklasser. Undersök felloggen för RAP-LP för mer information om felet.",
+    "ruleExecution": {
+      "approvedTitle": "<<<Verkställda och godkända regler - RAP-LP>>>",
+      "rejectedTitle": "<<<Verkställda och ej godkända regler - RAP-LP>>>",
+      "notApplicableTitle": "<<<Ej tillämpade regler - RAP-LP>>>",
+      "resultTitle": "<<Regelutfall RAP-LP>>",
+
+      "headers": {
+        "status": "STATUS",
+        "area": "OMRÅDE",
+        "identifier": "IDENTIFIKATIONSNUMMER"
+      },
+
+      "details": {
+        "severity": "allvarlighetsgrad",
+        "id": "id",
+        "requirement": "krav",
+        "area": "område",
+        "path": "sökväg",
+        "range": "omfattning",
+        "designRule": "designregel"
+      }
+    },
+    "diagnosticOutput": "Skriver diagnostiseringsinformation från RAP-LP till {{filePath}}",
+    "validationOutput": "Skriver inspektions-/valideringsinformation från RAP-LP till {{filePath}}",
     "help": {
       "mode": "Körläget för applikationen",
       "file": "[cli mode] Sökväg till YAML-filen",
@@ -51,6 +82,279 @@
     "featureDisabledTitle": "Konflikt",
     "featureDisabledDetail": "Den här funktionen är inaktiverad på grund av serverkonfigurationen. Kontakta administratören om du tror att detta är ett fel.",
     "specEvaluationFailed": "Specifikationen kunde inte utvärderas fullt ut",
-    "specParseUnknown": "Okänt fel vid parsning av API-specifikationen"
+    "specParseUnknown": "Okänt fel vid parsning av API-specifikationen",
+    "reportGenerationError": "Fel vid generering av rapportbuffer:"
+  },
+  "validation": {
+    "invalidParsedOpenApi": "Det parsade objektet verkar inte vara en giltig OpenAPI-specifikation.",
+    "contentNotJsonOrYaml": "Innehållet verkar inte vara JSON eller YAML.",
+    "parseJsonOrYamlFailed": "Kunde inte tolka innehållet som JSON eller YAML.",
+    "externalRefsNotAllowed": "Externa $ref-referenser är ej tillåtna.",
+    "securityRulesViolation": "API-specifikationen innehåller konstruktioner som inte är tillåtna enligt säkerhetsreglerna:",
+    "invalidOpenApiFile": "Filen verkar inte vara en giltig OpenAPI-specifikation (saknar openapi/swagger eller paths+info).",
+    "yamlParseFailed": "Kunde inte tolka YAML-innehållet.",
+    "invalidInputVariant": "Ogiltig indatatyp för parsning.",
+    "unexpectedInvalidInput": "Oväntat fel - ogiltig indata vid inläsning av specifikationen.",
+    "strictValidationFailed": "Strikt validering misslyckades: {{message}}",
+    "spectralSemanticValidationFailed": "Spectral semantisk validering misslyckades (icke-kritiskt):",
+    "invalidYamlSyntax": "Ogiltig YAML-syntax.",
+    "invalidJsonSyntax": "Ogiltig JSON-syntax.",
+    "ruleEngineInvalidStructure": "Specifikationen verkar sakna eller innehålla ogiltiga OpenAPI-fält som vissa regler kräver för att kunna köras. Slå gärna på OAS3-validering för tydligare felrapportering.",
+    "xmlContentDetected": "Innehållet ser ut att vara XML, inte JSON eller YAML."
+  },
+  "diagnosticReport": {
+    "note": {
+      "approved": "Godkända regler - RAP-LP",
+      "notApproved": "Ej Godkända regler - RAP-LP",
+      "notApplicable": "Ej tillämpade regler - RAP-LP"
+    }
+  },
+  "areas": {
+    "urlFormatAndNaming": "URL Format och namngivning",
+    "security": "Säkerhet",
+    "traceabilityAndCorrelation": "Spårbarhet och korrelation",
+    "versioning": "Versionhantering",
+    "filteringPaginationSearch": "Filtrering, paginering och sökparametrar",
+    "apiRequest": "API Request",
+    "documentation": "Dokumentation",
+    "apiMessage": "API Message",
+    "prerequisites": "Förutsättningar",
+    "dateTimeFormat": "Datum- och tidsformat",
+    "resources": "Resurser",
+    "maturity": "Mognad",
+    "errorHandling": "Felhantering"
+  },
+  "ruleCategories": {
+    "ufn": "URL Format och namngivning",
+    "sak": "Säkerhet",
+    "spa": "Spårbarhet och korrelation",
+    "ver": "Versionshantering",
+    "fns": "Filtrering, paginering och sökparametrar",
+    "arq": "API Request",
+    "dok": "Dokumentation",
+    "ame": "API Message",
+    "for": "Förutsättningar",
+    "dot": "Datum- och tidsformat",
+    "res": "Resurser",
+    "mog": "Mognad",
+    "fel": "Felhantering"
+  },
+  "ruleLoader": {
+    "noExportedTypes": "Inga exporterade typer hittades i modulen för kategori {{category}}",
+    "importError": "Fel vid importering av regler för kategori {{category}}: {{error}}",
+    "instanceCreationError": "Fel vid skapande av instans för regelklass {{ruleClass}}: {{error}}"
+  },
+  "rules": {
+    "ame01": {
+      "description": "Denna regel validerar att request och response är application/json.",
+      "message": "Datamodellen för en representation BÖR beskrivas med JSON enligt senaste versionen, RFC 8259."
+    },
+    "ame02": {
+      "description": "Denna regel validerar att response är application/json.",
+      "message": "Det BÖR förutsättas att alla request headers som standard använder 'Accept' med värde 'application/json'"
+    },
+    "ame04": {
+      "description": "För fältnamn i request och response body BÖR camelCase eller snake_case notation användas."
+    },
+    "ame05": {
+      "description": "Inom ett API SKALL namnsättningen vara konsekvent, dvs blanda inte camelCase och snake_case."
+    },
+    "ame07": {
+      "description": "Fältnamn BÖR använda tecken som är alfanumeriska."
+    },
+    "arq01": {
+      "description": "Ett request BÖR skickas i UTF-8",
+      "message": "Ett request BÖR skickas i UTF-8"
+    },
+    "arq03": {
+      "description": "Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, ETag, Connection och Cookie."
+    },
+    "arq05": {
+      "message": "Payload data SKALL INTE användas i HTTP-headers",
+      "nestedStructure": {
+        "description": "Om en header använder nästlade strukturer, är en requestbody mer lämplig."
+      },
+      "stringBinary": {
+        "description": "Om en header förväntas innehålla data med ovanliga MIME-typer kan det indikera en okonventionell användning av headers."
+      },
+      "complexStructure": {
+        "description": "Om en header förväntas innehålla komplexa datastrukturer, såsom JSON eller XML, kan det indikera en okonventionell användning av headers."
+      }
+    },
+    "dok01": {
+      "message": "I regel BÖR dokumentationen och specifikationen för ett API finnas allmänt tillgänglig online."
+    },
+    "dok03": {
+      "description": "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter.",
+      "info": {
+        "message": "[ info objektet bör ha title, version , description, termsOfService, contact , license ]"
+      },
+      "contact": {
+        "message": "(Saknar contact objektet)"
+      },
+      "contactName": {
+        "message": "(Contact saknar name)"
+      },
+      "contactEmail": {
+        "message": "(Contact saknar email)"
+      },
+      "contactUrl": {
+        "message": "(Contact saknar url)"
+      },
+      "license": {
+        "message": "(Saknar license objektet)"
+      },
+      "licenseUrl": {
+        "message": "(license saknar url)"
+      },
+      "licenseName": {
+        "message": "(license saknar name)"
+      }
+    },
+    "dok06": {
+      "message": "Dokumentationen BÖR finnas på både svenska och engelska."
+    },
+    "dok07": {
+      "message": "Dokumentationen av ett API BÖR innehålla övergripande information om API:et."
+    },
+    "dok08": {
+      "message": "Ett API:s servicenivå SKALL finnas tydligt beskriven i dokumentationen."
+    },
+    "dok09": {
+      "message": "Kända problem och begränsningar SKALL finnas tydlig beskrivna i dokumentationen."
+    },
+    "dok11": {
+      "message": "Avsikten och beteendet hos API:et SKALL beskrivas så utförligt och tydligt som möjligt."
+    },
+    "dok15": {
+      "message": "I dokumentationen av API:et SKALL exempel på API:ets fråga (eng:request) och svar (eng:reply) finnas i sin helhet."
+    },
+    "dok17": {
+      "description": " ( Linter-analysverktyget (RAP-LP) för den nationella REST API-profilen är designat för senaste major versionen av OpenAPI Specification. Använd därför denna för full täckning av de implementerade reglerna. )",
+      "message": "API specifikation BÖR dokumenteras med den senaste versionen av OpenAPI Specification."
+    },
+    "dok19": {
+      "message": "Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt."
+    },
+    "dok20": {
+      "message": "Förväntade returkoder och felkoder SKALL vara fullständigt dokumenterade."
+    },
+    "dok21": {
+      "message": "Krav på autentisering SKALL anges i specifikationen."
+    },
+    "dot02": {
+      "description": "Ett giltigt exempel enligt DOT.02 behöver anges som ett exempel",
+      "message": "Datum och tid SKALL anges enligt RFC 3339 som bygger på ISO-8601."
+    },
+    "dot04": {
+      "description": "När man använder RFC 3339 format BÖR tidszonen anges.",
+      "message": "Tidzonen BÖR representeras med UTC formatet, där tid anges som offset från UTC (Coordinated Universal Time)."
+    },
+    "fel01": {
+      "message": "Om HTTP svarskoderna inte räcker SKALL (FEL.01) API:et beskriva feldetaljer enligt RFC 9457 med dessa ingående attribut; {{properties}}.",
+      "schemaMustBeObject": "Schema måste vara ett objekt",
+      "missingProperty": "Saknar egenskap: {{property}}",
+      "missingRequiredField": "Saknar obligatoriskt fält: {{property}}"
+    },
+    "fel02": {
+      "message": "Schemat enligt RFC 9457 bör innehålla de beskrivna attributen i FEL.01 och SKALL (FEL.02) använda mediatypen application/problem+json eller application/problem+xml i svaret."
+    },
+    "fns01": {
+      "message": "Parameternamn SKALL anges med en konsekvent namnkonvention inom ett API, exempelvis antingen snake_case eller camelCase"
+    },
+    "fns03": {
+      "message": "Sökparametrar SKALL starta med en bokstav."
+    },
+    "fns05": {
+      "message": "Sökparametrar BÖR vara frivilliga."
+    },
+    "fns06": {
+      "message": "Sökparametrar BÖR använda tecken som är URL-säkra (tecknen A-Z, a-z, 0-9, '-', '.', '_' samt '~', se vidare i RFC 3986)"
+    },
+    "fns07": {
+      "message": "Vid användande av paginering, SKALL följande parametrar ingå i request: 'limit' och någon av 'page' eller 'offset'"
+    },
+    "fns08": {
+      "message": "'page' SKALL alltid starta med värde 1"
+    },
+    "fns09": {
+      "message": "Defaultvärde för limit BÖR vara 20"
+    },
+    "for02": {
+      "message": "EN GET -förfrågan SKALL INTE acceptera en body"
+    },
+    "mog01": {
+      "message": "Alla API:er SKALL designas för att uppnå nivå 2 enligt Richardson Maturity Model. "
+    },
+    "mog02": {
+      "message": "Alla API:er BÖR designas för att uppnå nivå 3 enligt Richardson Maturity Model. "
+    },
+    "res02": {
+      "message": "Primärnycklar eller personligt identifierbar information (personnummer, etc.) BÖR INTE exponeras. "
+    },
+    "res06": {
+      "message": "Resurser SKALL följa den namnsättningskonvention som beskrivs för URL:er, det vill säga att resurser anges med gemener, använder endast alfanumeriska tecken och bindestreck för att separera eventuella ord. "
+    },
+    "sak01": {
+      "message": "All transport SKALL ske över HTTPS med minst TLS 1.2."
+    },
+    "sak09": {
+      "description": "HTTP Basic är ett naturligt osäkert sätt att skicka inloggningsuppgifter till API:et. De placeras i URL:en i base64 som enkelt kan dekrypteras. Även om du använder en token finns det mycket bättre sätt att hantera att skicka tokens till ett API som är mindre benägna att läcka ut information",
+      "message": "Basic- eller Digest-autentisering SKALL INTE användas."
+    },
+    "sak10": {
+      "description": "Genom att använda HTTPS för att kryptera kommunikationen mellan klient och server kan Bearer Authentication erbjuda en hög nivå av säkerhet. Det gör det svårare för angripare att avlyssna eller ändra åtkomsttoken under överföringen",
+      "message": "Authorization: Bearer header SKALL användas för autentisering/auktorisation."
+    },
+    "sak15": {
+      "message": "API-nycklar SKALL INTE inkluderas i URL eller querysträngen"
+    },
+    "sak16": {
+      "description": "API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas i okrypterat format.",
+      "message": "API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas av klienten eller servern i okrypterat format av webbläsaren eller serverapplikationen."
+    },
+    "sak18": {
+      "description": "OAuth är ett auktorisationsprotokoll som säkert delegerar behörighet till en annan resurs.",
+      "message": "OAuth version 2.0 eller senare BÖR användas för auktorisation."
+    },
+    "sak29": {
+      "message": "Man BÖR (SAK.29) respektera angiven Content-Type i header. Förfrågningar som innehåller oväntade eller saknade Content-Type headers bör avvisas med HTTP-status 415 Unsupported Media Type."
+    },
+    "spa02": {
+      "message": "API-producenter SKALL acceptera HTTP-headern traceparent i inkommande anrop och propagera spårningsinformationen vidare enligt W3C Trace Context vid vidare anrop till andra system."
+    },
+    "spa04": {
+      "message": "API-producenten BÖR inkludera HTTP-headern traceparent i ett API-svar."
+    },
+    "spa07": {
+      "message": "Alternativa identifierare, såsom x-request-id, kan användas som komplement för interna behov, men SKALL INTE ersätta traceparent vid spårning av API-anrop mellan system och organisationer."
+    },
+    "ufn01": {
+      "description": "{protokoll}://{domännamn}/{api}/{version}/{resurs}/{identifierare}?{parametrar}",
+      "message": "En URL för ett API BÖR följa namnstandarden nedan: {{description}}"
+    },
+    "ufn02": {
+      "message": "Alla API:er SKALL exponeras via HTTPS på port 443."
+    },
+    "ufn05": {
+      "message": "En URL BÖR INTE vara längre än 2048 tecken.",
+      "description": "En URL BÖR INTE vara längre än 2048 tecken."
+    },
+    "ufn08": {
+      "message": "Endast bindestreck '-' SKALL användas för att separera ord för att öka läsbarheten samt förenkla för sökmotorer att indexera varje ord för sig (gäller URL-elementen Authority och Path. Mer specifikt API-elementen domännamn, api, resurs, identifierare)."
+    },
+    "ufn07": {
+      "message": "URL:n SKALL använda dessa tecknen a-z, 0-9, \"-\", \".\" samt \"~\", se vidare i RFC 3986) (gäller URL-elementen Scheme, Authority och Path samt API-elementen protokoll, domännamn, api, version, resurs och identifierare)."
+    },
+    "ufn09": {
+      "message": "Blanksteg ' ' och understreck '_' SKALL INTE användas i URL:er med undantag av parameter-delen (gäller alltså URL-elementen Scheme, Authority och Path samt API-elementen protokoll, domännamn, api, version, resurs och identifierare).",
+      "description": "Blanksteg ' ' och understreck '_' SKALL INTE användas i URL:er med undantag av parameter-delen."
+    },
+    "ver05": {
+      "message": "Version BÖR anges i URL enligt formatet v[x] där 'v' avser förkortning för version och x avser ett och bara ett nummer (0-n) för major-version"
+    },
+    "ver06": {
+      "message": "Information om ett API SKALL tillgängliggöras via resursen api-info under roten till API:et."
+    }
   }
 }

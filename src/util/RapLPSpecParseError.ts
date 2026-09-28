@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
+import { translator } from '../i18n.js';
+
 /**
  * Specialized error class that contains YAML/JSON parse information
  * Captured centrally in pipeline (CLI/API), and delivers structured data. 
@@ -80,8 +82,8 @@ export class SpecParseError extends Error {
     /*
     * Convinient method to extract yaml Error
     */
-    static fromYamlError(yamlErr: any): SpecParseError {
-      const msg = (yamlErr && yamlErr.message) ? String(yamlErr.message) : 'Ogiltig YAML-syntax.';
+    static fromYamlError(yamlErr: any, t: ReturnType<typeof translator>): SpecParseError {
+      const msg = (yamlErr && yamlErr.message) ? String(yamlErr.message) : t('validation.invalidYamlSyntax');
       const mark = yamlErr?.mark;
       const line = typeof mark?.line === 'number' ? mark.line + 1 : undefined;
       const column = typeof mark?.column === 'number' ? mark.column + 1 : undefined;
@@ -98,8 +100,8 @@ export class SpecParseError extends Error {
     /*
     * Convinient method to extract json Error
     */
-    static fromJsonError(jsonErr: any): SpecParseError {
-      const msg = (jsonErr && jsonErr.message) ? String(jsonErr.message) : 'Ogiltig JSON-syntax.';
+    static fromJsonError(jsonErr: any, t: ReturnType<typeof translator>): SpecParseError {
+      const msg = (jsonErr && jsonErr.message) ? String(jsonErr.message) : t('validation.invalidJsonSyntax');
       return new SpecParseError(msg,
         { 
           source: 'json',
@@ -112,9 +114,9 @@ export class SpecParseError extends Error {
    * The specification was parsed, but the rule engine crashed because
    * required OpenAPI structure was missing and strict validation was disabled.
    */
-    static fromRuleEngineInvalidStructure(causeErr: unknown): SpecParseError {
+    static fromRuleEngineInvalidStructure(causeErr: unknown, t: ReturnType<typeof translator>): SpecParseError {
       return new SpecParseError(
-      'Specifikationen verkar sakna eller innehålla ogiltiga OpenAPI-fält som vissa regler kräver för att kunna köras. Slå gärna på OAS3-validering för tydligare felrapportering.',
+      t('validation.ruleEngineInvalidStructure'),
       { stage: 'rule-engine',
         cause: causeErr,
       });
@@ -122,8 +124,8 @@ export class SpecParseError extends Error {
     /*
     * Convinient method to extract xml Error
     */
-    static fromXmlNotice(): SpecParseError {
-      return new SpecParseError('Innehållet ser ut att vara XML, inte JSON eller YAML.', { source: 'xml' });
+    static fromXmlNotice(t: ReturnType<typeof translator>): SpecParseError {
+      return new SpecParseError(t('validation.xmlContentDetected'), { source: 'xml' });
     }    
     toJSON() {
       return {

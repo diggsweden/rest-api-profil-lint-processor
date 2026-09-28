@@ -96,7 +96,7 @@ const ruleTypes = [
   MogRules.Mog01,
   MogRules.Mog02,
 ];
-const context = new RuleExecutionContext();
+const context = new RuleExecutionContext('sv');
 ruleTypes.forEach((RuleClass) => {
   const instance = new RuleClass(context);
   ruleInstances[RuleClass.name] = instance;

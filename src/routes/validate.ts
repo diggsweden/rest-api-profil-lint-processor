@@ -38,7 +38,15 @@ declare var AggregateError: {
 export const registerValidationRoutes = (app: Express) => {
   // Route for raw content upload.
   app.get('/api/v1/validation/rules', (req, res) => {
-    res.send(RULE_REGISTRY);
+    const locale = res.locals?.locale ?? resolveLocale();
+    const t = translator(locale);
+
+    res.send(
+      RULE_REGISTRY.map((entry) => ({
+        rule: entry.rule,
+        description: t(entry.descriptionKey),
+      })),
+    );
   });
 
   app.get('/api/v1/api-info', async (req, res, next) => {
@@ -48,10 +56,11 @@ export const registerValidationRoutes = (app: Express) => {
     '/api/v1/validation/generate-report',
     validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_REPORTS ?? 4)),
     async (req, res, next): Promise<any> => {
-      const t = translator(res.locals?.locale ?? resolveLocale());
+      const locale = res.locals?.locale ?? resolveLocale();
+      const t = translator(locale);
       try {
         const data = req.body;
-        const context = new RuleExecutionContext();
+        const context = new RuleExecutionContext(locale);
         const reportHandler = new ExcelReportProcessor();
         let buffer: Buffer;
 
@@ -62,7 +71,7 @@ export const registerValidationRoutes = (app: Express) => {
         try {
           buffer = reportHandler.generateReportDocumentBuffer(customDiagnostic);
         } catch (error) {
-          console.error('Error generating report buffer:', error);
+          console.error(t('api.reportGenerationError'), error);
           return sendProblem(
             res,
             500,
@@ -88,11 +97,12 @@ export const registerValidationRoutes = (app: Express) => {
     '/api/v1/validation/validatespec',
     validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_VALIDATIONS ?? 4)),
     async (req, res, next) => {
-      const t = translator(res.locals?.locale ?? resolveLocale());
+      const locale = res.locals?.locale ?? resolveLocale();
+      const t = translator(locale);
       let strict = true;
       try {
         const requestId = crypto.randomUUID();
-        const context = new RuleExecutionContext();
+        const context = new RuleExecutionContext(locale);
         const body: SpecValidationRequestDto = req.body;
 
         //0.1 Check input
@@ -125,7 +135,7 @@ export const registerValidationRoutes = (app: Express) => {
         );
         // 3. Parse handling + strict-validate (Structural / Semantic errors)
         const parseResult = await measure({ requestId, operation: 'parseApiSpecInput' }, () =>
-          parseApiSpecInput({ raw }, { strict, preferJsonError: prefer }),
+          parseApiSpecInput({ raw }, { strict, preferJsonError: prefer }, context),
         );
         // 4. Strict-issues →
         if (parseResult.strictIssues?.length) {
@@ -204,9 +214,13 @@ export const registerValidationRoutes = (app: Express) => {
         // Hantera SpecParseError här
         logError(e);
         next(
-          mapValidationExecutionError(e, {
-            strictEnabled: strict,
-          }),
+          mapValidationExecutionError(
+            e,
+            {
+              strictEnabled: strict,
+            },
+            t,
+          ),
         );
       }
     },
