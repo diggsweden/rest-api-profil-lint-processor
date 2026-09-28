@@ -364,7 +364,8 @@ raplp -f openapi.yaml -d logDiagnostic.log
 För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, lägg till `--dex`.<br>
 Om en specifik sökväg till avstämningsfilen ska anges, kan denna läggas till.<br>
 Om ingen sökväg anges, genererar verktyget automatiskt en ny avstämningsfil i den katalog där det körs.<br>
-Om en sökväg anges till en avstämningsfil som redan finns, uppdateras endast status för de regler som RAP-LP har verkställt. Kommentarer och övriga ändringar i filen bevaras.
+Om en sökväg anges till en avstämningsfil som redan finns, uppdateras endast status för de regler som RAP-LP har verkställt. Kommentarer och övriga ändringar i filen bevaras.<br>
+Regler med status `Pågående` behåller sin status tills valideringen av regeln ger `OK`, då ersätts statusen och verktyget informerar om vilka regler som berörts.
 
 [Avstämningsfilen](document/Avstaemning_REST_API_profil_v_1_2_0_0.xlsx) i Excel har ett fast format, om en egen version av filen ska användas måste den utpekade resursen hämtas med en kompatibel version av REST API-profilen.
 
