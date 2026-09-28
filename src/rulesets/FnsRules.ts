@@ -15,10 +15,6 @@ export class Fns01 extends BaseRuleset {
     område: 'Filtrering, paginering och sökparametrar',
     id: 'FNS.01',
   };
-  description =
-    'Parameternamn SKALL anges med en konsekvent namnkonvention inom ett API, exempelvis antingen snake_case eller camelCase';
-  message =
-    'Parameternamn SKALL anges med en konsekvent namnkonvention inom ett API, exempelvis antingen snake_case eller camelCase';
   given = "$.paths.*.*.parameters[?(@.in=='query')].name";
   then = [
     {
@@ -44,6 +40,9 @@ export class Fns01 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.fns01.message');
+    this.description = this.message;
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -53,8 +52,6 @@ export class Fns03 extends BaseRuleset {
     område: 'Filtrering, paginering och sökparametrar',
     id: 'FNS.03',
   };
-  description = 'Sökparametrar SKALL starta med en bokstav';
-  message = 'Sökparametrar SKALL starta med en bokstav.';
   given = "$.paths.*.*.parameters[?(@.in=='query')].name";
   then = [
     {
@@ -80,6 +77,9 @@ export class Fns03 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.fns03.message');
+    this.description = this.message;
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -89,8 +89,6 @@ export class Fns09 extends BaseRuleset {
     område: 'Filtrering, paginering och sökparametrar',
     id: 'FNS.09',
   };
-  description = 'Defaultvärde för limit BÖR vara 20';
-  message = 'Defaultvärde för limit BÖR vara 20';
   given = '$.paths..parameters';
   severity = DiagnosticSeverity.Warning;
   then = [
@@ -141,6 +139,9 @@ export class Fns09 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.fns09.message');
+    this.description = this.message;
   }
 }
 export class Fns05 extends BaseRuleset {
@@ -148,8 +149,6 @@ export class Fns05 extends BaseRuleset {
     område: 'Filtrering, paginering och sökparametrar',
     id: 'FNS.05',
   };
-  description = 'Sökparametrar BÖR vara frivilliga.';
-  message = 'Sökparametrar BÖR vara frivilliga.';
   given = "$.paths.[*].parameters[?(@.in=='query')].required";
 
   then = [
@@ -182,6 +181,9 @@ export class Fns05 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.fns05.message');
+    this.description = this.message;
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -190,10 +192,6 @@ export class Fns06 extends BaseRuleset {
     område: 'Filtrering, paginering och sökparametrar',
     id: 'FNS.06',
   };
-  description =
-    "Sökparametrar BÖR använda tecken som är URL-säkra (tecknen A-Z, a-z, 0-9, '-'', '.', '_' samt '~', se vidare i RFC 3986)";
-  message =
-    "Sökparametrar BÖR använda tecken som är URL-säkra (tecknen A-Z, a-z, 0-9, '-', '.', '_' samt '~', se vidare i RFC 3986)";
   given = "$.paths.[*].parameters[?(@.in=='query')].name";
   then = [
     {
@@ -219,6 +217,9 @@ export class Fns06 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.fns06.message');
+    this.description = this.message;
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -228,9 +229,6 @@ export class Fns07 extends BaseRuleset {
     område: 'Filtrering, paginering och sökparametrar',
     id: 'FNS.07',
   };
-  description = '';
-  message =
-    "Vid användande av paginering, SKALL följande parametrar ingå i request: 'limit' och någon av 'page' eller 'offset'";
   given = '$.paths..parameters';
   then = [
     {
@@ -286,6 +284,9 @@ export class Fns07 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.fns07.message');
+    this.description = '';
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -295,8 +296,6 @@ export class Fns08 extends BaseRuleset {
     område: 'Filtrering, paginering och sökparametrar',
     id: 'FNS.08',
   };
-  description = '';
-  message = "'page' SKALL alltid starta med värde 1";
   given = '$.paths..parameters';
   then = [
     {
@@ -353,6 +352,9 @@ export class Fns08 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.fns08.message');
+    this.description = '';
   }
   severity = DiagnosticSeverity.Error;
 }

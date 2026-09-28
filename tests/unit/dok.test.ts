@@ -501,7 +501,7 @@ testRule('Dok19', [
       {
         code: 'Dok19',
         message:
-          'Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt',
+          'Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt.',
         path: ['paths', '/thiscase', 'operation'],
         severity: DiagnosticSeverity.Error,
       },
@@ -636,7 +636,7 @@ testRule('Dok01', [
       {
         code: 'Dok01',
         path: ['externalDocs'],
-        message: 'I regel BÖR dokumentationen och specifikationen för ett API finnas allmänt tillgänglig online',
+        message: 'I regel BÖR dokumentationen och specifikationen för ett API finnas allmänt tillgänglig online.',
         severity: DiagnosticSeverity.Warning,
       },
     ],
@@ -1051,7 +1051,7 @@ testRule('Dok01', [
       {
         code: 'Dok01',
         path: ['externalDocs'],
-        message: 'I regel BÖR dokumentationen och specifikationen för ett API finnas allmänt tillgänglig online',
+        message: 'I regel BÖR dokumentationen och specifikationen för ett API finnas allmänt tillgänglig online.',
         severity: DiagnosticSeverity.Warning,
       },
     ],

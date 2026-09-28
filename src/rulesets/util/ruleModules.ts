@@ -3,19 +3,19 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 export const RULE_REGISTRY = [
-  { rule: 'UfnRules', description: 'URL Format och namngivning' },
-  { rule: 'SakRules', description: 'Säkerhet' },
-  { rule: 'SpaRules', description: 'Spårbarhet och korrelation' },
-  { rule: 'VerRules', description: 'Versionshantering' },
-  { rule: 'FnsRules', description: 'Filtrering, paginering och sökparametrar' },
-  { rule: 'ArqRules', description: 'API Request' },
-  { rule: 'DokRules', description: 'Dokumentation' },
-  { rule: 'AmeRules', description: 'API Message' },
-  { rule: 'ForRules', description: 'Förutsättningar' },
-  { rule: 'DotRules', description: 'Datum- och tidsformat' },
-  { rule: 'ResRules', description: 'Resurser' },
-  { rule: 'MogRules', description: 'Mognad' },
-  { rule: 'FelRules', description: 'Felhantering' },
+  { rule: 'UfnRules', descriptionKey: 'ruleCategories.ufn' },
+  { rule: 'SakRules', descriptionKey: 'ruleCategories.sak' },
+  { rule: 'SpaRules', descriptionKey: 'ruleCategories.spa' },
+  { rule: 'VerRules', descriptionKey: 'ruleCategories.ver' },
+  { rule: 'FnsRules', descriptionKey: 'ruleCategories.fns' },
+  { rule: 'ArqRules', descriptionKey: 'ruleCategories.arq' },
+  { rule: 'DokRules', descriptionKey: 'ruleCategories.dok' },
+  { rule: 'AmeRules', descriptionKey: 'ruleCategories.ame' },
+  { rule: 'ForRules', descriptionKey: 'ruleCategories.for' },
+  { rule: 'DotRules', descriptionKey: 'ruleCategories.dot' },
+  { rule: 'ResRules', descriptionKey: 'ruleCategories.res' },
+  { rule: 'MogRules', descriptionKey: 'ruleCategories.mog' },
+  { rule: 'FelRules', descriptionKey: 'ruleCategories.fel' },
 ] as const;
 
 export type RuleModuleName = (typeof RULE_REGISTRY)[number]['rule'];
