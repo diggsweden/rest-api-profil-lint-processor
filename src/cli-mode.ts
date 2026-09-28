@@ -168,6 +168,22 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             } else {
               console.log(chalk.green(`Skriver avstämningsfil i Excel-format från RAP-LP till ${reportHandler.outputFilePath}`));
             }
+            if (reportHandler.isBasedOnExistingFile) {
+              const { templateProfileVersion, fileProfileVersion } = reportHandler;
+              if (!fileProfileVersion) {
+                console.log(
+                  chalk.yellow(
+                    `Kunde inte avgöra vilken version av REST API-profilen avstämningsfilen avser, RAP-LP använder version ${templateProfileVersion ?? 'okänd'}`,
+                  ),
+                );
+              } else if (templateProfileVersion && fileProfileVersion !== templateProfileVersion) {
+                console.log(
+                  chalk.yellow(
+                    `Avstämningsfilen avser version ${fileProfileVersion} av REST API-profilen men RAP-LP använder version ${templateProfileVersion}, regler kan saknas eller ha ändrats`,
+                  ),
+                );
+              }
+            }
             if (reportHandler.keptInProgressRules.length > 0) {
               console.log(
                 chalk.yellow(
