@@ -47,8 +47,12 @@ const DEFAULT_CONFIG: ExcelTemplateConfig = {
 const IN_PROGRESS_STATUS = 'Pågående';
 const STATUS_OPTIONS = ['-', 'OK', 'NOK', 'N/A', IN_PROGRESS_STATUS];
 
+const PROFILE_VERSION_NAME = 'profilversion';
+const INFO_SHEET_NAME = 'Info';
+
 const ARRAY_PATHS = new Set([
   'workbook.sheets.sheet',
+  'workbook.definedNames.definedName',
   'Relationships.Relationship',
   'sst.si',
   'sst.si.r',
@@ -75,6 +79,8 @@ const textOf = (item: any): string => {
   if (item.t != null) return toText(item.t);
   return (item.r ?? []).map((run: any) => toText(run.t)).join('');
 };
+
+const versionOf = (text: string, pattern = /(\d+\.\d+\.\d+)/): string | undefined => pattern.exec(text)?.[1];
 
 const columnOf = (cell: any): string => /^[A-Z]+/.exec(cell?.['@_r'] ?? '')?.[0] ?? '';
 
@@ -114,6 +120,7 @@ export class ExcelReportProcessor {
   private requestedOutputFilePath: string;
   private inProgressRulesKept: string[] = [];
   private inProgressRulesResolved: string[] = [];
+  private profileVersions: { template?: string; file?: string } = {};
 
   constructor(config?: Partial<ExcelTemplateConfig>) {
     const isPresent = (x?: string): x is string => {
@@ -133,7 +140,6 @@ export class ExcelReportProcessor {
 
     this.requestedOutputFilePath = this.config.outputFilePath;
     if (fs.existsSync(this.config.outputFilePath) && !isFileAccessible(this.config.outputFilePath)) {
-      // The file is locked (e.g. open in Excel), write to a timestamped sibling named after the requested file.
       const timestamp = new Date().toISOString().replace(/[^\w]/g, '-');
       const { dir, name, ext } = path.parse(this.config.outputFilePath);
       this.config.outputFilePath = path.join(dir, `${name}_${timestamp}${ext || '.xlsx'}`);
@@ -176,6 +182,14 @@ export class ExcelReportProcessor {
     return this.inProgressRulesResolved;
   }
 
+  public get templateProfileVersion(): string | undefined {
+    return this.profileVersions.template;
+  }
+
+  public get fileProfileVersion(): string | undefined {
+    return this.profileVersions.file;
+  }
+
   public generateReportDocument(result: RapLPDiagnostic) {
     // Convert the result Raport to map with Rule name as key and status as value.
     const resultMap = this.reportToMap(result);
@@ -187,6 +201,13 @@ export class ExcelReportProcessor {
 
     if (!sharedStrings || !sheetPath) {
       throw new Error(`Could not load required components from ${this.sourceFilePath}.`);
+    }
+
+    if (this.isBasedOnExistingFile) {
+      this.profileVersions = {
+        template: this.readProfileVersion(new AdmZip(this.config.reportTemplatePath)),
+        file: this.readProfileVersion(this.zip),
+      };
     }
 
     // From the shared strings, we want to find the indexes of the available status options.
@@ -259,8 +280,8 @@ export class ExcelReportProcessor {
    * The workbook contains general metadata over the files structure and
    * acts as the root object.
    */
-  private loadWorkBook(): unknown {
-    const wbzip = this.zip.getEntry('xl/workbook.xml')?.getData();
+  private loadWorkBook(zip: AdmZip = this.zip): any {
+    const wbzip = zip.getEntry('xl/workbook.xml')?.getData();
     if (!wbzip) {
       throw new Error('Could not load workbook component from Template file.');
     }
@@ -291,10 +312,10 @@ export class ExcelReportProcessor {
    * The workbook contains the name and Id of each sheet. We can then
    * use "xl/_rels/workbook.xml.rels" in order to find the path of the sheet.
    */
-  private getSheetPathFromName(workbook, name: string): string {
+  private getSheetPathFromName(workbook, name: string, zip: AdmZip = this.zip): string {
     const sheetId = workbook?.workbook?.sheets?.sheet.find((s) => s['@_name'] === name)?.['@_r:id'];
 
-    const relzip = this.zip.getEntry('xl/_rels/workbook.xml.rels')?.getData();
+    const relzip = zip.getEntry('xl/_rels/workbook.xml.rels')?.getData();
 
     if (!relzip) {
       throw new Error('Could open or find relationship of the template document.');
@@ -312,8 +333,8 @@ export class ExcelReportProcessor {
    * The "sharedStrings" contains a list of all strings used in the sheets.
    * The strings are then referenced by index from the sheet cells.
    */
-  private loadSharedStrings(): string[] | undefined {
-    const sharedzip = this.zip.getEntry('xl/sharedStrings.xml')?.getData();
+  private loadSharedStrings(zip: AdmZip = this.zip): string[] | undefined {
+    const sharedzip = zip.getEntry('xl/sharedStrings.xml')?.getData();
     if (!sharedzip) {
       return;
     }
@@ -339,13 +360,40 @@ export class ExcelReportProcessor {
     }, {} as Record<string, number>);
   }
 
+  private readProfileVersion(zip: AdmZip): string | undefined {
+    try {
+      const workbook = this.loadWorkBook(zip);
+      const definedName = workbook?.workbook?.definedNames?.definedName?.find(
+        (name) => String(name['@_name']).toLowerCase() === PROFILE_VERSION_NAME,
+      );
+      const version = definedName != null ? versionOf(textOf({ t: definedName })) : undefined;
+      if (version) {
+        return version;
+      }
+
+      const sharedStrings = this.loadSharedStrings(zip) ?? [];
+      const sheet = this.loadSheet(this.getSheetPathFromName(workbook, INFO_SHEET_NAME, zip), zip);
+      for (const row of sheet?.worksheet?.sheetData?.row ?? []) {
+        for (const cell of row.c ?? []) {
+          const infoVersion = versionOf(this.cellText(cell, sharedStrings), /version\s+(\d+\.\d+\.\d+)/i);
+          if (infoVersion) {
+            return infoVersion;
+          }
+        }
+      }
+    } catch {
+      return undefined;
+    }
+    return undefined;
+  }
+
   /**
    * Given a path within the xlsx file, load a sheet to memory.
    * See #getSheetPathFromName to extract the path.
    *
    */
-  private loadSheet(path: string) {
-    const shzip = this.zip.getEntry(path);
+  private loadSheet(path: string, zip: AdmZip = this.zip) {
+    const shzip = zip.getEntry(path);
 
     if (!shzip) {
       throw new Error(`Could not find sheet from path: ${path}`);
@@ -359,8 +407,6 @@ export class ExcelReportProcessor {
    * will be updated with the value from the results object.
    *
    * The result will update the in-memory instance of the file, but will not persist to disc.
-   *
-   * Only the status cells of reported rules are touched, all other cells (e.g. comments) are kept as they are.
    */
   private updateResultColumn(
     sheetPath: string,
@@ -392,7 +438,6 @@ export class ExcelReportProcessor {
         this.inProgressRulesResolved.push(rule);
       }
       if (!resultCell) {
-        // Excel may drop empty cells when saving, so the status cell has to be created in column order.
         if (row['@_r'] == null) {
           return;
         }
@@ -416,7 +461,6 @@ export class ExcelReportProcessor {
         resultCell['@_t'] = 's';
         resultCell.v = String(valueMap[status]);
       } else {
-        // The status is missing among the shared strings, write it as an inline string instead.
         delete resultCell.v;
         resultCell['@_t'] = 'inlineStr';
         resultCell.is = { t: status };
@@ -428,9 +472,6 @@ export class ExcelReportProcessor {
     this.zip.updateFile(sheetPath, xmlBuffer);
   }
 
-  /**
-   * Resolves the displayed text of a cell, whether it is a shared string, an inline string or a plain value.
-   */
   private cellText(cell: any, sharedStrings: string[]): string {
     switch (cell['@_t']) {
       case 's':
