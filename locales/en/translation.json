@@ -16,6 +16,35 @@
     "parseOrReadError": "An error occurred while reading/parsing the specification file. See the error log for more information.",
     "ruleClassExecutionError": "An error occurred while initializing/running rule classes. Inspect the RAP-LP error log for more information about the error.",
     "ruleModuleLoadingError": "An error occurred while loading modules and creating rule classes. Inspect the RAP-LP error log for more information about the error.",
+    "ruleExecution": {
+      "approvedTitle": "<<<Executed and approved rules - RAP-LP>>>",
+      "rejectedTitle": "<<<Executed and not approved rules - RAP-LP>>>",
+      "notApplicableTitle": "<<<Not applicable rules - RAP-LP>>>",
+      "resultTitle": "<<Rule results RAP-LP>>",
+      "headers": {
+        "status": "STATUS",
+        "area": "AREA",
+        "identifier": "IDENTIFIER"
+      },
+
+      "status": {
+        "ok": "OK",
+        "notOk": "NOT OK",
+        "notApplicable": "N/A"
+      },
+
+      "details": {
+        "severity": "severity",
+        "id": "id",
+        "requirement": "requirement",
+        "area": "area",
+        "path": "path",
+        "range": "range",
+        "designRule": "design rule"
+      }
+    },
+    "diagnosticOutput": "Writing diagnostic information from RAP-LP to {{filePath}}",
+    "validationOutput": "Writing inspection/validation information from RAP-LP to {{filePath}}",
     "help": {
       "mode": "Application mode",
       "file": "[cli mode] Path to the YAML file",
@@ -48,6 +77,7 @@
     "featureDisabledTitle": "Conflict",
     "featureDisabledDetail": "This feature is currently disabled due to server configuration. Contact your administrator if you think this is a mistake.",
     "specEvaluationFailed": "The specification could not be fully evaluated",
-    "specParseUnknown": "Unknown error while parsing the API specification"
+    "specParseUnknown": "Unknown error while parsing the API specification",
+    "reportGenerationError": "Error generating report buffer:"
   }
 }

@@ -62,7 +62,7 @@ export const registerValidationRoutes = (app: Express) => {
         try {
           buffer = reportHandler.generateReportDocumentBuffer(customDiagnostic);
         } catch (error) {
-          console.error('Error generating report buffer:', error);
+          console.error(t('api.reportGenerationError'), error);
           return sendProblem(
             res,
             500,

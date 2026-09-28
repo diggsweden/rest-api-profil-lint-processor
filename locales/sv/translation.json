@@ -16,6 +16,36 @@
     "parseOrReadError": "Ett fel uppstod vid inläsning/parsing av spec-filen. Se felloggen för mer information.",
     "ruleClassExecutionError": "Ett fel uppstod vid initiering/körning av regelklasser. Undersök felloggen för RAP-LP för mer information om felet.",
     "ruleModuleLoadingError": "Ett fel uppstod vid inläsning av moduler och skapande av regelklasser. Undersök felloggen för RAP-LP för mer information om felet.",
+    "ruleExecution": {
+      "approvedTitle": "<<<Verkställda och godkända regler - RAP-LP>>>",
+      "rejectedTitle": "<<<Verkställda och ej godkända regler - RAP-LP>>>",
+      "notApplicableTitle": "<<<Ej tillämpade regler - RAP-LP>>>",
+      "resultTitle": "<<Regelutfall RAP-LP>>",
+
+      "headers": {
+        "status": "STATUS",
+        "area": "OMRÅDE",
+        "identifier": "IDENTIFIKATIONSNUMMER"
+      },
+
+      "status": {
+        "ok": "OK",
+        "notOk": "EJ OK",
+        "notApplicable": "N/A"
+      },
+
+      "details": {
+        "severity": "allvarlighetsgrad",
+        "id": "id",
+        "requirement": "krav",
+        "area": "område",
+        "path": "sökväg",
+        "range": "omfattning",
+        "designRule": "designregel"
+      }
+    },
+    "diagnosticOutput": "Skriver diagnostiseringsinformation från RAP-LP till {{filePath}}",
+    "validationOutput": "Skriver inspektions-/valideringsinformation från RAP-LP till {{filePath}}",
     "help": {
       "mode": "Körläget för applikationen",
       "file": "[cli mode] Sökväg till YAML-filen",
@@ -51,6 +81,7 @@
     "featureDisabledTitle": "Konflikt",
     "featureDisabledDetail": "Den här funktionen är inaktiverad på grund av serverkonfigurationen. Kontakta administratören om du tror att detta är ett fel.",
     "specEvaluationFailed": "Specifikationen kunde inte utvärderas fullt ut",
-    "specParseUnknown": "Okänt fel vid parsning av API-specifikationen"
+    "specParseUnknown": "Okänt fel vid parsning av API-specifikationen",
+    "reportGenerationError": "Fel vid generering av rapportbuffer:"
   }
 }

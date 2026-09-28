@@ -190,13 +190,13 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           }
         };
         const formatLintingResult = (result: any) => {
-          return `\nallvarlighetsgrad: ${colorizeSeverity(result.severity)} \nid: ${result.id} \nkrav: ${
+          return `\n${t('cli.ruleExecution.details.severity')}: ${colorizeSeverity(result.severity)} \n${t('cli.ruleExecution.details.id')}: ${result.id} \n${t('cli.ruleExecution.details.requirement')}: ${
             result.requirement
-          } \nområde: ${result.area} \nsökväg:[${result.path}] \nomfattning:${JSON.stringify(
+          } \n${t('cli.ruleExecution.details.area')}: ${result.area} \n${t('cli.ruleExecution.details.path')}:[${result.path}] \n${t('cli.ruleExecution.details.range')}:${JSON.stringify(
             result.range,
             null,
             2,
-          )}\ndesignregel: ${result.helpUrl} `;
+          )}\n${t('cli.ruleExecution.details.designRule')}: ${result.helpUrl} `;
         };
         //Check specified option from yargs input
 
@@ -216,43 +216,61 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           let utf8EncodedContent = Buffer.from(logEntry, 'utf8');
           //Log to disc
           await writeFileAsync(logDiagnosticFilePath, utf8EncodedContent);
-          console.log(chalk.green(`Skriver diagnostiseringsinformation från RAP-LP till ${logDiagnosticFilePath}`));
+          console.log(chalk.green(t('cli.diagnosticOutput', { filePath: logDiagnosticFilePath })));
         } else {
           //STDOUT
           if (
             customDiagnostic.diagnosticInformation.executedUniqueRules != undefined &&
             customDiagnostic.diagnosticInformation.executedUniqueRules.length > 0
           ) {
-            console.log(chalk.green('<<<Verkställda och godkända regler - RAP-LP>>>\r'));
-            console.log(chalk.whiteBright('STATUS\tOMRÅDE') + ' / ' + chalk.whiteBright('IDENTIFIKATIONSNUMMER'));
+            console.log(chalk.green(t('cli.ruleExecution.approvedTitle') + '\r'));
+            console.log(
+              chalk.whiteBright(t('cli.ruleExecution.headers.status')) +
+                '\t' +
+                chalk.whiteBright(t('cli.ruleExecution.headers.area')) +
+                ' / ' +
+                chalk.whiteBright(t('cli.ruleExecution.headers.identifier')),
+            );
             customDiagnostic.diagnosticInformation.executedUniqueRules
               .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
-                console.log(chalk.bgGreen('OK') + '\t' + item.area + ' / ' + item.id);
+                console.log(chalk.bgGreen(t('cli.ruleExecution.status.ok')) + '\t' + item.area + ' / ' + item.id);
               });
           }
           if (
             customDiagnostic.diagnosticInformation.executedUniqueRulesWithError != undefined &&
             customDiagnostic.diagnosticInformation.executedUniqueRulesWithError.length > 0
           ) {
-            console.log(chalk.green('<<<Verkställda och ej godkända regler - RAP-LP>>>\r'));
-            console.log(chalk.whiteBright('STATUS\tOMRÅDE') + ' / ' + chalk.whiteBright('IDENTIFIKATIONSNUMMER'));
+            console.log(chalk.green(t('cli.ruleExecution.rejectedTitle') + '\r'));
+            console.log(
+              chalk.whiteBright(t('cli.ruleExecution.headers.status')) +
+                '\t' +
+                chalk.whiteBright(t('cli.ruleExecution.headers.area')) +
+                ' / ' +
+                chalk.whiteBright(t('cli.ruleExecution.headers.identifier')),
+            );
             customDiagnostic.diagnosticInformation.executedUniqueRulesWithError
               .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
-                console.log(chalk.bgRed('EJ OK') + '\t' + item.area + ' / ' + item.id);
+                console.log(chalk.bgRed(t('cli.ruleExecution.status.notOk')) + '\t' + item.area + ' / ' + item.id);
               });
           }
           if (
             customDiagnostic.diagnosticInformation.notApplicableRules != undefined &&
             customDiagnostic.diagnosticInformation.notApplicableRules.length > 0
           ) {
-            console.log(chalk.grey('<<<Ej tillämpade regler - RAP-LP>>>\r'));
-            console.log(chalk.whiteBright('STATUS\tOMRÅDE') + ' / ' + chalk.whiteBright('IDENTIFIKATIONSNUMMER'));
+            console.log(chalk.green(t('cli.ruleExecution.notApplicableTitle') + '\r'));
+            console.log(
+              chalk.whiteBright(t('cli.ruleExecution.headers.status')) +
+                '\t' +
+                chalk.whiteBright(t('cli.ruleExecution.headers.area')) +
+                ' / ' +
+                chalk.whiteBright(t('cli.ruleExecution.headers.identifier')),
+            );
             customDiagnostic.diagnosticInformation.notApplicableRules
               .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
-                console.log(chalk.bgGrey('N/A') + '\t' + item.area + '/' + item.id);
+                console.log(chalk.bgGrey(t('cli.ruleExecution.status.notApplicable')) + '\t' + item.area + '/' + item.id);
               });
           }
         }
@@ -262,15 +280,15 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           let utf8EncodedContent = Buffer.from(logEntry, 'utf8');
           if (argv.append) {
             await appendFileAsync(logErrorFilePath, utf8EncodedContent);
-            console.log(chalk.green(`Skriver inspektion/valideringsinformation från RAP-LP till ${logErrorFilePath}`));
+            console.log(chalk.green(t('cli.validationOutput', { filePath: logErrorFilePath })));
           } else {
             //Log to disc
             await writeFileAsync(logErrorFilePath, utf8EncodedContent);
-            console.log(chalk.green(`Skriver inspektion/valideringsinformation från RAP-LP till ${logErrorFilePath}`));
+            console.log(chalk.green(t('cli.validationOutput', { filePath: logErrorFilePath })));
           }
         } else {
           //Verbose error logging goes here with detailed result
-          console.log(chalk.whiteBright('\n<<Regelutfall RAP-LP>> \n'));
+          console.log(chalk.whiteBright(`\n\n${t('cli.ruleExecution.resultTitle')}`));
           result
             .sort((a, b) => {
               const idA = a.id ?? '';
