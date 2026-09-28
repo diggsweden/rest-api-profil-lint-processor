@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { mapValidationExecutionError } from '../../src/util/mapValidationExecutionError';
 import { SpecParseError } from '../../src/util/RapLPSpecParseError';
-import { AggregateError } from '../../src/util/RapLPCustomErrorInfo.js'
+import { AggregateError } from '../../src/util/RapLPCustomErrorInfo.js';
+import { translator } from '../../src/i18n';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -11,11 +12,13 @@ declare var AggregateError: {
 };
 
 /**
- * SpecParseError unchanged 
+ * SpecParseError unchanged
  * Preconditions: stage -> sanity
  * strictEnaled: false
  */
 describe('mapValidationExecutionError', () => {
+  const t = translator('sv');
+
   it('returns existing SpecParseError unchanged for YAML parse case', () => {
     const original = new SpecParseError('Ogiltig YAML-syntax.', {
       source: 'yaml',
@@ -24,44 +27,49 @@ describe('mapValidationExecutionError', () => {
       column: 7,
     });
 
-    const mapped = mapValidationExecutionError(original, {
-      strictEnabled: false,
-    });
-
-    expect(mapped).toBe(original);
-    expect(mapped).toBeInstanceOf(SpecParseError);
-  });
-
-/**
- * SpecParseError unchanged 
- * Preconditions: stage -> sanity
- * strictValidation: enabled
- */
-  it('returns existing SpecParseError unchanged for strict validation case', () => {
-    const original = new SpecParseError(
-      'Strict validation failed: must have required property "paths"',
+    const mapped = mapValidationExecutionError(
+      original,
       {
-        source: 'unknown',
-        stage: 'strict',
-      }
+        strictEnabled: false,
+      },
+      t,
     );
 
-    const mapped = mapValidationExecutionError(original, {
-      strictEnabled: true,
+    expect(mapped).toBe(original);
+    expect(mapped).toBeInstanceOf(SpecParseError);
+  });
+
+  /**
+   * SpecParseError unchanged
+   * Preconditions: stage -> sanity
+   * strictValidation: enabled
+   */
+  it('returns existing SpecParseError unchanged for strict validation case', () => {
+    const original = new SpecParseError('Strict validation failed: must have required property "paths"', {
+      source: 'unknown',
+      stage: 'strict',
     });
+
+    const mapped = mapValidationExecutionError(
+      original,
+      {
+        strictEnabled: true,
+      },
+      t,
+    );
 
     expect(mapped).toBe(original);
     expect(mapped).toBeInstanceOf(SpecParseError);
   });
 
-/**
- * SpecParseError AggregateError transformed to a SpecParseError due to rule engine crash 
- * Preconditions: Strictvalidation -> disabled
- * 
- */
+  /**
+   * SpecParseError AggregateError transformed to a SpecParseError due to rule engine crash
+   * Preconditions: Strictvalidation -> disabled
+   *
+   */
   it('maps known rule-engine AggregateError to SpecParseError when strict validation is disabled', () => {
     const inner = new Error(
-      '$.info threw: ErrorWithCause("Function \\"function\\" threw an exception: Cannot read properties of null (reading \'description\')")'
+      '$.info threw: ErrorWithCause("Function \\"function\\" threw an exception: Cannot read properties of null (reading \'description\')")',
     );
 
     inner.stack = `
@@ -73,28 +81,28 @@ Error: $.info threw: ErrorWithCause("Function \\"function\\" threw an exception:
 
     const aggregate = new AggregateError([inner], 'Rule engine crashed');
 
-    const mapped = mapValidationExecutionError(aggregate, {
-      strictEnabled: false,
-    });
+    const mapped = mapValidationExecutionError(
+      aggregate,
+      {
+        strictEnabled: false,
+      },
+      t,
+    );
 
     expect(mapped).toBeInstanceOf(SpecParseError);
 
     const specError = mapped as SpecParseError;
-    expect(specError.message).toContain(
-      'Specifikationen verkar sakna eller innehålla ogiltiga OpenAPI-fält'
-    );
+    expect(specError.message).toContain('Specifikationen verkar sakna eller innehålla ogiltiga OpenAPI-fält');
     expect(specError.stage).toBe('rule-engine');
     expect(specError.cause).toBe(aggregate);
   });
-/**
- * SpecParseError AggregateError NOT transformed to a SpecParseError  
- * Preconditions: Strictvalidation -> enabled
- * 
- */
+  /**
+   * SpecParseError AggregateError NOT transformed to a SpecParseError
+   * Preconditions: Strictvalidation -> enabled
+   *
+   */
   it('does not map AggregateError to SpecParseError when strict validation is enabled', () => {
-    const inner = new Error(
-      'Cannot read properties of null (reading \'description\')'
-    );
+    const inner = new Error("Cannot read properties of null (reading 'description')");
 
     inner.stack = `
 Error: Cannot read properties of null (reading 'description')
@@ -104,19 +112,23 @@ Error: Cannot read properties of null (reading 'description')
 
     const aggregate = new AggregateError([inner], 'Rule engine crashed');
 
-    const mapped = mapValidationExecutionError(aggregate, {
-      strictEnabled: true,
-    });
+    const mapped = mapValidationExecutionError(
+      aggregate,
+      {
+        strictEnabled: true,
+      },
+      t,
+    );
 
     expect(mapped).toBe(aggregate);
     expect(mapped).not.toBeInstanceOf(SpecParseError);
   });
 
-/**
- * SpecParseError AggregateError NOT transformed to a SpecParseError when unrelated
- * Preconditions: Strictvalidation -> disabled
- * 
- */
+  /**
+   * SpecParseError AggregateError NOT transformed to a SpecParseError when unrelated
+   * Preconditions: Strictvalidation -> disabled
+   *
+   */
   it('does not map unrelated AggregateError', () => {
     const inner = new Error('Database connection failed');
     inner.stack = `
@@ -126,12 +138,15 @@ Error: Database connection failed
 
     const aggregate = new AggregateError([inner], 'Unexpected internal error');
 
-    const mapped = mapValidationExecutionError(aggregate, {
-      strictEnabled: false,
-    });
-  
+    const mapped = mapValidationExecutionError(
+      aggregate,
+      {
+        strictEnabled: false,
+      },
+      t,
+    );
+
     expect(mapped).toBe(aggregate);
     expect(mapped).not.toBeInstanceOf(SpecParseError);
-  
   });
 });
