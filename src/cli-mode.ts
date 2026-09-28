@@ -168,6 +168,20 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             } else {
               console.log(chalk.green(`Skriver avstämningsfil i Excel-format från RAP-LP till ${reportHandler.outputFilePath}`));
             }
+            if (reportHandler.keptInProgressRules.length > 0) {
+              console.log(
+                chalk.yellow(
+                  `Status "Pågående" behålls för regler som inte validerats OK: ${reportHandler.keptInProgressRules.join(', ')}`,
+                ),
+              );
+            }
+            if (reportHandler.resolvedInProgressRules.length > 0) {
+              console.log(
+                chalk.green(
+                  `Status "Pågående" ersatt med OK för regler som nu validerats OK: ${reportHandler.resolvedInProgressRules.join(', ')}`,
+                ),
+              );
+            }
           } catch (excelError: any) {
             logErrorToFile(excelError);
             console.error(chalk.red(`Misslyckades att skriva avstämningsfil i Excel-format: ${excelError.message}`));
