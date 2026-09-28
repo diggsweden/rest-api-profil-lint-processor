@@ -44,7 +44,8 @@ const DEFAULT_CONFIG: ExcelTemplateConfig = {
   outputFilePath: path.resolve(process.cwd(), 'Avstaemning_REST_API_profil_generated.xlsx'),
 };
 
-const STATUS_OPTIONS = ['-', 'OK', 'NOK', 'N/A', 'Pågående'];
+const IN_PROGRESS_STATUS = 'Pågående';
+const STATUS_OPTIONS = ['-', 'OK', 'NOK', 'N/A', IN_PROGRESS_STATUS];
 
 const ARRAY_PATHS = new Set([
   'workbook.sheets.sheet',
@@ -111,6 +112,8 @@ export class ExcelReportProcessor {
   private zip: AdmZip;
   private sourceFilePath: string;
   private requestedOutputFilePath: string;
+  private inProgressRulesKept: string[] = [];
+  private inProgressRulesResolved: string[] = [];
 
   constructor(config?: Partial<ExcelTemplateConfig>) {
     const isPresent = (x?: string): x is string => {
@@ -163,6 +166,14 @@ export class ExcelReportProcessor {
 
   public get isBasedOnExistingFile(): boolean {
     return this.sourceFilePath !== this.config.reportTemplatePath;
+  }
+
+  public get keptInProgressRules(): string[] {
+    return this.inProgressRulesKept;
+  }
+
+  public get resolvedInProgressRules(): string[] {
+    return this.inProgressRulesResolved;
   }
 
   public generateReportDocument(result: RapLPDiagnostic) {
@@ -358,17 +369,28 @@ export class ExcelReportProcessor {
     valueMap: Record<string, number>,
   ) {
     const sheet = this.loadSheet(sheetPath);
+    this.inProgressRulesKept = [];
+    this.inProgressRulesResolved = [];
     sheet?.worksheet?.sheetData?.row?.forEach((row) => {
       const cells: any[] = row.c ?? [];
       const ruleCell = cells.find((cell) => columnOf(cell) === this.config.ruleColumn);
 
       // See if the value of the rule column match any reported rule from the result report.
-      const status = ruleCell ? results[this.cellText(ruleCell, sharedStrings).trim()] : undefined;
+      const rule = ruleCell ? this.cellText(ruleCell, sharedStrings).trim() : '';
+      const status = rule ? results[rule] : undefined;
       if (!status) {
         return;
       }
 
       let resultCell = cells.find((cell) => columnOf(cell) === this.config.statusColumn);
+
+      if (resultCell && this.cellText(resultCell, sharedStrings).trim() === IN_PROGRESS_STATUS) {
+        if (status !== 'OK') {
+          this.inProgressRulesKept.push(rule);
+          return;
+        }
+        this.inProgressRulesResolved.push(rule);
+      }
       if (!resultCell) {
         // Excel may drop empty cells when saving, so the status cell has to be created in column order.
         if (row['@_r'] == null) {
