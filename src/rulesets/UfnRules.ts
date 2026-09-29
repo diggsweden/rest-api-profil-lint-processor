@@ -20,68 +20,35 @@ export class Ufn01 extends BaseRuleset {
   message = 'En URL för ett API BÖR följa namnstandarden nedan: ' + this.description;
   then = [
     {
-      function: (targetVal: any): any => {
-        const url: string = targetVal.url;
-        console.log('URL: ' + url);
-        const urlPattern: RegExp = /^https:\/\/[^/:]+(?::[0-9]+)?\/[^/]+\/(?:v[0-9]+|\{[^}]+\})\/?$/;
-        const variablePattern: RegExp = /\{([^}]+)\}/g;
-
-        function extractVariableNames(url: string): string[] {
-          const matches = url.matchAll(variablePattern);
-          return Array.from(matches, (m) => m[1]);
+      function: (server: any): any => {
+        const url = server?.url;
+        if (typeof url !== 'string') {
+          return [];
         }
-
-        const match = url.match(urlPattern);
-        if (!match) {
-          console.log('Ingen match');
-          return [
-            {
-              message: this.message,
-              severity: this.severity,
-            },
-          ];
-        }
-
-        const variables = extractVariableNames(url);
-
-        const variablesField = targetVal.variables;
-
-        if (variables) {
-          let missing = false;
-          variables.some((v) => {
-            console.log('VARIABLE: ' + v);
-            if (!Object.prototype.hasOwnProperty.call(variablesField, v)) {
-              console.log(v + ' SAKNAS');
-              missing = true;
-              return true;
-            } else {
-              console.log(v + ' FINNS');
-              const variable = variablesField[v];
-              if (
-                variable === null ||
-                typeof variable !== 'object' ||
-                !Object.prototype.hasOwnProperty.call(variable, 'default')
-              ) {
-                console.log('default-värde saknas');
-                missing = true;
-                return true;
-              }
-            }
-            return false;
-          });
-
-          if (missing) {
-            return [
-              {
-                message: this.message,
-                severity: this.severity,
-              },
-            ];
+        const variables = server.variables ?? {};
+        let resolvable = true;
+        const resolvedUrl = url.replace(/\{([^}]+)\}/g, (_placeholder: string, name: string) => {
+          const variable = Object.prototype.hasOwnProperty.call(variables, name) ? variables[name] : undefined;
+          if (
+            variable === null ||
+            typeof variable !== 'object' ||
+            !Object.prototype.hasOwnProperty.call(variable, 'default')
+          ) {
+            resolvable = false;
+            return '';
           }
+          return String(variable.default);
+        });
+        const baseUrlPattern = /^[a-z][a-z0-9+.-]*:\/\/[^/]+\/[^/]+\/v[0-9]+\/?$/i;
+        if (resolvable && baseUrlPattern.test(resolvedUrl)) {
+          return [];
         }
-
-        console.log('klart');
-        return [];
+        return [
+          {
+            message: this.message,
+            severity: this.severity,
+          },
+        ];
       },
     },
     {
