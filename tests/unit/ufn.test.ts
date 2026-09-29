@@ -551,7 +551,7 @@ testRule('Ufn01', [
       paths: { '/exampletest': {} },
       servers: [
         {
-          url: 'https://{environment}.arbetsformedlingen.se:9443/aktivitetskrav/{version}',
+          url: 'https://{environment}.example.com:9443/myapi/{version}',
           variables: {
             environment: { default: 'test' },
             version: { default: 'v1' },
@@ -733,7 +733,7 @@ testRule('Ufn01', [
       paths: { '/exampletest': {} },
       servers: [
         {
-          url: 'https://{environment}.arbetsformedlingen.se:9443/aktivitetskrav/{version}',
+          url: 'https://{environment}.example.com:9443/myapi/{version}',
         },
       ],
     },
@@ -753,7 +753,7 @@ testRule('Ufn01', [
       paths: { '/exampletest': {} },
       servers: [
         {
-          url: 'https://{environment}.arbetsformedlingen.se:9443/aktivitetskrav/{version}',
+          url: 'https://{environment}.example.com:9443/myapi/{version}',
           variables: {
             environment: { default: 'test' },
           },
@@ -776,7 +776,7 @@ testRule('Ufn01', [
       paths: { '/exampletest': {} },
       servers: [
         {
-          url: 'https://{environment}.arbetsformedlingen.se:9443/aktivitetskrav/{version}',
+          url: 'https://{environment}.example.com:9443/myapi/{version}',
           variables: {
             environment: { enum: ['test', 'prod'] },
             version: { default: 'v1' },
@@ -800,7 +800,7 @@ testRule('Ufn01', [
       paths: { '/exampletest': {} },
       servers: [
         {
-          url: 'https://{environment}.arbetsformedlingen.se:9443/aktivitetskrav/{version}',
+          url: 'https://{environment}.example.com:9443/myapi/{version}',
           variables: {
             environment: { default: 'test' },
             version: { default: '1.0' },
