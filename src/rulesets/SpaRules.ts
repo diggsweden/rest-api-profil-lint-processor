@@ -21,7 +21,8 @@ export class Spa02 extends BaseRuleset {
     id: 'SPA.02',
   };
 
-  message = 'API-producenter SKALL acceptera HTTP-headern traceparent i inkommande anrop och propagera spårningsinformationen vidare enligt W3C Trace Context vid vidare anrop till andra system.';
+  message =
+    'API-producenter SKALL acceptera HTTP-headern traceparent i inkommande anrop och propagera spårningsinformationen vidare enligt W3C Trace Context vid vidare anrop till andra system.';
   given = '$.paths[*]';
 
   then = [
@@ -142,7 +143,7 @@ export class Spa04 extends BaseRuleset {
 
 export class Spa07 extends BaseRuleset {
   static customProperties: CustomProperties = {
-    område: 'Spårbarhet',
+    område: 'Spårbarhet och korrelation',
     id: 'SPA.07',
   };
 

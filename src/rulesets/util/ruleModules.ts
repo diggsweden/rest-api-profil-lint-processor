@@ -5,7 +5,7 @@
 export const RULE_REGISTRY = [
   { rule: 'UfnRules', description: 'URL Format och namngivning' },
   { rule: 'SakRules', description: 'Säkerhet' },
-  { rule: 'SpaRules', description: 'Spårbarhet' },
+  { rule: 'SpaRules', description: 'Spårbarhet och korrelation' },
   { rule: 'VerRules', description: 'Versionshantering' },
   { rule: 'FnsRules', description: 'Filtrering, paginering och sökparametrar' },
   { rule: 'ArqRules', description: 'API Request' },
