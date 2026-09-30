@@ -17,16 +17,16 @@ info:
     The API producer MUST accept the HTTP traceparent header in incoming requests and propagate the trace information according to W3C Trace Context when making subsequent requests to other systems.
 
     The example shows a traceparent header accepted by the API, defined either directly on an operation, on path level, or via a reference to components.parameters.
-    
+
     SPA.04:
     The producer of the API SHOULD include the HTTP traceparent header in the response.
 
-    Examples 1-2 show a traceparent header returned by the API, defined directly as a Header Object and via $ref.
+    The examples show a traceparent header returned by the API, defined directly as a Header Object and via $ref.
 
     SPA.07:
     Alternative identifiers, such as x-request-id, MAY be used as a complement for internal needs, but SHALL NOT replace traceparent when tracing API calls between systems and organisations.
 
-    Examples 3-4 show x-request-id used together with traceparent as request headers, defined inline on operation level and via $ref on path level.
+    The examples show x-request-id used together with traceparent as request headers, defined inline on operation level and via $ref on path level.
 
     ## Svenska
 
@@ -40,18 +40,18 @@ info:
     SPA.04:
     API-producenten BÖR inkludera HTTP-headern traceparent i ett API-svar.
 
-    Exempel 1-2 visar en traceparent-header som returneras av API:et, definierad direkt som Header Object och via $ref.
+    Exemplen visar en traceparent-header som returneras av API:et, definierad direkt som Header Object och via $ref.
 
     SPA.07:
     Alternativa identifierare, såsom x-request-id, KAN användas som komplement för interna behov, men SKALL INTE ersätta traceparent vid spårning av API-anrop mellan system och organisationer.
 
-    Exempel 3-4 visar x-request-id som används tillsammans med traceparent som request-headers, definierade inline på operationsnivå och via $ref på path-nivå.
+    Exemplen visar x-request-id som används tillsammans med traceparent som request-headers, definierade inline på operationsnivå och via $ref på path-nivå.
 
 servers:
   - url: https://api.example.se
 
 paths:
-  # Example 1: Traceparent defined directly as a Header Object // Exempel 1: Traceparent definieras direkt som Header Object
+  # SPA.04 - Example 1: Traceparent defined directly as a Header Object // SPA.04 - Exempel 1: Traceparent definieras direkt som Header Object
   /orders/{orderId}:
     get:
       summary: Get an order.
@@ -93,7 +93,7 @@ paths:
                   - orderId
                   - status
 
-  # Example 2: Traceparent defined via $ref // Exempel 2: Traceparent definieras via $ref
+  # SPA.04 - Example 2: Traceparent defined via $ref // SPA.04 - Exempel 2: Traceparent definieras via $ref
   /customers/{customerId}:
     get:
       summary: Get a customer.
@@ -129,7 +129,7 @@ paths:
                   - customerId
                   - name
 
-  # Example 3: x-request-id and traceparent defined inline on operation level // Exempel 3: x-request-id och traceparent definieras inline på operationsnivå
+  # SPA.07 - Example 1: x-request-id and traceparent defined inline on operation level // SPA.07 - Exempel 1: x-request-id och traceparent definieras inline på operationsnivå
   /orders:
     get:
       summary: List orders.
@@ -173,7 +173,7 @@ paths:
                     - orderId
                     - status
 
-  # Example 4: x-request-id and traceparent defined via $ref on path level // Exempel 4: x-request-id och traceparent definieras via $ref på path-nivå
+  # SPA.07 - Example 2: x-request-id and traceparent defined via $ref on path level // SPA.07 - Exempel 2: x-request-id och traceparent definieras via $ref på path-nivå
   /customers:
     parameters:
       - $ref: '#/components/parameters/Traceparent'
@@ -205,8 +205,7 @@ paths:
                     - customerId
                     - name
 
-
-  # Example 1 - SPA.02: Traceparent defined on path level // Exempel 3: Traceparent definieras på path-nivå
+  # SPA.02 - Example 1: Traceparent defined on path level // SPA.02 - Exempel 1: Traceparent definieras på path-nivå
   /organisations/{organisationId}:
     parameters:
       - name: traceparent
@@ -248,7 +247,6 @@ paths:
                 required:
                   - organisationId
                   - name
-
 
 components:
   headers:
