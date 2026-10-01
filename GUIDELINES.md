@@ -584,16 +584,40 @@ följa namnstandarden nedan:
 **JSON Path Plus-uttryck:**
 
 ```
-$.servers.[url]
+$.servers[*]
 ```
 
 **Förklaring:**
-Regeln söker efter 1-n förekomster av fältet `Url` under Serverobjektet, samt att dessa följer namnstandarden fram till versionen av API:et:\
+Regeln söker efter 1-n förekomster av Serverobjekt och kontrollerar att fältet `url` följer namnstandarden fram till versionen av API:et:\
 **{protokoll}://{domännamn}/{api}/{version}**
+
+Versionen anges som en major-version, exempelvis `v1`, `v2` eller `v10`.
+
+Om `url` innehåller Server Variables, exempelvis `{environment}` eller `{version}`, så gäller även följande:
+
+- Varje variabel som används i `url` SKALL finnas under `variables` i samma Serverobjekt.
+- Varje sådan variabel SKALL ha ett `default`-värde.
+- Variablerna ersätts med sina `default`-värden och den resulterande URL:en kontrolleras mot namnstandarden. En variabel på versionens plats SKALL därmed ha ett `default`-värde som följer formatet `v[0-9]+`.
+
+Variabler kan förekomma i alla delar av URL:en. Variabler som definieras under `variables` men inte används i `url` ignoreras.
 
 **Exempel:**
 
-## ![alt text](images/ufn1-2.png)
+![Exempel på två server-url:er som följer namnstandarden med api-namnet myapi och versionerna v1 och v2](images/ufn1-1.png)
+
+I exemplet ovan, så följer båda url:erna namnstandarden med api-namnet `myapi` och major-versionerna `v1` respektive `v2`.
+
+![Exempel på en server-url med Server Variables där environment och version har giltiga default-värden](images/ufn1-2.png)
+
+I exemplet ovan, så används Server Variables i `url`. Båda variablerna finns under `variables` med ett `default`-värde, och `version` har ett `default`-värde som följer formatet för major-version.
+
+![Exempel på en server-url där variabeln version används men saknas under variables](images/ufn1-3.png)
+
+I exemplet ovan, så används `{version}` i `url` men variabeln saknas under `variables`, vilket bryter mot regeln.
+
+![Exempel på en server-url där default-värdet för version är 1.0 och inte följer formatet för major-version](images/ufn1-4.png)
+
+I exemplet ovan, så följer inte `default`-värdet för `version` formatet för major-version, vilket bryter mot regeln.
 
 ---
 
