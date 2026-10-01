@@ -83,5 +83,54 @@
     "specEvaluationFailed": "Specifikationen kunde inte utvärderas fullt ut",
     "specParseUnknown": "Okänt fel vid parsning av API-specifikationen",
     "reportGenerationError": "Fel vid generering av rapportbuffer:"
+  },
+  "rules": {
+    "ufn05": {
+      "message": "En URL BÖR INTE vara längre än 2048 tecken.",
+      "description": "En URL BÖR INTE vara längre än 2048 tecken."
+    },
+    "ufn09": {
+      "message": "Blanksteg ' ' och understreck '_' SKALL INTE användas i URL:er med undantag av parameter-delen (gäller alltså URL-elementen Scheme, Authority och Path samt API-elementen protokoll, domännamn, api, version, resurs och identifierare).",
+      "description": "Blanksteg ' ' och understreck '_' SKALL INTE användas i URL:er med undantag av parameter-delen."
+    },
+    "dok03": {
+      "description": "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter."
+    },
+    "dok15": {
+      "message": "I dokumentationen av API:et SKALL exempel på API:ets fråga (eng:request) och svar (eng:reply) finnas i sin helhet."
+    },
+    "ame01": {
+      "description": "Denna regel validerar att request och response är application/json.",
+      "message": "Datamodellen för en representation BÖR beskrivas med JSON enligt senaste versionen, RFC 8259."
+    },
+    "ame02": {
+      "description": "Denna regel validerar att response är application/json.",
+      "message": "Det BÖR förutsättas att alla request headers som standard använder 'Accept' med värde 'application/json'"
+    },
+    "ame04": {
+      "description": "För fältnamn i request och response body BÖR camelCase eller snake_case notation användas."
+    },
+    "ame07": {
+      "description": "Fältnamn BÖR använda tecken som är alfanumeriska."
+    },
+    "arq01": {
+      "description": "Ett request BÖR skickas i UTF-8",
+      "message": "Ett request BÖR skickas i UTF-8"
+    },
+    "arq03": {
+      "description": "Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, ETag, Connection och Cookie."
+    },
+    "arq05": {
+      "message": "Payload data SKALL INTE användas i HTTP-headers",
+      "nestedStructure": {
+        "description": "Om en header använder nästlade strukturer, är en requestbody mer lämplig."
+      },
+      "stringBinary": {
+        "description": "Om en header förväntas innehålla data med ovanliga MIME-typer kan det indikera en okonventionell användning av headers."
+      },
+      "complexStructure": {
+        "description": "Om en header förväntas innehålla komplexa datastrukturer, såsom JSON eller XML, kan det indikera en okonventionell användning av headers."
+      }
+    }
   }
 }

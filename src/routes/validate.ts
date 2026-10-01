@@ -48,10 +48,11 @@ export const registerValidationRoutes = (app: Express) => {
     '/api/v1/validation/generate-report',
     validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_REPORTS ?? 4)),
     async (req, res, next): Promise<any> => {
-      const t = translator(res.locals?.locale ?? resolveLocale());
+      const locale = res.locals?.locale ?? resolveLocale();
+      const t = translator(locale);
       try {
         const data = req.body;
-        const context = new RuleExecutionContext();
+        const context = new RuleExecutionContext(locale);
         const reportHandler = new ExcelReportProcessor();
         let buffer: Buffer;
 
@@ -88,11 +89,12 @@ export const registerValidationRoutes = (app: Express) => {
     '/api/v1/validation/validatespec',
     validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_VALIDATIONS ?? 4)),
     async (req, res, next) => {
-      const t = translator(res.locals?.locale ?? resolveLocale());
+      const locale = res.locals?.locale ?? resolveLocale();
+      const t = translator(locale);
       let strict = true;
       try {
         const requestId = crypto.randomUUID();
-        const context = new RuleExecutionContext();
+        const context = new RuleExecutionContext(locale);
         const body: SpecValidationRequestDto = req.body;
 
         //0.1 Check input

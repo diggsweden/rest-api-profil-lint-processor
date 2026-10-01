@@ -9,6 +9,7 @@ import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
 import { isValidApplicationJson } from './util/AmeRulesUtil.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
+import { translator } from '../i18n.js';
 
 const moduleName: string = 'AmeRules.js';
 
@@ -32,8 +33,6 @@ export class Ame07 extends BaseRuleset {
     område: 'API Message',
     id: 'AME.07',
   };
-  description = 'Fältnamn BÖR använda tecken som är alfanumeriska.';
-  message = 'Fältnamn BÖR använda tecken som är alfanumeriska.';
   given = '$.components.schemas..properties[*]~';
   then = [
     {
@@ -59,6 +58,10 @@ export class Ame07 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    const t = translator(context.locale);
+    this.description = t('rules.ame07.description');
+    this.message = this.description;
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -69,8 +72,6 @@ export class Ame04 extends BaseRuleset {
     id: 'AME.04',
   };
   
-  description = 'För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.';
-  message = 'För fältnamn i request och response body BÖR camelCase eller snake_case notation användas.';
   given = '$.components.schemas..properties[*]~';
   then = [
     {
@@ -114,17 +115,19 @@ export class Ame04 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    const t = translator(context.locale);
+    this.description = t('rules.ame04.description');
+    this.message = this.description;
   }
   severity = DiagnosticSeverity.Warning;
 }
 export class Ame01 extends BaseRuleset {
-  static errorMessage = 'Datamodellen för en representation BÖR beskrivas med JSON enligt senaste versionen, RFC 8259.';
   static customProperties: CustomProperties = {
     område: 'API Message',
     id: 'AME.01',
   };
-  description = 'Denna regel validerar att request och response är application/json.';
-  message = Ame01.errorMessage;
+  
   given = ['$.paths[*][*].responses[?(@property < 400)].content', '$.paths.*.*.requestBody.content'];
   then = [
     {
@@ -160,19 +163,20 @@ export class Ame01 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    const t = translator(context.locale);
+    this.description = t('rules.ame01.description');
+    this.message = t('rules.ame01.message');
   }
   severity = DiagnosticSeverity.Warning;
 }
 
 export class Ame02 extends BaseRuleset {
-  static errorMessage =
-    "Det BÖR förutsättas att alla request headers som standard använder 'Accept' med värde 'application/json'";
   static customProperties: CustomProperties = {
     område: 'API Message',
     id: 'AME.02',
   };
-  description = 'Denna regel validerar att response är application/json.';
-  message = Ame02.errorMessage;
+ 
   given = ['$.paths.*.*.requestBody.content'];
   then = [
     {
@@ -208,6 +212,10 @@ export class Ame02 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    const t = translator(context.locale);
+    this.description = t('rules.ame02.description');
+    this.message = t('rules.ame02.message');
   }
   severity = DiagnosticSeverity.Warning;
 }

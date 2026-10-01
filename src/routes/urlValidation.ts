@@ -83,11 +83,12 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
     '/api/v1/validation/url',
     validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_VALIDATIONS ?? 4)),
     async (req, res, next) => {
-      const t = translator(res.locals?.locale ?? resolveLocale());
+      const locale = res.locals?.locale ?? resolveLocale();
+      const t = translator(locale);
       let strict = true;
       try {
         const requestId = crypto.randomUUID();
-        const context = new RuleExecutionContext();
+        const context = new RuleExecutionContext(locale);
         const body: SpecValidationRequestDto = req.body;
 
         const url = body.url!;

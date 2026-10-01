@@ -7,6 +7,7 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
+import { translator } from '../i18n.js';
 
 /**
  * Base class for handling security rules when apiKeys is defined
@@ -49,8 +50,8 @@ export class Dok03Base extends BaseRuleset {
   protected constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
-    this.description =
-      'Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter.';
+    const t = translator(context.locale);
+    this.description = t('rules.dok03.description');
     this.severity = DiagnosticSeverity.Error;
   }
 
@@ -64,9 +65,11 @@ export class Ufn05Base extends BaseRuleset {
   protected constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
-    this.message = 'En URL BÖR INTE vara längre än 2048 tecken.';
+    const t = translator(context.locale);
+
+    this.message = t('rules.ufn05.message');
     this.severity = DiagnosticSeverity.Warning;
-    this.description = 'En URL BÖR INTE vara längre än 2048 tecken.';
+    this.description = t('rules.ufn05.description');
   }
   static baseurls: any = [];
   static paths: any = [];
@@ -80,11 +83,10 @@ export class Ufn09Base extends BaseRuleset {
    protected constructor(context: RuleExecutionContext) {
     super(context);
     let moduleName: string = 'UfnRules.js';
-    this.message =
-      "Blanksteg ' ' och understreck '_' SKALL INTE användas i URL:er med undantag av parameter-delen (gäller alltså URL-elementen Scheme, Authority och Path samt API-elementen protokoll, domännamn, api, version, resurs och identifierare).";
+    const t = translator(context.locale);
+    this.message = t('rules.ufn09.message');
     this.severity = DiagnosticSeverity.Error;
-    this.description =
-      "Blanksteg ' ' och understreck '_' SKALL INTE användas i URL:er med undantag av parameter-delen.";
+    this.description = t('rules.ufn09.description');
     this.then = [
       {
         function: pattern,
@@ -116,8 +118,8 @@ export class Dok15Base extends BaseRuleset {
   };
   protected constructor(context: RuleExecutionContext) {
     super(context);
-    this.message =
-      'I dokumentationen av API:et SKALL exempel på API:ets fråga (eng:request) och svar (eng:reply) finnas i sin helhet.';
+    const t = translator(context.locale);
+    this.message = t('rules.dok15.message');
     this.severity = DiagnosticSeverity.Error;
     this.description = '';
     super.initializeFormats(['OAS3']);
@@ -157,11 +159,12 @@ export class Arq05Base extends BaseRuleset {
     område: 'API Request',
     id: 'ARQ.05',
   };
-  protected constructor(context: RuleExecutionContext)  {
+  protected constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+    const t = translator(context.locale);
     this.given = "$.paths.*.*.parameters[?(@.in=='header' && @.schema)]";
-    this.message = 'Payload data SKALL INTE användas i HTTP-headers';
+    this.message = t('rules.arq05.message');
     this.severity = DiagnosticSeverity.Error;
     this.description = '';
   }
@@ -176,6 +179,9 @@ export class Arq05Base extends BaseRuleset {
       }
     }
     return false;
+  }
+  protected translate(context: RuleExecutionContext, key: string): string {
+    return translator(context.locale)(key);
   }
 }
 // Define a type for the property objects

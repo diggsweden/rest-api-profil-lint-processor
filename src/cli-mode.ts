@@ -44,7 +44,8 @@ export type CliArgs = {
 };
 
 export async function execCLI<T extends CliArgs>(argv: T) {
-  const t = translator(resolveLocale(argv.lang ?? process.env.RAP_LP_LANG));
+    const locale = resolveLocale(argv.lang ?? process.env.RAP_LP_LANG);
+    const t = translator(locale);
   try {
     // Parse command-line arguments using yargs
     const apiSpecFileName = (argv.file as string) || '';
@@ -54,7 +55,9 @@ export async function execCLI<T extends CliArgs>(argv: T) {
     const logErrorFilePath = argv.logError as string | undefined;
     const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
     const strict = (argv.strict as boolean) ?? false;
-    const context = new RuleExecutionContext();
+    
+
+    const context = new RuleExecutionContext(locale);
 
     // Schemevalidation and Spectral  Document creation ----------
     let apiSpecDocument: SpectralDocument;

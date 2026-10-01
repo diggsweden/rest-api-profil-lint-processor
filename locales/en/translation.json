@@ -79,5 +79,54 @@
     "specEvaluationFailed": "The specification could not be fully evaluated",
     "specParseUnknown": "Unknown error while parsing the API specification",
     "reportGenerationError": "Error generating report buffer:"
+  },
+  "rules": {
+    "ufn05": {
+      "message": "A URL SHOULD NOT be longer than 2048 characters.",
+      "description": "A URL SHOULD NOT be longer than 2048 characters."
+    },
+    "ufn09": {
+      "message": "Spaces ' ' and underscores '_' MUST NOT be used in URLs, except in the parameter part (this applies to the URL elements Scheme, Authority and Path, as well as the API elements protocol, domain name, API, version, resource and identifier).",
+      "description": "Spaces ' ' and underscores '_' MUST NOT be used in URLs, except in the parameter part."
+    },
+    "dok03": {
+      "description": "The documentation for an API MUST include the following: About the API, Terms of Use, Data Model for Resource Representation, Authentication Requirements, Lifecycle Management and Versioning, Contact Information."
+    },
+    "dok15": {
+      "message": "Examples of the API request and response MUST be included in full in the API documentation."
+    },
+    "ame01": {
+      "description": "This rule validates that requests and responses use application/json.",
+      "message": "The data model for a representation SHOULD be described using JSON according to the latest version, RFC 8259."
+    },
+    "ame02": {
+      "description": "This rule validates that the response is application/json.",
+      "message": "It SHOULD be assumed that all request headers use 'Accept' with the value 'application/json' by default."
+    },
+    "ame04": {
+      "description": "Field names in request and response bodies SHOULD use camelCase or snake_case notation."
+    },
+    "ame07": {
+      "description": "Field names SHOULD use alphanumeric characters."
+    },
+    "arq01": {
+      "description": "A request SHOULD be sent using UTF-8.",
+      "message": "A request SHOULD be sent using UTF-8."
+    },
+    "arq03": {
+      "description": "All APIs SHOULD support the following request headers: Accept, Date, Cache-Control, ETag, Connection, and Cookie."
+    },
+    "arq05": {
+      "message": "Payload data MUST NOT be used in HTTP headers.",
+      "nestedStructure": {
+        "description": "If a header uses nested structures, a request body is more appropriate."
+      },
+      "stringBinary": {
+        "description": "If a header is expected to contain data with unusual MIME types, this may indicate an unconventional use of headers."
+      },
+      "complexStructure": {
+        "description": "If a header is expected to contain complex data structures, such as JSON or XML, this may indicate an unconventional use of headers."
+      }
+    }
   }
 }
