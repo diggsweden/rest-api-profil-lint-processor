@@ -138,7 +138,7 @@ paths:
       parameters:
         - name: traceparent
           in: header
-          required: true
+          required: false
           description: The traceparent header defined by W3C Trace Context.
           schema:
             type: string
@@ -260,7 +260,7 @@ components:
     Traceparent:
       name: traceparent
       in: header
-      required: true
+      required: false
       description: The traceparent header defined by W3C Trace Context.
       schema:
         type: string
