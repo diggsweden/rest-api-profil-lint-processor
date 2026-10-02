@@ -93,12 +93,6 @@
       "message": "Blanksteg ' ' och understreck '_' SKALL INTE användas i URL:er med undantag av parameter-delen (gäller alltså URL-elementen Scheme, Authority och Path samt API-elementen protokoll, domännamn, api, version, resurs och identifierare).",
       "description": "Blanksteg ' ' och understreck '_' SKALL INTE användas i URL:er med undantag av parameter-delen."
     },
-    "dok03": {
-      "description": "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter."
-    },
-    "dok15": {
-      "message": "I dokumentationen av API:et SKALL exempel på API:ets fråga (eng:request) och svar (eng:reply) finnas i sin helhet."
-    },
     "ame01": {
       "description": "Denna regel validerar att request och response är application/json.",
       "message": "Datamodellen för en representation BÖR beskrivas med JSON enligt senaste versionen, RFC 8259."
@@ -109,6 +103,9 @@
     },
     "ame04": {
       "description": "För fältnamn i request och response body BÖR camelCase eller snake_case notation användas."
+    },
+    "ame05": {
+      "description": "Inom ett API SKALL namnsättningen vara konsekvent, dvs blanda inte camelCase och snake_case."
     },
     "ame07": {
       "description": "Fältnamn BÖR använda tecken som är alfanumeriska."
@@ -131,6 +128,145 @@
       "complexStructure": {
         "description": "Om en header förväntas innehålla komplexa datastrukturer, såsom JSON eller XML, kan det indikera en okonventionell användning av headers."
       }
+    },
+    "dok01": {
+      "message": "I regel BÖR dokumentationen och specifikationen för ett API finnas allmänt tillgänglig online."
+    },
+    "dok03": {
+      "description": "Dokumentationen för ett API SKALL innehålla följande: Om API, Användarvillkor, Datamodell för representation av resurser, Krav på autentisering, Livscykelhantering och versionshantering, Kontaktuppgifter.",
+      "info": {
+        "message": "[ info objektet bör ha title, version , description, termsOfService, contact , license ]"
+      },
+      "contact": {
+        "message": "(Saknar contact objektet)"
+      },
+      "contactName": {
+        "message": "(Contact saknar name)"
+      },
+      "contactEmail": {
+        "message": "(Contact saknar email)"
+      },
+      "contactUrl": {
+        "message": "(Contact saknar url)"
+      },
+      "license": {
+        "message": "(Saknar license objektet)"
+      },
+      "licenseUrl": {
+        "message": "(license saknar url)"
+      },
+      "licenseName": {
+        "message": "(license saknar name)"
+      }
+    },
+    "dok06": {
+      "message": "Dokumentationen BÖR finnas på både svenska och engelska."
+    },
+    "dok07": {
+      "message": "Dokumentationen av ett API BÖR innehålla övergripande information om API:et."
+    },
+    "dok08": {
+      "message": "Ett API:s servicenivå SKALL finnas tydligt beskriven i dokumentationen."
+    },
+    "dok09": {
+      "message": "Kända problem och begränsningar SKALL finnas tydlig beskrivna i dokumentationen."
+    },
+    "dok11": {
+      "message": "Avsikten och beteendet hos API:et SKALL beskrivas så utförligt och tydligt som möjligt."
+    },
+    "dok15": {
+      "message": "I dokumentationen av API:et SKALL exempel på API:ets fråga (eng:request) och svar (eng:reply) finnas i sin helhet."
+    },
+    "dok17": {
+      "description": " ( Linter-analysverktyget (RAP-LP) för den nationella REST API-profilen är designat för senaste major versionen av OpenAPI Specification. Använd därför denna för full täckning av de implementerade reglerna. )",
+      "message": "API specifikation BÖR dokumenteras med den senaste versionen av OpenAPI Specification."
+    },
+    "dok19": {
+      "message": "Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt."
+    },
+    "dok20": {
+      "message": "Förväntade returkoder och felkoder SKALL vara fullständigt dokumenterade."
+    },
+    "dok21": {
+      "message": "Krav på autentisering SKALL anges i specifikationen."
+    },
+    "dot02": {
+      "description": "Ett giltigt exempel enligt DOT.02 behöver anges som ett exempel",
+      "message": "Datum och tid SKALL anges enligt RFC 3339 som bygger på ISO-8601."
+    },
+    "dot04": {
+      "description": "När man använder RFC 3339 format BÖR tidszonen anges.",
+      "message": "Tidzonen BÖR representeras med UTC formatet, där tid anges som offset från UTC (Coordinated Universal Time)."
+    },
+    "fel01": {
+      "message": "Om HTTP svarskoderna inte räcker SKALL (FEL.01) API:et beskriva feldetaljer enligt RFC 9457 med dessa ingående attribut; {{properties}}.",
+      "schemaMustBeObject": "Schema måste vara ett objekt",
+      "missingProperty": "Saknar egenskap: {{property}}",
+      "missingRequiredField": "Saknar obligatoriskt fält: {{property}}"
+    },
+    "fel02": {
+      "message": "Schemat enligt RFC 9457 bör innehålla de beskrivna attributen i FEL.01 och SKALL (FEL.02) använda mediatypen application/problem+json eller application/problem+xml i svaret."
+    },
+    "fns01": {
+      "message": "Parameternamn SKALL anges med en konsekvent namnkonvention inom ett API, exempelvis antingen snake_case eller camelCase"
+    },
+    "fns03": {
+      "message": "Sökparametrar SKALL starta med en bokstav."
+    },
+    "fns05": {
+      "message": "Sökparametrar BÖR vara frivilliga."
+    },
+    "fns06": {
+      "message": "Sökparametrar BÖR använda tecken som är URL-säkra (tecknen A-Z, a-z, 0-9, '-', '.', '_' samt '~', se vidare i RFC 3986)"
+    },
+    "fns07": {
+      "message": "Vid användande av paginering, SKALL följande parametrar ingå i request: 'limit' och någon av 'page' eller 'offset'"
+    },
+    "fns08": {
+      "message": "'page' SKALL alltid starta med värde 1"
+    },
+    "fns09": {
+      "message": "Defaultvärde för limit BÖR vara 20"
+    },
+    "for02": {
+      "message": "EN GET -förfrågan SKALL INTE acceptera en body"
+    },
+    "mog01": {
+      "message": "Alla API:er SKALL designas för att uppnå nivå 2 enligt Richardson Maturity Model. "
+    },
+    "mog02": {
+      "message": "Alla API:er BÖR designas för att uppnå nivå 3 enligt Richardson Maturity Model. "
+    },
+    "res02": {
+      "message": "Primärnycklar eller personligt identifierbar information (personnummer, etc.) BÖR INTE exponeras. "
+    },
+    "res06": {
+      "message": "Resurser SKALL följa den namnsättningskonvention som beskrivs för URL:er, det vill säga att resurser anges med gemener, använder endast alfanumeriska tecken och bindestreck för att separera eventuella ord. "
+    },
+    "sak01": {
+      "message": "All transport SKALL ske över HTTPS med minst TLS 1.2."
+    },
+    "sak09": {
+      "description": "HTTP Basic är ett naturligt osäkert sätt att skicka inloggningsuppgifter till API:et. De placeras i URL:en i base64 som enkelt kan dekrypteras. Även om du använder en token finns det mycket bättre sätt att hantera att skicka tokens till ett API som är mindre benägna att läcka ut information",
+      "message": "Basic- eller Digest-autentisering SKALL INTE användas."
+    },
+    "sak10": {
+      "description": "Genom att använda HTTPS för att kryptera kommunikationen mellan klient och server kan Bearer Authentication erbjuda en hög nivå av säkerhet. Det gör det svårare för angripare att avlyssna eller ändra åtkomsttoken under överföringen",
+      "message": "Authorization: Bearer header SKALL användas för autentisering/auktorisation."
+    },
+    "sak15": {
+      "message": "API-nycklar SKALL INTE inkluderas i URL eller querysträngen"
+    },
+    "sak16": {
+      "description": "API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas i okrypterat format.",
+      "message": "API-nycklar SKALL inkluderas i HTTP-headern eftersom querysträngar kan sparas av klienten eller servern i okrypterat format av webbläsaren eller serverapplikationen."
+    },
+    "sak18": {
+      "description": "OAuth är ett auktorisationsprotokoll som säkert delegerar behörighet till en annan resurs.",
+      "message": "OAuth version 2.0 eller senare BÖR användas för auktorisation."
+    },
+    "sak29": {
+      "message": "Man BÖR (SAK.29) respektera angiven Content-Type i header. Förfrågningar som innehåller oväntade eller saknade Content-Type headers bör avvisas med HTTP-status 415 Unsupported Media Type."
     }
   }
 }

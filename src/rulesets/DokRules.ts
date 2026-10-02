@@ -17,6 +17,7 @@ import {
   SecurityRequirementObject,
 } from '../types/openapi-3.0.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
+import { translator } from '../i18n.js';
 
 const moduleName: string = 'DokRules.js';
 
@@ -73,9 +74,6 @@ export class Dok17 extends BaseRuleset {
     område: 'Dokumentation',
     id: 'DOK.17',
   };
-  description =
-    ' ( Linter-analysverktyget (RAP-LP) för den nationella REST API-profilen är designat för senaste major versionen av OpenAPI Specification. Använd därför denna för full täckning av de implementerade reglerna. )';
-  message = 'API specifikation BÖR dokumenteras med den senaste versionen av OpenAPI Specification.' + this.description;
   given = '$';
   then = [
     {
@@ -107,6 +105,9 @@ export class Dok17 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS2', 'OAS3']);    
+
+    this.description = this.translate('rules.dok17.description');
+    this.message = this.translate('rules.dok17.message') + this.description;
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -117,7 +118,6 @@ export class Dok20 extends BaseRuleset {
     id: 'DOK.20',
   };
   given = '$.paths[*][*].responses[*]';
-  message = 'Förväntade returkoder och felkoder SKALL vara fullständigt dokumenterade.';
   then = [
     {
       field: 'description',
@@ -140,6 +140,8 @@ export class Dok20 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.dok20.message');
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -149,7 +151,6 @@ export class Dok06 extends BaseRuleset {
     id: 'DOK.06',
   };
   given = '$.info.description';
-  message = 'Dokumentationen BÖR finnas på både svenska och engelska.';
   then = [
     {
       function: (targetVal: string, _opts: string, paths: string[]) => {
@@ -188,6 +189,8 @@ export class Dok06 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.dok06.message');
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -197,7 +200,6 @@ export class Dok07 extends BaseRuleset {
     id: 'DOK.07',
   };
   given = '$.info';
-  message = 'Dokumentationen av ett API BÖR innehålla övergripande information om API:et.';
   then = [
     {
       field: 'description',
@@ -220,6 +222,8 @@ export class Dok07 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.dok07.message');
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -229,7 +233,6 @@ export class Dok08 extends BaseRuleset {
     id: 'DOK.08',
   };
   given = '$';
-  message = 'Ett API:s servicenivå SKALL finnas tydligt beskriven i dokumentationen.';
   then = [
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {
@@ -292,6 +295,8 @@ export class Dok08 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.dok08.message');
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -301,7 +306,6 @@ export class Dok09 extends BaseRuleset {
     id: 'DOK.09',
   };
   given = '$';
-  message = 'Kända problem och begränsningar SKALL finnas tydlig beskrivna i dokumentationen.';
   then = [
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {
@@ -350,6 +354,8 @@ export class Dok09 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.dok09.message');
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -360,7 +366,6 @@ export class Dok11 extends BaseRuleset {
     id: 'DOK.11',
   };
   given = '$.info';
-  message = 'Avsikten och beteendet hos API:et SKALL beskrivas så utförligt och tydligt som möjligt.';
   then = [
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {
@@ -394,6 +399,8 @@ export class Dok11 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.dok11.message');
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -404,8 +411,6 @@ export class Dok19 extends BaseRuleset {
     id: 'DOK.19',
   };
   given = '$.paths[*][*]';
-  message =
-    'Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt';
   then = [
     {
       field: 'summary',
@@ -432,6 +437,8 @@ export class Dok19 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.dok19.message');
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -441,7 +448,6 @@ export class Dok21 extends BaseRuleset {
     id: 'DOK.21',
   };
   given = '$';
-  message = 'Krav på autentisering SKALL anges i specifikationen.';
   then = [
     {
       function: (targetVal: OpenAPIObject, _opts: string, paths: string[]) => {
@@ -497,6 +503,8 @@ export class Dok21 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.dok21.message');
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -506,7 +514,6 @@ export class Dok01 extends BaseRuleset {
     id: 'DOK.01',
   };
   given = '$';
-  message = 'I regel BÖR dokumentationen och specifikationen för ett API finnas allmänt tillgänglig online';
   then = [
     {
       function: (targetVal, _opts, paths) => {
@@ -551,6 +558,8 @@ export class Dok01 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.dok01.message');
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -559,13 +568,18 @@ export class Dok01 extends BaseRuleset {
  * Dok03Info
  */
 export class Dok03Info extends Dok03Base {
+  constructor(context: RuleExecutionContext) {
+    super(context);
+
+
+    this.message = this.description + this.translate('rules.dok03.info.message');
+  }
+
   static customProperties: CustomProperties = {
     område: 'Dokumentation',
     id: 'DOK.03',
   };
   given = '$.info';
-  message =
-    this.description + '[ info objektet bör ha title, version , description, termsOfService, contact , license ]';
   then = [
     {
       field: 'version',
@@ -601,11 +615,16 @@ export class Dok03Info extends Dok03Base {
 }
 
 export class Dok03ContactName extends Dok03Base {
+  constructor(context: RuleExecutionContext) {
+    super(context);
+
+
+    this.message = this.description + this.translate('rules.dok03.contactName.message');
+  }
   static customProperties: CustomProperties = {
     område: 'Dokumentation',
     id: 'DOK.03',
   };
-  message = this.description + '(Contact saknar name)';
   given = '$.info.contact';
 
   then = [
@@ -617,11 +636,15 @@ export class Dok03ContactName extends Dok03Base {
 }
 
 export class Dok03ContactEmail extends Dok03Base {
+  constructor(context: RuleExecutionContext) {
+    super(context);
+
+    this.message = this.description + this.translate('rules.dok03.contactEmail.message');
+  }
   static customProperties: CustomProperties = {
     område: 'Dokumentation',
     id: 'DOK.03',
   };
-  message = this.description + '(Contact saknar email)';
   given = '$.info.contact';
 
   then = [
@@ -633,11 +656,15 @@ export class Dok03ContactEmail extends Dok03Base {
 }
 
 export class Dok03ContactUrl extends Dok03Base {
+    constructor(context: RuleExecutionContext) {
+    super(context);
+
+    this.message = this.description + this.translate('rules.dok03.contactUrl.message');
+  }
   static customProperties: CustomProperties = {
     område: 'Dokumentation',
     id: 'DOK.03',
   };
-  message = this.description + '(Contact saknar url)';
   given = '$.info.contact';
 
   then = [
@@ -649,11 +676,15 @@ export class Dok03ContactUrl extends Dok03Base {
 }
 
 export class Dok03Contact extends Dok03Base {
+    constructor(context: RuleExecutionContext) {
+    super(context);
+
+    this.message = this.description + this.translate('rules.dok03.contact.message');
+  }
   static customProperties: CustomProperties = {
     område: 'Dokumentation',
     id: 'DOK.03',
   };
-  message = this.description + '(Saknar contact objektet)';
   given = '$.info';
 
   then = [
@@ -665,11 +696,16 @@ export class Dok03Contact extends Dok03Base {
 }
 
 export class Dok03License extends Dok03Base {
+  constructor(context: RuleExecutionContext) {
+    super(context);
+
+
+    this.message = this.description + this.translate('rules.dok03.license.message');
+  }
   static customProperties: CustomProperties = {
     område: 'Dokumentation',
     id: 'DOK.03',
   };
-  message = this.description + '(Saknar license objektet)';
   given = '$.info';
 
   then = [
@@ -681,11 +717,15 @@ export class Dok03License extends Dok03Base {
 }
 
 export class Dok03LicenseUrl extends Dok03Base {
+    constructor(context: RuleExecutionContext) {
+    super(context);
+
+    this.message = this.description + this.translate('rules.dok03.licenseUrl.message');
+  }
   static customProperties: CustomProperties = {
     område: 'Dokumentation',
     id: 'DOK.03',
   };
-  message = this.description + '(license saknar url)';
   given = '$.info.license';
 
   then = [
@@ -697,11 +737,15 @@ export class Dok03LicenseUrl extends Dok03Base {
 }
 
 export class Dok03LicenseName extends Dok03Base {
+    constructor(context: RuleExecutionContext) {
+    super(context);
+
+    this.message = this.description + this.translate('rules.dok03.licenseName.message');
+  }
   static customProperties: CustomProperties = {
     område: 'Dokumentation',
     id: 'DOK.03',
   };
-  message = this.description + '(license saknar name)';
   given = '$.info.license';
 
   then = [

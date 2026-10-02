@@ -9,7 +9,6 @@ import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
 import { isValidApplicationJson } from './rulesetUtil.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
-import { translator } from '../i18n.js';
 
 const moduleName: string = 'ArqRules.js';
 
@@ -17,7 +16,7 @@ export class Arq05NestedStructure extends Arq05Base {
   constructor(context: RuleExecutionContext) {
     super(context);
 
-    this.description = this.translate(context, 'rules.arq05.nestedStructure.description');
+    this.description = this.translate('rules.arq05.nestedStructure.description');
     this.message = `[${super.messageValue}] ${this.description}`;
   }
 
@@ -54,7 +53,7 @@ export class Arq05StringBinary extends Arq05Base {
   constructor(context: RuleExecutionContext) {
     super(context);
 
-    this.description = this.translate(context, 'rules.arq05.stringBinary.description');
+    this.description = this.translate('rules.arq05.stringBinary.description');
     this.message = `[${super.messageValue}] ${this.description}`;
   }
   then = [
@@ -91,7 +90,7 @@ export class Arq05ComplexStructure extends Arq05Base {
   constructor(context: RuleExecutionContext) {
     super(context);
 
-    this.description = this.translate(context, 'rules.arq05.complexStructure.description');
+    this.description = this.translate('rules.arq05.complexStructure.description');
     this.message = `[${super.messageValue}] ${this.description}`;
   }
   then = [
@@ -164,9 +163,8 @@ export class Arq01 extends BaseRuleset {
     super(context);
     super.initializeFormats(['OAS3']);
 
-    const t = translator(context.locale);
-    this.description = t('rules.arq01.description');
-    this.message = t('rules.arq01.message');
+    this.description = this.translate('rules.arq01.description');
+    this.message = this.translate('rules.arq01.message');
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -231,8 +229,7 @@ export class Arq03 extends BaseRuleset {
     super(context);
     super.initializeFormats(['OAS3']);
 
-    const t = translator(context.locale);
-    this.description = t('rules.arq03.description');
+    this.description = this.translate('rules.arq03.description');
     this.message = this.description;
   }
   severity = DiagnosticSeverity.Warning;

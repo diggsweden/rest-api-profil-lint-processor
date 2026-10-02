@@ -9,7 +9,6 @@ import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
 import { isValidApplicationJson } from './util/AmeRulesUtil.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
-import { translator } from '../i18n.js';
 
 const moduleName: string = 'AmeRules.js';
 
@@ -59,8 +58,7 @@ export class Ame07 extends BaseRuleset {
     super(context);
     super.initializeFormats(['OAS3']);
 
-    const t = translator(context.locale);
-    this.description = t('rules.ame07.description');
+    this.description = this.translate('rules.ame07.description');
     this.message = this.description;
   }
   severity = DiagnosticSeverity.Warning;
@@ -116,8 +114,7 @@ export class Ame04 extends BaseRuleset {
     super(context);
     super.initializeFormats(['OAS3']);
 
-    const t = translator(context.locale);
-    this.description = t('rules.ame04.description');
+    this.description = this.translate('rules.ame04.description');
     this.message = this.description;
   }
   severity = DiagnosticSeverity.Warning;
@@ -164,9 +161,8 @@ export class Ame01 extends BaseRuleset {
     super(context);
     super.initializeFormats(['OAS3']);
 
-    const t = translator(context.locale);
-    this.description = t('rules.ame01.description');
-    this.message = t('rules.ame01.message');
+    this.description = this.translate('rules.ame01.description');
+    this.message = this.translate('rules.ame01.message');
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -213,9 +209,8 @@ export class Ame02 extends BaseRuleset {
     super(context);
     super.initializeFormats(['OAS3']);
 
-    const t = translator(context.locale);
-    this.description = t('rules.ame02.description');
-    this.message = t('rules.ame02.message');
+    this.description = this.translate('rules.ame02.description');
+    this.message = this.translate('rules.ame02.message');
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -224,8 +219,6 @@ export class Ame05 extends BaseRuleset {
     område: 'API Message',
     id: 'AME.05',
   };
-  description = 'Inom ett API SKALL namnsättningen vara konsekvent, dvs blanda inte camelCase och snake_case.';
-  message = 'Inom ett API SKALL namnsättningen vara konsekvent, dvs blanda inte camelCase och snake_case.';
   given = '$.components.schemas';
   then = [
     {
@@ -346,6 +339,9 @@ export class Ame05 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.description = this.translate('rules.ame05.description');
+    this.message = this.description;
   }
   severity = DiagnosticSeverity.Error;
 }

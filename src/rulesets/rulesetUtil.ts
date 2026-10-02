@@ -50,8 +50,7 @@ export class Dok03Base extends BaseRuleset {
   protected constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
-    const t = translator(context.locale);
-    this.description = t('rules.dok03.description');
+    this.description = this.translate('rules.dok03.description');
     this.severity = DiagnosticSeverity.Error;
   }
 
@@ -65,11 +64,10 @@ export class Ufn05Base extends BaseRuleset {
   protected constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
-    const t = translator(context.locale);
 
-    this.message = t('rules.ufn05.message');
+    this.message = this.translate('rules.ufn05.message');
     this.severity = DiagnosticSeverity.Warning;
-    this.description = t('rules.ufn05.description');
+    this.description = this.translate('rules.ufn05.description');
   }
   static baseurls: any = [];
   static paths: any = [];
@@ -83,10 +81,9 @@ export class Ufn09Base extends BaseRuleset {
    protected constructor(context: RuleExecutionContext) {
     super(context);
     let moduleName: string = 'UfnRules.js';
-    const t = translator(context.locale);
-    this.message = t('rules.ufn09.message');
+    this.message = this.translate('rules.ufn09.message');
     this.severity = DiagnosticSeverity.Error;
-    this.description = t('rules.ufn09.description');
+    this.description = this.translate('rules.ufn09.description');
     this.then = [
       {
         function: pattern,
@@ -118,8 +115,7 @@ export class Dok15Base extends BaseRuleset {
   };
   protected constructor(context: RuleExecutionContext) {
     super(context);
-    const t = translator(context.locale);
-    this.message = t('rules.dok15.message');
+    this.message = this.translate('rules.dok15.message');
     this.severity = DiagnosticSeverity.Error;
     this.description = '';
     super.initializeFormats(['OAS3']);
@@ -162,9 +158,9 @@ export class Arq05Base extends BaseRuleset {
   protected constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
-    const t = translator(context.locale);
+
     this.given = "$.paths.*.*.parameters[?(@.in=='header' && @.schema)]";
-    this.message = t('rules.arq05.message');
+    this.message = this.translate('rules.arq05.message');
     this.severity = DiagnosticSeverity.Error;
     this.description = '';
   }
@@ -179,9 +175,6 @@ export class Arq05Base extends BaseRuleset {
       }
     }
     return false;
-  }
-  protected translate(context: RuleExecutionContext, key: string): string {
-    return translator(context.locale)(key);
   }
 }
 // Define a type for the property objects
