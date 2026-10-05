@@ -1,19 +1,15 @@
 # SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 #
 # SPDX-License-Identifier: EUPL-1.2
-
 openapi: '3.0.0'
 info:
   version: 1.0.0
   title: AME
   description: >
-    När dokumentationen består av flera stycken kan också större än-tecknet användas.
-    Då ersätts radbrytningar med mellanslag.
-    Tomma rader bevaras däremot som styckeavgränsare.
+    När dokumentationen består av flera stycken kan också större än-tecknet användas. Då ersätts radbrytningar med mellanslag. Tomma rader bevaras däremot som styckeavgränsare.
 
-    When the documentation consists of multiple paragraphs, the greater-than operator can be used.
-    This converts line breaks into spaces.
-    However, empty lines are preserved as paragraph separators.
+    When the documentation consists of multiple paragraphs, the greater-than operator can be used. This converts line breaks into spaces. However, empty lines are preserved as paragraph separators.
+
   termsOfService: http://swagger.io/terms/
   contact:
     name: Swagger API Team
@@ -130,7 +126,6 @@ paths:
             examples: # Sample object
               id: 10
               name: Jessica Smith
-
 components:
   schemas:
     Pet:
