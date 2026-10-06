@@ -86,6 +86,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
     - [ID: SAK.01](#id-sak01)
     - [ID: SAK.09](#id-sak09)
     - [ID: SAK.10](#id-sak10)
+    - [ID: SAK.11](#id-sak11)
     - [ID: SAK.15](#id-sak15)
     - [ID: SAK.16](#id-sak16)
     - [ID: SAK.18](#id-sak18)
@@ -1308,22 +1309,23 @@ I exemplet ovan så kommer regeln att ge ett positivt utfall eftersom det finns 
 **JSON Path Plus-uttryck:**
 
 ```
- $.components.securitySchemes[?(@.type=="oauth2")]
- $.components.securitySchemes[?(@.type=="oauth2")].flows[*]
+'$.components.securitySchemes[?(@.type=="oauth2")]'
+'$.components.securitySchemes[?(@.type=="oauth2")].flows.authorizationCode'
+'$.components.securitySchemes[?(@.type=="oauth2")].flows.password'
 ```
 
 **Förklaring:**
-Regeln förutsätter att API använder OAuth 2.0 för autentisering eller auktorisering.
+Regeln förutsätter att API:et använder OAuth 2.0 för autentisering eller auktorisering.
 
-För OAuth 2.0 ska minst ett flow vara definierat. Varje definierat OAuth 2.0-flow SKALL ha attributet `refreshUrl` definierat. Attributet används för att dokumentera den endpoint där en uppdateringstoken kan användas för att erhålla en ny åtkomsttoken utan att användaren behöver autentisera sig på nytt.
+För OAuth 2.0 ska minst ett flow vara definierat. För `authorizationCode`- och `password`-flow SKALL attributet refreshUrl vara definierat. Attributet används för att dokumentera den endpoint där en uppdateringstoken kan användas för att erhålla en ny åtkomsttoken utan att användaren behöver autentisera sig på nytt.
 
-Regeln kontrollerar endast att `refreshUrl` är definierat i API-beskrivningen. Regeln kan inte kontrollera om uppdateringstoken faktiskt utfärdas eller om endpointen fungerar.
+Regeln kontrollerar endast att refreshUrl är definierat i API-beskrivningen. Regeln kan inte kontrollera om uppdateringstoken faktiskt utfärdas eller om endpointen fungerar.
 
 **Exempel:**
 
 ![alt text](images/sak11.png)
 
-I exemplet ovan kommer regeln att ge ett positivt utfall eftersom securityschemat är av typen OAuth 2.0 och har ett definierat flow med attributet `refreshUrl`.
+Bilden visar ett OAuth 2.0-security scheme med ett `authorizationCode`-flow. Flowet innehåller attributet `refreshUrl`, vilket innebär att kravet uppfylls.
 
 ---
 
