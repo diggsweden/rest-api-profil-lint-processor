@@ -124,6 +124,27 @@ describe('errorHandler middleware', () => {
     });
   });
 
+  it('uses Swedish by default when response locale is missing', () => {
+  const error = {
+    status: 400,
+    errors: [
+      {
+        errorCode: 'required.openapi.requestValidation',
+        params: { missingProperty: 'spec' },
+      },
+    ],
+  };
+
+  errorHandler(error, req, res, next);
+
+  const sentResponse = (res.json as jest.Mock).mock.calls[0][0] as ProblemDetailsDTO;
+
+  expect(sentResponse).toMatchObject({
+    title: 'Ogiltig begäran',
+    detail: 'Obligatoriskt fält saknas: spec',
+  });
+});
+
   it('should localize SpecParseError titles using the response locale', () => {
     res.locals.locale = 'en';
     const error = new SpecParseError('Could not parse YAML content.', { source: 'yaml', stage: 'sanity' });
