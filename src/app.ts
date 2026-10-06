@@ -115,5 +115,5 @@ async function main() {
 // Starta huvudprocessen
 main().catch((err) => {
   const t = translator(cliLocale(hideBin(process.argv)));
-  console.error(`${t('cli.unexpectedError')}:`, err);
+  console.error('%s: %o', t('cli.unexpectedError'), err);
 });
