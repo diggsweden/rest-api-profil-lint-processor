@@ -203,27 +203,6 @@ class RapLPDiagnostic {
     };
     return report;
   }
-  // private translateArea(area: string): string {
-  //   const areaKeyMap: Record<string, string> = {
-  //     'URL Format och namngivning': 'areas.urlFormatAndNaming',
-  //     'Säkerhet': 'areas.security',
-  //     'Spårbarhet och korrelation': 'areas.traceabilityAndCorrelation',
-  //     'Versionshantering': 'areas.versioning',
-  //     'Filtrering, paginering och sökparametrar': 'areas.filteringPaginationSearch',
-  //     'API Request': 'areas.apiRequest',
-  //     'Dokumentation': 'areas.documentation',
-  //     'API Message': 'areas.apiMessage',
-  //     'Förutsättningar': 'areas.prerequisites',
-  //     'Datum- och tidsformat': 'areas.dateTimeFormat',
-  //     'Resurser': 'areas.resources',
-  //     'Mognad': 'areas.maturity',
-  //     'Felhantering': 'areas.errorHandling',
-  // };
-
-  //   const key = areaKeyMap[area];
-
-  //   return key ? this.translate(key) : area;
-  // }
 }
 export { RapLPDiagnostic };
 
