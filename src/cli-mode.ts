@@ -183,6 +183,13 @@ export async function execCLI<T extends CliArgs>(argv: T) {
                   ),
                 );
               }
+              if (reportHandler.missingRules.length > 0) {
+                console.log(
+                  chalk.yellow(
+                    `Följande regler har verkställts av RAP-LP men saknas i avstämningsfilen, deras utfall har inte skrivits: ${reportHandler.missingRules.join(', ')}`,
+                  ),
+                );
+              }
             }
             if (reportHandler.keptInProgressRules.length > 0) {
               console.log(

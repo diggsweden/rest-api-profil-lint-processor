@@ -120,6 +120,7 @@ export class ExcelReportProcessor {
   private requestedOutputFilePath: string;
   private inProgressRulesKept: string[] = [];
   private inProgressRulesResolved: string[] = [];
+  private rulesMissingInFile: string[] = [];
   private profileVersions: { template?: string; file?: string } = {};
 
   constructor(config?: Partial<ExcelTemplateConfig>) {
@@ -182,6 +183,10 @@ export class ExcelReportProcessor {
     return this.inProgressRulesResolved;
   }
 
+  public get missingRules(): string[] {
+    return this.rulesMissingInFile;
+  }
+
   public get templateProfileVersion(): string | undefined {
     return this.profileVersions.template;
   }
@@ -203,9 +208,10 @@ export class ExcelReportProcessor {
       throw new Error(`Could not load required components from ${this.sourceFilePath}.`);
     }
 
-    if (this.isBasedOnExistingFile) {
+    const templateZip = this.isBasedOnExistingFile ? new AdmZip(this.config.reportTemplatePath) : undefined;
+    if (templateZip) {
       this.profileVersions = {
-        template: this.readProfileVersion(new AdmZip(this.config.reportTemplatePath)),
+        template: this.readProfileVersion(templateZip),
         file: this.readProfileVersion(this.zip),
       };
     }
@@ -215,6 +221,9 @@ export class ExcelReportProcessor {
 
     // Update the status column with the results.
     this.updateResultColumn(sheetPath, resultMap, sharedStrings, optionIndexMap);
+
+    const templateRules = templateZip ? this.readRuleIds(templateZip) : new Set<string>();
+    this.rulesMissingInFile = this.rulesMissingInFile.filter((rule) => templateRules.has(rule));
 
     // Enable full recalculation of workbok.
     // This is neeeded in order for excell to update the summary tables.
@@ -393,6 +402,21 @@ export class ExcelReportProcessor {
     return undefined;
   }
 
+  private readRuleIds(zip: AdmZip): Set<string> {
+    const workbook = this.loadWorkBook(zip);
+    const sharedStrings = this.loadSharedStrings(zip) ?? [];
+    const sheet = this.loadSheet(this.getSheetPathFromName(workbook, this.config.dataSheetName, zip), zip);
+    const rules = new Set<string>();
+    for (const row of sheet?.worksheet?.sheetData?.row ?? []) {
+      const ruleCell = (row.c ?? []).find((cell) => columnOf(cell) === this.config.ruleColumn);
+      const rule = ruleCell ? this.cellText(ruleCell, sharedStrings).trim() : '';
+      if (rule) {
+        rules.add(rule);
+      }
+    }
+    return rules;
+  }
+
   /**
    * Given a path within the xlsx file, load a sheet to memory.
    * See #getSheetPathFromName to extract the path.
@@ -423,6 +447,7 @@ export class ExcelReportProcessor {
     const sheet = this.loadSheet(sheetPath);
     this.inProgressRulesKept = [];
     this.inProgressRulesResolved = [];
+    const foundRules = new Set<string>();
     sheet?.worksheet?.sheetData?.row?.forEach((row) => {
       const cells: any[] = row.c ?? [];
       const ruleCell = cells.find((cell) => columnOf(cell) === this.config.ruleColumn);
@@ -433,6 +458,7 @@ export class ExcelReportProcessor {
       if (!status) {
         return;
       }
+      foundRules.add(rule);
 
       let resultCell = cells.find((cell) => columnOf(cell) === this.config.statusColumn);
 
@@ -472,6 +498,9 @@ export class ExcelReportProcessor {
         resultCell.is = { t: status };
       }
     });
+    this.rulesMissingInFile = Object.keys(results)
+      .filter((rule) => !foundRules.has(rule))
+      .sort();
 
     const xmlString = this.builder.build(sheet);
     const xmlBuffer = Buffer.from(xmlString, 'utf8');
