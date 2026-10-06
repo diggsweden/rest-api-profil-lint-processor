@@ -150,14 +150,15 @@ export class Sak11 extends BaseRuleset {
     id: 'SAK.11',
   };
 
-  description = 'OAuth 2.0-flow SKALL ha attributet refreshUrl definierat.';
+  description = 'OAuth 2.0 authorizationCode- och password-flow SKALL ha attributet refreshUrl definierat.';
 
   message =
     'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.';
 
   given = [
     '$.components.securitySchemes[?(@.type=="oauth2")]',
-    '$.components.securitySchemes[?(@.type=="oauth2")].flows[*]',
+    '$.components.securitySchemes[?(@.type=="oauth2")].flows.authorizationCode',
+    '$.components.securitySchemes[?(@.type=="oauth2")].flows.password',
   ];
 
   then = [

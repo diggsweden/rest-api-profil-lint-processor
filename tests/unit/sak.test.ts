@@ -184,7 +184,7 @@ testRule('Sak10', [
 
 testRule('Sak11', [
   {
-    name: 'giltigt testfall - refreshUrl är korrekt definierad',
+    name: 'giltigt testfall - authorizationCode har refreshUrl',
     document: {
       openapi: '3.1.0',
       info: { version: '1.0' },
@@ -193,7 +193,8 @@ testRule('Sak11', [
           oAuth2: {
             type: 'oauth2',
             flows: {
-              clientCredentials: {
+              authorizationCode: {
+                authorizationUrl: 'https://example.com/authorize',
                 tokenUrl: 'https://example.com/token',
                 refreshUrl: 'https://example.com/refresh',
               },
@@ -205,7 +206,7 @@ testRule('Sak11', [
     errors: [],
   },
   {
-    name: 'ogiltigt testfall - refreshUrl saknas',
+    name: 'ogiltigt testfall - authorizationCode saknar refreshUrl',
     document: {
       openapi: '3.1.0',
       info: { version: '1.0' },
@@ -214,53 +215,6 @@ testRule('Sak11', [
           oAuth2: {
             type: 'oauth2',
             flows: {
-              clientCredentials: {
-                tokenUrl: 'https://example.com/token',
-              },
-            },
-          },
-        },
-      },
-    },
-    errors: [
-      {
-        message:
-          'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.',
-        severity: DiagnosticSeverity.Error,
-        path: ['components', 'securitySchemes', 'oAuth2', 'flows', 'clientCredentials'],
-      },
-    ],
-  },
-  {
-    name: 'giltigt testfall - annan typ av security scheme',
-    document: {
-      openapi: '3.1.0',
-      info: { version: '1.0' },
-      components: {
-        securitySchemes: {
-          basicAuth: {
-            type: 'http',
-            scheme: 'basic',
-          },
-        },
-      },
-    },
-    errors: [],
-  },
-  {
-    name: 'ogiltigt testfall - flera oauth2-flows där refreshUrl saknas i ett flow',
-    document: {
-      openapi: '3.1.0',
-      info: { version: '1.0' },
-      components: {
-        securitySchemes: {
-          oAuth2: {
-            type: 'oauth2',
-            flows: {
-              clientCredentials: {
-                tokenUrl: 'https://example.com/token',
-                refreshUrl: 'https://example.com/refresh',
-              },
               authorizationCode: {
                 authorizationUrl: 'https://example.com/authorize',
                 tokenUrl: 'https://example.com/token',
@@ -275,9 +229,62 @@ testRule('Sak11', [
         message:
           'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.',
         severity: DiagnosticSeverity.Error,
-        path: ['components', 'securitySchemes', 'oAuth2', 'flows', 'authorizationCode'],
+        path: [
+          'components',
+          'securitySchemes',
+          'oAuth2',
+          'flows',
+          'authorizationCode',
+        ],
       },
     ],
+  },
+  {
+    name: 'ogiltigt testfall - password saknar refreshUrl',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      components: {
+        securitySchemes: {
+          oAuth2: {
+            type: 'oauth2',
+            flows: {
+              password: {
+                tokenUrl: 'https://example.com/token',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message:
+          'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.',
+        severity: DiagnosticSeverity.Error,
+        path: ['components', 'securitySchemes', 'oAuth2', 'flows', 'password'],
+      },
+    ],
+  },
+  {
+    name: 'giltigt testfall - clientCredentials behöver inte ha refreshUrl',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      components: {
+        securitySchemes: {
+          oAuth2: {
+            type: 'oauth2',
+            flows: {
+              clientCredentials: {
+                tokenUrl: 'https://example.com/token',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
   },
 ]);
 
