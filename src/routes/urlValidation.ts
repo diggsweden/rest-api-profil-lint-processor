@@ -64,14 +64,28 @@ const assertSsrfSafeUrl = (config: any, urlString: string, t: ReturnType<typeof 
   const hostname = parsed.hostname.toLowerCase();
   const isLocalhost =
     hostname === 'localhost' || hostname.endsWith('.localhost') || hostname === '::1' || hostname === '[::1]';
-  console.log('IsLocalhost: ' + isLocalhost);
-  console.log('allowLocalhost: ' + config?.allowLocalhost);
 
   if (isLocalhost && !config?.allowLocalhost) {
     throw new RapLPBaseApiError(t('api.invalidRequest'), t('api.hostNotAllowed'), ERROR_TYPE.BAD_REQUEST);
   }
   if (isIpv4Address(hostname) && isPrivateOrLocalIpv4(hostname)) {
     throw new RapLPBaseApiError(t('api.invalidRequest'), t('api.hostNotAllowed'), ERROR_TYPE.BAD_REQUEST);
+  }
+
+  const allowedHosts = Array.isArray(config?.allowedHosts)
+    ? config.allowedHosts
+        .map((h: unknown) => (typeof h === 'string' ? h.toLowerCase().trim() : ''))
+        .filter((h: string) => h.length > 0)
+    : [];
+
+  if (allowedHosts.length > 0) {
+    const isAllowedHost = allowedHosts.some(
+      (allowedHost: string) => hostname === allowedHost || hostname.endsWith(`.${allowedHost}`),
+    );
+
+    if (!isAllowedHost) {
+      throw new RapLPBaseApiError(t('api.invalidRequest'), t('api.hostNotAllowed'), ERROR_TYPE.BAD_REQUEST);
+    }
   }
 };
 
