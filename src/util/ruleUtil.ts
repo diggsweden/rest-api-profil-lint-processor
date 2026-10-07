@@ -28,7 +28,7 @@ const ruleModules = [
 
 /** Implemented rules */
 export const implementedRulesByArea = {
-  "Dokumentation": [
+  Dokumentation: [
     'DOK.01',
     'DOK.03',
     'DOK.06',
@@ -43,22 +43,22 @@ export const implementedRulesByArea = {
     'DOK.21',
   ],
   'Datum- och tidsformat': ['DOT.02', 'DOT.04'],
-  "Resurser": ['RES.02', 'RES.06'],
+  Resurser: ['RES.02', 'RES.06'],
   'URL Format och namngivning': ['UFN.01', 'UFN.02', 'UFN.05', 'UFN.07', 'UFN.08', 'UFN.09'],
-  "Mognad": ['MOG.01', 'MOG.02'],
+  Mognad: ['MOG.01', 'MOG.02'],
   'API Message': ['AME.01', 'AME.02', 'AME.04', 'AME.05', 'AME.07'],
   'API Request': ['ARQ.01', 'ARQ.03', 'ARQ.05'],
-  "Felhantering": ['FEL.01', 'FEL.02'],
-  "Versionhantering": ['VER.05', 'VER.06'],
+  Felhantering: ['FEL.01', 'FEL.02'],
+  Versionhantering: ['VER.05', 'VER.06'],
   'Spårbarhet och korrelation': ['SPA.02', 'SPA.04', 'SPA.07'],
   'Filtrering, paginering och sökparametrar': ['FNS.01', 'FNS.03', 'FNS.05', 'FNS.06', 'FNS.07', 'FNS.08', 'FNS.09'],
-  "Säkerhet": ['SAK.01', 'SAK.09', 'SAK.10', 'SAK.15', 'SAK.16', 'SAK.18'],
-  "Förutsättningar": ['FOR.02'],
+  Säkerhet: ['SAK.01', 'SAK.09', 'SAK.10', 'SAK.15', 'SAK.16', 'SAK.18'],
+  Förutsättningar: ['FOR.02'],
 };
 
 /** Not implemented rules */
 export const additionalRulesByArea = {
-  "Dokumentation": [
+  Dokumentation: [
     'DOK.02',
     'DOK.04',
     'DOK.05',
@@ -72,10 +72,10 @@ export const additionalRulesByArea = {
     'DOK.24',
   ],
   'Datum- och tidsformat': ['DOT.01', 'DOT.03'],
-  "Resurser": ['RES.01', 'RES.03', 'RES.04', 'RES.05'],
+  Resurser: ['RES.01', 'RES.03', 'RES.04', 'RES.05'],
   'URL Format och namngivning': ['UFN.03', 'UFN.04'],
-  "Mognad": ['MOG.03'],
-  "Säkerhet": [
+  Mognad: ['MOG.03'],
+  Säkerhet: [
     'SAK.02',
     'SAK.03',
     'SAK.05',
@@ -107,7 +107,7 @@ export const additionalRulesByArea = {
   'API Message': ['AME.06'],
   'API Request': ['ARQ.02', 'ARQ.06'],
   'API Response': ['ARP.02', 'ARP.03', 'ARP.04'],
-  "Versionhantering": [
+  Versionhantering: [
     'VER.01',
     'VER.02',
     'VER.03',
@@ -126,8 +126,8 @@ export const additionalRulesByArea = {
     'VER.18',
     'VER.19',
   ],
-  "Webhooks": ['WEB.01', 'WEB.02', 'WEB.03', 'WEB.04', 'WEB.05', 'WEB.06'],
-  "Hypermedia": [
+  Webhooks: ['WEB.01', 'WEB.02', 'WEB.03', 'WEB.04', 'WEB.05', 'WEB.06'],
+  Hypermedia: [
     'HYP.01',
     'HYP.02',
     'HYP.03',
@@ -149,7 +149,7 @@ export const additionalRulesByArea = {
     'HYP.19',
   ],
   'Filtrering, paginering och sökparametrar': ['FNS.02', 'FNS.10', 'FNS.11', 'FNS.12', 'FNS.13', 'FNS.14'],
-  "Cachning": ['CAC.01'],
+  Cachning: ['CAC.01'],
 };
 
 /**

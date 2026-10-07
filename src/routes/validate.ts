@@ -42,7 +42,7 @@ export const registerValidationRoutes = (app: Express) => {
   });
 
   app.get('/api/v1/validation/all-rules', (req, res) => {
-   res.send(getAllRules());
+    res.send(getAllRules());
   });
 
   app.get('/api/v1/api-info', async (req, res, next) => {
