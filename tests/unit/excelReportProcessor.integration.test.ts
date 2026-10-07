@@ -37,7 +37,7 @@ async function runRunnerWithInput(input: RunnerInput) {
 function loadSheet(file: string) {
   const zip = new AdmZip(file);
   const sharedStrings = [...zip.readAsText('xl/sharedStrings.xml').matchAll(/<si>(.*?)<\/si>/gs)].map((m) =>
-    m[1].replace(/<[^>]+>/g, ''),
+    [...m[1].matchAll(/<t[^>]*>(.*?)<\/t>/gs)].map((t) => t[1]).join(''),
   );
   const workbook = zip.readAsText('xl/workbook.xml');
   const rId = new RegExp(`<sheet name="${DATA_SHEET_NAME}"[^>]*r:id="(\\w+)"`).exec(workbook)![1];
