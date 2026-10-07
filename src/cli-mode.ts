@@ -17,11 +17,12 @@ import { ExcelReportProcessor } from './util/excelReportProcessor.js';
 import type { IParser } from '@stoplight/spectral-parsers';
 import { Document as SpectralDocument } from '@stoplight/spectral-core';
 import { Issue } from './util/Issue.js';
-import { parseApiSpecInput,detectSpecFormatPreference, ParseResult} from './util/validateUtil.js';
+import { parseApiSpecInput, detectSpecFormatPreference, ParseResult } from './util/validateUtil.js';
 import { SpecParseError } from './util/RapLPSpecParseError.js';
 import * as path from 'node:path';
 import { RuleExecutionContext } from './util/RuleExecutionContext.js';
-import { parseRuleCategories,resolveRuleCategories } from './rulesets/util/ruleModules.js';
+import { parseRuleCategories, resolveRuleCategories } from './rulesets/util/ruleModules.js';
+import { resolveLocale, translator } from './i18n.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -39,9 +40,12 @@ export type CliArgs = {
   logDiagnostic?: string;
   dex?: string;
   strict?: boolean;
+  lang?: string;
 };
 
 export async function execCLI<T extends CliArgs>(argv: T) {
+    const locale = resolveLocale(argv.lang ?? process.env.RAP_LP_LANG);
+    const t = translator(locale);
   try {
     // Parse command-line arguments using yargs
     const apiSpecFileName = (argv.file as string) || '';
@@ -50,30 +54,39 @@ export async function execCLI<T extends CliArgs>(argv: T) {
     const resolvedCategories = resolveRuleCategories(ruleCategories);
     const logErrorFilePath = argv.logError as string | undefined;
     const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
-    const strict = argv.strict as boolean ?? false;
-    const context = new RuleExecutionContext();
+    const strict = (argv.strict as boolean) ?? false;
+    
 
+    const context = new RuleExecutionContext(locale);
 
     // Schemevalidation and Spectral  Document creation ----------
     let apiSpecDocument: SpectralDocument;
     let parseResult: ParseResult;
     try {
-      const prefer = detectSpecFormatPreference(apiSpecFileName,undefined,'auto');
+      const prefer = detectSpecFormatPreference(apiSpecFileName, undefined, 'auto');
       parseResult = await parseApiSpecInput(
-          {filePath: apiSpecFileName},{
-            strict: strict,
-            preferJsonError: prefer
-          }
+        { filePath: apiSpecFileName },
+        {
+          strict: strict,
+          preferJsonError: prefer,
+        },
+        context
       );
 
-    // Issue handling ----------
+      // Issue handling ----------
       if (parseResult.strictIssues && parseResult.strictIssues.length > 0) {
-         console.error('Strict validation reported issues:');
-          parseResult.strictIssues.forEach((iss: Issue) =>
-              console.error(chalk.yellow(`- ${iss.type} at ${iss.path} : ${iss.message} ${iss.line ? `(line ${iss.line})` : ''}`)),
-          );
-          process.exitCode = 2;
-          return;
+        console.error(t('cli.strictValidationIssues'));
+        parseResult.strictIssues.forEach((iss: Issue) =>
+          console.error(
+            chalk.yellow(
+              `- ${iss.type} ${t('cli.atLabel')} ${iss.path} : ${iss.message} ${
+                iss.line ? `(${t('cli.lineLabel').toLowerCase()} ${iss.line})` : ''
+              }`,
+            ),
+          ),
+        );
+        process.exitCode = 2;
+        return;
       }
     } catch (err: any) {
       // Parse handling
@@ -81,7 +94,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         const formattedDate = new Date().toISOString();
         const logData = {
           timeStamp: formattedDate,
-          message: 'Fel vid parsing av API-specifikationen.',
+          message: t('cli.parseError'),
           error: err.toJSON ? err.toJSON() : { message: String(err) },
         };
 
@@ -100,16 +113,18 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             existingLogs.push(logData);
             const updatedContent = JSON.stringify(existingLogs, null, 2);
             await writeFileAsync(logErrorFilePath, Buffer.from(updatedContent, 'utf8'));
-            console.log(chalk.green(`Parserfel loggat till ${logErrorFilePath}`));
+            console.log(chalk.green(t('cli.parserErrorLogged', { path: logErrorFilePath })));
           } catch (fileErr: any) {
-            console.error(chalk.red('Misslyckades att skriva parserfel till loggfilen:'), fileErr.message);
+            console.error(chalk.red(t('cli.parserLogWriteFailed')), fileErr.message);
           }
         } else {
           // No log file specified - write to stdout
-          console.error(chalk.red('<<< Parserfel i API-specifikationen >>>'));
-          console.error(chalk.red(`Fel: ${err.message}`));
+          console.error(chalk.red(t('cli.parserErrorHeader')));
+          console.error(chalk.red(`${t('cli.errorLabel')}: ${err.message}`));
           if (err.line || err.column) {
-            console.error(chalk.yellow(`Rad: ${err.line ?? '-'}, Kolumn: ${err.column ?? '-'}`));
+            console.error(
+              chalk.yellow(`${t('cli.lineLabel')}: ${err.line ?? '-'}, ${t('cli.columnLabel')}: ${err.column ?? '-'}`),
+            );
           }
           if (err.snippet && !err.message.includes(err.snippet)) {
             console.error(chalk.gray('--- snippet ---'));
@@ -124,28 +139,41 @@ export async function execCLI<T extends CliArgs>(argv: T) {
 
       // Övrigt oväntat fel
       logErrorToFile(err);
-      console.error(chalk.red('Ett fel uppstod vid inläsning/parsing av spec-filen. Se felloggen för mer information.'));
+      console.error(chalk.red(t('cli.parseOrReadError')));
       process.exitCode = 1;
       return;
     }
 
     try {
       // Import and create rule instances in RAP-LP
-      const enabledRulesAndCategorys = await importAndCreateRuleInstances(context,resolvedCategories);
+      const enabledRulesAndCategorys = await importAndCreateRuleInstances(context, resolvedCategories);
       // Load API specification into a Document object
-      const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
+      const parser: IParser<any> = (parseResult.format === 'json'
+        ? Parsers.Json
+        : Parsers.Yaml) as unknown as IParser<any>;
       apiSpecDocument = new SpectralDocument(parseResult.raw, parser, apiSpecFileName);
       try {
         /**
          * CustomSpectral
          */
-        const customSpectral = new RapLPCustomSpectral();
+        const customSpectral = new RapLPCustomSpectral(context);
         customSpectral.setCategorys(enabledRulesAndCategorys.instanceCategoryMap);
         customSpectral.setRuleset(enabledRulesAndCategorys.rules);
         const result = await customSpectral.run(apiSpecDocument);
 
+        console.log(
+          result.map((item) => ({
+            id: item.id,
+            area: item.area,
+          })),
+        );
+
         const customDiagnostic = new RapLPDiagnostic(context);
-        customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.rules,enabledRulesAndCategorys.instanceCategoryMap);
+        customDiagnostic.processRuleExecutionInformation(
+          result,
+          enabledRulesAndCategorys.rules,
+          enabledRulesAndCategorys.instanceCategoryMap,
+        );
         const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
         if (argv.dex != null) {
           const reportHandler = new ExcelReportProcessor({
@@ -173,13 +201,13 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           }
         };
         const formatLintingResult = (result: any) => {
-          return `\nallvarlighetsgrad: ${colorizeSeverity(result.severity)} \nid: ${result.id} \nkrav: ${
+          return `\n${t('cli.ruleExecution.details.severity')}: ${colorizeSeverity(result.severity)} \n${t('cli.ruleExecution.details.id')}: ${result.id} \n${t('cli.ruleExecution.details.requirement')}: ${
             result.requirement
-          } \nområde: ${result.area} \nsökväg:[${result.path}] \nomfattning:${JSON.stringify(
+          } \n${t('cli.ruleExecution.details.area')}: ${result.area} \n${t('cli.ruleExecution.details.path')}:[${result.path}] \n${t('cli.ruleExecution.details.range')}:${JSON.stringify(
             result.range,
             null,
             2,
-          )}\ndesignregel: ${result.helpUrl} `;
+          )}\n${t('cli.ruleExecution.details.designRule')}: ${result.helpUrl} `;
         };
         //Check specified option from yargs input
 
@@ -199,43 +227,61 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           let utf8EncodedContent = Buffer.from(logEntry, 'utf8');
           //Log to disc
           await writeFileAsync(logDiagnosticFilePath, utf8EncodedContent);
-          console.log(chalk.green(`Skriver diagnostiseringsinformation från RAP-LP till ${logDiagnosticFilePath}`));
+          console.log(chalk.green(t('cli.diagnosticOutput', { filePath: logDiagnosticFilePath })));
         } else {
           //STDOUT
           if (
             customDiagnostic.diagnosticInformation.executedUniqueRules != undefined &&
             customDiagnostic.diagnosticInformation.executedUniqueRules.length > 0
           ) {
-            console.log(chalk.green('<<<Verkställda och godkända regler - RAP-LP>>>\r'));
-            console.log(chalk.whiteBright('STATUS\tOMRÅDE') + ' / ' + chalk.whiteBright('IDENTIFIKATIONSNUMMER'));
+            console.log(chalk.green(t('cli.ruleExecution.approvedTitle') + '\r'));
+            console.log(
+              chalk.whiteBright(t('cli.ruleExecution.headers.status')) +
+                '\t' +
+                chalk.whiteBright(t('cli.ruleExecution.headers.area')) +
+                ' / ' +
+                chalk.whiteBright(t('cli.ruleExecution.headers.identifier')),
+            );
             customDiagnostic.diagnosticInformation.executedUniqueRules
               .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
-                console.log(chalk.bgGreen('OK') + '\t' + item.area + ' / ' + item.id);
+                console.log(chalk.bgGreen(t('common.ruleStatus.ok')) + '\t' + item.area + ' / ' + item.id);
               });
           }
           if (
             customDiagnostic.diagnosticInformation.executedUniqueRulesWithError != undefined &&
             customDiagnostic.diagnosticInformation.executedUniqueRulesWithError.length > 0
           ) {
-            console.log(chalk.green('<<<Verkställda och ej godkända regler - RAP-LP>>>\r'));
-            console.log(chalk.whiteBright('STATUS\tOMRÅDE') + ' / ' + chalk.whiteBright('IDENTIFIKATIONSNUMMER'));
+            console.log(chalk.green(t('cli.ruleExecution.rejectedTitle') + '\r'));
+            console.log(
+              chalk.whiteBright(t('cli.ruleExecution.headers.status')) +
+                '\t' +
+                chalk.whiteBright(t('cli.ruleExecution.headers.area')) +
+                ' / ' +
+                chalk.whiteBright(t('cli.ruleExecution.headers.identifier')),
+            );
             customDiagnostic.diagnosticInformation.executedUniqueRulesWithError
               .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
-                console.log(chalk.bgRed('EJ OK') + '\t' + item.area + ' / ' + item.id);
+                console.log(chalk.bgRed(t('common.ruleStatus.notOk')) + '\t' + item.area + ' / ' + item.id);
               });
           }
           if (
             customDiagnostic.diagnosticInformation.notApplicableRules != undefined &&
             customDiagnostic.diagnosticInformation.notApplicableRules.length > 0
           ) {
-            console.log(chalk.grey('<<<Ej tillämpade regler - RAP-LP>>>\r'));
-            console.log(chalk.whiteBright('STATUS\tOMRÅDE') + ' / ' + chalk.whiteBright('IDENTIFIKATIONSNUMMER'));
+            console.log(chalk.green(t('cli.ruleExecution.notApplicableTitle') + '\r'));
+            console.log(
+              chalk.whiteBright(t('cli.ruleExecution.headers.status')) +
+                '\t' +
+                chalk.whiteBright(t('cli.ruleExecution.headers.area')) +
+                ' / ' +
+                chalk.whiteBright(t('cli.ruleExecution.headers.identifier')),
+            );
             customDiagnostic.diagnosticInformation.notApplicableRules
               .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
               .forEach((item) => {
-                console.log(chalk.bgGrey('N/A') + '\t' + item.area + '/' + item.id);
+                console.log(chalk.bgGrey(t('common.ruleStatus.notApplicable')) + '\t' + item.area + '/' + item.id);
               });
           }
         }
@@ -245,15 +291,15 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           let utf8EncodedContent = Buffer.from(logEntry, 'utf8');
           if (argv.append) {
             await appendFileAsync(logErrorFilePath, utf8EncodedContent);
-            console.log(chalk.green(`Skriver inspektion/valideringsinformation från RAP-LP till ${logErrorFilePath}`));
+            console.log(chalk.green(t('cli.validationOutput', { filePath: logErrorFilePath })));
           } else {
             //Log to disc
             await writeFileAsync(logErrorFilePath, utf8EncodedContent);
-            console.log(chalk.green(`Skriver inspektion/valideringsinformation från RAP-LP till ${logErrorFilePath}`));
+            console.log(chalk.green(t('cli.validationOutput', { filePath: logErrorFilePath })));
           }
         } else {
           //Verbose error logging goes here with detailed result
-          console.log(chalk.whiteBright('\n<<Regelutfall RAP-LP>> \n'));
+          console.log(chalk.whiteBright(`\n\n${t('cli.ruleExecution.resultTitle')}`));
           result
             .sort((a, b) => {
               const idA = a.id ?? '';
@@ -266,25 +312,15 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         }
       } catch (spectralError: any) {
         logErrorToFile(spectralError); // Log stack
-        console.error(
-          chalk.red(
-            'Ett fel uppstod vid initiering/körning av regelklasser! Undersök felloggen för RAP-LP för mer information om felet',
-          ),
-        );
+        console.error(chalk.red(t('cli.ruleClassExecutionError')));
       }
     } catch (initializingError: any) {
       logErrorToFile(initializingError);
-      console.error(
-        chalk.red(
-          'Ett fel uppstod vid inläsning av moduler och skapande av regelklasser! Undersök felloggen för RAP-LP för mer information om felet',
-        ),
-      );
+      console.error(chalk.red(t('cli.ruleModuleLoadingError')));
     }
   } catch (error: any) {
     logErrorToFile(error);
-    console.error(
-      chalk.red('Ett oväntat fel uppstod! Undersök felloggen för RAP-LP för mer information om felet', error.message),
-    );
+    console.error(chalk.red(`${t('cli.unexpectedError')} ${t('cli.inspectLog')}`, error.message));
   }
   function logErrorToFile(error: any) {
     const errorMessage = `${new Date().toISOString()} - ${error.stack}\n`;
@@ -300,5 +336,4 @@ export async function execCLI<T extends CliArgs>(argv: T) {
       });
     }
   }
-  
 }

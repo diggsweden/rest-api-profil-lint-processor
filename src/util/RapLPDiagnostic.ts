@@ -5,6 +5,8 @@
 import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.js';
 import { RuleExecutionLog, RuleExecutionContext } from './RuleExecutionContext.js';
 import { buildRuleHelpUrl } from '../rulesets/util/rules-doc.config.js';
+import { translator } from '../i18n.js';
+import { translateRuleArea } from './ruleAreaTranslation.js';
 
 class RapLPDiagnostic {
   private _ruleSets: DiagnosticRuleinfoSet = {
@@ -29,6 +31,9 @@ class RapLPDiagnostic {
       rules,
     );
   }
+  private translate(key: string, options?: Record<string, unknown>): string {
+    return translator(this.context.locale)(key, options);
+  }
   private processRuleExecutionLog(
     log: RuleExecutionLog,
     spectralResults: RapLPCustomSpectralDiagnostic[],
@@ -49,17 +54,22 @@ class RapLPDiagnostic {
         const status = passed ? 'PASSED' : 'FAILED';
         const severityText = severity.toUpperCase();
         const message = rules[className]?.message ?? ''; // Lookup instance message
+        const translatedArea = translateRuleArea(
+          customProperties.område,
+          this.context.locale,
+        );
         // Check if rule is found in Spectral results
         const spectralResult = spectralResults.find((result) => {
-          return result.area === customProperties.område && result.id === customProperties.id;
+          return result.area === translatedArea && result.id === customProperties.id;
         });
+
         if (spectralResult) {
           //We have a match, that means there is an error
           if (executedRuleIdsWithError != undefined && executedRuleIdsWithError.size >= 0) {
             if (!executedRuleIdsWithError.has(customProperties.id)) {
               this._ruleSets.executedUniqueRulesWithError.push({
                 id: customProperties.id, // Store some more diagnostic info (Duplicate NOT OK)
-                area: customProperties.område,
+                area: translatedArea,
                 helpUrl: customProperties.id ? buildRuleHelpUrl(customProperties.id) : undefined,
                 requirement: message,
               });
@@ -73,7 +83,7 @@ class RapLPDiagnostic {
           if (!executedRuleIds.has(customProperties.id)) {
             this._ruleSets.executedUniqueRules.push({
               id: customProperties.id, // Store some more diagnostic info (Duplicate OK)
-              area: customProperties.område,
+              area: translatedArea,
               helpUrl: customProperties.id ? buildRuleHelpUrl(customProperties.id) : undefined,
               requirement: message,
             });
@@ -85,27 +95,45 @@ class RapLPDiagnostic {
     ruleIdsNotApplicable = new Set([...executedRuleIds, ...executedRuleIdsWithError]);
     for (const key of instanceCategoryMap.keys()) {
       const customProperties = instanceCategoryMap.get(key).customProperties;
+
+      const translatedArea = translateRuleArea(
+        customProperties.område,
+        this.context.locale,
+      );
+      
       const exists = this._ruleSets.notApplicableRules.some((rule) => {
-        return rule.id === customProperties.id && rule.area === customProperties.område;
+        return rule.id === customProperties.id && translatedArea === customProperties.område;
       });
       if (!ruleIdsNotApplicable.has(customProperties.id) && !exists) {
         // If not present, store the id and område in the not applicableRules
         this._ruleSets.notApplicableRules.push({
           id: customProperties.id,
-          area: customProperties.område,
+          area: translatedArea,
           requirement: rules[key]?.message ?? '',
           helpUrl: customProperties.id ? buildRuleHelpUrl(customProperties.id) : undefined,
         }); // Rules
       }
     }
   }
-  setFromPrecomputedReport(reports: { note: string; rules: { id: string; area: string; requirement?: string; helpUrl?: string; status: string }[] }[]): void {
+  setFromPrecomputedReport(
+    reports: {
+      note: string;
+      rules: { id: string; area: string; requirement?: string; helpUrl?: string; status: string }[];
+    }[],
+  ): void {
+    const okStatus = this.translate('common.ruleStatus.ok');
+    const notOkStatus = this.translate('common.ruleStatus.notOk');
     for (const report of reports) {
       for (const regel of report.rules) {
-        const ruleInfo = { id: regel.id, area: regel.area, requirement: regel.requirement ?? '', helpUrl: regel.helpUrl };
-        if (regel.status === 'OK') {
+        const ruleInfo = {
+          id: regel.id,
+          area: regel.area,
+          requirement: regel.requirement ?? '',
+          helpUrl: regel.helpUrl,
+        };
+        if (regel.status === okStatus) {
           this._ruleSets.executedUniqueRules.push(ruleInfo);
-        } else if (regel.status === 'EJ OK') {
+        } else if (regel.status === notOkStatus) {
           this._ruleSets.executedUniqueRulesWithError.push(ruleInfo);
         } else {
           this._ruleSets.notApplicableRules.push(ruleInfo);
@@ -121,10 +149,10 @@ class RapLPDiagnostic {
       allReports.push(
         this.populateDiagnosticRuleInformation(
           this.diagnosticInformation.executedUniqueRules,
-          'OK',
+          this.translate('common.ruleStatus.ok'),
           'N/A',
           'N/A',
-          'Godkända regler - RAP-LP',
+          this.translate('diagnosticReport.note.approved'),
         ),
       );
     }
@@ -135,10 +163,10 @@ class RapLPDiagnostic {
       allReports.push(
         this.populateDiagnosticRuleInformation(
           this.diagnosticInformation.executedUniqueRulesWithError,
-          'EJ OK',
+          this.translate('common.ruleStatus.notOk'),
           'N/A',
           'N/A',
-          'Ej Godkända regler - RAP-LP',
+          this.translate('diagnosticReport.note.notApproved'),
         ),
       );
     }
@@ -146,10 +174,10 @@ class RapLPDiagnostic {
       allReports.push(
         this.populateDiagnosticRuleInformation(
           this.diagnosticInformation.notApplicableRules,
+          this.translate('common.ruleStatus.notApplicable'),
           'N/A',
           'N/A',
-          'N/A',
-          'Ej tillämpade regler - RAP-LP',
+          this.translate('diagnosticReport.note.notApplicable'),
         ),
       );
     }

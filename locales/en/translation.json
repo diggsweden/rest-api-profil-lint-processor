@@ -1,0 +1,358 @@
+{
+  "common": {
+    "ruleStatus": {
+      "ok": "OK",
+      "notOk": "NOT OK",
+      "notApplicable": "N/A"
+    }
+  },
+  "cli": {
+    "missingFile": "Missing required argument for CLI mode: --file <path>",
+    "parseError": "Error parsing the API specification.",
+    "parserErrorHeader": "<<< Error parsing the API specification >>>",
+    "unexpectedError": "An unexpected error occurred!",
+    "inspectLog": "Inspect the RAP-LP error log for more information about the error.",
+    "apiModeForbiddenArgs": "In API mode, only --enableUrlValidation and --urlValidationConfigFile are allowed.",
+    "strictValidationIssues": "Strict validation reported issues:",
+    "parserErrorLogged": "Parser error logged to {{path}}",
+    "parserLogWriteFailed": "Failed to write parser error to the log file:",
+    "errorLabel": "Error",
+    "atLabel": "at",
+    "lineLabel": "Line",
+    "columnLabel": "Column",
+    "parseOrReadError": "An error occurred while reading/parsing the specification file. See the error log for more information.",
+    "ruleClassExecutionError": "An error occurred while initializing/running rule classes. Inspect the RAP-LP error log for more information about the error.",
+    "ruleModuleLoadingError": "An error occurred while loading modules and creating rule classes. Inspect the RAP-LP error log for more information about the error.",
+    "ruleExecution": {
+      "approvedTitle": "<<<Executed and approved rules - RAP-LP>>>",
+      "rejectedTitle": "<<<Executed and not approved rules - RAP-LP>>>",
+      "notApplicableTitle": "<<<Not applicable rules - RAP-LP>>>",
+      "resultTitle": "<<Rule results RAP-LP>>",
+      "headers": {
+        "status": "STATUS",
+        "area": "AREA",
+        "identifier": "IDENTIFIER"
+      },
+
+      "details": {
+        "severity": "severity",
+        "id": "id",
+        "requirement": "requirement",
+        "area": "area",
+        "path": "path",
+        "range": "range",
+        "designRule": "design rule"
+      }
+    },
+    "diagnosticOutput": "Writing diagnostic information from RAP-LP to {{filePath}}",
+    "validationOutput": "Writing inspection/validation information from RAP-LP to {{filePath}}",
+    "help": {
+      "mode": "Application mode",
+      "file": "[cli mode] Path to the YAML file",
+      "categories": "[cli mode] Rule categories separated by commas.",
+      "availableCategories": "Available categories:",
+      "logError": "Path to a RAP-LP error log file. If omitted, errors are written to stdout.",
+      "append": "Append error log information to an existing log file when specified.",
+      "logDiagnostic": "Path to RAP-LP diagnostic information. If specified, diagnostic information is written to the file as JSON.",
+      "dex": "Path to RAP-LP diagnostic information. If specified, diagnostic information is written to the file as Excel.",
+      "enableUrlValidation": "[api-mode] Enable validation of files by URL.",
+      "urlValidationConfigFile": "[api-mode] Path to the URL validation configuration file. Falls back to ./urlValidationConfig.cjs",
+      "strict": "Enable strict validation of semantics and structure.",
+      "lang": "Language for CLI output (sv or en)"
+    }
+  },
+  "api": {
+    "invalidRequest": "Invalid request",
+    "unexpectedError": "An unexpected error occurred",
+    "unknownError": "An unknown error occurred.",
+    "requiredField": "Required field missing: {{fields}}",
+    "fieldMustBeBase64": "Field \"{{field}}\" must be a base64 encoded string",
+    "failedGenerateReportTitle": "Failed to generate report",
+    "failedGenerateReportDetail": "Failed to generate report.",
+    "invalidUrlFormat": "Invalid URL format.",
+    "onlyHttpProtocols": "Only HTTPS and HTTP protocols are allowed.",
+    "hostNotAllowed": "The requested host is not allowed.",
+    "urlPatternNotAllowed": "The requested address did not meet the allowed URL pattern. Please contact your administrator if you believe this is a mistake.",
+    "urlFetchFailed": "The requested URL could not be retrieved. Redirects are not allowed.",
+    "urlReturnedHttp": "The requested URL returned HTTP {{status}}.",
+    "featureDisabledTitle": "Conflict",
+    "featureDisabledDetail": "This feature is currently disabled due to server configuration. Contact your administrator if you think this is a mistake.",
+    "specEvaluationFailed": "The specification could not be fully evaluated",
+    "specParseUnknown": "Unknown error while parsing the API specification",
+    "reportGenerationError": "Error generating report buffer:",
+    "ruleValidationFailed": "Rule validation failed",
+    "ruleValidationDetail": "The API specification violates one or more rules in the Swedish REST API Profile."
+  },
+  "validation": {
+    "invalidParsedOpenApi": "The parsed object does not appear to be a valid OpenAPI specification.",
+    "contentNotJsonOrYaml": "The content does not appear to be JSON or YAML.",
+    "parseJsonOrYamlFailed": "Could not parse the content as JSON or YAML.",
+    "externalRefsNotAllowed": "External $ref references are not allowed.",
+    "securityRulesViolation": "The API specification contains constructs that are not permitted by the security rules:",
+    "invalidOpenApiFile": "The file does not appear to be a valid OpenAPI specification (missing openapi/swagger or paths+info).",
+    "yamlParseFailed": "Could not parse the YAML content.",
+    "invalidInputVariant": "Invalid input variant for parsing.",
+    "unexpectedInvalidInput": "Unexpected error - invalid input when reading the specification.",
+    "strictValidationFailed": "Strict validation failed: {{message}}",
+    "spectralSemanticValidationFailed": "Spectral semantic validation failed (non-fatal):",
+    "invalidYamlSyntax": "Invalid YAML syntax.",
+    "invalidJsonSyntax": "Invalid JSON syntax.",
+    "ruleEngineInvalidStructure": "The specification appears to be missing or contain invalid OpenAPI fields required by some rules. Enable OAS3 validation for clearer error reporting.",
+    "xmlContentDetected": "The content appears to be XML, not JSON or YAML."
+  },
+  "diagnosticReport": {
+    "note": {
+      "approved": "Approved rules - RAP-LP",
+      "notApproved": "Not approved rules - RAP-LP",
+      "notApplicable": "Not applicable rules - RAP-LP"
+    }
+  },
+  "areas": {
+    "urlFormatAndNaming": "URL Format and naming",
+    "security": "Security",
+    "traceabilityAndCorrelation": "Traceability and correlation",
+    "versioning": "Versioning",
+    "filteringPaginationSearch": "Filtering, pagination and query parameters",
+    "apiRequest": "API Request",
+    "documentation": "Documentation",
+    "apiMessage": "API Message",
+    "prerequisites": "Prerequisites",
+    "dateTimeFormat": "Date and time format",
+    "resources": "Resources",
+    "maturity": "Maturity",
+    "errorHandling": "Error handling"
+  },
+  "ruleCategories": {
+    "ufn": "URL Format and naming",
+    "sak": "Security",
+    "spa": "Traceability and correlation",
+    "ver": "Versioning",
+    "fns": "Filtering, pagination and query parameters",
+    "arq": "API Request",
+    "dok": "Documentation",
+    "ame": "API Message",
+    "for": "Prerequisites",
+    "dot": "Date and time format",
+    "res": "Resources",
+    "mog": "Maturity",
+    "fel": "Error handling"
+  },
+  "ruleLoader": {
+    "noExportedTypes": "No exported types were found in the module for category {{category}}",
+    "importError": "Error importing rules for category {{category}}: {{error}}",
+    "instanceCreationError": "Error creating an instance of rule class {{ruleClass}}: {{error}}"
+  },
+  "rules": {
+    "ame01": {
+      "description": "This rule validates that requests and responses use application/json.",
+      "message": "The data model for a representation SHOULD be described using JSON according to the latest version, RFC 8259."
+    },
+    "ame02": {
+      "description": "This rule validates that the response is application/json.",
+      "message": "It SHOULD be assumed that all request headers use 'Accept' with the value 'application/json' by default."
+    },
+    "ame04": {
+      "description": "Field names in request and response bodies SHOULD use camelCase or snake_case notation."
+    },
+    "ame05": {
+      "description": "Naming within an API MUST be consistent; do not mix camelCase and snake_case."
+    },
+    "ame07": {
+      "description": "Field names SHOULD use alphanumeric characters."
+    },
+    "arq01": {
+      "description": "A request SHOULD be sent using UTF-8.",
+      "message": "A request SHOULD be sent using UTF-8."
+    },
+    "arq03": {
+      "description": "All APIs SHOULD support the following request headers: Accept, Date, Cache-Control, ETag, Connection, and Cookie."
+    },
+    "arq05": {
+      "message": "Payload data MUST NOT be used in HTTP headers.",
+      "nestedStructure": {
+        "description": "If a header uses nested structures, a request body is more appropriate."
+      },
+      "stringBinary": {
+        "description": "If a header is expected to contain data with unusual MIME types, this may indicate an unconventional use of headers."
+      },
+      "complexStructure": {
+        "description": "If a header is expected to contain complex data structures, such as JSON or XML, this may indicate an unconventional use of headers."
+      }
+    },
+    "dok01": {
+      "message": "As a general rule, the documentation and specification for an API SHOULD be publicly available online."
+    },
+    "dok03": {
+      "description": "The documentation for an API MUST include the following: About the API, Terms of Use, Data Model for Resource Representation, Authentication Requirements, Lifecycle Management and Versioning, Contact Information.",
+      "info": {
+        "message": "[The info object SHOULD contain title, version, description, termsOfService, contact, and license]"
+      },
+      "contact": {
+        "message": "(The contact object is missing)"
+      },
+      "contactName": {
+        "message": "(The contact object is missing name)"
+      },
+      "contactEmail": {
+        "message": "(The contact object is missing email)"
+      },
+      "contactUrl": {
+        "message": "(The contact object is missing URL)"
+      },
+      "license": {
+        "message": "(The license object is missing)"
+      },
+      "licenseUrl": {
+        "message": "(The license object is missing URL)"
+      },
+      "licenseName": {
+        "message": "(The license object is missing name)"
+      }
+    },
+    "dok06": {
+      "message": "The documentation SHOULD be available in both Swedish and English."
+    },
+    "dok07": {
+      "message": "The API documentation SHOULD contain general information about the API."
+    },
+    "dok08": {
+      "message": "The service level of an API MUST be clearly described in the documentation."
+    },
+    "dok09": {
+      "message": "Known issues and limitations MUST be clearly described in the documentation."
+    },
+    "dok11": {
+      "message": "The purpose and behavior of the API MUST be described as thoroughly and clearly as possible."
+    },
+    "dok15": {
+      "message": "Examples of the API request and response MUST be included in full in the API documentation."
+    },
+    "dok17": {
+      "description": " (The linter analysis tool (RAP-LP) for the National REST API Profile is designed for the latest major version of the OpenAPI Specification. Therefore, use this version for full coverage of the implemented rules.)",
+      "message": "The API specification SHOULD be documented using the latest version of the OpenAPI Specification."
+    },
+    "dok19": {
+      "message": "An API's resources and the possible operations that can be performed on each resource MUST be described as thoroughly and clearly as possible."
+    },
+    "dok20": {
+      "message": "Expected response codes and error codes MUST be fully documented."
+    },
+    "dok21": {
+      "message": "Authentication requirements MUST be specified in the specification."
+    },
+    "dot02": {
+      "description": "A valid example according to DOT.02 needs to be provided as an example.",
+      "message": "Date and time MUST be specified according to RFC 3339, which is based on ISO 8601."
+    },
+    "dot04": {
+      "description": "When using the RFC 3339 format, the time zone SHOULD be specified.",
+      "message": "The time zone SHOULD be represented using UTC format, where the time is specified as an offset from UTC (Coordinated Universal Time)."
+    },
+    "fel01": {
+      "message": "If HTTP response codes are insufficient, the API MUST (FEL.01) describe error details according to RFC 9457 using the following attributes: {{properties}}.",
+      "schemaMustBeObject": "Schema must be an object",
+      "missingProperty": "Missing property: {{property}}",
+      "missingRequiredField": "Missing required field: {{property}}"
+    },
+    "fel02": {
+      "message": "The schema according to RFC 9457 should contain the attributes described in FEL.01 and MUST (FEL.02) use the media type application/problem+json or application/problem+xml in the response."
+    },
+    "fns01": {
+      "message": "Parameter names MUST use a consistent naming convention within an API, for example either snake_case or camelCase."
+    },
+    "fns03": {
+      "message": "Query parameters MUST start with a letter."
+    },
+    "fns05": {
+      "message": "Query parameters SHOULD be optional."
+    },
+    "fns06": {
+      "message": "Query parameters SHOULD use URL-safe characters (A-Z, a-z, 0-9, '-', '.', '_', and '~'; see RFC 3986 for further details)."
+    },
+    "fns07": {
+      "message": "When pagination is used, the request MUST include the following parameters: 'limit' and either 'page' or 'offset'."
+    },
+    "fns08": {
+      "message": "'page' MUST always start with the value 1."
+    },
+    "fns09": {
+      "message": "The default value for limit SHOULD be 20."
+    },
+    "for02": {
+      "message": "A GET request MUST NOT accept a request body."
+    },
+    "mog01": {
+      "message": "All APIs MUST be designed to achieve level 2 of the Richardson Maturity Model. "
+    },
+    "mog02": {
+      "message": "All APIs SHOULD be designed to achieve level 3 of the Richardson Maturity Model. "
+    },
+    "res02": {
+      "message": "Primary keys or personally identifiable information (personal identity numbers, etc.) SHOULD NOT be exposed. "
+    },
+    "res06": {
+      "message": "Resources MUST follow the naming convention described for URLs; that is, resource names must use lowercase letters, contain only alphanumeric characters, and use hyphens to separate words. "
+    },
+    "sak01": {
+      "message": "All transport MUST use HTTPS with at least TLS 1.2."
+    },
+    "sak09": {
+      "description": "HTTP Basic is an inherently insecure way to send credentials to an API. They are placed in the URL using Base64 encoding, which can easily be decoded. Even when using a token, there are much better ways to send tokens to an API that are less likely to expose information.",
+      "message": "Basic or Digest authentication MUST NOT be used."
+    },
+    "sak10": {
+      "description": "By using HTTPS to encrypt communication between the client and server, Bearer Authentication can provide a high level of security. This makes it more difficult for attackers to intercept or modify the access token during transmission.",
+      "message": "The Authorization: Bearer header MUST be used for authentication/authorization."
+    },
+    "sak15": {
+      "message": "API keys MUST NOT be included in the URL or query string."
+    },
+    "sak16": {
+      "description": "API keys MUST be included in the HTTP header because query strings may be stored in unencrypted form.",
+      "message": "API keys MUST be included in the HTTP header because query strings may be stored in unencrypted form by the client or server, such as by the browser or server application."
+    },
+    "sak18": {
+      "description": "OAuth is an authorization protocol that securely delegates access to another resource.",
+      "message": "OAuth version 2.0 or later SHOULD be used for authorization."
+    },
+    "sak29": {
+      "message": "The specified Content-Type header SHOULD (SAK.29) be respected. Requests containing unexpected or missing Content-Type headers should be rejected with HTTP status 415 Unsupported Media Type."
+    },
+    "spa02": {
+      "message": "API producers MUST accept the traceparent HTTP header in incoming requests and propagate the trace information according to W3C Trace Context when making subsequent requests to other systems."
+    },
+    "spa04": {
+      "message": "The API producer SHOULD include the traceparent HTTP header in an API response."
+    },
+    "spa07": {
+      "message": "Alternative identifiers, such as x-request-id, may be used as a complement for internal needs, but MUST NOT replace traceparent when tracing API requests between systems and organizations."
+    },
+    "ufn01": {
+      "description": "{protocol}://{domain-name}/{api}/{version}/{resource}/{identifier}?{parameters}",
+      "message": "An API URL SHOULD follow the naming convention below: {{description}}"
+    },
+    "ufn02": {
+      "message": "All APIs MUST be exposed over HTTPS on port 443."
+    },
+    "ufn05": {
+      "message": "A URL SHOULD NOT be longer than 2048 characters.",
+      "description": "A URL SHOULD NOT be longer than 2048 characters."
+    },
+    "ufn07": {
+      "message": "The URL MUST use the following characters: a-z, 0-9, \"-\", \".\", and \"~\"; see RFC 3986 for further details (applies to the URL elements Scheme, Authority, and Path, as well as the API elements protocol, domain name, API, version, resource, and identifier)."
+    },
+    "ufn08": {
+      "message": "Only hyphens '-' MUST be used to separate words to improve readability and make it easier for search engines to index each word individually (applies to the URL elements Authority and Path. More specifically, the API elements domain name, API, resource, and identifier)."
+    },
+    "ufn09": {
+      "message": "Spaces ' ' and underscores '_' MUST NOT be used in URLs, except in the parameter part (this applies to the URL elements Scheme, Authority and Path, as well as the API elements protocol, domain name, API, version, resource and identifier).",
+      "description": "Spaces ' ' and underscores '_' MUST NOT be used in URLs, except in the parameter part."
+    },
+    "ver05": {
+      "message": "The version SHOULD be specified in the URL using the format v[x], where 'v' is an abbreviation for version and x represents one and only one number (0-n) for the major version."
+    },
+    "ver06": {
+      "message": "Information about an API MUST be made available through the api-info resource at the root of the API."
+    }
+  }
+}
