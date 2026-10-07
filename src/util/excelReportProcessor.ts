@@ -143,7 +143,7 @@ export class ExcelReportProcessor {
     if (fs.existsSync(this.config.outputFilePath) && !isFileAccessible(this.config.outputFilePath)) {
       const timestamp = new Date().toISOString().replace(/[^\w]/g, '-');
       const { dir, name, ext } = path.parse(this.config.outputFilePath);
-      this.config.outputFilePath = path.join(dir, `${name}_${timestamp}${ext || '.xlsx'}`);
+      this.config.outputFilePath = path.format({ dir, name: `${name}_${timestamp}`, ext: ext || '.xlsx' });
     }
 
     try {
