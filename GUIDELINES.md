@@ -610,7 +610,11 @@ $.servers.[url]
 ```
 
 **Förklaring:**
-Regeln söker efter 1-n förekomster av fältet `Url` under Serverobjektet, samt förutsätter att dessa exponeras via HTTPS. Om en port är definierad, så kontrolleras att den är 443.
+Regeln kontrollerar fältet `url` under varje Server Object och verifierar att API exponeras via HTTPS.
+
+Om en port anges explicit i URL SKALL den vara 443. Om ingen port anges används standardporten för HTTPS, vilket är port 443.
+
+Kontrollen av protokollet är inte case-sensitive. Validering av tillåtna tecken och casing hanteras av UFN.07.
 
 **Exempel:**
 
