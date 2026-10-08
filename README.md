@@ -29,9 +29,7 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 <summary><strong>Installationsguide</strong></summary>
 
 - [Installationsguide](#installationsguide)
-
   - [Installera via npm](#installera-via-npm)
-
     - [Installera globalt med NPM](#installera-globalt-med-npm)
 
     - [Installera lokalt som npm run script](#installera-lokalt-som-npm-run-script)
@@ -52,7 +50,6 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 <summary><strong>Introduktion</strong></summary>
 
 - [Introduktion](#introduktion)
-
   - [Regelfiltrering](#regelfiltrering)
 
   - [Strikt läge (OAS3 Validering)](#strikt-läge-oas3-validering)
@@ -63,7 +60,6 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 <summary><strong>CLI-läge</strong></summary>
 
 - [CLI-läge](#cli-läge)
-
   - [Flaggor för CLI-läge](#flaggor-för-cli-läge)
 
   - [Loggning i CLI-läge](#loggning-i-cli-läge)
@@ -76,7 +72,6 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 <summary><strong>API-läge</strong></summary>
 
 - [API-läge](#api-läge)
-
   - [Flaggor för API-läge](#flaggor-för-api-läge)
 
   - [Endpoints för API-läge](#endpoints-för-api-läge)
@@ -93,7 +88,6 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
 <summary><strong>Mer information</strong></summary>
 
 - [Mer information](#mer-information)
-
   - [Versioner](#versioner)
 
   - [Riktlinjer och förklaringar](#riktlinjer-och-förklaringar)
@@ -101,13 +95,11 @@ RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssn
   - [Begränsningar](#begränsningar)
 
   - [Exempel på regelutfall](#exempel-på-regelutfall)
-
     - [Förklaring av översikt för regelutfall](#förklaring-av-översikt-för-regelutfall)
 
     - [Förklaring av detaljering för regelutfall](#förklaring-av-detaljering-för-regelutfall)
 
   - [FAQ](#faq)
-
     - [Hur skapar jag ett GitHub Personal Access Token (PAT)?](#hur-skapar-jag-ett-github-personal-access-token-pat)
 
     - [Skrivåtkomst till mount från container](#skrivåtkomst-till-mount-från-container)
@@ -372,9 +364,11 @@ raplp -f openapi.yaml -d logDiagnostic.log
 
 För att spara information om regelutfall från diagnostiseringen till en avstämningsfil i Excel, lägg till `--dex`.<br>
 Om en specifik sökväg till avstämningsfilen ska anges, kan denna läggas till.<br>
-Om ingen sökväg anges, genererar verktyget automatiskt en ny avstämningsfil i den katalog där det körs.
+Om ingen sökväg anges, genererar verktyget automatiskt en ny avstämningsfil i den katalog där det körs.<br>
+Om en sökväg anges till en avstämningsfil som redan finns, uppdateras endast status för de regler som RAP-LP har verkställt. Kommentarer och övriga ändringar i filen bevaras.<br>
+Regler med status `Pågående` behåller sin status tills valideringen av regeln ger `OK`, då ersätts statusen och verktyget informerar om vilka regler som berörts.
 
-[Avstämningsfilen](document/Avstaemning_REST_API_profil_v_1_2_0_0.xlsx) i Excel har ett fast format, om en egen version av filen ska användas måste den utpekade resursen hämtas med en kompatibel version av REST API-profilen.
+[Avstämningsfilen](document/Avstaemning_REST_API_profil_v_2_0_0_0.xlsx) i Excel har ett fast format, om en egen version av filen ska användas måste den utpekade resursen hämtas med en kompatibel version av REST API-profilen.
 
 **Exempel utan sökväg till avstämningsfil i Excel**
 

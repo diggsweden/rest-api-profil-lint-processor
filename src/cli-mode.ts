@@ -148,10 +148,67 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.rules,enabledRulesAndCategorys.instanceCategoryMap);
         const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
         if (argv.dex != null) {
-          const reportHandler = new ExcelReportProcessor({
-            outputFilePath: argv.dex,
-          });
-          reportHandler.generateReportDocument(customDiagnostic);
+          try {
+            const reportHandler = new ExcelReportProcessor({
+              outputFilePath: argv.dex,
+            });
+            reportHandler.generateReportDocument(customDiagnostic);
+            if (reportHandler.lockedFilePath) {
+              console.log(
+                chalk.yellow(
+                  `Avstämningsfilen ${reportHandler.lockedFilePath} är låst (öppen i Excel?), skriver till ${reportHandler.outputFilePath} i stället`,
+                ),
+              );
+            } else if (reportHandler.isBasedOnExistingFile) {
+              console.log(
+                chalk.green(
+                  `Uppdaterar avstämningsfil ${reportHandler.outputFilePath}, kommentarer och övriga ändringar bevaras`,
+                ),
+              );
+            } else {
+              console.log(chalk.green(`Skriver avstämningsfil i Excel-format från RAP-LP till ${reportHandler.outputFilePath}`));
+            }
+            if (reportHandler.isBasedOnExistingFile) {
+              const { templateProfileVersion, fileProfileVersion } = reportHandler;
+              if (!fileProfileVersion) {
+                console.log(
+                  chalk.yellow(
+                    `Kunde inte avgöra vilken version av REST API-profilen avstämningsfilen avser, RAP-LP använder version ${templateProfileVersion ?? 'okänd'}`,
+                  ),
+                );
+              } else if (templateProfileVersion && fileProfileVersion !== templateProfileVersion) {
+                console.log(
+                  chalk.yellow(
+                    `Avstämningsfilen avser version ${fileProfileVersion} av REST API-profilen men RAP-LP använder version ${templateProfileVersion}, regler kan saknas eller ha ändrats`,
+                  ),
+                );
+              }
+              if (reportHandler.missingRules.length > 0) {
+                console.log(
+                  chalk.yellow(
+                    `Följande regler har verkställts av RAP-LP men saknas i avstämningsfilen, deras utfall har inte skrivits: ${reportHandler.missingRules.join(', ')}`,
+                  ),
+                );
+              }
+            }
+            if (reportHandler.keptInProgressRules.length > 0) {
+              console.log(
+                chalk.yellow(
+                  `Status "Pågående" behålls för regler som inte validerats OK: ${reportHandler.keptInProgressRules.join(', ')}`,
+                ),
+              );
+            }
+            if (reportHandler.resolvedInProgressRules.length > 0) {
+              console.log(
+                chalk.green(
+                  `Status "Pågående" ersatt med OK för regler som nu validerats OK: ${reportHandler.resolvedInProgressRules.join(', ')}`,
+                ),
+              );
+            }
+          } catch (excelError: any) {
+            logErrorToFile(excelError);
+            console.error(chalk.red(`Misslyckades att skriva avstämningsfil i Excel-format: ${excelError.message}`));
+          }
         }
 
         /**
