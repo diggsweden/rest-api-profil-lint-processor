@@ -233,7 +233,6 @@ $
 Regeln förutsätter att det finns en förekomst av minst ett av objekten `info.termsOfService`, `info.x-sla` eller `externalDocs` med följande strukturer:
 
 - info
-
   - termsOfService
   - x-sla
     - availability
@@ -575,8 +574,7 @@ _Path-parametrar undantas från regeln._
 
 ### ID: UFN.01
 
-**Krav:** En URL för ett API BÖR
-följa namnstandarden nedan:
+**Krav:** En URL för ett API BÖR följa namnstandarden:
 `{protokoll}://{domännamn}/{api}/{version}/{resurs}/{identifierare}?{parametrar}`
 
 **Typ:** BÖR
