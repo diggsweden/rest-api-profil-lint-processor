@@ -66,7 +66,7 @@ export class Ufn02 extends BaseRuleset {
   then = [
     {
       function: (targetVal): any => {
-        const protocollPattern = /^https:/;
+        const protocollPattern = /^https:/i;
         const portPattern = /(?<port>:[0-9]+)\//;
         const port = targetVal.match(portPattern);
         const result: any = [];
