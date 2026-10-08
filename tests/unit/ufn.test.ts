@@ -544,18 +544,74 @@ testRule('Ufn01', [
     errors: [],
   },
   {
-  name: 'giltigt testfall - server variables environment och version',
-  document: {
-    openapi: '3.1.0',
-    info: { version: '1.0' },
-    paths: { '/exampletest': {} },
-    servers: [
-      {
-        url: 'https://{environment}.authority.se:443/demand/{version}',
-      },
-    ],
+    name: 'giltigt testfall - server variables environment och version',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: { '/exampletest': {} },
+      servers: [
+        {
+          url: 'https://{environment}.example.com:9443/myapi/{version}',
+          variables: {
+            environment: { default: 'test' },
+            version: { default: 'v1' },
+          },
+        },
+      ],
+    },
+    errors: [],
   },
-  errors: [],
+  {
+    name: 'giltigt testfall - valfritt variabelnamn för version',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: { '/exampletest': {} },
+      servers: [
+        {
+          url: 'https://api.authority.se/demand/{majorVersion}/',
+          variables: {
+            majorVersion: { default: 'v2' },
+          },
+        },
+      ],
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - server variables för api och port',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: { '/exampletest': {} },
+      servers: [
+        {
+          url: 'https://api.authority.se:{port}/{api}/v10',
+          variables: {
+            port: { default: '443' },
+            api: { default: 'demand' },
+          },
+        },
+      ],
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - oanvända server variables ignoreras',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: { '/exampletest': {} },
+      servers: [
+        {
+          url: 'https://api.authority.se/demand/v1',
+          variables: {
+            unused: { enum: ['a'] },
+          },
+        },
+      ],
+    },
+    errors: [],
   },
   {
     name: 'ogiltigt testfall - fel format på protokoll',
@@ -670,14 +726,14 @@ testRule('Ufn01', [
     ],
   },
   {
-    name: 'ogiltigt testfall - fel server variable för version',
+    name: 'ogiltigt testfall - variables saknas',
     document: {
       openapi: '3.1.0',
       info: { version: '1.0' },
-      paths: { '/exampletest232323': {} },
+      paths: { '/exampletest': {} },
       servers: [
         {
-          url: 'https://{environment}.authority.se:443/demand/{majorVersion}',
+          url: 'https://{environment}.example.com:9443/myapi/{version}',
         },
       ],
     },
@@ -688,5 +744,99 @@ testRule('Ufn01', [
         severity: DiagnosticSeverity.Warning,
       },
     ],
-  },  
+  },
+  {
+    name: 'ogiltigt testfall - variables.version saknas',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: { '/exampletest': {} },
+      servers: [
+        {
+          url: 'https://{environment}.example.com:9443/myapi/{version}',
+          variables: {
+            environment: { default: 'test' },
+          },
+        },
+      ],
+    },
+    errors: [
+      {
+        message:
+          'En URL för ett API BÖR följa namnstandarden nedan: {protokoll}://{domännamn}/{api}/{version}/{resurs}/{identifierare}?{parametrar}',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - server variable saknar default',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: { '/exampletest': {} },
+      servers: [
+        {
+          url: 'https://{environment}.example.com:9443/myapi/{version}',
+          variables: {
+            environment: { enum: ['test', 'prod'] },
+            version: { default: 'v1' },
+          },
+        },
+      ],
+    },
+    errors: [
+      {
+        message:
+          'En URL för ett API BÖR följa namnstandarden nedan: {protokoll}://{domännamn}/{api}/{version}/{resurs}/{identifierare}?{parametrar}',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - default för version följer inte major-version',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: { '/exampletest': {} },
+      servers: [
+        {
+          url: 'https://{environment}.example.com:9443/myapi/{version}',
+          variables: {
+            environment: { default: 'test' },
+            version: { default: '1.0' },
+          },
+        },
+      ],
+    },
+    errors: [
+      {
+        message:
+          'En URL för ett API BÖR följa namnstandarden nedan: {protokoll}://{domännamn}/{api}/{version}/{resurs}/{identifierare}?{parametrar}',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - default för valfritt variabelnamn på versionens plats',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: { '/exampletest': {} },
+      servers: [
+        {
+          url: 'https://api.authority.se/demand/{majorVersion}',
+          variables: {
+            majorVersion: { default: '2' },
+          },
+        },
+      ],
+    },
+    errors: [
+      {
+        message:
+          'En URL för ett API BÖR följa namnstandarden nedan: {protokoll}://{domännamn}/{api}/{version}/{resurs}/{identifierare}?{parametrar}',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
 ]);
