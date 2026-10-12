@@ -71,6 +71,7 @@
     "failedGenerateReportDetail": "Failed to generate report.",
     "invalidUrlFormat": "Invalid URL format.",
     "onlyHttpProtocols": "Only HTTPS and HTTP protocols are allowed.",
+    "semanticValidationDetail": "The specification contains structural or semantic errors",
     "hostNotAllowed": "The requested host is not allowed.",
     "urlPatternNotAllowed": "The requested address did not meet the allowed URL pattern. Please contact your administrator if you believe this is a mistake.",
     "urlFetchFailed": "The requested URL could not be retrieved. Redirects are not allowed.",
