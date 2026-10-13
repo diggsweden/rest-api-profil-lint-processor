@@ -155,35 +155,32 @@ export class Sak11 extends BaseRuleset {
   message =
     'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.';
 
-  given = [
-    '$.components.securitySchemes[?(@.type=="oauth2")]',
-    '$.components.securitySchemes[?(@.type=="oauth2")].flows.authorizationCode',
-    '$.components.securitySchemes[?(@.type=="oauth2")].flows.password',
-  ];
+  given = ['$.components.securitySchemes[?(@.type=="oauth2")]'];
 
   then = [
     {
       function: (targetVal: any, _opts: string, context: any) => {
         const result: any[] = [];
+        const flows = targetVal.flows;
 
-        if (targetVal?.type === 'oauth2') {
-          if (!targetVal.flows || Object.keys(targetVal.flows).length === 0) {
-            result.push({
-              message: 'OAuth 2.0 security scheme SKALL ha minst ett flow definierat.',
-              severity: this.severity,
-              path: [...context.path, 'flows'],
-            });
-          }
-
+        if (!flows) {
+          result.push({
+            message:
+              'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.',
+            severity: this.severity,
+            path: [...context.path, 'flows'],
+          });
           return result;
         }
 
-        if (!targetVal?.refreshUrl) {
+        if (!flows.authorizationCode?.refreshUrl && !flows.password?.refreshUrl) {
           result.push({
-            message: this.message,
+            message:
+              'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.',
             severity: this.severity,
-            path: [...context.path, 'refreshUrl'],
+            path: [...context.path, 'flows'],
           });
+          return result;
         }
 
         return result;
