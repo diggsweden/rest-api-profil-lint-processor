@@ -115,14 +115,14 @@ $
 
 **Förklaring:**
 
-Regeln förutsätter att det finns en förekomst av objektet `externalDocs` med underliggande struktur:
+Regeln förutsätter att fältet `externalDocs` förekommer i specifikationen med följande underliggande struktur:
 
 - description
 - url.
 
 **Exempel:**
 
-![alt text](images/dok1.png)
+![Exempelbild som visar en API-specifikation där fältet externalDocs finns, under fältet finns beskrivning och webbadress till extern dokumentation. Hela fältet `externalDocs` är markerat med en röd rektangel.](images/dok1.png)
 
 ---
 
@@ -158,7 +158,7 @@ Regeln förutsätter att det finns en förekomst av objektet `info` med underlig
 
 **Exempel:**
 
-![alt text](images/dok3.png)
+![Exempelbild som visar en del av en API-specifikation. Den innehåller samtliga objekt och den struktur som regel DOK.03 beskriver, exemplet är inringat i rött](images/dok3.png)
 
 ---
 
@@ -214,7 +214,7 @@ Regeln förutsätter att det finns en förekomst av objektet `info` med underlig
 
 **Exempel:**
 
-![alt text](images/dok7.png)
+![Exempelbild som visar en del av en API-specifikation som följer regel DOK.07. Objekten `info` och `description` är inringade i rött.](images/dok7.png)
 
 ---
 
@@ -316,18 +316,18 @@ $.paths[*][?(@ != "get")].requestBody.content.application/json
 ```
 
 **Förklaring:**
-Regeln förutsätter att det finns en förekomst av fältet (elementet) `examples` i specifikationen under de angivna nivåerna.\
- Regeln förutsätter också att det finns en förekomst av fältet(elementet) examples i specifikationen på de angivna nivåerna under fältet(elementet) requestBody.
+Regeln förutsätter att det finns en förekomst av fältet `examples` i specifikationen under de angivna nivåerna.
+
+Den förutsätter också att det finns en förekomst av fältet `examples` i specifikationen på de angivna nivåerna under fältet `requestBody`.
 
 **Exempel:**
 
 ![alt text](images/dok15.png)
 
-I exemplet ovan, så exemplifieras regeln med en POST operation, där regeln undersöker om det finns en förekomst av fältet `examples`. Om man refererar en schema definition med hjälp av nyckelordet `$ref`, så ignoreras övriga element på aktuell nivå. Detta innebär att om det finns ett examples fält på schema nivå så ”overridar” den ett ev. ”inline” examples fält.
+Det första exemplet används ett POST-response för att illustrera hur regeln undersöker om fältet `examples` förekommer.
 
----
+Om en schemadefinition refereras med nyckelordet `$ref`, ignoreras övriga fält på den aktuella nivån. Det innebär att om fältet `examples` förekommer i den refererade schemadefinitionen, har det företräde framför ett eventuellt `examples`-fält som anges inline.
 
-**Exempel:**
 
 ![alt text](images/dok15_2.png)
 
