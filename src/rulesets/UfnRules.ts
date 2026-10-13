@@ -4,16 +4,6 @@
 
 import { Ufn09Base, Ufn05Base } from './rulesetUtil.js';
 import { BaseRuleset } from './BaseRuleset.js';
-import {
-  enumeration,
-  truthy,
-  falsy,
-  undefined as undefinedFunc,
-  pattern,
-  schema,
-  length,
-  alphabetical,
-} from '@stoplight/spectral-functions';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
@@ -26,14 +16,39 @@ export class Ufn01 extends BaseRuleset {
     id: 'UFN.01',
   };
   description = '{protokoll}://{domännamn}/{api}/{version}/{resurs}/{identifierare}?{parametrar}';
-  given = '$.servers.[url]';
+  given = '$.servers[*]';
   message = 'En URL för ett API BÖR följa namnstandarden nedan: ' + this.description;
   then = [
     {
-      function: pattern,
-      functionOptions: {
-        match:
-          '^(?<protocol>^[^/]*://)+(?<host>(?<=://)[^/]+/)+(?<api>(?<=/)[^/]+?/)(?<version>v[0-9]+|\\{version\\})(?<end>\\/$|$)',
+      function: (server: any): any => {
+        const url = server?.url;
+        if (typeof url !== 'string') {
+          return [];
+        }
+        const variables = server.variables ?? {};
+        let resolvable = true;
+        const resolvedUrl = url.replace(/\{([^}]+)\}/g, (_placeholder: string, name: string) => {
+          const variable = Object.prototype.hasOwnProperty.call(variables, name) ? variables[name] : undefined;
+          if (
+            variable === null ||
+            typeof variable !== 'object' ||
+            !Object.prototype.hasOwnProperty.call(variable, 'default')
+          ) {
+            resolvable = false;
+            return '';
+          }
+          return String(variable.default);
+        });
+        const baseUrlPattern = /^[a-z][a-z0-9+.-]*:\/\/[^/]+\/[^/]+\/v[0-9]+\/?$/i;
+        if (resolvable && baseUrlPattern.test(resolvedUrl)) {
+          return [];
+        }
+        return [
+          {
+            message: this.message,
+            severity: this.severity,
+          },
+        ];
       },
     },
     {
