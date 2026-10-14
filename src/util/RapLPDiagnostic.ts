@@ -102,7 +102,7 @@ class RapLPDiagnostic {
       );
       
       const exists = this._ruleSets.notApplicableRules.some((rule) => {
-        return rule.id === customProperties.id && translatedArea === customProperties.område;
+        return rule.id === customProperties.id;
       });
       if (!ruleIdsNotApplicable.has(customProperties.id) && !exists) {
         // If not present, store the id and område in the not applicableRules
