@@ -182,5 +182,75 @@ describe('i18n', () => {
 
       expect(result.en.vary).toContain('Accept-Language');
     });
+
+    it('does not duplicate DOK.15 in localized API reports', () => {
+      const apiMode = pathToFileURL(path.resolve('dist/api-mode.js')).href;
+
+      const script = `
+    import { startServer } from ${JSON.stringify(apiMode)};
+    import { readFileSync } from 'node:fs';
+
+    const server = await startServer({});
+    const port = server.address().port;
+    //Simulerar en openapi-spec som är minimal och som inte har några operationer som matchar given
+    const spec = [
+      'openapi: 3.0.3',
+      'info:',
+      '  title: DOK.15 regression test',
+      '  version: 1.0.0',
+      'paths: {}',
+      ].join('\\n');
+    const encodedSpec = Buffer.from(spec).toString('base64');
+
+    const call = async (language) => {
+      const response = await fetch(
+        'http://127.0.0.1:' + port + '/api/v1/validation/validatespec',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept-Language': language,
+          },
+          body: JSON.stringify({ spec: encodedSpec, strict: false }),
+        },
+      );
+
+      const body = await response.json();
+      const rules = body.payload?.report?.flatMap((group) => group.rules) ?? [];
+
+      return {
+        dok15: rules.filter((rule) => rule.id === 'DOK.15'),
+        total: rules.length,
+      };
+    };
+
+    try {
+      console.log(JSON.stringify({
+        sv: await call('sv'),
+        en: await call('en'),
+      }));
+    } finally {
+      server.close();
+    }
+  `;
+
+      const output = execFileSync(process.execPath, ['--input-type=module', '--eval', script], {
+        encoding: 'utf8',
+        env: { ...process.env, RAP_LP_PORT: '0' },
+      });
+
+      const lines = output.trim().split(/\r?\n/);
+      const result = JSON.parse(lines[lines.length - 1]);
+
+      expect(result.sv.dok15).toHaveLength(1);
+      expect(result.en.dok15).toHaveLength(1);
+
+      expect(result.en.total).toBe(result.sv.total);
+
+      expect(result.sv.dok15[0].area).toBe('Dokumentation');
+      expect(result.en.dok15[0].area).toBe('Documentation');
+      expect(result.sv.dok15[0].status).toBe('N/A');
+      expect(result.en.dok15[0].status).toBe('N/A');
+    });
   });
 });
