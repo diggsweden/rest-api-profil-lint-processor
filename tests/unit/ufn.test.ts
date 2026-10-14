@@ -307,7 +307,18 @@ testRule('Ufn02', [
     document: {
       openapi: '3.1.0',
       info: { version: '1.0' },
-      paths: { 'https://www.example.com': {} },
+      paths: {},
+      servers: [{ url: 'https://api.example.com/' }],
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - HTTPS med versaler och port 443',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {},
+      servers: [{ url: 'HTTPS://api.example.se:443' }],
     },
     errors: [],
   },
@@ -318,6 +329,22 @@ testRule('Ufn02', [
       info: { version: '1.0' },
       paths: { '/': {} },
       servers: [{ url: 'http://api.example.com/' }],
+    },
+    errors: [
+      {
+        message: 'Alla API:er SKALL exponeras via HTTPS på port 443.',
+        path: ['servers', '0', 'url'],
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - HTTPS på annan port än 443',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {},
+      servers: [{ url: 'https://api.example.com:8443/' }],
     },
     errors: [
       {
