@@ -6,6 +6,47 @@ import { RuleCategoryError } from './RapLPBaseApiErrorHandling.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
 import { RuleModuleName } from '../rulesets/util/ruleModules.js';
 
+import ameRules from '../rulesets/AmeRules.js';
+import dokRules from '../rulesets/DokRules.js';
+import dotRules from '../rulesets/DotRules.js';
+import arqRules from '../rulesets/ArqRules.js';
+import felRules from '../rulesets/FelRules.js';
+import fnsRules from '../rulesets/FnsRules.js';
+import forRules from '../rulesets/ForRules.js';
+import mogRules from '../rulesets/MogRules.js';
+import resRules from '../rulesets/ResRules.js';
+import sakRules from '../rulesets/SakRules.js';
+import spaRules from '../rulesets/SpaRules.js';
+import verRules from '../rulesets/VerRules.js';
+import ufnRules from '../rulesets/UfnRules.js';
+
+type RuleClass = {
+  customProperties: {
+    område: string;
+    id: string;
+  };
+};
+
+function groupRulesByArea(
+  rules: RuleClass[],
+): Record<string, string[]> {
+  const result: Record<string, string[]> = {};
+
+  for (const rule of rules) {
+    const { område, id } = rule.customProperties;
+    const ids = (result[område] ??= []);
+
+    if (!ids.includes(id)) {
+      ids.push(id);
+    }
+  }
+
+  for (const ids of Object.values(result)) {
+    ids.sort();
+  }
+
+  return result;
+}
 /**
  *  Add other rule modules when applying new rules to RAP-LP
  *  Modules are loaded as default ones when no explicit category is choosed from the command line
@@ -27,34 +68,22 @@ const ruleModules = [
 ];
 
 /** Implemented rules */
-export const implementedRulesByArea = {
-  Dokumentation: [
-    'DOK.01',
-    'DOK.03',
-    'DOK.06',
-    'DOK.07',
-    'DOK.08',
-    'DOK.09',
-    'DOK.11',
-    'DOK.15',
-    'DOK.17',
-    'DOK.19',
-    'DOK.20',
-    'DOK.21',
-  ],
-  'Datum- och tidsformat': ['DOT.02', 'DOT.04'],
-  Resurser: ['RES.02', 'RES.06'],
-  'URL Format och namngivning': ['UFN.01', 'UFN.02', 'UFN.05', 'UFN.07', 'UFN.08', 'UFN.09'],
-  Mognad: ['MOG.01', 'MOG.02'],
-  'API Message': ['AME.01', 'AME.02', 'AME.04', 'AME.05', 'AME.07'],
-  'API Request': ['ARQ.01', 'ARQ.03', 'ARQ.05'],
-  Felhantering: ['FEL.01', 'FEL.02'],
-  Versionhantering: ['VER.05', 'VER.06'],
-  'Spårbarhet och korrelation': ['SPA.02', 'SPA.04', 'SPA.07'],
-  'Filtrering, paginering och sökparametrar': ['FNS.01', 'FNS.03', 'FNS.05', 'FNS.06', 'FNS.07', 'FNS.08', 'FNS.09'],
-  Säkerhet: ['SAK.01', 'SAK.09', 'SAK.10', 'SAK.15', 'SAK.16', 'SAK.18'],
-  Förutsättningar: ['FOR.02'],
-};
+const implementedRulesByArea = groupRulesByArea([
+  ...Object.values(dokRules),
+  ...Object.values(ameRules),
+  ...Object.values(dotRules),
+  ...Object.values(dokRules),
+  ...Object.values(arqRules),
+  ...Object.values(felRules),
+  ...Object.values(fnsRules),
+  ...Object.values(forRules),
+  ...Object.values(mogRules),
+  ...Object.values(resRules),
+  ...Object.values(sakRules),
+  ...Object.values(spaRules),
+  ...Object.values(ufnRules),
+  ...Object.values(verRules),
+]);
 
 /** Not implemented rules */
 export const additionalRulesByArea = {
