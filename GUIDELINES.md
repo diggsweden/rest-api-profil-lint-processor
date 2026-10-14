@@ -1488,13 +1488,13 @@ I exemplet ovan så kommer regeln att ge ett positivt utfall eftersom det finns 
 **Förklaring:**
 Regeln förutsätter att API:et använder OAuth 2.0 för autentisering eller auktorisering.
 
-För OAuth 2.0 ska minst ett flow vara definierat samt att `authorizationCode`- och `password`-flow SKALL ha attributet refreshUrl definierat. Attributet används för att dokumentera den endpoint där en uppdateringstoken kan användas för att erhålla en ny åtkomsttoken utan att användaren behöver autentisera sig på nytt.
+För OAuth 2.0 SKALL minst ett flow av typen `authorizationCode`- eller `password` vara definierat. Det definierade flödet SKALL ha attributet refreshUrl definierat. Attributet används för att dokumentera den endpoint där en uppdateringstoken kan användas för att erhålla en ny åtkomsttoken utan att användaren behöver autentisera sig på nytt.
 
 Regeln kontrollerar endast att refreshUrl är definierat i API-beskrivningen. Regeln kan inte kontrollera om uppdateringstoken faktiskt utfärdas eller om endpointen fungerar.
 
 **Exempel:**
 
-![alt text](images/sak11.png)
+![Exempelbild som visar en del av en API-specifikation med ett `authorizationCode`-flow innhållande attributet refreshUrl](images/sak11.png)
 
 Bilden visar ett OAuth 2.0-security scheme med ett `authorizationCode`-flow. Flowet innehåller attributet `refreshUrl`, vilket innebär att kravet uppfylls.
 
