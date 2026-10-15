@@ -143,6 +143,72 @@ export class Sak10 extends BaseRuleset {
   }
   severity = DiagnosticSeverity.Error;
 }
+
+export class Sak11 extends BaseRuleset {
+  static customProperties: CustomProperties = {
+    område: 'Säkerhet',
+    id: 'SAK.11',
+  };
+
+  description = 'OAuth 2.0 authorizationCode- och password-flow SKALL ha attributet refreshUrl definierat.';
+
+  message =
+    'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.';
+
+  given = ['$.components.securitySchemes[?(@.type=="oauth2")]'];
+
+  then = [
+    {
+      function: (targetVal: any, _opts: string, context: any) => {
+        const result: any[] = [];
+        const flows = targetVal.flows;
+
+        if (!flows) {
+          result.push({
+            message:
+              'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.',
+            severity: this.severity,
+            path: [...context.path, 'flows'],
+          });
+          return result;
+        }
+
+        if (!flows.authorizationCode?.refreshUrl && !flows.password?.refreshUrl) {
+          result.push({
+            message:
+              'En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.',
+            severity: this.severity,
+            path: [...context.path, 'flows'],
+          });
+          return result;
+        }
+
+        return result;
+      },
+    },
+    {
+      function: (targetVal: any, _opts: string, paths: string[]) => {
+        this.trackRuleExecutionHandler(
+          JSON.stringify(targetVal, null, 2),
+          _opts,
+          paths,
+          this.severity,
+          this.constructor.name,
+          moduleName,
+          Sak11.customProperties,
+        );
+      },
+    },
+  ];
+
+  constructor(context: RuleExecutionContext) {
+    super(context);
+    super.initializeFormats(['OAS3']);
+  }
+
+  severity = DiagnosticSeverity.Error;
+}
+
 export class Sak15 extends SakBaseApiKeyRule {
   static customProperties: CustomProperties = {
     område: 'Säkerhet',
@@ -172,9 +238,7 @@ export class Sak15 extends SakBaseApiKeyRule {
     return moduleName;
   }
 }
-/**
- *
- */
+
 export class Sak16 extends SakBaseApiKeyRule {
   static customProperties: CustomProperties = {
     område: 'Säkerhet',
@@ -296,4 +360,4 @@ export class Sak29 extends BaseRuleset {
 
   severity = DiagnosticSeverity.Warning;
 }
-export default { Sak09, Sak10, Sak15, Sak16, Sak18, Sak29 };
+export default { Sak09, Sak10, Sak11, Sak15, Sak16, Sak18, Sak29 };

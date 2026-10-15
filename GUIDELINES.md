@@ -90,6 +90,7 @@ Detta dokument specificerar reglerna som verktyget tillämpar.
     - [ID: SAK.01](#id-sak01)
     - [ID: SAK.09](#id-sak09)
     - [ID: SAK.10](#id-sak10)
+    - [ID: SAK.11](#id-sak11)
     - [ID: SAK.15](#id-sak15)
     - [ID: SAK.16](#id-sak16)
     - [ID: SAK.18](#id-sak18)
@@ -1473,6 +1474,33 @@ Regeln kontrollerar förutsatt att det finns ett securityscheme definierat, att 
 ![alt text](images/sak10.png)
 
 I exemplet ovan så kommer regeln att ge ett positivt utfall eftersom det finns ett securityscheme definerad för bearer. Fältet 'bearerFormat' är valfritt och JWT anger att tokenen följer JWT-standarden
+
+---
+
+### ID: SAK.11
+
+**Krav:** En uppdateringstoken SKALL tillhandahållas för att förlänga giltighetstiden för befintliga token utan att behöva tillhandahålla referenserna igen.
+
+**Typ:** SKALL
+
+**JSON Path Plus-uttryck:**
+
+```
+'$.components.securitySchemes[?(@.type=="oauth2")]'
+```
+
+**Förklaring:**
+Regeln förutsätter att API:et använder OAuth 2.0 för autentisering eller auktorisering.
+
+För OAuth 2.0 SKALL minst ett flow av typen `authorizationCode`- eller `password` vara definierat. Det definierade flödet SKALL ha attributet refreshUrl definierat. Attributet används för att dokumentera den endpoint där en uppdateringstoken kan användas för att erhålla en ny åtkomsttoken utan att användaren behöver autentisera sig på nytt.
+
+Regeln kontrollerar endast att refreshUrl är definierat i API-beskrivningen. Regeln kan inte kontrollera om uppdateringstoken faktiskt utfärdas eller om endpointen fungerar.
+
+**Exempel:**
+
+![Exempelbild som visar en del av en API-specifikation med ett `authorizationCode`-flow innhållande attributet refreshUrl](images/sak11.png)
+
+Bilden visar ett OAuth 2.0-security scheme med ett `authorizationCode`-flow. Flowet innehåller attributet `refreshUrl`, vilket innebär att kravet uppfylls.
 
 ---
 
