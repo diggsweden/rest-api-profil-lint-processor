@@ -13,8 +13,13 @@ import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 const moduleName: string = 'ArqRules.js';
 
 export class Arq05NestedStructure extends Arq05Base {
-  description = 'Om en header använder nästlade strukturer, är en requestbody mer lämplig.';
-  message = '[' + super.messageValue + '] ' + this.description;
+  constructor(context: RuleExecutionContext) {
+    super(context);
+
+    this.description = this.translate('rules.arq05.nestedStructure.description');
+    this.message = `[${super.messageValue}] ${this.description}`;
+  }
+
   then = [
     {
       function: (targetVal, _opts, paths) => {
@@ -45,9 +50,12 @@ export class Arq05NestedStructure extends Arq05Base {
   ];
 }
 export class Arq05StringBinary extends Arq05Base {
-  description =
-    'Om en header förväntas innehålla data med ovanliga MIME-typer kan det indikera en okonventionell användning av headers.';
-  message = '[' + super.messageValue + '] ' + this.description;
+  constructor(context: RuleExecutionContext) {
+    super(context);
+
+    this.description = this.translate('rules.arq05.stringBinary.description');
+    this.message = `[${super.messageValue}] ${this.description}`;
+  }
   then = [
     {
       function: (targetVal, _opts, paths) => {
@@ -79,9 +87,12 @@ export class Arq05StringBinary extends Arq05Base {
   ];
 }
 export class Arq05ComplexStructure extends Arq05Base {
-  description =
-    'Om en header förväntas innehålla komplexa datastrukturer, såsom JSON eller XML, kan det indikera en okonventionell användning av headers.';
-  message = '[' + super.messageValue + '] ' + this.description;
+  constructor(context: RuleExecutionContext) {
+    super(context);
+
+    this.description = this.translate('rules.arq05.complexStructure.description');
+    this.message = `[${super.messageValue}] ${this.description}`;
+  }
   then = [
     {
       function: (targetVal, _opts, paths) => {
@@ -116,8 +127,6 @@ export class Arq01 extends BaseRuleset {
     område: 'API Request',
     id: 'ARQ.01',
   };
-  description = 'Ett request BÖR skickas i UTF-8';
-  message = 'Ett request BÖR skickas i UTF-8';
   given = '$.paths[*][*].requestBody.content';
   then = [
     {
@@ -153,6 +162,9 @@ export class Arq01 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.description = this.translate('rules.arq01.description');
+    this.message = this.translate('rules.arq01.message');
   }
   severity = DiagnosticSeverity.Warning;
 }
@@ -161,9 +173,6 @@ export class Arq03 extends BaseRuleset {
     område: 'API Request',
     id: 'ARQ.03',
   };
-  description =
-    'Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, ETag, Connection och Cookie.';
-  message = this.description;
   given = '$.paths.*.*';
   then = [
     {
@@ -219,6 +228,9 @@ export class Arq03 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.description = this.translate('rules.arq03.description');
+    this.message = this.description;
   }
   severity = DiagnosticSeverity.Warning;
 }

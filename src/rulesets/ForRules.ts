@@ -17,8 +17,6 @@ export class For02 extends BaseRuleset {
     område: 'Förutsättningar',
     id: 'FOR.02',
   };
-  description = 'EN GET -förfrågan SKALL INTE acceptera en body';
-  message = 'EN GET -förfrågan SKALL INTE acceptera en body';
   given = '$.paths..get';
   then = [
     {
@@ -44,6 +42,9 @@ export class For02 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.for02.message');
+    this.description = this.message;
   }
 }
 export default { For02 };
