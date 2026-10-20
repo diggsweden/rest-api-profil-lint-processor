@@ -26,6 +26,7 @@ import { AggregateError } from '../util/RapLPCustomErrorInfo.js';
 import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js';
 import { measure } from '../util/performance.js';
 import crypto from 'node:crypto';
+import { resolveLocale, translator } from '../i18n.js';
 
 const pkg = JSON.parse(fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));
 
@@ -37,7 +38,15 @@ declare var AggregateError: {
 export const registerValidationRoutes = (app: Express) => {
   // Route for raw content upload.
   app.get('/api/v1/validation/rules', (req, res) => {
-    res.send(RULE_REGISTRY);
+    const locale = res.locals?.locale ?? resolveLocale();
+    const t = translator(locale);
+
+    res.send(
+      RULE_REGISTRY.map((entry) => ({
+        rule: entry.rule,
+        description: t(entry.descriptionKey),
+      })),
+    );
   });
 
   app.get('/api/v1/api-info', async (req, res, next) => {
@@ -47,9 +56,11 @@ export const registerValidationRoutes = (app: Express) => {
     '/api/v1/validation/generate-report',
     validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_REPORTS ?? 4)),
     async (req, res, next): Promise<any> => {
+      const locale = res.locals?.locale ?? resolveLocale();
+      const t = translator(locale);
       try {
         const data = req.body;
-        const context = new RuleExecutionContext();
+        const context = new RuleExecutionContext(locale);
         const reportHandler = new ExcelReportProcessor();
         let buffer: Buffer;
 
@@ -60,15 +71,15 @@ export const registerValidationRoutes = (app: Express) => {
         try {
           buffer = reportHandler.generateReportDocumentBuffer(customDiagnostic);
         } catch (error) {
-          console.error('Error generating report buffer:', error);
+          console.error(t('api.reportGenerationError'), error);
           return sendProblem(
             res,
             500,
             new ProblemDetailsDTO({
               type: 'https://raplp.digg.se/problems/internal-server-error',
-              title: 'Failed to generate report',
+              title: t('api.failedGenerateReportTitle'),
               status: 500,
-              detail: 'Failed to generate report.',
+              detail: t('api.failedGenerateReportDetail'),
               instance: req.originalUrl,
             }),
           );
@@ -86,21 +97,27 @@ export const registerValidationRoutes = (app: Express) => {
     '/api/v1/validation/validatespec',
     validateConcurrencyLimit(Number(process.env.RAP_LP_MAX_CONCURRENT_VALIDATIONS ?? 4)),
     async (req, res, next) => {
+      const locale = res.locals?.locale ?? resolveLocale();
+      const t = translator(locale);
       let strict = true;
       try {
         const requestId = crypto.randomUUID();
-        const context = new RuleExecutionContext();
+        const context = new RuleExecutionContext(locale);
         const body: SpecValidationRequestDto = req.body;
 
         //0.1 Check input
         if (!body.spec) {
-          throw new RapLPBaseApiError('Invalid Request', 'Required field missing: spec', ERROR_TYPE.BAD_REQUEST);
+          throw new RapLPBaseApiError(
+            t('api.invalidRequest'),
+            t('api.requiredField', { fields: 'spec' }),
+            ERROR_TYPE.BAD_REQUEST,
+          );
         }
         //0.2 Check input
         if (typeof body.spec !== 'string') {
           throw new RapLPBaseApiError(
-            'Invalid Request',
-            'Field "spec" must be a base64 encoded string',
+            t('api.invalidRequest'),
+            t('api.fieldMustBeBase64', { field: 'spec' }),
             ERROR_TYPE.BAD_REQUEST,
           );
         }
@@ -118,7 +135,7 @@ export const registerValidationRoutes = (app: Express) => {
         );
         // 3. Parse handling + strict-validate (Structural / Semantic errors)
         const parseResult = await measure({ requestId, operation: 'parseApiSpecInput' }, () =>
-          parseApiSpecInput({ raw }, { strict, preferJsonError: prefer }),
+          parseApiSpecInput({ raw }, { strict, preferJsonError: prefer }, context),
         );
         // 4. Strict-issues →
         if (parseResult.strictIssues?.length) {
@@ -130,9 +147,9 @@ export const registerValidationRoutes = (app: Express) => {
             400,
             new ProblemDetailsDTO({
               type: 'https://raplp.digg.se/problems/semantic-validation',
-              title: 'Rule validation failed',
+              title: t('api.ruleValidationFailed'),
               status: 400,
-              detail: 'Specifikationen innehåller strukturella eller semantiska fel',
+              detail: t('api.semanticValidationDetail'),
               instance: req.originalUrl,
 
               // Put in kind field to indicate violation
@@ -171,9 +188,9 @@ export const registerValidationRoutes = (app: Express) => {
             400,
             new ProblemDetailsDTO({
               type: 'https://raplp.digg.se/problems/rule-validation',
-              title: 'Rule validation failed',
+              title: t('api.ruleValidationFailed'),
               status: 400,
-              detail: 'API-specifikationen bryter mot en eller flera regler enligt den svenska REST API-profilen.',
+              detail: t('api.ruleValidationDetail'),
               instance: req.originalUrl,
 
               // Put in kind field to indicate violation
@@ -197,9 +214,13 @@ export const registerValidationRoutes = (app: Express) => {
         // Hantera SpecParseError här
         logError(e);
         next(
-          mapValidationExecutionError(e, {
-            strictEnabled: strict,
-          }),
+          mapValidationExecutionError(
+            e,
+            {
+              strictEnabled: strict,
+            },
+            t,
+          ),
         );
       }
     },

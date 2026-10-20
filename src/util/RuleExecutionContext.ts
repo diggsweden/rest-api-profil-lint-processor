@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
+import type { Locale } from '../i18n.js';
 
 interface RuleExecutionInfo {
   moduleName: string;
@@ -23,6 +24,8 @@ export class RuleExecutionContext {
   public ruleExecutionLogDictionary: RuleExecutionLog = {};
   // Define an object to store rule execution status
   public ruleExecutionStatus: Record<string, boolean> = {};
+
+  constructor(public locale: Locale) {}
 
 // Function to register module and class information
   registerRuleExecutionStatus(

@@ -20,7 +20,6 @@ export class Mog01 extends BaseRuleset {
     område: 'Mognad',
     id: 'MOG.01',
   };
-  message = 'Alla API:er SKALL designas för att uppnå nivå 2 enligt Richardson Maturity Model. ';
   given = '$.paths';
   then = [
     {
@@ -59,6 +58,8 @@ export class Mog01 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.mog01.message');
   }
 }
 
@@ -67,7 +68,6 @@ export class Mog02 extends BaseRuleset {
     område: 'Mognad',
     id: 'MOG.02',
   };
-  message = 'Alla API:er BÖR designas för att uppnå nivå 3 enligt Richardson Maturity Model. ';
   given = '$.paths';
   then = [
     {
@@ -107,6 +107,8 @@ export class Mog02 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.mog02.message');
   }
 }
 

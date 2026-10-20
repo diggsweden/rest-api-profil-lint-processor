@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import { SpecParseError } from './RapLPSpecParseError.js';
+import { translator } from '../i18n.js';
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -116,13 +117,14 @@ function isKnownRuleEngineInvalidStructureCase(
 }
 export function mapValidationExecutionError(
   error: unknown,
-  opts: { strictEnabled: boolean }
+  opts: { strictEnabled: boolean },
+  t: ReturnType<typeof translator>
 ): unknown {
   if (error instanceof SpecParseError) {
     return error;
   }
   if (isKnownRuleEngineInvalidStructureCase(error, opts.strictEnabled)) {
-    return SpecParseError.fromRuleEngineInvalidStructure(error);
+    return SpecParseError.fromRuleEngineInvalidStructure(error, t);
   }
   return error;
 }

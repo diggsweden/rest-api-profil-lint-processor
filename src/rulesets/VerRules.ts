@@ -15,7 +15,6 @@ export class Ver06 extends BaseRuleset {
     id: 'VER.06',
   };
   given = '$.paths';
-  message = 'Information om ett API SKALL tillgängliggöras via resursen api-info under roten till API:et.';
   then = [
     {
       field: '/api-info',
@@ -39,6 +38,8 @@ export class Ver06 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.ver06.message');
   }
   severity = DiagnosticSeverity.Error;
 }
@@ -49,8 +50,6 @@ export class Ver05 extends BaseRuleset {
   };
 
   given = '$.servers.[url]';
-  message =
-    "Version BÖR anges i URL enligt formatet v[x] där 'v' avser förkortning för version och x avser ett och bara ett nummer (0-n) för major-version";
   then = [
     {
       function: (targetVal: string, _opts: string, paths: string[]) => {
@@ -92,6 +91,8 @@ export class Ver05 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.ver05.message');
   }
   severity = DiagnosticSeverity.Warning;
 }
