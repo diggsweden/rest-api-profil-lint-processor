@@ -74,11 +74,20 @@ async function main() {
         '[api-mode] Sökväg till fil för configuration av urlValidation funktionalliteten faller tillbaka på ./urlValidationConfig.cjs',
     })
     .option('strict', {
-      describe: 
-        'Aktivera strict mode för validering av semantik och struktur.',
+      describe: 'Aktivera strict mode för validering av semantik och struktur.',
       type: 'boolean',
       default: false,
-    })    
+    })
+    .option('junit', {
+      type: 'string',
+      description: 'Skriv valideringsresultatet som en JUnit XML-rapport',
+      requiresArg: true,
+    })
+    .option('min-compliance', {
+      type: 'number',
+      description: 'Minsta tillåtna följsamhet i procent (0–100)',
+      requiresArg: true,
+    })
     .check(function (argv) {
       if (argv.mode !== 'api') {
         if (!argv.file) {

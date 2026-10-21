@@ -314,6 +314,7 @@ Strict validation reported issues:
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | -------- | ------------ |
 | `-f, --file`       | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                                                | String | –        | Ja           |
 | `-c, --categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `DokRules, DotRules, ResRules, UfnRules, MogRules, SakRules, SpaRules, AmeRules, ArqRules, FelRules, VerRules, FnsRules, ForRules`. | String | –        | Nej          |
+| `--min-compliance` | Minsta tillåtna följsamhetsgräns. Allt under den satta gränsen ger exitkod = 1. Heltal mellan 0-100.                                                                                          | Number | –        | Nej          |
 
 ### Loggning i CLI-läge
 
@@ -328,6 +329,7 @@ RAP-LP erbjuder stöd för att logga fel, exportera diagnostiseringsinformation 
 | `-a, --append`        | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används).             | boolean | `false`             | Nej          |
 | `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format.              | string  | –                   | Nej          |
 | `--dex`               | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format.             | string  | –                   | Nej          |
+| `--junit`             | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Junit xml-format.         | string  | –                   | Nej          |
 
 </details>
 <br>
@@ -375,7 +377,6 @@ Regler med status `Pågående` behåller sin status tills valideringen av regeln
 ```bash
 raplp -f openapi.yaml --dex
 ```
-
 **Exempel med sökväg till avstämningsfil i Excel**
 
 ```bash
@@ -383,6 +384,21 @@ raplp -f openapi.yaml --dex <PATH>
 ```
 
 </details>
+<br>
+<details>
+<summary><strong>Validering som genererar JUnit xml rapport med gräns för följsamhet</strong></summary>
+För att spara information om regelutfall från diagnostiseringen till en JUnit xml-fil, lägg till `--junit`. 
+
+<br>
+
+**Exempel med minsta tillåtna följsamhet på 90%**
+```bash
+npm run start -- -f openapi.yaml --junit reports/rap-lp.xml --min-compliance 90
+```
+
+> Notera: Om man inte uppfyller minsta tillåtna gräns för följsamhet genereras exitkod = 1.
+</details>
+
 
 ---
 

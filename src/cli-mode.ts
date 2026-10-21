@@ -17,11 +17,12 @@ import { ExcelReportProcessor } from './util/excelReportProcessor.js';
 import type { IParser } from '@stoplight/spectral-parsers';
 import { Document as SpectralDocument } from '@stoplight/spectral-core';
 import { Issue } from './util/Issue.js';
-import { parseApiSpecInput,detectSpecFormatPreference, ParseResult} from './util/validateUtil.js';
+import { parseApiSpecInput, detectSpecFormatPreference, ParseResult } from './util/validateUtil.js';
 import { SpecParseError } from './util/RapLPSpecParseError.js';
 import * as path from 'node:path';
 import { RuleExecutionContext } from './util/RuleExecutionContext.js';
-import { parseRuleCategories,resolveRuleCategories } from './rulesets/util/ruleModules.js';
+import { parseRuleCategories, resolveRuleCategories } from './rulesets/util/ruleModules.js';
+import { JUnitReportProcessor } from './util/JUnitReportProcessor.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -39,6 +40,7 @@ export type CliArgs = {
   logDiagnostic?: string;
   dex?: string;
   strict?: boolean;
+  junit?: string;
 };
 
 export async function execCLI<T extends CliArgs>(argv: T) {
@@ -50,30 +52,32 @@ export async function execCLI<T extends CliArgs>(argv: T) {
     const resolvedCategories = resolveRuleCategories(ruleCategories);
     const logErrorFilePath = argv.logError as string | undefined;
     const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
-    const strict = argv.strict as boolean ?? false;
+    const strict = (argv.strict as boolean) ?? false;
     const context = new RuleExecutionContext();
-
 
     // Schemevalidation and Spectral  Document creation ----------
     let apiSpecDocument: SpectralDocument;
     let parseResult: ParseResult;
     try {
-      const prefer = detectSpecFormatPreference(apiSpecFileName,undefined,'auto');
+      const prefer = detectSpecFormatPreference(apiSpecFileName, undefined, 'auto');
       parseResult = await parseApiSpecInput(
-          {filePath: apiSpecFileName},{
-            strict: strict,
-            preferJsonError: prefer
-          }
+        { filePath: apiSpecFileName },
+        {
+          strict: strict,
+          preferJsonError: prefer,
+        },
       );
 
-    // Issue handling ----------
+      // Issue handling ----------
       if (parseResult.strictIssues && parseResult.strictIssues.length > 0) {
-         console.error('Strict validation reported issues:');
-          parseResult.strictIssues.forEach((iss: Issue) =>
-              console.error(chalk.yellow(`- ${iss.type} at ${iss.path} : ${iss.message} ${iss.line ? `(line ${iss.line})` : ''}`)),
-          );
-          process.exitCode = 2;
-          return;
+        console.error('Strict validation reported issues:');
+        parseResult.strictIssues.forEach((iss: Issue) =>
+          console.error(
+            chalk.yellow(`- ${iss.type} at ${iss.path} : ${iss.message} ${iss.line ? `(line ${iss.line})` : ''}`),
+          ),
+        );
+        process.exitCode = 2;
+        return;
       }
     } catch (err: any) {
       // Parse handling
@@ -124,16 +128,20 @@ export async function execCLI<T extends CliArgs>(argv: T) {
 
       // Övrigt oväntat fel
       logErrorToFile(err);
-      console.error(chalk.red('Ett fel uppstod vid inläsning/parsing av spec-filen. Se felloggen för mer information.'));
+      console.error(
+        chalk.red('Ett fel uppstod vid inläsning/parsing av spec-filen. Se felloggen för mer information.'),
+      );
       process.exitCode = 1;
       return;
     }
 
     try {
       // Import and create rule instances in RAP-LP
-      const enabledRulesAndCategorys = await importAndCreateRuleInstances(context,resolvedCategories);
+      const enabledRulesAndCategorys = await importAndCreateRuleInstances(context, resolvedCategories);
       // Load API specification into a Document object
-      const parser: IParser<any> = (parseResult.format === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
+      const parser: IParser<any> = (parseResult.format === 'json'
+        ? Parsers.Json
+        : Parsers.Yaml) as unknown as IParser<any>;
       apiSpecDocument = new SpectralDocument(parseResult.raw, parser, apiSpecFileName);
       try {
         /**
@@ -145,7 +153,11 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         const result = await customSpectral.run(apiSpecDocument);
 
         const customDiagnostic = new RapLPDiagnostic(context);
-        customDiagnostic.processRuleExecutionInformation(result, enabledRulesAndCategorys.rules,enabledRulesAndCategorys.instanceCategoryMap);
+        customDiagnostic.processRuleExecutionInformation(
+          result,
+          enabledRulesAndCategorys.rules,
+          enabledRulesAndCategorys.instanceCategoryMap,
+        );
         const diagnosticReports: DiagnosticReport[] = customDiagnostic.processDiagnosticInformation();
         if (argv.dex != null) {
           try {
@@ -166,7 +178,9 @@ export async function execCLI<T extends CliArgs>(argv: T) {
                 ),
               );
             } else {
-              console.log(chalk.green(`Skriver avstämningsfil i Excel-format från RAP-LP till ${reportHandler.outputFilePath}`));
+              console.log(
+                chalk.green(`Skriver avstämningsfil i Excel-format från RAP-LP till ${reportHandler.outputFilePath}`),
+              );
             }
             if (reportHandler.isBasedOnExistingFile) {
               const { templateProfileVersion, fileProfileVersion } = reportHandler;
@@ -321,6 +335,42 @@ export async function execCLI<T extends CliArgs>(argv: T) {
               console.log(formatLintingResult(item));
             });
         }
+
+        if (argv.junit) {
+          const junitReport = new JUnitReportProcessor({
+            outputFilePath: argv.junit,
+          });
+
+          await junitReport.generateReportDocument(diagnosticReports);
+        }
+
+        const minCompliance = argv['min-compliance'];
+
+        if (minCompliance !== undefined) {
+          if (!Number.isFinite(minCompliance) || minCompliance < 0 || minCompliance > 100) {
+            throw new Error('--min-compliance måste vara ett tal mellan 0 och 100.');
+          }
+
+          const rules = diagnosticReports.flatMap((report) => report.rules);
+
+          const ok = rules.filter((rule) => rule.status === 'OK').length;
+          const nok = rules.filter((rule) => rule.status === 'EJ OK').length;
+          const na = rules.filter((rule) => rule.status === 'N/A').length;
+          const applicable = ok + nok;
+
+          if (applicable === 0) {
+            console.error(`\nFöljsamheten kan inte beräknas: inga tillämpliga regler.\n`);
+            process.exitCode = 1;
+          } else {
+            const compliance = (ok / applicable) * 100;
+            console.log(chalk.yellow(`\n<<<Sammanställning>>>`));
+            console.log(`OK: ${ok} | Ej OK: ${nok} | N/A: ${na} \n\nFöljsamhet: ${compliance.toFixed(1)} %.\nKrav: minst ${minCompliance} %`);
+            if (compliance < minCompliance) {
+              console.error(chalk.red(`\nUnderkänd följsamhet: ${compliance.toFixed(1)} % är under kravet på ${minCompliance} %`));
+              process.exitCode = 1;
+            }
+          }
+        }
       } catch (spectralError: any) {
         logErrorToFile(spectralError); // Log stack
         console.error(
@@ -357,5 +407,4 @@ export async function execCLI<T extends CliArgs>(argv: T) {
       });
     }
   }
-  
 }

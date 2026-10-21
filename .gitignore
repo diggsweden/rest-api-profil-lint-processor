@@ -13,3 +13,4 @@ megalinter-reports
 tests/generated
 openapitools.json
 dist
+reports/*
