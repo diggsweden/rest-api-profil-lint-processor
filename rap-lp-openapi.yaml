@@ -37,7 +37,6 @@ servers:
     variables:
       host:
         default: raplp.digg.se
-        description: Host name of the environment.
 tags:
   - name: validation
     description: Operations for validating OpenAPI specifications and generating reports.
@@ -506,7 +505,6 @@ paths:
           variables:
             host:
               default: raplp.digg.se
-              description: Host name of the environment.
       tags:
         - operations
       summary: Liveness check.
@@ -531,7 +529,6 @@ paths:
           variables:
             host:
               default: raplp.digg.se
-              description: Host name of the environment.
       tags:
         - operations
       summary: Get Prometheus metrics.
