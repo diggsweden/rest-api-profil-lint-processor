@@ -603,19 +603,19 @@ Variabler kan förekomma i alla delar av URL:en. Variabler som definieras under 
 
 ![Exempel på två server-url:er som följer namnstandarden med api-namnet myapi och versionerna v1 och v2](images/ufn1-1.png)
 
-I exemplet ovan, så följer båda url:erna namnstandarden med api-namnet `myapi` och major-versionerna `v1` respektive `v2`.
+_I exemplet ovan, så följer båda url:erna namnstandarden med api-namnet `myapi` och major-versionerna `v1` respektive `v2`._
 
 ![Exempel på en server-url med Server Variables där environment och version har giltiga default-värden](images/ufn1-2.png)
 
-I exemplet ovan, så används Server Variables i `url`. Båda variablerna finns under `variables` med ett `default`-värde, och `version` har ett `default`-värde som följer formatet för major-version.
+_I exemplet ovan, så används Server Variables i `url`. Båda variablerna finns under `variables` med ett `default`-värde, och `version` har ett `default`-värde som följer formatet för major-version._
 
 ![Exempel på en server-url där variabeln version används men saknas under variables](images/ufn1-3.png)
 
-I exemplet ovan, så används `{version}` i `url` men variabeln saknas under `variables`, vilket bryter mot regeln.
+_I exemplet ovan, så används `{version}` i `url` men variabeln saknas under `variables`, vilket bryter mot regeln._
 
 ![Exempel på en server-url där default-värdet för version är 1.0 och inte följer formatet för major-version](images/ufn1-4.png)
 
-I exemplet ovan, så följer inte `default`-värdet för `version` formatet för major-version, vilket bryter mot regeln.
+_I exemplet ovan, så följer inte `default`-värdet för `version` formatet för major-version, vilket bryter mot regeln._
 
 ---
 
@@ -640,9 +640,9 @@ Kontrollen av protokollet är inte case-sensitive. Validering av tillåtna tecke
 
 **Exempel:**
 
-![alt text](images/ufn2.png)
+![Exempelbild av en OpenAPI 3.0.0-specifikation där fältet servers och två tillhörande url-fält är inringade i rött.](images/ufn2.png)
 
-I exemplet ovan, så exemplifieras regeln med att den första url:en inte exponerar en speciell port och i den url:en så är då port 443 default, medans den andra url:en definierar en port 443.
+_Ovan exemplifieras regeln med att den första url:en inte exponerar en speciell port och i den url:en så är då port 443 default, medans den andra url:en definierar en port 443._
 
 ---
 
