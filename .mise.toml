@@ -15,7 +15,7 @@ no_proxy = "{{ get_env(name='no_proxy', default='') }}"
 PIP_INDEX_URL = "{{ get_env(name='PIP_INDEX_URL', default='') }}"
 
 [tools]
-node = "22"
+node = "24"
 "aqua:casey/just" = "1.43.0"
 "aqua:rhysd/actionlint" = "v1.7.8"
 "forgejo:itiquette/gommitlint" = "0.9.10"
