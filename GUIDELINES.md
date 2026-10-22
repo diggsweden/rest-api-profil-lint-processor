@@ -10,7 +10,7 @@ RAP-LP (REST API-profil Lint Processor) är ett verktyg som granskar en OpenAPI-
 
 Verktyget analyserar OpenAPI-specifikationen och kontrollerar att API:et följer specifika designregler kopplade till REST API-profilen. Varje regel pekar på en specifik del av OpenAPI-specifikationen med ett JSON Path Plus-uttryck, och kontrollerar om värdena följer de fastställda reglerna. Om avvikelser hittas returneras ett eller flera felmeddelanden.
 
-Utöver reglerna från REST API-profilen innehåller RAP-LP även ett regelområde benämnt **Förutsättningar**. Detta område omfattar tilläggsregler som inte ingår i profilen, men som baseras på etablerad god praxis för API-design. Reglerna i Förutsättningar kan hjälpa till att ytterligare höja kvaliteten på API-specifikationen genom att identifiera förbättringsområden som inte täcks av den nationella profilen.
+Utöver reglerna från REST API-profilen innehåller RAP-LP även ett regelområde benämnt **Förutsättningar**. Detta område omfattar tilläggsregler som inte ingår i profilen, men som baseras på etablerad god praxis för API-design. Reglerna i Förutsättningar kan hjälpa till att ytterligare höja kvaliteten på OpenAPI-specifikationen genom att identifiera förbättringsområden som inte täcks av den nationella profilen.
 
 Denna version av RAP-LP är kompatibel med REST API-profil version 1.2.0, och varje ny version av verktyget kommer att ange vilken version av profilen den är avsedd att stödja.
 
@@ -115,14 +115,14 @@ $
 
 **Förklaring:**
 
-Regeln förutsätter att det finns en förekomst av objektet `externalDocs` med underliggande struktur:
+Regeln förutsätter att fältet `externalDocs` förekommer i specifikationen med följande underliggande struktur:
 
 - description
 - url.
 
 **Exempel:**
 
-![alt text](images/dok1.png)
+![Exempelbild som visar en OpenAPI-specifikation där fältet externalDocs finns, under fältet finns beskrivning och webbadress till extern dokumentation. Hela fältet `externalDocs` är markerat med en röd rektangel.](images/dok1.png)
 
 ---
 
@@ -158,7 +158,7 @@ Regeln förutsätter att det finns en förekomst av objektet `info` med underlig
 
 **Exempel:**
 
-![alt text](images/dok3.png)
+![Exempelbild som visar en del av en OpenAPI-specifikation. Den innehåller samtliga objekt och den struktur som regel DOK.03 beskriver, exemplet är inringat i rött](images/dok3.png)
 
 ---
 
@@ -214,7 +214,7 @@ Regeln förutsätter att det finns en förekomst av objektet `info` med underlig
 
 **Exempel:**
 
-![alt text](images/dok7.png)
+![Exempelbild som visar en del av en OpenAPI-specifikation som följer regel DOK.07. Objekten `info` och `description` är inringade i rött.](images/dok7.png)
 
 ---
 
@@ -316,22 +316,21 @@ $.paths[*][?(@ != "get")].requestBody.content.application/json
 ```
 
 **Förklaring:**
-Regeln förutsätter att det finns en förekomst av fältet (elementet) `examples` i specifikationen under de angivna nivåerna.\
- Regeln förutsätter också att det finns en förekomst av fältet(elementet) examples i specifikationen på de angivna nivåerna under fältet(elementet) requestBody.
+Regeln förutsätter att det finns en förekomst av fältet `examples` i specifikationen under de angivna nivåerna.
+
+Den förutsätter också att det finns en förekomst av fältet `examples` i specifikationen på de angivna nivåerna under fältet `requestBody`.
 
 **Exempel:**
 
-![alt text](images/dok15.png)
+![Exempelbild av en OpenAPI-specifikation med en POST-operation där svaret innehåller ett schema-fält som refererar till en schemadefinition via $ref, följt av ett inline-fält examples.](images/dok15.png)
 
-I exemplet ovan, så exemplifieras regeln med en POST operation, där regeln undersöker om det finns en förekomst av fältet `examples`. Om man refererar en schema definition med hjälp av nyckelordet `$ref`, så ignoreras övriga element på aktuell nivå. Detta innebär att om det finns ett examples fält på schema nivå så ”overridar” den ett ev. ”inline” examples fält.
+_I det första exemplet används ett POST-response för att illustrera hur regeln undersöker om fältet `examples` förekommer._
 
----
+_Om en schemadefinition refereras med nyckelordet `$ref`, ignoreras övriga fält på den aktuella nivån. Det innebär att om fältet `examples` förekommer i den refererade schemadefinitionen, har det företräde framför ett eventuellt `examples`-fält som anges inline._
 
-**Exempel:**
+![Exempelbild av en OpenAPI-specifikation med en POST-operation som innehåller både ett svar med en schemareferens via $ref och en request body med ett inline-definierat objektschema och fältet examples.](images/dok15_2.png)
 
-![alt text](images/dok15_2.png)
-
-I exemplet ovan, så exemplifieras regeln med en post operation, där regeln undersöker om det finns en förekomst av fältet examples. Ifall man refererar en schema definition med hjälp av nyckelordet $ref, så ignoreras övriga element på aktuell nivå. Detta innebär att om det finns ett examples fält på schema nivå så ”overridar” den ett ev. ”inline” examples fält.
+_I det andra exemplet illustrerar vi hur en korrekt implementation av regeln hanterar en POST-request. På samma sätt som det första exemplet ignoreras övriga fält på den aktuella nivån om schemadefinitionen refereras med nyckelordet `$ref`._
 
 ---
 
@@ -349,17 +348,17 @@ $
 
 **Förklaring:**
 
-Regeln förutsätter att API-specifikationen dokumenteras med den senaste major versionen av OpenAPI. Detta för att få full täckning av de implementerade reglerna. Regeln förutsätter vidare att man använder sig av fältet openapi för att beskriva värdet.
+Regeln förutsätter att OpenAPI-specifikation dokumenteras med den senaste major versionen av OpenAPI. Detta för att få full täckning av de implementerade reglerna. Regeln förutsätter vidare att man använder sig av fältet openapi för att beskriva värdet.
 
 **Exempel:**
 
-![alt text](images/dok17.png)
+![Exempelbild av en OpenAPI-specifikation med fältet openapi satt till "3.0.0", vilket visar ett godkänt värde för specifikationsversionen.](images/dok17.png)
 
-I exemplet ovan, så exemplifieras regeln med ett godkänd värde på versionen av OpenAPI specification.
+_Detta exempel visar ett godkänt värde för versionsfältet i en OpenAPI-specifikation, i enlighet med den aktuella regeln._
 
-![alt text](images/dok17-2.png)
+![Exempelbild av en OpenAPI-specifikation med fältet swagger satt till "2.0" i stället för det föreskrivna fältet openapi, vilket visar ett icke godkänt värde enligt regeln.](images/dok17-2.png)
 
-I exemplet ovan, så exemplifieras regeln det med ett icke godkänt värde på versionen av OpenAPI specification.
+_Detta exempel illustrerar ett icke godkänt värde för OpenAPI-specifikation versionsfält, där swagger: "2.0" används i stället för det föreskrivna fältet openapi._
 
 ---
 
@@ -380,7 +379,7 @@ Regeln förutsätter att objektet `paths` förekommer. Den kontrollerar att fäl
 
 **Exempel:**
 
-![Exempel på en OpenAPI-specifikation där varje operation under olika endpoints (GET, POST, PUT, DELETE) har markerats med röd ram kring fälten summary och description. Bilden illustrerar vilka delar av API-specifikationen som regeln DOK.19 validerar.](images/dok19.png)
+![Exempel på en OpenAPI-specifikation där varje operation under olika endpoints (GET, POST, PUT, DELETE) har markerats med röd ram kring fälten summary och description. Bilden illustrerar vilka delar av OpenAPI-specifikationen som regeln DOK.19 validerar.](images/dok19.png)
 
 _I exemplet ovan illustreras regeln med flera operationer, där DOK.19 kontrollerar att fälten description och summary är ifyllda._
 
@@ -404,9 +403,9 @@ Regeln förutsätter att det finns en förekomst av objektet `Paths`. Regeln und
 
 **Exempel:**
 
-![alt text](images/dok20.png)
+![Exempelbild av en OpenAPI-specifikation med GET- och POST-operationer för sökvägen /pets. Röda markeringar visar fältet description för respektive svar under responses, inklusive standardsvaret default för båda operationerna.](images/dok20.png)
 
-I exemplet ovan, så exemplifieras regeln med GET samt en POST operation, där regeln förutsätter att det finns en förekomst av fältet description under fältet responses. I detta exempel så har man också angett att man behöver ha ett default svar, som då också blir föremål för regelvalidering.
+_Exemplet illustrerar hur regeln tillämpas på både GET- och POST-operationer. Regeln kräver att varje svar under responses innehåller fältet description. Detta gäller även standardsvaret default, som också omfattas av regelvalideringen._
 
 ---
 
@@ -448,7 +447,7 @@ _Om säkerhet saknas så bör det signaleras genom att tilldela security-objekte
 **Typ:** SKALL
 
 **Förklaring:**
-Regeln förutsätter att det finns datum- eller tidsvärden angivna som exempel i API-specifikationen. Exempelvärdet kontrolleras mot RFC 3339-formatet.
+Regeln förutsätter att det finns datum- eller tidsvärden angivna som exempel i OpenAPI-specifikationen. Exempelvärdet kontrolleras mot RFC 3339-formatet.
 
 Datum anges enligt `YYYY-MM-DD` och tid enligt formatet `hh:mm:ss`, där delar av en sekund är valfritt.
 
@@ -457,9 +456,9 @@ Datum och tid kombineras enligt följande format:
 
 **Exempel:**
 
-![alt text](images/dot02.png)
+![Exempelbild föreställande en del av en OpenAPI-specifikation där ett korrekt definierat datum- och tidsvärde är inringat i rött](images/dot02.png)
 
-Exemplet ovan föreställer ett datum- och tidsvärde som anges enligt RFC 3339. Exempelvärdet `1907-04-01T04:00:09.12` innehåller år, månad, dag, timme, minut, sekund samt delar av en sekund.
+_Exemplet ovan föreställer ett datum- och tidsvärde som anges enligt RFC 3339. Exempelvärdet `1907-04-01T04:00:09.12` innehåller år, månad, dag, timme, minut, sekund samt delar av en sekund._
 
 <!-- ### ID: DOT.01
 
@@ -502,9 +501,9 @@ Regeln söker efter förekomster av fält som beskrivs som datumfält och har fo
 
 **Exempel:**
 
-![alt text](images/dot4.png)
+![Exempelbild föreställande en del av en OpenAPI-specifikation, begränsat till schemadefinitionen ErrorRequest. Fälten postedDate och postedTime har datatyperna date respektive date-time. Röda markeringar framhäver fältens format och tillhörande exempelvärden.](images/dot4.png)
 
-I exemplet ovan, så exemplifieras regeln med att oavsett typ av operation, undersöka om det finns en förekomst av fältet examples under i detta fall attributeten ” postedDate och postedTime ”. Ifall man refererar en schema definition med hjälp av nyckelordet $ref, så ignoreras övriga element på aktuell nivå. Detta innebär att om det finns ett exempel fält på schema nivå så ”overridar” den ett ev. ”inline” exempelfält.
+_Exemplet illustrerar hur regeln kontrollerar förekomsten av fältet examples under attributen postedDate och postedTime, oavsett typ av operation. Om en schemadefinition refereras med nyckelordet $ref, ignoreras övriga fält på den aktuella nivån. Det innebär att ett examples-fält i den refererade schemadefinitionen har företräde framför ett eventuellt examples-fält som anges inline._
 
 ---
 
@@ -604,19 +603,19 @@ Variabler kan förekomma i alla delar av URL:en. Variabler som definieras under 
 
 ![Exempel på två server-url:er som följer namnstandarden med api-namnet myapi och versionerna v1 och v2](images/ufn1-1.png)
 
-I exemplet ovan, så följer båda url:erna namnstandarden med api-namnet `myapi` och major-versionerna `v1` respektive `v2`.
+_I exemplet ovan, så följer båda url:erna namnstandarden med api-namnet `myapi` och major-versionerna `v1` respektive `v2`._
 
 ![Exempel på en server-url med Server Variables där environment och version har giltiga default-värden](images/ufn1-2.png)
 
-I exemplet ovan, så används Server Variables i `url`. Båda variablerna finns under `variables` med ett `default`-värde, och `version` har ett `default`-värde som följer formatet för major-version.
+_I exemplet ovan, så används Server Variables i `url`. Båda variablerna finns under `variables` med ett `default`-värde, och `version` har ett `default`-värde som följer formatet för major-version._
 
 ![Exempel på en server-url där variabeln version används men saknas under variables](images/ufn1-3.png)
 
-I exemplet ovan, så används `{version}` i `url` men variabeln saknas under `variables`, vilket bryter mot regeln.
+_I exemplet ovan, så används `{version}` i `url` men variabeln saknas under `variables`, vilket bryter mot regeln._
 
 ![Exempel på en server-url där default-värdet för version är 1.0 och inte följer formatet för major-version](images/ufn1-4.png)
 
-I exemplet ovan, så följer inte `default`-värdet för `version` formatet för major-version, vilket bryter mot regeln.
+_I exemplet ovan, så följer inte `default`-värdet för `version` formatet för major-version, vilket bryter mot regeln._
 
 ---
 
@@ -641,9 +640,9 @@ Kontrollen av protokollet är inte case-sensitive. Validering av tillåtna tecke
 
 **Exempel:**
 
-![alt text](images/ufn2.png)
+![Exempelbild av en OpenAPI 3.0.0-specifikation där fältet servers och två tillhörande url-fält är inringade i rött.](images/ufn2.png)
 
-I exemplet ovan, så exemplifieras regeln med att den första url:en inte exponerar en speciell port och i den url:en så är då port 443 default, medans den andra url:en definierar en port 443.
+_Ovan exemplifieras regeln med att den första url:en inte exponerar en speciell port och i den url:en så är då port 443 default, medans den andra url:en definierar en port 443._
 
 ---
 
@@ -665,19 +664,19 @@ Regeln kontrollerar att inte längden på URL:en definierade av fälten beskrivn
 
 **Exempel:**
 
-![alt text](images/ufn5.png)
+![Exempelbild av en OpenAPI 3.0.0-specifikation där fältet servers och två tillhörande url-fält är inringade i rött. URL pekar på samma API med versionerna v1 och v2 och illustrerar det förväntade formatet för serveradresser.](images/ufn5.png)
 
-I exemplet ovan, så utgör fältet url de båda url:ena man ser under serverobjektet, föremål för kontroll.
+_I exemplet ovan, så utgör fältet url de båda url:ena man ser under serverobjektet, föremål för kontroll._
 
-![alt text](images/ufn5-2.png)
+![Exempelbild av en OpenAPI-specifikation med en GET-operation för sökvägen /pets/{petId}. Röda markeringar framhäver fältet parameters, parameterns namn och dess placering (in: path), som visar hur en sökvägsparameter ingår i URL.](images/ufn5-2.png)
 
-I exemplet ovan, så utgör paths tillsammans med parameters sektionen föremål för kontroll. Här exemplifieras det med en parameter av typen path.
+_I exemplet ovan, så utgör paths tillsammans med parameters sektionen föremål för kontroll. Här exemplifieras det med en parameter av typen path._
 
 ---
 
 ### ID: UFN.07
 
-**Krav:** URL:n SKALL använda dessa tecknen a-z, 0-9, "-", "." samt "~", se vidare i RFC 3986).
+**Krav:** URL:n SKALL använda dessa tecknen a-z, 0-9, "-", "." samt "~", se vidare i RFC 3986.
 
 **Typ:** SKALL
 
@@ -692,9 +691,9 @@ Regeln förutsätter att de giltiga tecken som specificeras i kravet förekommer
 
 **Exempel:**
 
-![alt text](images/ufn7.png)
+![Exempelbild av en OpenAPI-specifikation med objekten servers och paths. Exemplet visar fältet url under servers, vilka omfattas av regelns kontroll av tillåtna tecken i URL.](images/ufn7.png)
 
-I exemplet ovan, så utgör fältet url under serverobjektet, samt objektet paths föremål för kontroll.
+_I exemplet ovan, så utgör fältet url under serverobjektet, samt objektet paths föremål för kontroll._
 
 ---
 
@@ -715,9 +714,9 @@ Regeln kontrollerar att endast bindestreck ’-’ används för att separera or
 
 **Exempel:**
 
-![alt text](images/ufn8.png)
+![Exempelbild av en OpenAPI-specifikation med fältet url under servers och fältet paths, som är inringat i rött. Fältet paths identifierar den del av URL där regeln kontrollerar att ord separeras med bindestreck (-).](images/ufn8.png)
 
-I exemplet ovan, så utgör fältet url under serverobjektet, samt objektet paths med underliggande konstruktion av parameter föremål för kontroll.
+_I exemplet ovan, så utgör fältet url under serverobjektet, samt objektet paths med underliggande konstruktion av parameter föremål för kontroll._
 
 ---
 
@@ -741,9 +740,9 @@ Regeln verifierar att blanksteg ' ' och understreck '\_' inte används i URL:ern
 
 **Exempel:**
 
-![alt text](images/ufn9.png)
+![Exempelbild av en OpenAPI-specifikation där fältet url under servers, sökvägen /pets/{petId} under paths samt parametrarna parameters, name och in: path är inringade i rött. Markeringarna visar vilka delar av serveradressen och sökvägen, inklusive en sökvägsparameter, som omfattas av regelns kontroll.](images/ufn9.png)
 
-I exemplet ovan, så utgör fältet `url` under serverobjektet, samt objektet `paths` med underliggande konstruktion av parameter av typen ”path” föremål för kontroll.
+_I exemplet ovan, så utgör fältet `url` under serverobjektet, samt objektet `paths` med underliggande konstruktion av parameter av typen ”path” föremål för kontroll._
 
 ---
 
@@ -832,9 +831,9 @@ Regeln förutsätter att svaren för de datastrukturer/modeller som används und
 
 **Exempel:**
 
-![alt text](images/ame1.png)
+![Exempebild av en OpenAPI-specifikation där fältet content och mediatypen application/json under svaret 200 är inringade i rött. Svaret innehåller ett schema som refererar till Order via $ref.](images/ame1.png)
 
-I exemplet ovan, så exemplifieras regeln med ett OK svar på en operation, där media typen under `content` objektet bör vara `application/json`.
+_Exemplet ovan illustrerar ett OK svar på en operation, där media typen under `content` objektet bör vara `application/json` enligt regeln._
 
 ---
 
@@ -855,9 +854,9 @@ Regeln förutsätter också att de datastrukturer/modeller som används under `r
 
 **Exempel:**
 
-![alt text](images/ame2.png)
+![Exempelbild av en OpenAPI-schemadefinition för objektet Error. Röda markeringar framhäver fältet properties samt egenskaperna nestthis_again och verylongMessage, som definieras med datatyperna integer respektive string.](images/ame2.png)
 
-I exemplet ovan, så exemplifieras regeln med ett OK svar på en operation, där media typen under `content` objektet bör vara `application/json`.
+_I exemplet ovan, så exemplifieras regeln med ett OK svar på en operation, där media typen under `content` objektet bör vara `application/json`._
 
 ---
 
@@ -878,9 +877,9 @@ Regeln förutsätter att den namnsättning som används för egenskaper beskrivn
 
 **Exempel:**
 
-![alt text](images/ame4.png)
+![Exempelbild av en OpenAPI-schemadefinition för objektet Error. Röda markeringar framhäver fältet properties samt egenskaperna nestthis_again och verylongMessage, vars namn illustrerar olika namngivningskonventioner.](images/ame4.png)
 
-I exemplet ovan, så exemplifieras regeln med ett OK svar på en operation, där media typen under content objektet bör vara application/json.
+_Exemplet illustrerar hur regeln kontrollerar namngivningen av egenskaper i schemadefinitionen. Fältnamnen bör följa antingen camelCase eller snake_case, med undantag för standardiserade hypermediafält enligt HAL._
 
 ---
 
@@ -901,9 +900,9 @@ Regeln förutsätter att den namnsättning som används för egenskaper beskrivn
 
 **Exempel:**
 
-![alt text](images/ame5.png)
+![Exempelbild av en OpenAPI-schemadefinition där egenskapsnamn använder en blandning av camelCase och snake_case. Namngivningen illustrerar en inkonsekvens som strider mot regelns krav på en enhetlig namngivningskonvention inom API.](images/ame5.png)
 
-I exemplet ovan, så exemplifieras ett icke giltigt exempel där regeln kommer signalera att det finns olika namnsättningar för egenskaper som är uttryckta med både CamelCase samt snake_case.
+_Exemplet illustrerar ett icke godkänt fall där egenskaperna i API schemadefinitioner använder olika namngivningskonventioner. Både camelCase och snake_case förekommer, vilket strider mot regelns krav på en konsekvent namnsättning inom API._
 
 ---
 
@@ -924,9 +923,9 @@ Regeln förutsätter att den namnsättning som används för egenskaper beskrivn
 
 **Exempel:**
 
-![alt text](images/ame7.png)
+![Exempelbild av en OpenAPI-schemadefinition med två egenskapsnamn. Det första fältnamnet består av tillåtna alfanumeriska tecken, medan det andra innehåller ett icke alfanumeriskt tecken som strider mot regelns rekommendation.](images/ame7.png)
 
-I exemplet ovan, så exemplifieras giltigt exempel (första egenskapen) respektive icke giltigt exempel (andra egenskapen) där regeln kommer signalera att det finns icke alfanumeriska tecken för den andra egenskapen.
+_Exemplet illustrerar ett giltigt och ett icke giltigt fältnamn i en schemadefinition. Det första fältnamnet uppfyller regelns krav på alfanumeriska tecken, medan det andra innehåller tecken som inte är tillåtna enligt regeln. Underscore (_) är tillåtet som avskiljare i fältnamn.\_
 
 ---
 
@@ -951,9 +950,9 @@ Regeln förutsätter att de datastrukturer/modeller som används under `requestB
 
 **Exempel:**
 
-![alt text](images/arq1.png)
+![Exempelbild av en OpenAPI-specifikation där mediatypen under requestBody.content anges som application/json med teckenkodningen charset=UTF-8, vilket illustrerar regelns krav på att begärans innehåll ska skickas i UTF-8.](images/arq1.png)
 
-I exemplet ovan, så exemplifieras regeln med en kontroll av att media typen under `content` objektet bör vara `application/json`. I exemplet ovan är charset specificerat, men hade kunnat utelämnas då default charset för media typen `application/json` är UTF-8.
+_I exemplet ovan, så exemplifieras regeln med en kontroll av att media typen under `content` objektet bör vara `application/json`. I exemplet ovan är charset specificerat, men hade kunnat utelämnas då default charset för media typen `application/json` är UTF-8._
 
 ---
 
@@ -977,10 +976,6 @@ Regeln förutsätter att ovan beskrivna header parametrar, förutsatt att de är
 - Attributet ETag: Kontroll görs att schema formatet är satt till värdet "etag"
 - Attributet Connection: Kontroll görs att det finns minst ett enum med värdet "keep-alive"
 - Attributet Cookie: Kontroll görs att värdet på schema-typen inte är satt till "undefined"
-
-**Exempel:**
-
-TODO
 
 ---
 
@@ -1030,9 +1025,9 @@ Regeln förutsätter att den namngivna komplexa strukturen som återfinns under 
 
 **Exempel:**
 
-![alt text](images/fel1.png)
+![Exempelbild av en OpenAPI-specifikation där svarets mediatyp application/problem+json refererar till schemat Error. Schemat visar attributen type, title, status, detail och instance, vilka enligt regeln ska ingå i API feldetaljer enligt RFC 9457.](images/fel1.png)
 
-Ovan exemplifieras regeln med en kontroll av den komplexa typen Error som beskrivs med media typen `application/problem+json`. Regeln kontrollerar förutom att typen återfinns att de ingående attributen `type`, `title`, `status`, `detail` samt `instance` återfinns.
+_Ovan exemplifieras regeln med en kontroll av den komplexa typen Error som beskrivs med media typen `application/problem+json`. Regeln kontrollerar förutom att typen återfinns att de ingående attributen `type`, `title`, `status`, `detail` samt `instance` återfinns._
 
 ---
 
@@ -1053,9 +1048,9 @@ Regeln förutsätter att den namngivna komplexa strukturen som återfinns under 
 
 **Exempel:**
 
-![alt text](images/fel2.png)
+![Exempelbild av en OpenAPI-specifikation där ett felsvar med statuskod 501 använder mediatypen application/problem+json och refererar till schemat Error. Exemplet visar hur mediatypen för felsvar kontrolleras enligt regeln.](images/fel2.png)
 
-I exemplet ovan, så exemplifieras regeln med en kontroll att den komplexa typen Error beskrivs med media typen `application/problem+json`. I detta fall så infaller regeln eftersom statuskoden för felet är 501 och faller inom ramen för kontroll. Regeln hade också infallit ifall media typen beskrivits med `application/problem+xml`.
+_Ovan exemplifieras regeln med en kontroll att den komplexa typen Error beskrivs med media typen `application/problem+json`. I detta fall så infaller regeln eftersom statuskoden för felet är 501 och faller inom ramen för kontroll. Regeln hade också infallit ifall media typen beskrivits med `application/problem+xml`._
 
 ---
 
@@ -1080,9 +1075,9 @@ Regeln förutsätter att den specificerade URL:en följer semantisk versionering
 
 **Exempel:**
 
-![alt text](images/ver5.png)
+![Exempelbild av en OpenAPI-specifikation där serverns URL under servers granskas för att kontrollera att API-versionen anges enligt formatet v[x], med ett enda nummer för huvudversionen.](images/ver5.png)
 
-I exemplet ovan, så exemplifieras regeln med en kontroll att den specificerade URL:en följer den semantiska versioneringen korrekt.
+_Exemplet illustrerar hur regeln kontrollerar att versionsnumret i serverns URL följer det föreskrivna formatet v[x], där v anger version och x består av ett enda nummer som representerar API huvudversion. Regeln tillåter även alpha- och beta-versioner._
 
 ---
 
@@ -1103,9 +1098,9 @@ Regeln förutsätter att resursen `api-info` finns tillgänglig under själva ro
 
 **Exempel:**
 
-![alt text](images/ver6.png)
+![Exempelbild av en OpenAPI-specifikation där sökvägarna under paths granskas för att kontrollera att resursen api-info finns definierad på API rotnivå.](images/ver6.png)
 
-I exemplet ovan, så exemplifieras regeln med en kontroll att den specificerade URL:en följer den semantiska versioneringen korrekt.
+_Exemplet illustrerar hur regeln kontrollerar att resursen api-info finns definierad under paths på API rotnivå. Resursen ska tillgängliggöra information om API i enlighet med regelns krav._
 
 ---
 
@@ -1141,21 +1136,21 @@ Headern kan definieras direkt eller via `$ref` till `components.parameters`.
 
 **Exempel:**
 
-![alt text](images/spa02-1.png)
+![Exempelbild av en OpenAPI-specifikation där en operation saknar definition av HTTP-headern traceparent, vilket innebär att kravet på att acceptera spårningsinformation i inkommande anrop inte uppfylls.](images/spa02-1.png)
 
-I exemplet ovan saknas `traceparent` bland headers, vilket är ett brott mot regeln.
+_I exemplet ovan saknas `traceparent` bland headers, vilket är ett brott mot regeln._
 
-![alt text](images/spa02-2.png)
+![Exempelbild av en OpenAPI-specifikation där HTTP-headern traceparent refereras via $ref till en parameterdefinition under components.parameters. Parametern anges med required: false, vilket innebär att headern inte är obligatorisk.](images/spa02-2.png)
 
-I exemplet ovan definieras headern genom en `$ref` till `components.parameters`. Parametern har `required: false`, vilket innebär att `traceparent` inte är obligatorisk i det inkommande anropet.
+_I exemplet ovan definieras headern genom en `$ref` till `components.parameters`. Parametern har `required: false`, vilket innebär att `traceparent` inte är obligatorisk i det inkommande anropet._
 
-![alt text](images/spa02-3.png)
+![Exempelbild av en OpenAPI-specifikation där HTTP-headern traceparent definieras på path-nivå. Både GET- och POST-operationerna under samma sökväg ärver parameterdefinitionen och uppfyller därmed regelns krav.](images/spa02-3.png)
 
-Parametrar som är definierade på path-nivå gäller för samtliga operationer under samma path. I exemplet ovan ärver både `get` och `post` de headers som är definierade på path-nivå, och båda operationerna uppfyller därmed regeln.
+_Parametrar som är definierade på path-nivå gäller för samtliga operationer under samma path. I exemplet ovan ärver både `get` och `post` de headers som är definierade på path-nivå, och båda operationerna uppfyller därmed regeln._
 
-![alt text](images/spa02-4.png)
+![Exempelbild av en OpenAPI-specifikation där HTTP-headern traceparent definieras med required: true. Detta innebär att headern anges som obligatorisk, vilket strider mot regelns krav på att den ska kunna utelämnas i inkommande anrop.](images/spa02-4.png)
 
-I exemplet ovan är `traceparent` definierad med `required: true`, vilket är ett brott mot regeln. traceparent får inte vara obligatorisk eftersom API-producenten enligt SPA.03 ska kunna hantera inkommande anrop där headern saknas
+_I exemplet ovan är `traceparent` definierad med `required: true`, vilket är ett brott mot regeln. traceparent får inte vara obligatorisk eftersom API-producenten enligt SPA.03 ska kunna hantera inkommande anrop där headern saknas_
 
 ### ID: SPA.04
 
@@ -1172,17 +1167,17 @@ $.paths[*][get,put,post,delete,patch].responses[*]
 **Förklaring:**
 Regeln förutsätter att varje dokumenterat API-svar innehåller HTTP-headern `traceparent`. Headern kan definieras direkt under `headers` eller via `$ref` till en header som definierats under `components.headers`.
 
-Regeln kontrollerar **endast** att headern är dokumenterad i API-specifikationen. Den kontrollerar inte hur spårningsinformationen hanteras via körning, exempelvis att en ny spårkedja initeras enligt W3C Trace Context eller att samma `traceparent` returneras som i det inkommande anropet.
+Regeln kontrollerar **endast** att headern är dokumenterad i OpenAPI-specifikationen. Den kontrollerar inte hur spårningsinformationen hanteras via körning, exempelvis att en ny spårkedja initeras enligt W3C Trace Context eller att samma `traceparent` returneras som i det inkommande anropet.
 
 **Exempel:**
 
-![alt text](images/spa04-1.png)
+![Exempelbild av en OpenAPI-specifikation där HTTP-headern traceparent är definierad under headers i ett API-svar. Headern dokumenteras som en del av svarets innehåll.](images/spa04-1.png)
 
-I exemplet ovan kontrolleras att `traceparent` finns bland de headers som dokumenterats för API-svaret.
+_I exemplet ovan kontrolleras att `traceparent` finns bland de headers som dokumenterats för API-svaret._
 
-![alt text](images/spa04-2.png)
+![Exempelbild av en OpenAPI-specifikation där HTTP-headern traceparent inkluderas i ett API-svar genom en $ref-referens till en headerdefinition under components.headers.](images/spa04-2.png)
 
-Headern kan även definieras genom en `$ref` till `components.headers`.
+_Headern kan även definieras genom en `$ref` till `components.headers`._
 
 ---
 
@@ -1215,21 +1210,21 @@ Om en alternativ identifierare, exempelvis `x-request-id`, används utan att `tr
 
 Namnen på headers jämförs skiftlägesokänsligt eftersom HTTP-headers inte är skiftlägeskänsliga.
 
-Regeln kontrollerar **endast** att headers är dokumenterade i API-specifikationen. Den kontrollerar inte hur spårningsinformationen hanteras via körning.
+Regeln kontrollerar **endast** att headers är dokumenterade i OpenAPI-specifikationen. Den kontrollerar inte hur spårningsinformationen hanteras via körning.
 
 **Exempel:**
 
-![alt text](images/spa07-1.png)
+![Exempelbild av en OpenAPI-specifikation där request-headern x-request-id är definierad utan att traceparent anges. Exemplet visar en alternativ spårningsidentifierare som används utan den obligatoriska kompletterande headern.](images/spa07-1.png)
 
-I exemplet ovan används `x-request-id` utan att `traceparent` är definierad, vilket är ett brott mot regeln.
+_I exemplet ovan används `x-request-id` utan att `traceparent` är definierad, vilket är ett brott mot regeln._
 
-![alt text](images/spa07-2.png)
+![Exempelbild av en OpenAPI-specifikation där både request-headern x-request-id och traceparent är definierade för samma operation. x-request-id används som komplement till traceparent, i enlighet med regelns krav.](images/spa07-2.png)
 
-I exemplet ovan används `x-request-id` som komplement till `traceparent`, vilket är tillåtet.
+_I exemplet ovan används `x-request-id` som komplement till `traceparent`, vilket är tillåtet._
 
-![alt text](images/spa07-3.png)
+![Exempelbild av en OpenAPI-specifikation där request-headers x-request-id och traceparent definieras på path-nivå. Både GET- och POST-operationerna under samma sökväg ärver headerdefinitionerna och uppfyller därmed regelns krav.](images/spa07-3.png)
 
-Parametrar som är definierade på path-nivå gäller för samtliga operationer under samma path. I exemplet ovan ärver både `get` och `post` de två headers som är definierade på path-nivå, och båda operationerna uppfyller därmed regeln.
+_Parametrar som är definierade på path-nivå gäller för samtliga operationer under samma path. I exemplet ovan ärver både `get` och `post` de två headers som är definierade på path-nivå, och båda operationerna uppfyller därmed regeln._
 
 ---
 
@@ -1254,15 +1249,15 @@ Regeln förutsätter att definierade query parametrar som är satta för API:et 
 
 **Exempel:**
 
-![alt text](images/fns01.png)
+![Exempelbild av en OpenAPI-specifikation för sökvägen /persons, där query-parametrarna limit-this och pageThis är inringade i rött. limit-this använder kebab-case, medan pageThis använder camelCase. Eftersom parametrarna följer olika namnkonventioner uppfyller exemplet inte regelns krav på en konsekvent namnkonvention.](images/fns01.png)
 
-I exemplet ovan, så exemplifieras regeln med en kontroll av de parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom en av parametrarna (limt-this) är definerad med kebab-case och den andra parametern är definerad med namnkonventionen för camelCase.
+_Ovan exemplifieras regeln med en kontroll av de parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom en av parametrarna (limt-this) är definerad med kebab-case och den andra parametern är definerad med namnkonventionen för camelCase._
 
 **Exempel 2:**
 
-![alt text](images/fns01_2.png)
+![Exempelbild av en OpenAPI-specifikation för sökvägen /persons, där query-parametrarna limit_this och pageThis är inringade i rött. limit_this använder snake_case och pageThis använder camelCase. Båda parametrarna följer giltiga namnkonventioner, vilket innebär att exemplet uppfyller regelns krav.](images/fns01_2.png)
 
-I exemplet ovan, så exemplifieras regeln med en kontroll av de parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett positivt utfall eftersom bådaparametrarna är definerade med giltiga namnkonventioner. Parametern limt_this är definerad med snake-case och den andra parametern pageThis är definerad med namnkonventionen för camelCase.
+_Ovan exemplifieras regeln med en kontroll av de parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett positivt utfall eftersom bådaparametrarna är definerade med giltiga namnkonventioner. Parametern limt_this är definerad med snake-case och den andra parametern pageThis är definerad med namnkonventionen för camelCase._
 
 ---
 
@@ -1283,9 +1278,9 @@ Regeln förutsätter att definierade query parametrar som är satta för API:et 
 
 **Exempel:**
 
-![alt text](images/fns03.png)
+![Exempelbild av en OpenAPI-specifikation för sökvägen /persons, där query-parametern 1pageThis är inringad i rött. Parameternamnet börjar med siffran 1 i stället för en bokstav, vilket innebär att exemplet inte uppfyller regelns krav.](images/fns03.png)
 
-I exemplet ovan, så exemplifieras regeln med en kontroll av de parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom en av de definierade parametrarna (1pageThis) ej startar med en bokstav.
+_Ovan exemplifieras regeln med en kontroll av de parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom en av de definierade parametrarna (1pageThis) ej startar med en bokstav._
 
 ---
 
@@ -1306,9 +1301,9 @@ Regeln förutsätter att definierade query parametrar ej är satt som tvingande.
 
 **Exempel:**
 
-![alt text](images/fns05.png)
+![Exempelbild av en OpenAPI-specifikation för sökvägen /persons, där query-parametern pageThis är markerad i rött. Parametern är satt till required: true, vilket innebär att den är obligatorisk. Exemplet uppfyller därför inte regelns rekommendation om att sökparametrar bör vara frivilliga.](images/fns05.png)
 
-I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom en av de definierade parametrarna (pageThis) är satt som tvingande.
+_Ovan exemplifieras regeln med en kontroll av de query parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom en av de definierade parametrarna (pageThis) är satt som tvingande._
 
 ---
 
@@ -1329,9 +1324,9 @@ Regeln förutsätter att definierade query parametrar har tecken som är definie
 
 **Exempel:**
 
-![alt text](images/fns06.png)
+![Exempelbild av en OpenAPI-specifikation för sökvägen /persons, där query-parametern limitThis är inringad i rött. Parameternamnet innehåller tecken som inte är URL-säkra, vilket innebär att exemplet inte uppfyller regelns rekommendation.](images/fns06.png)
 
-I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom en av de definierade parametrarna (pageThis) innehåller tecken som ej är URL-säkra.
+_Ovan exemplifieras regeln med en kontroll av de query parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom en av de definierade parametrarna (limitThis) innehåller tecken som ej är URL-säkra._
 
 ---
 
@@ -1352,9 +1347,9 @@ Regeln förutsätter att parametern 'limit' ingår om man använder sig av pagin
 
 **Exempel:**
 
-![alt text](images/fns07.png)
+![Exempelbild av en OpenAPI-specifikation för sökvägen /persons, där parametern mylimit är markerad i rött.](images/fns07.png)
 
-I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom de reserverade parameternamnenorden 'page' och 'offset' ingår under pathen / persons, men inte det då tvingade reserverade parameternamnet 'limit'. I exemplet så finns det en definierad parameter (mylimit), men den är alltså inte giltig.
+_Ovan exemplifieras regeln med en kontroll av de query parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom de reserverade parameternamnenorden 'page' och 'offset' ingår under pathen / persons, men inte det då tvingade reserverade parameternamnet 'limit'. I exemplet så finns det en definierad parameter (mylimit), men den är alltså inte giltig._
 
 ---
 
@@ -1375,9 +1370,9 @@ Regeln förutsätter att ifall parametern 'page' ingår, så förväntas man anv
 
 **Exempel:**
 
-![alt text](images/fns08.png)
+![Exempelbild av en OpenAPI-specifikation för sökvägen /persons, där query-parametern page och dess defaultvärde 100 är inringade i rött.](images/fns08.png)
 
-I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom det reserverade parameternamnet 'page' ingår under pathen / persons, och har ett defaultvärde som är satt till 100 och ej till 1.
+_Ovan exemplifieras regeln med en kontroll av de query parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom det reserverade parameternamnet 'page' ingår under pathen / persons, och har ett defaultvärde som är satt till 100 och ej till 1._
 
 ---
 
@@ -1398,9 +1393,9 @@ Regeln förutsätter att ifall parametrarn 'page' eller 'offset' ingår, så fö
 
 **Exempel:**
 
-![alt text](images/fns09.png)
+![Exempelbild av en OpenAPI-specifikation för sökvägen /persons, där query-parametern limit och dess defaultvärde är inringade i rött. Defaultvärdet är satt till 200.](images/fns09.png)
 
-I exemplet ovan, så exemplifieras regeln med en kontroll av de query parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom det reserverade parameternamnet 'page' ingår under pathen / persons, och att den reserverade parametern 'limit' ej har ett defaultvärde satt till 20.
+_Ovan exemplifieras regeln med en kontroll av de query parametrar som ingår under pathen /persons. I exemplet så kommer regeln att ge ett negativt utfall eftersom det reserverade parameternamnet 'page' ingår under pathen / persons, och att den reserverade parametern 'limit' ej har ett defaultvärde satt till 20._
 
 ---
 
@@ -1448,9 +1443,9 @@ Regeln förutsätter att inte Basic- eller Digest- autentisering är definierad 
 
 **Exempel:**
 
-![alt text](images/sak09.png)
+![Exempelbild av en OpenAPI-specifikation där security schemes för både Basic- och Digest-autentisering är inringade i rött.](images/sak09.png)
 
-I exemplet ovan så kommer regeln att ge ett negativt utfall eftersom det finns både ett securityscheme definerad för basic och ett för digest.
+_I exemplet ovan så kommer regeln att ge ett negativt utfall eftersom det finns både ett securityscheme definerad för basic och ett för digest._
 
 ---
 
@@ -1471,11 +1466,9 @@ Regeln kontrollerar förutsatt att det finns ett securityscheme definierat, att 
 
 **Exempel:**
 
-![alt text](images/sak10.png)
+![Exempelbild av en OpenAPI-specifikation där security scheme för Bearer-autentisering är inringat i rött.](images/sak10.png)
 
-I exemplet ovan så kommer regeln att ge ett positivt utfall eftersom det finns ett securityscheme definerad för bearer. Fältet 'bearerFormat' är valfritt och JWT anger att tokenen följer JWT-standarden
-
----
+_I exemplet ovan så kommer regeln att ge ett positivt utfall eftersom det finns ett securityscheme definerad för bearer. Fältet 'bearerFormat' är valfritt och JWT anger att tokenen följer JWT-standarden_
 
 ### ID: SAK.11
 
@@ -1521,9 +1514,9 @@ Regeln kontrollerar, under förutsättning att ett security scheme är definiera
 
 **Exempel:**
 
-![alt text](images/sak15.png)
+![Exempelbild av en OpenAPI-specifikation där säkerhetsschemat ApiKeyQuery och fältet in är markerat i rött. Schemat har typen apiKey och fältet in är satt till query.](images/sak15.png)
 
-I exemplet ovan ger regeln ett negativt utfall, eftersom det definierade säkerhetsschemat 'ApiKeyQuery' har typen 'apiKey' och parametern 'in' är satt till 'query', vilket strider mot regeln.
+_I exemplet ovan ger regeln ett negativt utfall, eftersom det definierade säkerhetsschemat 'ApiKeyQuery' har typen 'apiKey' och parametern 'in' är satt till 'query', vilket strider mot regeln._
 
 ---
 
@@ -1544,9 +1537,9 @@ Regeln kontrollerar, under förutsättning att ett security scheme är definiera
 
 **Exempel:**
 
-![alt text](images/sak16.png)
+![Exempelbild av en OpenAPI-specifikation där säkerhetsschemat ApiKeyQuery är markerat i rött. Schemat har typen apiKey och fältet in är satt till header.](images/sak16.png)
 
-I exemplet ovan ger regeln ett positivt utfall, eftersom det definierade säkerhetsschemat 'ApiKeyQuery' har typen 'apiKey' och parametern 'in' är satt till 'header', vilket är i linje med regeln.
+_I exemplet ovan ger regeln ett positivt utfall, eftersom det definierade säkerhetsschemat 'ApiKeyQuery' har typen 'apiKey' och parametern 'in' är satt till 'header', vilket är i linje med regeln._
 
 ---
 
@@ -1567,9 +1560,9 @@ Regeln kontrollerar, förutsatt att typen av säkerhetsschema är ett oauth2, at
 
 **Exempel:**
 
-![alt text](images/sak18.png)
+![Exempelbild av en OpenAPI-specifikation där fälten tokenUrl och refreshUrl för OAuth 2.0-flödet clientCredentials är markerade i rött.](images/sak18.png)
 
-I exemplet ovan så kommer regeln att ge ett negativt utfall eftersom clientCredentials fälten tokenUrl samt refreshUrl är specificerat med http.
+_I exemplet ovan så kommer regeln att ge ett negativt utfall eftersom clientCredentials fälten tokenUrl samt refreshUrl är specificerat med http._
 
 ---
 
@@ -1585,16 +1578,16 @@ I exemplet ovan så kommer regeln att ge ett negativt utfall eftersom clientCred
 $.paths[*][post,put,patch,delete,options]
 ```
 
-**Förklaring**
+**Förklaring:**
 Regeln kontrollerar att HTTP-operationer som definierar en requestBody även dokumenterar ett svar för HTTP-statuskod 415 `Unsupported Media Type`.
 
-Eftersom regeln validerar API-kontraktet och inte den faktiska implementationen kan den inte verifiera att API:et verkligen avvisar felaktiga eller saknade Content-Type-headers. Regeln säkerställer därför att detta beteende är dokumenterat i API-specifikationen.
+Eftersom regeln validerar API-kontraktet och inte den faktiska implementationen kan den inte verifiera att API:et verkligen avvisar felaktiga eller saknade Content-Type-headers. Regeln säkerställer därför att detta beteende är dokumenterat i OpenAPI-specifikationen.
 
 Om en operation innehåller en requestBody men saknar ett definierat 415-svar ger regeln ett negativt utfall.
 
 **Exempel**
 
-![alt text](images/sak29.png)
+![Exempelbild av en OpenAPI-specifikation där en HTTP-operation med requestBody saknar ett dokumenterat svar med statuskod 415 Unsupported Media Type. Exemplet visar att requestBody och '415 svaret är inringade i rött'.](images/sak29.png)
 
 ---
 
@@ -1619,8 +1612,6 @@ Regeln förutsätter att det inte finns en förekomst av element requestBody nä
 
 **Exempel:**
 
-![alt text](images/for02.png)
+![Exempelbild av en OpenAPI-specifikation där en requestBody är definierad för en GET-operation. Definitionen av requestBody är markerad i rött.](images/for02.png)
 
-I exemplet ovan så kommer regeln att ge ett negativt utfall eftersom GET operationer inte kan ha en requestBody definierad.
-
----
+_I exemplet ovan så kommer regeln att ge ett negativt utfall eftersom GET operationer inte kan ha en requestBody definierad._
