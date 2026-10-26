@@ -501,7 +501,7 @@ paths:
     get:
       servers:
         - url: https://{host}/
-          description: Root of the service, outside the versioned API base path. Defaults to production; set host to target another environment.
+          description: Root of the service, outside the versioned API base path. Defaults to production. Set host to target another environment.
           variables:
             host:
               default: raplp.digg.se
