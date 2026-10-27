@@ -1,22 +1,19 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["local>diggsweden/.github:renovate-base", ":maintainLockFilesWeekly"],
-  "enabledManagers": ["github-actions", "npm"],
+  "enabledManagers": ["github-actions", "npm", "mise", "dockerfile"],
   "platformAutomerge": false,
-  "automergeSchedule": ["0 9-21 * * 6"],
   "packageRules": [
     {
       "description": "Automerge endast patch",
       "matchUpdateTypes": ["patch"],
-      "automerge": true,
-      "minimumReleaseAge": "7 days"
+      "automerge": true
     },
     {
       "description": "Node.js dependencies - Major updates",
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["major"],
-      "addLabels": ["dependencies", "major-update"],
-      "minimumReleaseAge": "7 days"
+      "addLabels": ["dependencies", "major-update"]
     },
     {
       "description": "Development dependencies",
@@ -24,8 +21,7 @@
       "matchDepTypes": ["devDependencies"],
       "groupName": "dev dependencies",
       "addLabels": ["dev-deps"],
-      "matchPackageNames": ["!@stoplight/spectral-formats"],
-      "minimumReleaseAge": "7 days"
+      "matchPackageNames": ["!@stoplight/spectral-formats"]
     },
     {
       "description": "Core dependencies",
@@ -33,15 +29,13 @@
       "matchDepTypes": ["dependencies"],
       "groupName": "core dependencies",
       "addLabels": ["core-deps"],
-      "matchPackageNames": ["!/^@stoplight/spectral/"],
-      "minimumReleaseAge": "7 days"
+      "matchPackageNames": ["!/^@stoplight/spectral/"]
     },
     {
       "description": "Spectral dependencies",
       "groupName": "spectral",
       "labels": ["spectral"],
-      "matchPackageNames": ["/^@stoplight/spectral/"],
-      "minimumReleaseAge": "7 days"
+      "matchPackageNames": ["/^@stoplight/spectral/"]
     },
     {
       "description": "Node.js engine",
@@ -50,8 +44,45 @@
       "matchPackageNames": ["node"],
       "enabled": true,
       "rangeStrategy": "replace",
-      "labels": ["node-engine"],
-      "minimumReleaseAge": "7 days"
+      "labels": ["node-engine"]
+    },
+    {
+      "description": "Docker base images",
+      "matchManagers": ["dockerfile"],
+      "addLabels": ["docker", "infrastructure"]
+    },
+    {
+      "description": "Mise tools - Major updates",
+      "matchManagers": ["mise"],
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["tools", "major-update"],
+      "groupName": "mise major"
+    },
+    {
+      "description": "Mise tools - Non-major updates",
+      "matchManagers": ["mise"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "addLabels": ["tools"],
+      "groupName": "mise non-major"
+    },
+    {
+      "description": "Security and compliance tools",
+      "matchManagers": ["mise"],
+      "matchPackageNames": ["aqua:zricethezav/gitleaks", "aqua:siderolabs/conform", "aqua:rhysd/actionlint"],
+      "addLabels": ["security-tools"],
+      "groupName": "security tools"
+    },
+    {
+      "description": "Documentation and build tools",
+      "matchManagers": ["mise"],
+      "matchPackageNames": [
+        "aqua:google/yamlfmt",
+        "aqua:rvben/rumdl",
+        "github:italia/publiccode-parser-go",
+        "aqua:casey/just"
+      ],
+      "addLabels": ["documentation"],
+      "groupName": "documentation tools"
     }
   ]
 }
