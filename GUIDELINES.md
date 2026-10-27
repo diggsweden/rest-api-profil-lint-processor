@@ -960,7 +960,7 @@ I exemplet ovan, så exemplifieras regeln med en kontroll av att media typen und
 
 ### ID: ARQ.03
 
-**Krav:** Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, ETag, Connection och Cookie.
+**Krav:** Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, If-None-Match, Connection och Cookie.
 
 **Typ:** BÖR
 
@@ -971,17 +971,19 @@ $.paths.*.*
 ```
 
 **Förklaring:**
-Regeln förutsätter att ovan beskrivna header parametrar, förutsatt att de är satta, följer följande regler för respektive attribut:
+Regeln kontrollerar att de angivna request-headers, om de är definierade, uppfyller följande krav:
 
-- Attributet Date: Kontroll görs att schema formatet är satt till värdet "date-time"
-- Attributet Cache-Control: Kontroll görs att det finns minst ett enum-värde
-- Attributet ETag: Kontroll görs att schema formatet är satt till värdet "etag"
-- Attributet Connection: Kontroll görs att det finns minst ett enum med värdet "keep-alive"
-- Attributet Cookie: Kontroll görs att värdet på schema-typen inte är satt till "undefined"
+- Attributet Date: Kontroll görs att `schema.format` är satt till värdet `date-time`.
+- Attributet Cache-Control: Kontroll görs att `schema.enum` innehåller minst ett värde.
+- Attributet If-None-Match: Kontroll görs att `schema.type` är satt till `string`. Headern används vid villkorliga HTTP-anrop tillsammans med ETag-värden från tidigare API-svar.
+- Attributet Connection: Kontroll görs att `schema.enum` innehåller värdet `keep-alive`.
+- Attributet Cookie: Kontroll görs att värdet på `schema.type` är definierad.
+
+Kontrollen av headernamn är skiftlägesokänslig. Om en header saknas genereras ingen varning.
 
 **Exempel:**
 
-TODO
+![Exempel på OpenAPI-definition med giltiga request-headers enligt ARQ.03](images/arq3.png)
 
 ---
 

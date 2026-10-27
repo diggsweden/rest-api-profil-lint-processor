@@ -162,7 +162,7 @@ export class Arq03 extends BaseRuleset {
     id: 'ARQ.03',
   };
   description =
-    'Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, ETag, Connection och Cookie.';
+    'Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, If-None-Match, Connection och Cookie.';
   message = this.description;
   given = '$.paths.*.*';
   then = [
@@ -172,20 +172,26 @@ export class Arq03 extends BaseRuleset {
         if (targetVal['parameters'] !== undefined) {
           targetVal['parameters'].forEach((element) => {
             if (element['in'] == 'header') {
-              if (element['name'] == 'Date' && element['schema']['format'] !== 'date-time') {
+              const headerName = element['name']?.toLowerCase();
+
+              if (headerName == 'date' && element['schema']?.['format'] !== 'date-time') {
                 isValid = false;
               }
-              if (element['name'] == 'Cache-Control' && element['schema']['enum'].length == 0) {
+              if (headerName == 'cache-control' &&
+                (!Array.isArray(element['schema']?.['enum']) || element['schema']['enum'].length === 0)
+              ) {
                 isValid = false;
               }
-              if (element['name'] == 'ETag' && element['schema']['format'] !== 'etag') {
+              if (headerName === 'if-none-match' && element['schema']?.['type'] !== 'string') {
                 isValid = false;
               }
-              if (element['name'] == 'Connection' && !element['schema']['enum'].includes('keep-alive')) {
+              if (headerName == 'connection' &&
+                (!Array.isArray(element['schema']?.['enum']) || !element['schema']['enum'].includes('keep-alive'))
+              ) {
                 isValid = false;
               }
             }
-            if (element['in'] === 'cookie' && element['schema']['type'] == undefined) {
+            if (element['in'] === 'cookie' && element['schema']?.['type'] == undefined) {
               isValid = false;
             }
           });
