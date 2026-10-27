@@ -85,34 +85,35 @@ testRule('Spa02', [
     ],
   },
   {
-  name: 'ogiltigt testfall - traceparent är required',
-  document: {
-    openapi: '3.1.0',
-    info: { version: '1.0' },
-    paths: {
-      '/users': {
-        get: {
-          parameters: [
-            {
-              name: 'traceparent',
-              in: 'header',
-              required: true,
-              schema: { type: 'string' },
+    name: 'ogiltigt testfall - traceparent är required',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/users': {
+          get: {
+            parameters: [
+              {
+                name: 'traceparent',
+                in: 'header',
+                required: true,
+                schema: { type: 'string' },
+              },
+            ],
+            responses: {
+              '200': { description: 'OK' },
             },
-          ],
-          responses: {
-            '200': { description: 'OK' },
           },
         },
       },
     },
-  },
-  errors: [
-    {
-      message: 'API-producenter SKALL acceptera HTTP-headern traceparent i inkommande anrop och propagera spårningsinformationen vidare enligt W3C Trace Context vid vidare anrop till andra system.',
-      severity: DiagnosticSeverity.Error,
-    },
-  ],
+    errors: [
+      {
+        message:
+          'API-producenter SKALL acceptera HTTP-headern traceparent i inkommande anrop och propagera spårningsinformationen vidare enligt W3C Trace Context vid vidare anrop till andra system.',
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
   },
   {
     name: 'ogiltigt testfall - headers felaktig definierade via $ref till components.parameters',
@@ -157,6 +158,62 @@ testRule('Spa04', [
                 description: 'OK',
                 headers: {
                   traceparent: {
+                    schema: {
+                      type: 'string',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - traceparent finns med content',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/users': {
+          get: {
+            responses: {
+              '200': {
+                description: 'OK',
+                headers: {
+                  traceparent: {
+                    content: {
+                      'text/plain': {
+                        schema: {
+                          type: 'string',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'giltigt testfall - traceparent finns med blandat skiftesläge',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/users': {
+          get: {
+            responses: {
+              '200': {
+                description: 'OK',
+                headers: {
+                  TRACEPaReNt: {
                     schema: {
                       type: 'string',
                     },

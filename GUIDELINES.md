@@ -1170,19 +1170,21 @@ $.paths[*][get,put,post,delete,patch].responses[*]
 ```
 
 **Förklaring:**
-Regeln förutsätter att varje dokumenterat API-svar innehåller HTTP-headern `traceparent`. Headern kan definieras direkt under `headers` eller via `$ref` till en header som definierats under `components.headers`.
+Regeln förutsätter att varje dokumenterat API-svar innehåller HTTP-headern `traceparent`. Samtliga definierade HTTP-svar kontrolleras, oavsett statuskod. Det innebär att både framgångssvar (exempelvis 200), klientfel (exempelvis 400), serverfel (exempelvis 500) och ett eventuellt default-svar omfattas av kontrollen.
+
+Headern kan definieras direkt under `headers` eller via `$ref` till en header som definierats under `components.headers`.
 
 Regeln kontrollerar **endast** att headern är dokumenterad i API-specifikationen. Den kontrollerar inte hur spårningsinformationen hanteras via körning, exempelvis att en ny spårkedja initeras enligt W3C Trace Context eller att samma `traceparent` returneras som i det inkommande anropet.
 
 **Exempel:**
 
-![alt text](images/spa04-1.png)
+![Exempelbild av en OpenAPI-specifikation där HTTP-headern traceparent är definierad under headers i ett API-svar. Headern dokumenteras som en del av svarets innehåll.](images/spa04-1.png)
 
-I exemplet ovan kontrolleras att `traceparent` finns bland de headers som dokumenterats för API-svaret.
+_I exemplet ovan kontrolleras att `traceparent` finns bland de headers som dokumenterats för API-svaret._
 
-![alt text](images/spa04-2.png)
+![Exempelbild av en OpenAPI-specifikation där HTTP-headern traceparent inkluderas i ett API-svar genom en $ref-referens till en headerdefinition under components.headers.](images/spa04-2.png)
 
-Headern kan även definieras genom en `$ref` till `components.headers`.
+_Headern kan även definieras genom en `$ref` till `components.headers`._
 
 ---
 

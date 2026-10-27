@@ -101,9 +101,11 @@ export class Spa04 extends BaseRuleset {
   then = [
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {
-        const header = targetVal?.headers?.traceparent;
+        const traceparent = this.getTraceparentHeader(targetVal?.headers);
 
-        const hasTraceparent = header && (header.schema !== undefined || header.$ref !== undefined);
+        const hasTraceparent =
+          traceparent != null &&
+          (traceparent.schema !== undefined || traceparent.content !== undefined || traceparent.$ref !== undefined);
 
         if (hasTraceparent) {
           return [];
@@ -132,6 +134,12 @@ export class Spa04 extends BaseRuleset {
       },
     },
   ];
+
+  private getTraceparentHeader(headers: any): any | undefined {
+    const headerName = Object.keys(headers ?? {}).find((name) => name.toLowerCase() === 'traceparent');
+
+    return headerName ? headers[headerName] : undefined;
+  }
 
   constructor(context: RuleExecutionContext) {
     super(context);
