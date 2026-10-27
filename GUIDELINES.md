@@ -1170,7 +1170,7 @@ $.paths[*][get,put,post,delete,patch].responses[*]
 ```
 
 **Förklaring:**
-Regeln förutsätter att varje dokumenterat API-svar innehåller HTTP-headern `traceparent`. Samtliga definierade HTTP-svar kontrolleras, oavsett statuskod. Det innebär att både framgångssvar *(exempelvis 200)*, klientfel *(exempelvis 400)*, serverfel *(exempelvis 500)* och ett eventuellt default-svar omfattas av kontrollen.
+Regeln förutsätter att varje dokumenterat API-svar innehåller HTTP-headern `traceparent`. Samtliga definierade HTTP-svar kontrolleras, oavsett statuskod. Det innebär att både framgångssvar (exempelvis 200), klientfel (exempelvis 400), serverfel (exempelvis 500) och ett eventuellt default-svar omfattas av kontrollen.
 
 Headern kan definieras direkt under `headers` eller via `$ref` till en header som definierats under `components.headers`.
 
