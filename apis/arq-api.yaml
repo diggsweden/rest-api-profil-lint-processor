@@ -24,6 +24,41 @@ paths:
       description: For testing
       operationId: exampleRequest
       tags: [tag1, tag2]
+      parameters:
+        - name: Date
+          in: header
+          required: false
+          schema:
+            type: string
+            format: date-time
+
+        - name: Cache-Control
+          in: header
+          required: false
+          schema:
+            type: string
+            enum:
+              - no-cache
+
+        - name: If-None-Match
+          in: header
+          required: false
+          schema:
+            type: string
+
+        - name: Connection
+          in: header
+          required: false
+          schema:
+            type: string
+            enum:
+              - keep-alive
+
+        - name: Cookie
+          in: cookie
+          required: false
+          schema:
+            type: string
       requestBody:
         required: true
         content:

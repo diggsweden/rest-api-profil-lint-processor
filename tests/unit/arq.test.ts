@@ -313,7 +313,7 @@ testRule('Arq03', [
     errors: [],
   },
   {
-    name: 'giltigt testfall - ETag: etag',
+    name: 'giltigt testfall - If-None-Match innehåller ett värde',
     document: {
       openapi: '3.1.0',
       info: { version: '1.0' },
@@ -322,13 +322,12 @@ testRule('Arq03', [
           post: {
             parameters: [
               {
-                name: 'ETag',
+                name: 'If-None-Match',
                 in: 'header',
-                description: 'ETag',
+                description: 'If-None-Match',
                 required: true,
                 schema: {
                   type: 'string',
-                  format: 'etag',
                 },
               },
             ],
@@ -339,7 +338,32 @@ testRule('Arq03', [
     errors: [],
   },
   {
-    name: 'ogiltigt testfall - Connection: keep-alive saknas',
+    name: 'giltigt testfall - Cache-Control: enum innehåller minst ett värde',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/foo': {
+          post: {
+            parameters: [
+              {
+                name: 'Cache-Control',
+                in: 'header',
+                required: true,
+                schema: {
+                  type: 'string',
+                  enum: ['no-cache'],
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
+    name: 'ogiltigt testfall - Connection: keep-alive saknas men andra enums finns',
     document: {
       openapi: '3.1.0',
       info: { version: '1.0' },
@@ -364,7 +388,98 @@ testRule('Arq03', [
     errors: [
       {
         message:
-          'Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, ETag, Connection och Cookie.',
+          'Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, If-None-Match, Connection och Cookie.',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - Connection: enum keep-alive saknas',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/foo': {
+          post: {
+            parameters: [
+              {
+                name: 'Connection',
+                in: 'header',
+                required: true,
+                schema: {
+                  type: 'string',
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message:
+          'Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, If-None-Match, Connection och Cookie.',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - Cache-Control: enum saknas',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/foo': {
+          post: {
+            parameters: [
+              {
+                name: 'Cache-Control',
+                in: 'header',
+                required: true,
+                schema: {
+                  type: 'string',
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message:
+          'Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, If-None-Match, Connection och Cookie.',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
+    {
+    name: 'ogiltigt testfall - If-None-Match innehåller ett felaktigt värde',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/foo': {
+          post: {
+            parameters: [
+              {
+                name: 'If-None-Match',
+                in: 'header',
+                description: 'If-None-Match',
+                required: true,
+                schema: {
+                  type: 'integer',
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message:
+          'Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, If-None-Match, Connection och Cookie.',
         severity: DiagnosticSeverity.Warning,
       },
     ],
