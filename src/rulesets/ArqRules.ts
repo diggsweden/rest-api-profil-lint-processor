@@ -191,7 +191,7 @@ export class Arq03 extends BaseRuleset {
                 isValid = false;
               }
             }
-            if (element['in'] === 'cookie' && element['schema']['type'] == undefined) {
+            if (element['in'] === 'cookie' && element['schema']?.['type'] == undefined) {
               isValid = false;
             }
           });

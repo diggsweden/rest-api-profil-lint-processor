@@ -453,7 +453,7 @@ testRule('Arq03', [
       },
     ],
   },
-    {
+  {
     name: 'ogiltigt testfall - If-None-Match innehåller ett felaktigt värde',
     document: {
       openapi: '3.1.0',
@@ -470,6 +470,33 @@ testRule('Arq03', [
                 schema: {
                   type: 'integer',
                 },
+              },
+            ],
+          },
+        },
+      },
+    },
+    errors: [
+      {
+        message:
+          'Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, If-None-Match, Connection och Cookie.',
+        severity: DiagnosticSeverity.Warning,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - Cookie saknar schema',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      paths: {
+        '/foo': {
+          post: {
+            parameters: [
+              {
+                name: 'Cookie',
+                in: 'cookie',
+                required: true,
               },
             ],
           },
