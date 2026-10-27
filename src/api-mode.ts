@@ -12,13 +12,15 @@ import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import { registerHealthRoutes } from './routes/health.js';
+import { StatisticsService } from './statistics/StatisticsService.js';
+import { SqliteStatisticsStore } from './statistics/SqliteStatisticsStore.js';
 
 export type ApiArgs = {
   enableUrlValidation?: boolean;
   urlValidationConfigFile?: string;
 };
 
-// Funktion för att starta API-servern
+// Starts the API server and registers all middleware and routes.
 export async function startServer<T extends ApiArgs>(args: T) {
   const app = express();
   const DEFAULT_PORT = 3000;
@@ -27,6 +29,22 @@ export async function startServer<T extends ApiArgs>(args: T) {
   const bodyLimit = process.env.RAP_LP_JSON_BODY_LIMIT || '3mb';
 
   const swaggerDocument = YAML.load('./rap-lp-openapi.yaml');
+
+  let statisticsService: StatisticsService | undefined;
+  
+  if (StatisticsService.isStatisticsEnabled()) {
+    const service = new StatisticsService(new SqliteStatisticsStore());
+    await service.start();
+    statisticsService = service;
+
+    // Middleware for request statistics
+    app.use((req, res, next) => {
+      res.locals.statsStart = process.hrtime.bigint();
+      res.on('finish', () => service.recordRequest(req, res));
+      next();
+    });
+  }
+
   app.use(
     '/api/v1/docs',
     swaggerUi.serve,
@@ -38,7 +56,7 @@ export async function startServer<T extends ApiArgs>(args: T) {
   );
   app.use('/api/v1/rap-lp-openapi.yaml', express.static(path.join(process.cwd(), 'rap-lp-openapi.yaml')));
 
-  registerStatsRoutes(app);
+  registerStatsRoutes(app, statisticsService);
 
   // For the case of content upload
   app.use(express.json({ limit: bodyLimit }));
@@ -55,8 +73,8 @@ export async function startServer<T extends ApiArgs>(args: T) {
     }),
   );
 
-  // API Endpoint, t.ex. för att validera en YAML-fil
-  registerValidationRoutes(app);
+  // API endpoints, e.g. for validating a YAML file
+  registerValidationRoutes(app, statisticsService);
 
   // Health endpoints
   registerHealthRoutes(app);
@@ -67,10 +85,20 @@ export async function startServer<T extends ApiArgs>(args: T) {
     registerUrlValidationFallbackRoutes(app);
   }
 
-  // Middleware för att mappa interna error till HTTP koder.
+  // Middleware to map internal errors to HTTP status codes.
   app.use(errorHandler);
 
-  return app.listen(port, () => {
-    console.log(`Servern startad. Lyssnar på port ${port}.`);
+  const server = app.listen(port, () => {
+    console.log(`Server started. Listening on port ${port}.`);
   });
+
+  process.once('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down.');
+    server.close(async () => {
+      await statisticsService?.stop();
+      process.exit(0);
+    });
+  });
+
+  return server;
 }

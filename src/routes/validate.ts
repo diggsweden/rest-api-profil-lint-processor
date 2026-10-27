@@ -25,8 +25,8 @@ import { AggregateError } from '../util/RapLPCustomErrorInfo.js';
 
 import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js';
 import { measure } from '../util/performance.js';
-import { recordRuleStats } from '../util/statsDb.js';
 import crypto from 'node:crypto';
+import { StatisticsService } from '../statistics/StatisticsService.js';
 
 const pkg = JSON.parse(fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));
 
@@ -35,7 +35,7 @@ declare var AggregateError: {
   new (errors: any[], message?: string): AggregateError;
 };
 
-export const registerValidationRoutes = (app: Express) => {
+export const registerValidationRoutes = (app: Express, statistics?: StatisticsService) => {
   // Route for raw content upload.
   app.get('/api/v1/validation/rules', (req, res) => {
     res.send(RULE_REGISTRY);
@@ -166,7 +166,7 @@ export const registerValidationRoutes = (app: Express) => {
         );
         const violations = result.result.filter((d) => d.severity === 'ERROR' || d.severity === 'WARNING');
 
-        recordRuleStats(
+        statistics?.recordRuleStats(
           violations.map((d) => ({ ruleId: d.id ?? 'unknown', severity: d.severity ?? 'unknown' })),
           { restApiProfilVersion: pkg.version, rapLpVersion: pkg.version },
         );
