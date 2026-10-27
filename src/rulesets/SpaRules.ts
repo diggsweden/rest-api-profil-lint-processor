@@ -104,7 +104,8 @@ export class Spa04 extends BaseRuleset {
         const traceparent = this.getTraceparentHeader(targetVal?.headers);
 
         const hasTraceparent =
-          traceparent !== undefined && (traceparent.schema !== undefined || traceparent.content !== undefined || traceparent.$ref !== undefined);
+          traceparent != null &&
+          (traceparent.schema !== undefined || traceparent.content !== undefined || traceparent.$ref !== undefined);
 
         if (hasTraceparent) {
           return [];
