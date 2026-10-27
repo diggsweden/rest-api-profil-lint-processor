@@ -148,6 +148,7 @@ Regeln förutsätter att det finns en förekomst av objektet `info` med underlig
   - version
   - title
   - description
+  - termsOfService
   - contact
     - name
     - url
