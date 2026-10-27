@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { ERROR_TYPE, errorHandler, RapLPBaseApiError } from '../../../src/util/RapLPBaseApiErrorHandling';
-import { ProblemDetailsDTO } from '../../../src/model/ProblemDetailsDto';
+import { ERROR_TYPE, errorHandler, RapLPBaseApiError } from '../../../src/util/RapLPBaseApiErrorHandling.js';
+import { ProblemDetailsDTO } from '../../../src/model/ProblemDetailsDto.js';
 import { Request, Response, NextFunction } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
