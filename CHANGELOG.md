@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-10-28
+
+### Added
+
+- Add termsOfService(dok03) to guidelines (#712)
+- Add mise and dockerfile config (#708)
+
+### Changed
+
+- Bump version for release 2.1.0 (#716)
+- Bump vulnerable dependencies (#715)
+- Feature/710 bugg arq03 (#714)
+- Fix/705 spa04 release fixes (#711)
+- Upgrade mise node version to 24 (#702)
+- Feature/659 sak11 (#687)
+- Feature/692 ufn02   scope creep (#694)
+- Feature/635 ufn01 server variables (#690)
+- Feature/473 preserve excel comments (#689)
+- Update CODEOWNERS (#695)
+- Feature/656 spa02 (#688)
+- Feature/658 spa07 (#684)
+- Update dependency adm-zip to v0.6.1 [security] (#686)
+- Fix/609 remove empty rows in excel (#685)
+- Improve spa yaml profile compliance (#680)
+- Feature/660 sak29 (#670)
+- Feature/655 endpoint for health (#681)
+- Update dependency js-yaml to v4.3.2 [security] (#682)
+- Correct confusing and wrongfully documented rules in DOT rule category (#675)
+- Feature/657 spa04 (#674)
+- Docs/32 standardize example images (#671)
+- Update dependency js-yaml to v4.3.1 [security] (#668)
+- Update dependency fast-xml-parser to v5.10.1 [security] (#669)
+- Update dependency adm-zip to ^0.6.0 [security] (#667)
+- Update node.js to <=24.17.0 (#664)
+- Update dependency node to v24.17.0 (#663)
+- Update dependency fast-xml-parser to v5.9.3 (#661)
+- Update core dependencies to v5.9.2 (#652)
+
+### Fixed
+
+- Switch to parameterized logging (#672)
+
+### Removed
+
+- Remove paranoid setting from project config (#700)
+
 ## [2.0.0] - 2026-06-16
 
 ### Added
@@ -115,6 +161,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Remove categories from generate report request in spec (#608)
+
 
 ## [1.1.1] - 2025-11-06
 
@@ -230,6 +277,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial commit
 
+[2.1.0]: https://github.com/diggsweden/rest-api-profil-lint-processor/compare/v2.0.0..v2.1.0
 [2.0.0]: https://github.com/diggsweden/rest-api-profil-lint-processor/compare/v1.1.1..v2.0.0
 [1.1.1]: https://github.com/diggsweden/rest-api-profil-lint-processor/compare/v1.1.0..v1.1.1
 [1.1.0]: https://github.com/diggsweden/rest-api-profil-lint-processor/compare/v1.0.0..v1.1.0
