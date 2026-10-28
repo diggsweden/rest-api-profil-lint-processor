@@ -98,8 +98,8 @@ paths:
                 default:
                   value:
                     apiName: RAP-LP API
-                    apiVersion: 1.0.1
-                    apiReleased: '2026-10-28'
+                    apiVersion: 1.2.3
+                    apiReleased: '2026-12-24'
                     apiDocumentation: https://raplp.digg.se/api/v1/docs
                     apiStatus: active
         '500':
@@ -580,11 +580,11 @@ components:
         apiVersion:
           type: string
           description: Semantic version of this API.
-          example: 1.0.0
+          example: 1.2.3
         apiReleased:
           type: string
           format: date
-          example: '2026-10-28'
+          example: '2026-12-24'
         apiDocumentation:
           type: string
           format: uri
