@@ -78,6 +78,61 @@ paths:
                     status: 500
                     detail: Ett ovantat fel intraffade.
                     instance: /api/v1/validation/rules
+  /validation/all-rules:
+    get:
+      tags:
+        - metadata
+      summary: List all rule IDs.
+      description: Returns all rule IDs, both implemented rule IDs and those that are not yet implemented.
+      operationId: listAllValidationRules
+      responses:
+        '200':
+          description: All rule IDs were returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - implemented
+                  - additional
+                properties:
+                  implemented:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                  additional:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+              examples:
+                default:
+                  value:
+                    implemented:
+                      Dokumentation:
+                        - DOK.01
+                        - DOK.03
+                    additional:
+                      Dokumentation:
+                        - DOK.02
+                        - DOK.04
+        '500':
+          description: Internal server error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                internalServerError:
+                  value:
+                    type: https://raplp.digg.se/problems/internal-server-error
+                    title: Internt serverfel
+                    status: 500
+                    detail: Ett ovantat fel intraffade.
+                    instance: /api/v1/validation/all-rules
   /api-info:
     get:
       tags:

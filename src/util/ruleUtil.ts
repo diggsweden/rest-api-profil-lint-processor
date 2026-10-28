@@ -6,6 +6,47 @@ import { RuleCategoryError } from './RapLPBaseApiErrorHandling.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
 import { RuleModuleName } from '../rulesets/util/ruleModules.js';
 
+import ameRules from '../rulesets/AmeRules.js';
+import dokRules from '../rulesets/DokRules.js';
+import dotRules from '../rulesets/DotRules.js';
+import arqRules from '../rulesets/ArqRules.js';
+import felRules from '../rulesets/FelRules.js';
+import fnsRules from '../rulesets/FnsRules.js';
+import forRules from '../rulesets/ForRules.js';
+import mogRules from '../rulesets/MogRules.js';
+import resRules from '../rulesets/ResRules.js';
+import sakRules from '../rulesets/SakRules.js';
+import spaRules from '../rulesets/SpaRules.js';
+import verRules from '../rulesets/VerRules.js';
+import ufnRules from '../rulesets/UfnRules.js';
+
+type RuleClass = {
+  customProperties: {
+    område: string;
+    id: string;
+  };
+};
+
+function groupRulesByArea(
+  rules: RuleClass[],
+): Record<string, string[]> {
+  const result: Record<string, string[]> = {};
+
+  for (const rule of rules) {
+    const { område, id } = rule.customProperties;
+    const ids = (result[område] ??= []);
+
+    if (!ids.includes(id)) {
+      ids.push(id);
+    }
+  }
+
+  for (const ids of Object.values(result)) {
+    ids.sort();
+  }
+
+  return result;
+}
 /**
  *  Add other rule modules when applying new rules to RAP-LP
  *  Modules are loaded as default ones when no explicit category is choosed from the command line
@@ -25,6 +66,132 @@ const ruleModules = [
   'ResRules',
   'MogRules',
 ];
+
+/** Implemented rules */
+const implementedRulesByArea = groupRulesByArea([
+  ...Object.values(dokRules),
+  ...Object.values(ameRules),
+  ...Object.values(dotRules),
+  ...Object.values(dokRules),
+  ...Object.values(arqRules),
+  ...Object.values(felRules),
+  ...Object.values(fnsRules),
+  ...Object.values(forRules),
+  ...Object.values(mogRules),
+  ...Object.values(resRules),
+  ...Object.values(sakRules),
+  ...Object.values(spaRules),
+  ...Object.values(ufnRules),
+  ...Object.values(verRules),
+]);
+
+/** Not implemented rules */
+export const additionalRulesByArea = {
+  Dokumentation: [
+    'DOK.02',
+    'DOK.04',
+    'DOK.05',
+    'DOK.10',
+    'DOK.12',
+    'DOK.13',
+    'DOK.16',
+    'DOK.18',
+    'DOK.22',
+    'DOK.23',
+    'DOK.24',
+  ],
+  'Datum- och tidsformat': ['DOT.01', 'DOT.03'],
+  Resurser: ['RES.01', 'RES.03', 'RES.04', 'RES.05'],
+  'URL Format och namngivning': ['UFN.03', 'UFN.04'],
+  Mognad: ['MOG.03'],
+  Säkerhet: [
+    'SAK.02',
+    'SAK.03',
+    'SAK.05',
+    'SAK.06',
+    'SAK.08',
+    'SAK.11',
+    'SAK.12',
+    'SAK.13',
+    'SAK.14',
+    'SAK.17',
+    'SAK.19',
+    'SAK.20',
+    'SAK.21',
+    'SAK.22',
+    'SAK.23',
+    'SAK.24',
+    'SAK.25',
+    'SAK.26',
+    'SAK.27',
+    'SAK.28',
+    'SAK.29',
+    'SAK.30',
+    'SAK.31',
+    'SAK.32',
+    'SAK.35',
+    'SAK.36',
+    'SAK.37',
+  ],
+  'API Message': ['AME.06'],
+  'API Request': ['ARQ.02', 'ARQ.06'],
+  'API Response': ['ARP.02', 'ARP.03', 'ARP.04'],
+  Versionhantering: [
+    'VER.01',
+    'VER.02',
+    'VER.03',
+    'VER.04',
+    'VER.07',
+    'VER.08',
+    'VER.09',
+    'VER.10',
+    'VER.11',
+    'VER.12',
+    'VER.13',
+    'VER.14',
+    'VER.15',
+    'VER.16',
+    'VER.17',
+    'VER.18',
+    'VER.19',
+  ],
+  Webhooks: ['WEB.01', 'WEB.02', 'WEB.03', 'WEB.04', 'WEB.05', 'WEB.06'],
+  Hypermedia: [
+    'HYP.01',
+    'HYP.02',
+    'HYP.03',
+    'HYP.04',
+    'HYP.05',
+    'HYP.06',
+    'HYP.07',
+    'HYP.08',
+    'HYP.09',
+    'HYP.10',
+    'HYP.11',
+    'HYP.12',
+    'HYP.13',
+    'HYP.14',
+    'HYP.15',
+    'HYP.16',
+    'HYP.17',
+    'HYP.18',
+    'HYP.19',
+  ],
+  'Filtrering, paginering och sökparametrar': ['FNS.02', 'FNS.10', 'FNS.11', 'FNS.12', 'FNS.13', 'FNS.14'],
+  Cachning: ['CAC.01'],
+};
+
+/**
+ *
+ * @returns all rules
+ */
+export function getAllRules() {
+  return {
+    implemented: implementedRulesByArea,
+    additional: additionalRulesByArea,
+  };
+}
+
 /**
  *
  * @param ruleCategories
