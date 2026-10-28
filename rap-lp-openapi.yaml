@@ -32,13 +32,18 @@ externalDocs:
   description: RAP-LP API documentation
   url: https://github.com/diggsweden/rest-api-profil-lint-processor/blob/main/README.md#api-l%C3%A4ge
 servers:
-  - url: https://raplp.digg.se/api/v1/
-    description: Production
+  - url: 'https://{host}/api/v1/'
+    description: RAP-LP API. Defaults to production. Set host to target your environment.
+    variables:
+      host:
+        default: raplp.digg.se
 tags:
   - name: validation
     description: Operations for validating OpenAPI specifications and generating reports.
   - name: metadata
     description: Operations for API metadata and available rule categories.
+  - name: operations
+    description: Operational endpoints for health checks and monitoring. Served from the root path, outside the versioned API base path.
 security: []
 paths:
   /validation/rules:
@@ -492,8 +497,100 @@ paths:
                     status: 500
                     detail: Failed to generate report.
                     instance: /api/v1/validation/generate-report
+  /health/live:
+    get:
+      servers:
+        - url: https://{host}/
+          description: Root of the service, outside the versioned API base path. Defaults to production. Set host to target another environment.
+          variables:
+            host:
+              default: raplp.digg.se
+      tags:
+        - operations
+      summary: Liveness check.
+      description: Returns 200 when the service process is running and able to handle requests. Intended for liveness probes.
+      operationId: getHealthLive
+      responses:
+        '200':
+          description: The service is alive.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+              examples:
+                default:
+                  value:
+                    status: ok
+  /metrics:
+    get:
+      servers:
+        - url: https://{host}/
+          description: Root of the service, outside the versioned API base path. Defaults to production. Set host to target another environment.
+          variables:
+            host:
+              default: raplp.digg.se
+      tags:
+        - operations
+      summary: Get Prometheus metrics.
+      description: |
+        Returns runtime metrics for the service in Prometheus text exposition format.
+        The response contains the default Node.js process metrics (process_* and nodejs_*),
+        such as CPU time, memory, heap usage, event loop lag and garbage collection.
+      operationId: getMetrics
+      responses:
+        '200':
+          description: Metrics were returned.
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                excerpt:
+                  summary: Excerpt of the response showing a counter, gauges, labels and a histogram.
+                  value: |
+                    # HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+                    # TYPE process_cpu_seconds_total counter
+                    process_cpu_seconds_total 71.844
+
+                    # HELP process_resident_memory_bytes Resident memory size in bytes.
+                    # TYPE process_resident_memory_bytes gauge
+                    process_resident_memory_bytes 114991104
+
+                    # HELP nodejs_eventloop_lag_p99_seconds The 99th percentile of the recorded event loop delays.
+                    # TYPE nodejs_eventloop_lag_p99_seconds gauge
+                    nodejs_eventloop_lag_p99_seconds 0.023183359
+
+                    # HELP nodejs_heap_space_size_used_bytes Process heap space size used from Node.js in bytes.
+                    # TYPE nodejs_heap_space_size_used_bytes gauge
+                    nodejs_heap_space_size_used_bytes{space="new"} 768712
+                    nodejs_heap_space_size_used_bytes{space="old"} 33226520
+                    nodejs_heap_space_size_used_bytes{space="code"} 6302528
+
+                    # HELP nodejs_gc_duration_seconds Garbage collection duration by kind, one of major, minor, incremental or weakcb.
+                    # TYPE nodejs_gc_duration_seconds histogram
+                    nodejs_gc_duration_seconds_bucket{le="0.001",kind="major"} 0
+                    nodejs_gc_duration_seconds_bucket{le="0.01",kind="major"} 12
+                    nodejs_gc_duration_seconds_bucket{le="0.1",kind="major"} 13
+                    nodejs_gc_duration_seconds_bucket{le="1",kind="major"} 13
+                    nodejs_gc_duration_seconds_bucket{le="2",kind="major"} 13
+                    nodejs_gc_duration_seconds_bucket{le="5",kind="major"} 13
+                    nodejs_gc_duration_seconds_bucket{le="+Inf",kind="major"} 13
+                    nodejs_gc_duration_seconds_sum{kind="major"} 0.07461329999566078
+                    nodejs_gc_duration_seconds_count{kind="major"} 13
 components:
   schemas:
+    HealthStatus:
+      type: object
+      additionalProperties: false
+      description: Health status of the service.
+      properties:
+        status:
+          type: string
+          enum:
+            - ok
+          example: ok
+      required:
+        - status
     ValidationRules:
       type: array
       description: Available rule categories.
