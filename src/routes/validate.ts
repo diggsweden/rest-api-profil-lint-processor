@@ -7,6 +7,7 @@ import util from 'util';
 import { Document } from '@stoplight/spectral-core';
 import Parsers from '@stoplight/spectral-parsers';
 import { Express } from 'express';
+import yaml from 'js-yaml';
 import { decodeBase64String, processApiSpec, logError } from '../util/apiUtil.js';
 import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
 import { ApiInfo } from '../model/ApiInfo.js';
@@ -27,7 +28,11 @@ import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js'
 import { measure } from '../util/performance.js';
 import crypto from 'node:crypto';
 
-const pkg = JSON.parse(fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));
+const apiSpecInfo = (
+  yaml.load(fs.readFileSync(new URL('../../rap-lp-openapi.yaml', import.meta.url), 'utf8')) as {
+    info: { title: string; version: string; 'x-api-released': string; 'x-api-status': string };
+  }
+).info;
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -41,7 +46,16 @@ export const registerValidationRoutes = (app: Express) => {
   });
 
   app.get('/api/v1/api-info', async (req, res, next) => {
-    res.send(new ApiInfo('RAP-LP API', pkg.apiVersion, '2026-10-28', 'https://raplp.digg.se/api/v1/docs', 'active'));
+    const baseUrl = process.env.RAP_LP_PUBLIC_BASE_URL?.replace(/\/+$/, '') || `${req.protocol}://${req.get('host')}`;
+    res.send(
+      new ApiInfo(
+        apiSpecInfo.title,
+        apiSpecInfo.version,
+        apiSpecInfo['x-api-released'],
+        `${baseUrl}/api/v1/docs`,
+        apiSpecInfo['x-api-status'],
+      ),
+    );
   });
   app.post(
     '/api/v1/validation/generate-report',

@@ -5,6 +5,8 @@ openapi: 3.1.0
 info:
   title: RAP-LP API
   version: 1.0.1
+  x-api-released: '2026-10-28'
+  x-api-status: active
   summary: API for validating OpenAPI specifications against the Swedish REST API profile.
   description: |
     RAP-LP (REST API-profil Lint Processor) validates an OpenAPI specification against
@@ -97,8 +99,8 @@ paths:
                   value:
                     apiName: RAP-LP API
                     apiVersion: 1.0.1
-                    apiReleased: '2026-06-12'
-                    apiDocumentation: https://raplp.digg.se/api/v1/rap-lp-openapi.yaml
+                    apiReleased: '2026-10-28'
+                    apiDocumentation: https://raplp.digg.se/api/v1/docs
                     apiStatus: active
         '500':
           description: Internal server error.
@@ -582,11 +584,11 @@ components:
         apiReleased:
           type: string
           format: date
-          example: '2026-06-12'
+          example: '2026-10-28'
         apiDocumentation:
           type: string
           format: uri
-          example: https://raplp.digg.se/api/v1/rap-lp-openapi.yaml
+          example: https://raplp.digg.se/api/v1/docs
         apiStatus:
           type: string
           example: active

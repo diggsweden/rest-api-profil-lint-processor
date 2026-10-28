@@ -472,6 +472,7 @@ Vid körning i API-läge från en lokal server kan RAP-LP konfigureras med hjäl
 | RAP_LP_LOG_TARGET                     | Anger var serverloggar ska skrivas, exempelvis `stdout` eller `stderr`. Defaultvärdet är `stderr`                                                                                                                      |
 | RAP_LP_ALLOW_LOCALHOST_URL_VALIDATION | Anger om validering av specifikationer som lagras lokalt på localhost är tillåten. Inställningen används främst vid lokal utveckling och kan sättas till `true` eller `false`. Funktionen är inaktiverad som standard. |
 | RAP_LP_PORT                           | Portkonfiguration för vilken port servern ska starta på och lyssna på inkommande requests. Defaultvärdet är `3000`.                                                                                                    |
+| RAP_LP_PUBLIC_BASE_URL                | Publik bas-URL för servern, exempelvis `https://raplp.digg.se`. Används för länken `apiDocumentation` i `/api/v1/api-info`. Om den inte är satt byggs länken utifrån inkommande request.                               |
 
 ---
 
