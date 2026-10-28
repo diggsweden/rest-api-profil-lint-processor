@@ -4,7 +4,7 @@
 openapi: 3.1.0
 info:
   title: RAP-LP API
-  version: 1.0.0
+  version: 1.0.1
   summary: API for validating OpenAPI specifications against the Swedish REST API profile.
   description: |
     RAP-LP (REST API-profil Lint Processor) validates an OpenAPI specification against
@@ -96,7 +96,7 @@ paths:
                 default:
                   value:
                     apiName: RAP-LP API
-                    apiVersion: 1.0.0
+                    apiVersion: 1.0.1
                     apiReleased: '2026-06-12'
                     apiDocumentation: https://raplp.digg.se/api/v1/rap-lp-openapi.yaml
                     apiStatus: active

@@ -12,6 +12,7 @@
  *    https://dev.dataportal.se/rest-api-profil
  *
  **************************************************************/
+import * as fs from 'node:fs';
 import * as path from 'node:path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
@@ -19,9 +20,11 @@ import { startServer } from './api-mode.js';
 import { execCLI } from './cli-mode.js';
 import { getRuleModules } from './util/ruleUtil.js';
 
+const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+
 async function main() {
   const argv = await yargs(hideBin(process.argv))
-    .version('1.2.0')
+    .version(pkg.version)
     .option('mode', {
       alias: 'm',
       describe: 'Körläget för applikationen api',
