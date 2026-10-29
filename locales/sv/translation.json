@@ -167,7 +167,7 @@
       "message": "Ett request BÖR skickas i UTF-8"
     },
     "arq03": {
-      "description": "Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, ETag, Connection och Cookie."
+      "description": "Alla API:er BÖR supportera följande request headers: Accept, Date, Cache-Control, If-None-Match, Connection och Cookie."
     },
     "arq05": {
       "message": "Payload data SKALL INTE användas i HTTP-headers",
