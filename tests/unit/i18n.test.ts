@@ -47,7 +47,7 @@ describe('i18n', () => {
     });
 
     it('translates rule areas', () => {
-      expect(translator('en')('areas.documentation')).toBe('Documentation');
+      expect(translator('en')('areas.documentation')).toBe('Dokumentation');
       expect(translator('sv')('areas.documentation')).toBe('Dokumentation');
     });
   });
@@ -99,7 +99,7 @@ describe('i18n', () => {
         encoding: 'utf8',
       });
 
-      expect(output).toContain('area: Documentation');
+      expect(output).toContain('area: Dokumentation');
       expect(output).not.toContain('område: Dokumentation');
     });
 
@@ -112,7 +112,7 @@ describe('i18n', () => {
       });
 
       expect(output).toContain('område: Dokumentation');
-      expect(output).not.toContain('area: Documentation');
+      expect(output).not.toContain('area: Dokumentation');
     });
 
   });
@@ -248,7 +248,7 @@ describe('i18n', () => {
       expect(result.en.total).toBe(result.sv.total);
 
       expect(result.sv.dok15[0].area).toBe('Dokumentation');
-      expect(result.en.dok15[0].area).toBe('Documentation');
+      expect(result.en.dok15[0].area).toBe('Dokumentation');
       expect(result.sv.dok15[0].status).toBe('N/A');
       expect(result.en.dok15[0].status).toBe('N/A');
     });
