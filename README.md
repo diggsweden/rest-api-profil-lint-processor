@@ -23,6 +23,16 @@ Det är specifikt utvecklat för att validera OpenAPI-definitioner enligt den sv
 
 RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssnittet](https://raplp.digg.se).
 
+### Språkstöd
+
+Svenska är standardspråk. CLI-hjälp, användningsinformation och utvalda generella
+CLI-fel kan visas på engelska med `--lang en` eller miljövariabeln
+`RAP_LP_LANG=en`. Flaggan `--lang` har företräde framför miljövariabeln. Generella
+API-fel använder `Accept-Language` och faller tillbaka till svenska. Regel-ID:n,
+regelbeskrivningar och profilinnehåll förblir svenska. Lägg till översättningar i
+`locales/<locale>/translation.json`. Locale-katalogerna följer med npm-paketet
+och laddas även när RAP-LP körs från en annan aktuell katalog.
+
 ## Innehållsförteckning
 
 <details>

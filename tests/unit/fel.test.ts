@@ -5,7 +5,9 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import testRule from '../util/helperTest.js';
 import { Fel01, Fel02 } from '../../src/rulesets/FelRules.js';
+import { translator } from '../../src/i18n.js';
 
+const t = translator('sv');
 testRule('Fel01', [
   {
     name: 'giltigt testfall',
@@ -135,7 +137,9 @@ testRule('Fel01', [
     },
     errors: [
       {
-        message: Fel01.ruleMessage,
+        message: t('rules.fel01.message', {
+          properties: Fel01.mandatoryProperties.join(', '),
+        }),
         severity: DiagnosticSeverity.Error,
       },
     ],
@@ -180,7 +184,9 @@ testRule('Fel01', [
     },
     errors: [
       {
-        message: Fel01.ruleMessage,
+        message: t('rules.fel01.message', {
+          properties: Fel01.mandatoryProperties.join(', '),
+        }),
         severity: DiagnosticSeverity.Error,
       },
     ],
@@ -210,7 +216,9 @@ testRule('Fel01', [
     },
     errors: [
       {
-        message: Fel01.ruleMessage,
+        message: t('rules.fel01.message', {
+          properties: Fel01.mandatoryProperties.join(', '),
+        }),
         severity: DiagnosticSeverity.Error,
       },
     ],
@@ -333,7 +341,14 @@ testRule('Fel01', [
         },
       },
     },
-    errors: [{ message: Fel01.ruleMessage, severity: DiagnosticSeverity.Error }],
+    errors: [
+      {
+        message: t('rules.fel01.message', {
+          properties: Fel01.mandatoryProperties.join(', '),
+        }),
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
   },
 ]);
 
@@ -423,7 +438,7 @@ testRule('Fel02', [
     errors: [
       {
         code: 'Fel02',
-        message: Fel02.errorMessage,
+        message: t('rules.fel02.message'),
         path: ['paths', '/', 'get', 'responses', '400', 'content'],
         severity: DiagnosticSeverity.Warning,
       },
@@ -451,7 +466,7 @@ testRule('Fel02', [
     errors: [
       {
         code: 'Fel02',
-        message: Fel02.errorMessage,
+        message: t('rules.fel02.message'),
         path: ['paths', '/', 'get', 'responses', 'default', 'content'],
         severity: DiagnosticSeverity.Warning,
       },
@@ -477,7 +492,7 @@ testRule('Fel02', [
     errors: [
       {
         code: 'Fel02',
-        message: Fel02.errorMessage,
+        message: t('rules.fel02.message'),
         path: ['paths', '/', 'get', 'responses', 'default', 'content'],
         severity: DiagnosticSeverity.Warning,
       },
