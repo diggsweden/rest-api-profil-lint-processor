@@ -677,7 +677,7 @@ _I exemplet ovan, utgör paths tillsammans med parameters sektionen föremål f�
 
 ### ID: UFN.07
 
-**Krav:** URL:n SKALL använda dessa tecknen a-z, 0-9, "-", "." samt "~", se vidare i RFC 3986.
+**Krav:** URL:n SKALL använda dessa tecken a-z, 0-9, "-", "." samt "~", se vidare i RFC 3986.
 
 **Typ:** SKALL
 
@@ -1266,7 +1266,7 @@ _Ovan exemplifieras regeln med en kontroll av de parametrar som ingår under pat
 
 ![Exempelbild av en OpenAPI-specifikation för sökvägen /persons, där query-parametrarna limit_this och pageThis är inringade i rött. limit_this använder snake_case och pageThis använder camelCase. Båda parametrarna följer giltiga namnkonventioner, vilket innebär att exemplet uppfyller regelns krav.](images/fns01_2.png)
 
-_Ovan exemplifieras regeln med en kontroll av de parametrar som ingår under pathen /persons. I exemplet kommer regeln att ge ett positivt utfall eftersom båda parametrarna är definierade med giltiga namnkonventioner. Parametern limt_this är definierad med `snake_case` och den andra parametern pageThis är definierad med namnkonventionen för camelCase._
+_Ovan exemplifieras regeln med en kontroll av de parametrar som ingår under pathen /persons. I exemplet kommer regeln att ge ett positivt utfall eftersom båda parametrarna är definierade med giltiga namnkonventioner. Parametern limit_this är definierad med `snake_case` och den andra parametern pageThis är definierad med namnkonventionen för camelCase._
 
 ---
 
@@ -1500,7 +1500,7 @@ Regeln kontrollerar endast att refreshUrl är definierat i API-beskrivningen. Re
 
 **Exempel:**
 
-![Exempelbild som visar en del av en API-specifikation med ett `authorizationCode`-flow innhållande attributet refreshUrl](images/sak11.png)
+![Exempelbild som visar en del av en API-specifikation med ett `authorizationCode`-flow innehållande attributet refreshUrl](images/sak11.png)
 
 Bilden visar ett OAuth 2.0-security scheme med ett `authorizationCode`-flow. Flowet innehåller attributet `refreshUrl`, vilket innebär att kravet uppfylls.
 
@@ -1606,7 +1606,7 @@ Om en operation innehåller en requestBody men saknar ett definierat 415-svar ge
 
 ### ID: FOR.02
 
-**Krav:** EN GET -förfrågan SKALL INTE acceptera en body.
+**Krav:** EN GET-förfrågan SKALL INTE acceptera en body.
 
 **Typ:** SKALL
 
