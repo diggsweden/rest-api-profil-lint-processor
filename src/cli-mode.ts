@@ -161,13 +161,6 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         customSpectral.setRuleset(enabledRulesAndCategorys.rules);
         const result = await customSpectral.run(apiSpecDocument);
 
-        console.log(
-          result.map((item) => ({
-            id: item.id,
-            area: item.area,
-          })),
-        );
-
         const customDiagnostic = new RapLPDiagnostic(context);
         customDiagnostic.processRuleExecutionInformation(
           result,
