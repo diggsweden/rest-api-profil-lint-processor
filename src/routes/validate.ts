@@ -28,6 +28,8 @@ import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js'
 import { measure } from '../util/performance.js';
 import crypto from 'node:crypto';
 
+const PRODUCTION_URL = 'https://raplp.digg.se';
+
 const apiSpecInfo = (
   yaml.load(fs.readFileSync(new URL('../../rap-lp-openapi.yaml', import.meta.url), 'utf8')) as {
     info: { title: string; version: string; 'x-api-released': string; 'x-api-status': string };
@@ -46,7 +48,7 @@ export const registerValidationRoutes = (app: Express) => {
   });
 
   app.get('/api/v1/api-info', async (req, res, next) => {
-    const baseUrl = process.env.RAP_LP_PUBLIC_BASE_URL?.replace(/\/+$/, '') || `${req.protocol}://${req.get('host')}`;
+    const baseUrl = process.env.RAP_LP_PUBLIC_BASE_URL?.replace(/\/+$/, '') || PRODUCTION_URL;
     res.send(
       new ApiInfo(
         apiSpecInfo.title,
