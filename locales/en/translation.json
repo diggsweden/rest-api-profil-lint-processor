@@ -47,6 +47,9 @@
     "diagnosticOutput": "Writing diagnostic information from RAP-LP to {{filePath}}",
     "validationOutput": "Writing inspection/validation information from RAP-LP to {{filePath}}",
     "help": {
+      "options": "Options:",
+      "showHelp": "Show help",
+      "showVersion": "Show version number",
       "mode": "Application mode",
       "file": "[cli mode] Path to the YAML file",
       "categories": "[cli mode] Rule categories separated by commas.",

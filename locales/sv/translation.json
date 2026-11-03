@@ -48,6 +48,9 @@
     "diagnosticOutput": "Skriver diagnostiseringsinformation från RAP-LP till {{filePath}}",
     "validationOutput": "Skriver inspektions-/valideringsinformation från RAP-LP till {{filePath}}",
     "help": {
+      "options": "Alternativ:",
+      "showHelp": "Visa hjälp",
+      "showVersion": "Visa versionsnummer",
       "mode": "Körläget för applikationen",
       "file": "[cli mode] Sökväg till YAML-filen",
       "categories": "[cli mode] Regelkategorier separerade med kommatecken.",

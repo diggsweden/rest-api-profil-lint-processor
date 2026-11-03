@@ -29,6 +29,11 @@ async function main() {
 
   const argv = await yargs(rawArgs)
     .version(pkg.version)
+    .updateStrings({
+    'Options:': t('cli.help.options'),
+    'Show help': t('cli.help.showHelp'),
+    'Show version number': t('cli.help.showVersion'),
+    })
     .option('mode', {
       alias: 'm',
       describe: t('cli.help.mode'),
