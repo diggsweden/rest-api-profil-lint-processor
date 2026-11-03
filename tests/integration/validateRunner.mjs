@@ -10,8 +10,8 @@ async function main() {
 
   try {
     
-    const { parseApiSpecInput } = await import('../../../dist/util/validateUtil.js');
-    const { RuleExecutionContext } = await import('../../../dist/util/RuleExecutionContext.js');
+    const { parseApiSpecInput } = await import('../../dist/util/validateUtil.js');
+    const { RuleExecutionContext } = await import('../../dist/util/RuleExecutionContext.js');
 
     const context = new RuleExecutionContext('sv');
     const res = await parseApiSpecInput(input, { strict: !!input.strict }, context);

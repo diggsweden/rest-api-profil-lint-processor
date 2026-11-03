@@ -7,7 +7,7 @@ async function main() {
   const input = JSON.parse(arg);
 
   try {
-    const { ExcelReportProcessor } = await import('../../../dist/util/excelReportProcessor.js');
+    const { ExcelReportProcessor } = await import('../../dist/util/excelReportProcessor.js');
 
     const toRules = (ids = []) => ids.map((id) => ({ id }));
     const diagnostic = {
