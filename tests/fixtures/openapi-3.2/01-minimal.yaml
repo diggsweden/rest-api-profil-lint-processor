@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: 3.2.0
+info:
+  title: Minimal 3.2
+  version: 1.0.0
+paths:
+  /ping:
+    get:
+      operationId: ping
+      responses:
+        "200":
+          description: OK
