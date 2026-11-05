@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: 3.2.0
+info:
+  title: Duplicate operationId
+  version: 1.0.0
+paths:
+  /a:
+    get:
+      operationId: same
+      responses:
+        "200":
+          description: OK
+    query:
+      operationId: same
+      responses:
+        "200":
+          description: OK
+    additionalOperations:
+      LINK:
+        operationId: same
+        responses:
+          "200":
+            description: OK

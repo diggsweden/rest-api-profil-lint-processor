@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: 3.2.0
+info:
+  title: Methods 3.2
+  version: 1.0.0
+paths:
+  /search:
+    query:
+      operationId: searchQuery
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: OK
+    additionalOperations:
+      LINK:
+        operationId: linkSearch
+        responses:
+          "204":
+            description: Länkad

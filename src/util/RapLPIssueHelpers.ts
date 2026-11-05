@@ -4,6 +4,8 @@
 
 import type * as SpectralCore from '@stoplight/spectral-core';
 import { Issue } from './Issue.js';
+
+const STRUCTURAL_CODES = new Set(['oas3-schema', 'invalid-ref']);
 /**
  * Issue type to use from client to validate parsing
  */
@@ -76,7 +78,7 @@ export function spectralDiagnosticsToIssuesSimple(
     }
     //Create Issue
     issues.push({
-      type: 'Semantic',
+      type: STRUCTURAL_CODES.has(String(d.code)) ? 'Structural' : 'Semantic',
       code: d.code ?? undefined,
       path: path || '',
       message: d.message ?? '',
@@ -109,7 +111,7 @@ export function spectralDiagnosticsToIssuesSimple(
     const line = rawLine !== null ? (addOneToLine ? rawLine + 1 : rawLine) : null;
 
     issues.push({
-      type: 'Semantic',
+      type: STRUCTURAL_CODES.has(String(d.code)) ? 'Structural' : 'Semantic',
       code: d.code ?? undefined,
       path: path || '',
       message: d.message ?? '',
