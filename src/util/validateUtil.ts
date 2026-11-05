@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import yaml from 'js-yaml';
-import SwaggerParser from '@apidevtools/swagger-parser'; 
-import { prettifySwaggerParserErrorToEditorStyle } from './prettifyOpenAPIErrors.js';
 import  { bundleAndLoadRuleset } from '@stoplight/spectral-ruleset-bundler/with-loader';
 import * as SpectralCore from '@stoplight/spectral-core';
 import { Document as SpectralDocument } from '@stoplight/spectral-core';
