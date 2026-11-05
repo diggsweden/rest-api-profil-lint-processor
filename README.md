@@ -23,6 +23,16 @@ Det är specifikt utvecklat för att validera OpenAPI-definitioner enligt den sv
 
 RAP-LP kan användas lokalt i CLI-läge eller API-läge, eller via [webbgränssnittet](https://raplp.digg.se).
 
+### Språkstöd
+
+Svenska är standardspråk i RAP-LP. Engelska kan väljas med `--lang en` eller miljövariabeln `RAP_LP_LANG=en`. Om båda anges har `--lang` företräde.
+
+Språkvalet gäller CLI-hjälp, användningsinformation och vissa generella felmeddelanden. För API-anrop används Accept-Language, med svenska som standardspråk.
+
+Regel-ID, regelbeskrivningar, valideringsmeddelanden och innehåll från den nationella REST API-profilen förblir på svenska, även när engelska har valts.
+
+Översättningar finns i `locales/<locale>/translation.json`. Språkfilerna inkluderas i npm-paketet och kan läsas oavsett vilken arbetskatalog RAP-LP körs från.
+
 ## Innehållsförteckning
 
 <details>
@@ -314,6 +324,7 @@ Strict validation reported issues:
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | -------- | ------------ |
 | `-f, --file`       | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                                                | String | –        | Ja           |
 | `-c, --categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `DokRules, DotRules, ResRules, UfnRules, MogRules, SakRules, SpaRules, AmeRules, ArqRules, FelRules, VerRules, FnsRules, ForRules`. | String | –        | Nej          |
+| `--lang` | Språk för utskrifter och generella felmeddelanden. Tillgängliga: `sv`, `en`. Regelrelaterade meddelanden förblir på svenska. | String | `sv`        | Nej          |
 
 ### Loggning i CLI-läge
 
@@ -446,6 +457,12 @@ Verktyget kan även köras som en lokal HTTP-server, via API (Applikation Progra
 | `--enableUrlValidation`     | Aktiverar URL-validering i API-läge.                                          | boolean | `false`                     | Nej          |
 | `--urlValidationConfigFile` | Konfigurationsfil för URL-validering (fallback: `./urlValidationConfig.cjs`). | string  | `./urlValidationConfig.cjs` | Nej          |
 
+### Parameter för API-läge
+
+| Parameter                      | Beskrivning                                                                   | Typ     | Standard                    | Obligatorisk |
+| --------------------------- | ----------------------------------------------------------------------------- | ------- | --------------------------- | ------------ |
+| `Accept-Language`     | HTTP-header som anger önskat språk för generella API-meddelanden. Tillgängliga: sv, en. Regelrelaterade meddelanden förblir på svenska.                                          | String | `sv`                     | Nej          |
+
 ### Endpoints för API-läge
 
 | Endpoint                             | Beskrivning                                                                          |
@@ -473,6 +490,7 @@ Vid körning i API-läge från en lokal server kan RAP-LP konfigureras med hjäl
 | RAP_LP_ALLOW_LOCALHOST_URL_VALIDATION | Anger om validering av specifikationer som lagras lokalt på localhost är tillåten. Inställningen används främst vid lokal utveckling och kan sättas till `true` eller `false`. Funktionen är inaktiverad som standard. |
 | RAP_LP_PORT                           | Portkonfiguration för vilken port servern ska starta på och lyssna på inkommande requests. Defaultvärdet är `3000`.                                                                                                    |
 | RAP_LP_PUBLIC_BASE_URL                | Publik bas-URL för servern, exempelvis `https://raplp.example.com`. Används för länken `apiDocumentation` i `/api/v1/api-info`. Om den inte är satt kommer länken peka mot `https://raplp.digg.se/api/v1/api-info`.    |
+| RAP_LP_LANG                           | Standardspråk för generella meddelanden och felmeddelanden. Tillgängliga språk: `sv`, `en`. Standardvärdet är `sv`.                                                                                                    |
 
 ---
 

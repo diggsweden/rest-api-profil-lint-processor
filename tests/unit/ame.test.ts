@@ -5,7 +5,9 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import testRule from '../util/helperTest.js';
 import { Ame01, Ame02 } from '../../src/rulesets/AmeRules.js';
+import { translator } from '../../src/i18n.js';
 
+const t = translator('sv');
 testRule('Ame01', [
   {
     name: 'giltigt testfall - JSON format',
@@ -93,7 +95,7 @@ testRule('Ame01', [
     },
     errors: [
       {
-        message: Ame01.errorMessage,
+        message: t('rules.ame01.message'),
         severity: DiagnosticSeverity.Warning,
       },
     ],
@@ -223,7 +225,7 @@ testRule('Ame02', [
     },
     errors: [
       {
-        message: Ame02.errorMessage,
+        message: t('rules.ame02.message'),
         path: ['paths', '/foo', 'post', 'requestBody', 'content'],
         severity: DiagnosticSeverity.Warning,
       },

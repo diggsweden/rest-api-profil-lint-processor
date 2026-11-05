@@ -8,6 +8,7 @@ import { CustomFormatType } from './util/CustomOasVersion.js';
 import { DiagnosticSeverity } from '@stoplight/types';
 import Format from '@stoplight/spectral-formats';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
+import { translator } from '../i18n.js';
 
 export abstract class BaseRuleset implements RulesetInterface {
   static customProperties: CustomProperties = { område: undefined!, id: '' };
@@ -24,10 +25,12 @@ export abstract class BaseRuleset implements RulesetInterface {
 
   constructor(context: RuleExecutionContext) {
     this.#context = context;
-
   }
   #context: RuleExecutionContext;
-  
+
+  protected translate(key: string, options?: Record<string, unknown>): string {
+    return translator(this.#context.locale)(key, options);
+  }
 
   protected trackRuleExecutionHandler(
     targetVal: string,
@@ -38,7 +41,14 @@ export abstract class BaseRuleset implements RulesetInterface {
     moduleName: any,
     subclassProperties: CustomProperties,
   ) {
-    this.#context.logRuleExecution(moduleName, subclassInfo, subclassProperties, this.severity.toString(), true, targetVal);
+    this.#context.logRuleExecution(
+      moduleName,
+      subclassInfo,
+      subclassProperties,
+      this.severity.toString(),
+      true,
+      targetVal,
+    );
     return [];
   }
   async initializeFormats(formats: CustomFormatType[] = []) {

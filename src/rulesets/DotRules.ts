@@ -6,6 +6,8 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { parseProperties, Property } from './rulesetUtil.js';
 import { DotRuleBase, DotStateExecutionLog } from './util/DotRulesUtil.js';
+import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
+import { translator } from '../i18n.js';
 
 const moduleName: string = 'DotRules.js';
 
@@ -14,8 +16,6 @@ export class Dot02 extends DotRuleBase {
     område: 'Datum- och tidsformat',
     id: 'DOT.02',
   };
-  description = 'Ett giltigt exempel enligt DOT.02 behöver anges som ett exempel';
-  message = 'Datum och tid SKALL anges enligt RFC 3339 som bygger på ISO-8601.';
   then = {
     function: (targetVal: any, _opts: string, paths) => {
       const dotStateExecutionLogDictionary: DotStateExecutionLog = {};
@@ -57,15 +57,18 @@ export class Dot02 extends DotRuleBase {
   isValidWithOffset(example: string): boolean {
     return true; // Always valid offset in DOT.02
   }
+  constructor(context: RuleExecutionContext) {
+    super(context);
+
+    this.description = this.translate('rules.dot02.description');
+    this.message = this.translate('rules.dot02.message');
+  }
 }
 export class Dot04 extends DotRuleBase {
   static customProperties: CustomProperties = {
     område: 'Datum- och tidsformat',
     id: 'DOT.04',
   };
-  description = 'När man använder RFC 3339 format BÖR tidszonen anges.';
-  message =
-    'Tidzonen BÖR representeras med UTC formatet, där tid anges som offset från UTC (Coordinated Universal Time).';
   severity: DiagnosticSeverity = DiagnosticSeverity.Warning;
 
   then = {
@@ -136,6 +139,12 @@ export class Dot04 extends DotRuleBase {
     } else {
       return false; // No offset found
     }
+  }
+    constructor(context: RuleExecutionContext) {
+    super(context);
+
+    this.description = this.translate('rules.dot04.description');
+    this.message = this.translate('rules.dot04.message');
   }
 }
 export default { Dot02, Dot04 };

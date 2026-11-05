@@ -4,6 +4,8 @@
 
 import { execFile } from 'child_process';
 import { promisify } from 'util';
+import { jest } from '@jest/globals';
+import { fileURLToPath } from 'node:url';
 import path from 'path';
 import fs from 'fs';
 
@@ -12,7 +14,9 @@ const execFileP = promisify(execFile);
 // Timeout för integrationstest som spawn:ar node
 jest.setTimeout(20000);
 
-const runnerPath = path.join(__dirname, 'integration', 'validateRunner.mjs');
+const runnerPath = fileURLToPath(
+  new URL('./validateRunner.mjs', import.meta.url),
+);
 
 function nodeArgsForRunner(): string[] {
   return [runnerPath];
@@ -46,7 +50,7 @@ describe('Integration: parseApiSpecInput via runner produces some output', () =>
   beforeAll(() => {
     // kontrollera att runner finns
     if (!fs.existsSync(runnerPath)) {
-      throw new Error(`Integration runner saknas: ${runnerPath}. Är tests/unit/integration/validateRunner.mjs korrekt ?.`);
+      throw new Error(`Integration runner saknas: ${runnerPath}`);
     }
   });
 
@@ -96,7 +100,7 @@ describe('Integration: parseApiSpecInput via runner', () => {
     beforeAll(() => {
       // kontrollera att runner finns
       if (!fs.existsSync(runnerPath)) {
-        throw new Error(`Integration runner saknas: ${runnerPath}. Är tests/unit/integration/validateRunner.mjs korrekt ?.`);
+        throw new Error(`Integration runner saknas: ${runnerPath}`);
       }
     });
     it('detects structural and semantic issues for intentional broken YAML', async() => {

@@ -4,6 +4,8 @@
 
 import { execFile } from 'child_process';
 import { promisify } from 'util';
+import { jest } from '@jest/globals';
+import { fileURLToPath } from 'node:url';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
@@ -13,8 +15,12 @@ const execFileP = promisify(execFile);
 
 jest.setTimeout(20000);
 
-const runnerPath = path.join(__dirname, 'integration', 'excelRunner.mjs');
-const documentDir = path.resolve(__dirname, '../../document');
+const runnerPath = fileURLToPath(
+  new URL('./excelRunner.mjs', import.meta.url),
+);
+const documentDir = fileURLToPath(
+  new URL('../../document/', import.meta.url),
+);
 const TEMPLATE_2_0_0 = path.join(documentDir, 'Avstaemning_REST_API_profil_v_2_0_0_0.xlsx');
 const TEMPLATE_1_2_0 = path.join(documentDir, 'Avstaemning_REST_API_profil_v_1_2_0_0.xlsx');
 const DATA_SHEET_NAME = 'Kravlista REST API profil';

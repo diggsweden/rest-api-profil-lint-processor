@@ -15,7 +15,6 @@ export class Res02 extends BaseRuleset {
     område: 'Resurser',
     id: 'RES.02',
   };
-  message = 'Primärnycklar eller personligt identifierbar information (personnummer, etc.) BÖR INTE exponeras. ';
   given = '$.paths[*].*.parameters[*]';
   then = [
     {
@@ -54,6 +53,8 @@ export class Res02 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.res02.message');
   }
 }
 
@@ -62,8 +63,6 @@ export class Res06 extends BaseRuleset {
     område: 'Resurser',
     id: 'RES.06',
   };
-  message =
-    'Resurser SKALL följa den namnsättningskonvention som beskrivs för URL:er, det vill säga att resurser anges med gemener, använder endast alfanumeriska tecken och bindestreck för att separera eventuella ord. ';
   given = '$.paths[*]~';
   then = [
     {
@@ -112,6 +111,8 @@ export class Res06 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.res06.message');
   }
 }
 

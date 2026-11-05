@@ -14,59 +14,62 @@ const moduleName: string = 'FelRules.js';
  */
 export class Fel01 extends BaseRuleset {
   static mandatoryProperties = ['type', 'title', 'status', 'detail', 'instance'];
-  static ruleMessage = `Om HTTP svarskoderna inte räcker SKALL (FEL.01) API:et beskriva feldetaljer enligt RFC 9457 med dessa ingående attribut; ${Fel01.mandatoryProperties.join(
-    ', ',
-  )}.`;
+  // static ruleMessage = `Om HTTP svarskoderna inte räcker SKALL (FEL.01) API:et beskriva feldetaljer enligt RFC 9457 med dessa ingående attribut; ${Fel01.mandatoryProperties.join(
+  //   ', ',
+  // )}.`;
 
   static customProperties: CustomProperties = {
     område: 'Felhantering',
     id: 'FEL.01',
   };
   description = '';
-  message = Fel01.ruleMessage;
   given = [
     "$.paths.*.*.responses.*.content['application/problem+json'].schema",
     "$.paths.*.*.responses.*.content['application/problem+xml'].schema",
   ];
   then = [
     {
-      function: (targetVal: unknown,  
+      function: (
+        targetVal: unknown,
         _opts: unknown,
-         paths: string[], otherValues?: { document?: { data?: unknown } }
+        paths: string[],
+        otherValues?: { document?: { data?: unknown } },
       ) => {
-
         const rootDocument = otherValues?.document?.data;
         if (!isOpenApiSchema(targetVal)) {
-          return [{ message: 'Schema must be an object' }];
+          return [
+            {
+              message: this.translate('rules.fel01.schemaMustBeObject'),
+            },
+          ];
         }
         //No oneOf --> see GUIDELINES.md
         if (Array.isArray(targetVal.oneOf)) {
-          return [{ message: Fel01.ruleMessage }];
-        }     
-        const schemaInfo = this.collectSchemaInfo(
-          targetVal,
-          rootDocument,
-          new Set<string>(),
-        );
+          return [{ message: this.message }];
+        }
+        const schemaInfo = this.collectSchemaInfo(targetVal, rootDocument, new Set<string>());
 
         return Fel01.mandatoryProperties.flatMap((mandatory) => {
           const issues: Array<{ message: string }> = [];
 
-          if (!schemaInfo.properties.has(mandatory)) {
-            issues.push({
-              message: `Missing property: ${mandatory}`,
-            });
-          }
+         if (!schemaInfo.properties.has(mandatory)) {
+           issues.push({
+             message: this.translate('rules.fel01.missingProperty', {
+               property: mandatory,
+             }),
+           });
+         }
 
           if (!schemaInfo.required.has(mandatory)) {
             issues.push({
-              message: `Missing required field: ${mandatory}`,
+              message: this.translate('rules.fel01.missingRequiredField', {
+                property: mandatory,
+              }),
             });
           }
 
           return issues;
         });
-
       },
     },
     {
@@ -88,6 +91,11 @@ export class Fel01 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.description = '';
+    this.message = this.translate('rules.fel01.message', {
+      properties: Fel01.mandatoryProperties.join(', '),
+    });
   }
   private collectSchemaInfo(
     schema: unknown,
@@ -135,11 +143,7 @@ export class Fel01 extends BaseRuleset {
     return { properties, required };
   }
 
-  private resolveLocalRef(
-    ref: string,
-    rootDocument: unknown,
-    visitedRefs: Set<string>,
-  ): unknown {
+  private resolveLocalRef(ref: string, rootDocument: unknown, visitedRefs: Set<string>): unknown {
     if (!ref.startsWith('#/')) {
       return undefined;
     }
@@ -170,18 +174,14 @@ export class Fel01 extends BaseRuleset {
     }
 
     return current;
-  }  
+  }
 }
 
 export class Fel02 extends BaseRuleset {
-  static errorMessage =
-    'Schemat enligt RFC 9457 bör innehålla de beskrivna attributen i FEL.01 och SKALL (FEL.02) använda mediatypen application/problem+json eller application/problem+xml i svaret.';
   static customProperties: CustomProperties = {
     område: 'Felhantering',
     id: 'FEL.02',
   };
-  description = '';
-  message = Fel02.errorMessage;
   given = "$.paths[*][*].responses[?(@property == 'default' || @property >= 400)].content";
   then = [
     {
@@ -219,6 +219,9 @@ export class Fel02 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.description = '';
+    this.message = this.translate('rules.fel02.message');
   }
 }
 export default { Fel01, Fel02 };

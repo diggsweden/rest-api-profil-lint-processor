@@ -21,8 +21,6 @@ export class Spa02 extends BaseRuleset {
     id: 'SPA.02',
   };
 
-  message =
-    'API-producenter SKALL acceptera HTTP-headern traceparent i inkommande anrop och propagera spårningsinformationen vidare enligt W3C Trace Context vid vidare anrop till andra system.';
   given = '$.paths[*]';
 
   then = [
@@ -83,6 +81,8 @@ export class Spa02 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.spa02.message');
   }
 
   severity = DiagnosticSeverity.Error;
@@ -94,8 +94,6 @@ export class Spa04 extends BaseRuleset {
     id: 'SPA.04',
   };
 
-  description = '-';
-  message = 'API-producenten BÖR inkludera HTTP-headern traceparent i ett API-svar.';
   given = '$.paths[*][get,put,post,delete,patch].responses[*]';
 
   then = [
@@ -144,6 +142,9 @@ export class Spa04 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.description = '-';
+    this.message = this.translate('rules.spa04.message');
   }
 
   severity = DiagnosticSeverity.Warning;
@@ -155,8 +156,6 @@ export class Spa07 extends BaseRuleset {
     id: 'SPA.07',
   };
 
-  message =
-    'Alternativa identifierare, såsom x-request-id, kan användas som komplement för interna behov, men SKALL INTE ersätta traceparent vid spårning av API-anrop mellan system och organisationer.';
   given = '$.paths[*]';
 
   then = [
@@ -219,6 +218,8 @@ export class Spa07 extends BaseRuleset {
   constructor(context: RuleExecutionContext) {
     super(context);
     super.initializeFormats(['OAS3']);
+
+    this.message = this.translate('rules.spa07.message');
   }
 
   severity = DiagnosticSeverity.Error;

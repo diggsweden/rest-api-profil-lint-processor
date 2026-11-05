@@ -1,0 +1,342 @@
+# SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
+#
+# SPDX-License-Identifier: EUPL-1.2
+openapi: '3.0.0'
+info:
+  version: 1.0.0
+  title: SAK
+  description: |
+    Svenska: API för test av säkerhetsregler i RAP-LP.
+    Kända begränsningar: API:et är endast avsett för testning och ska inte användas i produktion.
+
+    English: API for testing security rules in RAP-LP.
+    Known limitations: This API is intended for testing only and must not be used in production.
+  contact:
+    name: RAP-LP
+    email: rap-lp@example.com
+    url: http://example.com
+  termsOfService: http://swagger.io/terms/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://example.com/myapi/v2
+paths:
+  /api-info:
+    get:
+      summary: Get API information
+      description: Returns information about the API.
+      operationId: getApiInfo
+      parameters:
+        - name: traceparent
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: API information retrieved successfully.
+          headers:
+            traceparent:
+              description: W3C Trace Context header.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  version:
+                    type: string
+              example:
+                name: SAK
+                version: 1.0.0
+  /example:
+    post:
+      summary: Example API with Payload in Headers Allowed
+      description: For testing
+      operationId: exampleRequest
+      tags:
+        - tag1
+        - tag2
+      parameters:
+        - name: traceparent
+          in: header
+          description: W3C Trace Context header used for distributed tracing.
+          required: false
+          schema:
+            type: string
+        - name: Date
+          in: header
+          description: Date and time of the request.
+          required: false
+          schema:
+            type: string
+            format: date-time
+          example: 'Wed, 21 Oct 2026 10:00:00 GMT'
+        - name: Accept
+          in: header
+          description: Accepted response media types.
+          required: false
+          schema:
+            type: string
+        - name: Cache-Control
+          in: header
+          description: Cache directives for the request.
+          required: false
+          schema:
+            type: string
+            enum:
+              - no-cache
+              - no-store
+              - max-age=0
+        - name: If-None-Match
+          in: header
+          description: Conditional request using an entity tag.
+          required: false
+          schema:
+            type: string
+        - name: Connection
+          in: header
+          description: Connection preference.
+          required: false
+          schema:
+            type: string
+            enum:
+              - keep-alive
+              - close
+        - name: Cookie
+          in: cookie
+          description: Session cookie.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+            example:
+              data: "Example request data"
+      responses:
+        '200':
+          description: example response
+          headers:
+            traceparent:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 200
+                message: "Example response"
+        '415':
+          description: Unsupported Media Type. The request Content-Type is missing or not supported.
+          headers:
+            traceparent:
+              description: W3C Trace Context header.
+              schema:
+                type: string
+          content:
+            application/problem+json:
+              schema:
+                type: object
+                required:
+                  - type
+                  - title
+                  - status
+                  - detail
+                  - instance
+                properties:
+                  type:
+                    type: string
+                    format: uri
+                  title:
+                    type: string
+                  status:
+                    type: integer
+                  detail:
+                    type: string
+                  instance:
+                    type: string
+                    format: uri
+                    description: URI identifying this specific occurrence of the problem.
+              example:
+                type: https://example.com/problems/unsupported-media-type
+                title: Unsupported Media Type
+                status: 415
+                detail: The request Content-Type must be application/json.
+                instance: https://example.com/problems/instances/12345
+  /example2:
+    post:
+      summary: Example API with Payload in Headers Allowed
+      description: For testing
+      parameters:
+        - name: traceparent
+          in: header
+          description: W3C Trace Context header used for distributed tracing.
+          required: false
+          schema:
+            type: string
+      operationId: exampleRequest2
+      tags:
+        - tag1
+        - tag2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+            example:
+              data: "Example request data"
+      responses:
+        '200':
+          description: example response
+          headers:
+            traceparent:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 200
+                message: "Example response"
+        '415':
+          description: Unsupported Media Type. The request Content-Type is missing or not supported.
+          headers:
+            traceparent:
+              description: W3C Trace Context header.
+              schema:
+                type: string
+          content:
+            application/problem+json:
+              schema:
+                type: object
+                required:
+                  - type
+                  - title
+                  - status
+                  - detail
+                  - instance
+                properties:
+                  type:
+                    type: string
+                    format: uri
+                  title:
+                    type: string
+                  status:
+                    type: integer
+                  detail:
+                    type: string
+                  instance:
+                    type: string
+                    format: uri
+                    description: URI identifying this specific occurrence of the problem.
+              example:
+                type: https://example.com/problems/unsupported-media-type
+                title: Unsupported Media Type
+                status: 415
+                detail: The request Content-Type must be application/json.
+                instance: https://example.com/problems/instances/12345
+  /example3:
+    get:
+      summary: Example API with Payload in Headers Allowed
+      description: For testing
+      parameters:
+        - name: traceparent
+          in: header
+          description: W3C Trace Context header used for distributed tracing.
+          required: false
+          schema:
+            type: string
+      operationId: exampleRequest3
+      security:
+        - oAuth2:
+            - write:pets
+      tags:
+        - tag1
+        - tag2
+      responses:
+        '200':
+          headers:
+            traceparent:
+              schema:
+                type: string
+          description: example response
+          links:
+            GetApiInfo:
+              operationId: getApiInfo
+              description: Retrieve information about this API.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 200
+                message: "Example response"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    oAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://example.com/api/oauth/token
+          refreshUrl: https://example.com/api/oauth/refresh
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+        authorizationCode:
+          authorizationUrl: https://example.com/api/oauth/authorize
+          tokenUrl: https://example.com/api/oauth/token
+          refreshUrl: https://example.com/api/oauth/refresh
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    #Test for invalid types in security schemes
+    ApiKeyQuery:
+      type: apiKey
+      in: header
+      name: api_key
+    #Test for invalid types in security schemes
+    ApiKeyQuery2:
+      type: apiKey
+      in: header
+      name: api_key2
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+tags:
+  - name: tag1
+    description: Everything about tag1
+  - name: tag2
+    description: Everything about tag2
