@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: 3.2.0
+info:
+  title: Streaming 3.2
+  version: 1.0.0
+paths:
+  /events:
+    get:
+      operationId: streamEvents
+      responses:
+        "200":
+          description: Händelseström
+          content:
+            text/event-stream:
+              itemSchema:
+                type: object
+                properties:
+                  data:
+                    type: string
