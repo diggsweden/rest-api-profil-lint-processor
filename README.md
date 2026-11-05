@@ -324,7 +324,7 @@ Strict validation reported issues:
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | -------- | ------------ |
 | `-f, --file`       | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                                                | String | –        | Ja           |
 | `-c, --categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `DokRules, DotRules, ResRules, UfnRules, MogRules, SakRules, SpaRules, AmeRules, ArqRules, FelRules, VerRules, FnsRules, ForRules`. | String | –        | Nej          |
-| `-lang, --lang` | Språk för utskrifter och generella felmeddelanden. Tillgängliga: `sv`, `en`. Regelrelaterade meddelanden förblir på svenska. | String | `sv`        | Nej          |
+| `--lang` | Språk för utskrifter och generella felmeddelanden. Tillgängliga: `sv`, `en`. Regelrelaterade meddelanden förblir på svenska. | String | `sv`        | Nej          |
 
 ### Loggning i CLI-läge
 
