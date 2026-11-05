@@ -17,7 +17,7 @@ SPDX-License-Identifier: CC0-1.0
 
 ## Beskrivning
 
-RAP-LP är ett verktyg för att validera OpenAPI v3-specifikationer mot den svenska REST API-profilen med hjälp av [Spectral](https://github.com/stoplightio/spectral).<br>
+RAP-LP är ett verktyg för att validera OpenAPI v3-specifikationer (3.0.0, 3.1.0 och 3.2.0) mot den svenska REST API-profilen med hjälp av [Spectral](https://github.com/stoplightio/spectral).<br>
 
 Det är specifikt utvecklat för att validera OpenAPI-definitioner enligt den svenska REST API-profilens [specifikation](https://dev.dataportal.se/rest-api-profil).
 
@@ -293,10 +293,14 @@ Se information om hur du väljer regelkategorier vid validering under rubriken f
 
 ### Strikt läge (OAS3 Validering)
 
-Strikt-läge aktiverar validering av OpenAPI-specifikationens struktur och semantik enligt OpenAPI 3 (OAS3).
+Strikt-läge aktiverar validering av OpenAPI-specifikationens struktur och semantik enligt OpenAPI 3 (OAS3). OpenAPI 3.0, 3.1 och 3.2 stöds.
 
-När `--strict` används verifieras OpenAPI-specifikationen först enligt OAS3.
-Kontrollen säkerställer att specifikationen är korrekt uppbyggd och semantiskt giltig innan validering mot REST API-profilens regler utförs.
+När `--strict` används kontrolleras OpenAPI-specifikationen med ett urval av Spectrals OAS-regler innan validering mot REST API-profilens regler utförs:
+
+- **Structural**: validering mot OpenAPI-schemat för specifikationens version (`oas3-schema`).
+- **Semantic**: `path-params`, `operation-operationId-unique` och `operation-parameters`.
+
+Om strikt validering ger träffar avbryts körningen innan REST API-profilens regler körs. I CLI-läge avslutas verktyget med exit code 2, och i API-läge svarar servern med 400.
 
 Flaggan `--strict` fungerar både med CLI och API-läge.
 I API-mode är strikt läge default, men kan stängas av.<br>
@@ -512,7 +516,7 @@ Accept: application/json
 
 ```json
 {
-  "yaml": "<base64encoded file>",
+  "spec": "<base64encoded file>",
   "categories": ["DokRules", "UfnRules"],
   "strict": true
 }
