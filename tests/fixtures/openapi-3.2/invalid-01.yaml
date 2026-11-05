@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: 3.2.0
+info:
+  title: Invalid tag parent
+  version: 1.0.0
+tags:
+  - name: orders
+    parent: 42
+paths:
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      responses:
+        "200":
+          description: OK

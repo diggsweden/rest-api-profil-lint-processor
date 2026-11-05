@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: 3.2.0
+info:
+  title: Semantic query operation
+  version: 1.0.0
+paths:
+  /control/{id}:
+    get:
+      operationId: controlGet
+      responses:
+        "200":
+          description: OK
+  /search/{id}:
+    query:
+      operationId: searchById
+      responses:
+        "200":
+          description: OK

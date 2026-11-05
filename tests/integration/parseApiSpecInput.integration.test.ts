@@ -87,24 +87,83 @@ paths:
       // if runner returned error-object via stderr - fail test with info
       throw new Error(`Runner failed: ${JSON.stringify(payload)}`);
     }
-    const res = payload.result;
+    // const res = payload.result;
     // strictIssues can be undefined or an array depending on the implementation; we expect at least the execution to succeed
-    expect(res).toHaveProperty('strictIssues');
+    // expect(res).toHaveProperty('strictIssues');
     // If strictIssues exists, check that it is an array or undefined
-    if (Array.isArray(res.strictIssues)) {
-      expect(res.strictIssues.length).toBeGreaterThanOrEqual(0);
-    }
+    // if (Array.isArray(res.strictIssues)) {
+    //   expect(res.strictIssues.length).toBeGreaterThanOrEqual(0);
+    // }
+    const strictIssues = extractIssuesFromResult(payload);
+    expect(strictIssues.length).toBeGreaterThan(0);
+    expect(strictIssues.some((i: any) => i.code === 'oas3-schema')).toBe(true);
   });
 });
 describe('Integration: parseApiSpecInput via runner', () => {
-    beforeAll(() => {
-      // kontrollera att runner finns
-      if (!fs.existsSync(runnerPath)) {
-        throw new Error(`Integration runner saknas: ${runnerPath}`);
-      }
-    });
-    it('detects structural and semantic issues for intentional broken YAML', async() => {
-    // BAD yaml - contains structural and semantic errors
+  beforeAll(() => {
+    // kontrollera att runner finns
+    if (!fs.existsSync(runnerPath)) {
+      throw new Error(
+        `Integration runner saknas: ${runnerPath}`,
+      );
+    }
+  });
+  //     it('detects structural and semantic issues for intentional broken YAML', async() => {
+  //     // BAD yaml - contains structural and semantic errors
+  //     const badYaml = `openapi: 3.0.0
+  // info:
+  //   title: bad
+  // paths:
+  //   /pets:
+  //     get:
+  //       responses:
+  //         '200': {}
+  // `;
+  //       //Run runner in strict mode
+  //       const {ok,payload} = await runRunnerWithInput( {raw: badYaml, strict: true} );
+  //       expect(ok).toBe(true);
+
+  //       //Sanity checks first
+  //       const issues = extractIssuesFromResult(payload);
+  //       expect(Array.isArray(issues)).toBe(true);
+  //       expect(issues.length).toBeGreaterThanOrEqual(1);
+
+  //       //console.log('ISSUES:', JSON.stringify(issues, null, 2));
+
+  //       //Define issue to to partial matching
+  //       const expected = [
+  //         {
+  //           type: 'Semantic',      // spectral usually produces semantic
+  //           path: 'info',
+  //           line: 2,               // 1-baserad rad som Spectral/pretty brukar rapportera
+  //           messageContains: 'version', // spectral säger "must have required property "version""
+  //         },
+  //         {
+  //           type: 'Semantic',
+  //           path: 'paths./pets.get.responses.200',
+  //           line: 8,
+  //           messageContains: 'description',
+  //         }
+  //       ];
+
+  //       //Check that every expected issue matches actual issue
+  //       for (const exp of expected) {
+  //         const found = issues.some((a: any) => issueMatches(a,exp));
+  //         expect(found).toBe(true);
+  //       }
+
+  //       //Extra check that there is structural parser issues in actual issue array as well
+  //       const hasStructural = issues.some((i: any) =>
+  //         Array.isArray(i.details) &&
+  //         i.details.some(d => d.toLowerCase().includes('structural'))
+  //       );
+  //       expect(hasStructural).toBe(true);
+  //     });
+
+  it('detects structural and semantic issues for intentional broken YAML', async () => {
+    // BAD yaml - structural errors (info.version, response.description) and one semantic error
+    // (path parameter {petId} is not declared). The semantic path is appended last so
+    // the line numbers of the structural issues above do not change.
     const badYaml = `openapi: 3.0.0
 info:
   title: bad
@@ -113,49 +172,75 @@ paths:
     get:
       responses:
         '200': {}
+  /pets/{petId}:
+    get:
+      responses:
+        '200':
+          description: OK
 `;
-      //Run runner in strict mode
-      const {ok,payload} = await runRunnerWithInput( {raw: badYaml, strict: true} );
+    const { ok, payload } = await runRunnerWithInput({ raw: badYaml, strict: true });
+    expect(ok).toBe(true);
+
+    const issues = extractIssuesFromResult(payload);
+    expect(Array.isArray(issues)).toBe(true);
+    expect(issues.length).toBeGreaterThanOrEqual(1);
+
+    // Strict mode is Spectral-only: schema errors (oas3-schema) are Structural, the rest Semantic.
+    const expected = [
+      { type: 'Structural', code: 'oas3-schema', path: 'info', line: 2, messageContains: 'version' },
+      {
+        type: 'Structural',
+        code: 'oas3-schema',
+        path: 'paths./pets.get.responses.200',
+        line: 8,
+        messageContains: 'description',
+      },
+      { type: 'Semantic', code: 'path-params', path: 'paths./pets/{petId}.get', messageContains: 'petId' },
+    ];
+
+    for (const exp of expected) {
+      const found = issues.some((a: any) => issueMatches(a, exp));
+      if (!found) console.log('MISSING:', JSON.stringify(exp), 'ACTUAL:', JSON.stringify(issues));
+      expect(found).toBe(true);
+    }
+  });
+});
+
+describe('Integration: OpenAPI 3.2 via runner', () => {
+  const fixtureDir = path.join(__dirname, '..', 'fixtures', 'openapi-3.2');
+  const readFixture = (name: string) => fs.readFileSync(path.join(fixtureDir, name), 'utf8');
+
+  it.each(['01-minimal.yaml', '02-query-metod.yaml', '03-querystring.yaml', '04-taggar.yaml', '05-streaming.yaml'])(
+    'strict mode: valid 3.2 document %s gives no issues',
+    async (name) => {
+      const { ok, payload } = await runRunnerWithInput({ raw: readFixture(name), strict: true });
       expect(ok).toBe(true);
+      expect(extractIssuesFromResult(payload)).toEqual([]);
+    },
+  );
 
-      //Sanity checks first
-      const issues = extractIssuesFromResult(payload);
-      expect(Array.isArray(issues)).toBe(true);
-      expect(issues.length).toBeGreaterThanOrEqual(1);
+  it('strict mode: invalid 3.2 document is validated against the 3.2 schema', async () => {
+    const { ok, payload } = await runRunnerWithInput({ raw: readFixture('invalid-01.yaml'), strict: true });
+    expect(ok).toBe(true);
+    const issues = extractIssuesFromResult(payload);
+    // "parent must be string" proves the 3.2 schema is used. The 3.0 schema would say "not expected here".
+    expect(
+      issues.some(
+        (i: any) => i.code === 'oas3-schema' && i.path === 'tags.0.parent' && String(i.message).includes('string'),
+      ),
+    ).toBe(true);
+  });
 
-      //console.log('ISSUES:', JSON.stringify(issues, null, 2));
-
-      //Define issue to to partial matching 
-      const expected = [
-        {
-          type: 'Semantic',      // spectral usually produces semantic
-          path: 'info',
-          line: 2,               // 1-baserad rad som Spectral/pretty brukar rapportera
-          messageContains: 'version', // spectral säger "must have required property "version""
-        },
-        {
-          type: 'Semantic',
-          path: 'paths./pets.get.responses.200',
-          line: 8,
-          messageContains: 'description',
-        }
-      ];
-
-      //Check that every expected issue matches actual issue
-      for (const exp of expected) {
-        const found = issues.some((a: any) => issueMatches(a,exp));
-        expect(found).toBe(true);
-      }
-
-      //Extra check that there is structural parser issues in actual issue array as well
-      const hasStructural = issues.some((i: any) =>
-        Array.isArray(i.details) &&
-        i.details.some(d => d.toLowerCase().includes('structural'))
-      );
-      expect(hasStructural).toBe(true);
-    });
-
-
+  it('strict mode: querystring parameter must use content', async () => {
+    const { ok, payload } = await runRunnerWithInput({ raw: readFixture('invalid-02-querystring.yaml'), strict: true });
+    expect(ok).toBe(true);
+    // 3.2-schemat kräver "content". Med 3.0-schemat hade felet i stället handlat om otillåtet värde på "in".
+    expect(
+      extractIssuesFromResult(payload).some(
+        (i: any) => i.code === 'oas3-schema' && String(i.message).includes('content'),
+      ),
+    ).toBe(true);
+  });
 });
 /**
  * Helper function to extract array with issues from payload result.

@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+openapi: 3.2.0
+info:
+  title: Tags 3.2
+  version: 1.0.0
+tags:
+  - name: shop
+    summary: Butik
+    kind: nav
+  - name: orders
+    parent: shop
+    kind: nav
+paths:
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      responses:
+        "200":
+          description: OK
