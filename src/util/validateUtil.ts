@@ -117,7 +117,7 @@ export async function parseApiSpecInput(input: SpecInput,
          { source: 'unknown', stage: 'sanity' });
     }
     const serialized = JSON.stringify(parsed, null, 2); // Serialize raw format
-    const strictIssues = strict ? await runStrictValidation(serialized, 'json') : undefined;
+    const strictIssues = strict ? await runStrictValidation(serialized, 'json', context, t) : undefined;
     return { format: 'json', raw: serialized, parsed, strictIssues };
   }
 
@@ -190,8 +190,8 @@ export async function parseApiSpecInput(input: SpecInput,
   ensureIsSecureOpenApiLike(parsedSpec,target, t);
   
   //If here - we have a parsed openapi object.
-  // Strikt läge: Spectral (oas3-schema + utvalda regler) står för både struktur och semantik.
-  const strictIssues = strict ? await runStrictValidation(raw, target) : undefined;
+  // Strict mode: Spectral (oas3-schema + selected rules) handles both structural and semantic validation.
+  const strictIssues = strict ? await runStrictValidation(raw, target, context, t) : undefined;
   return { format: target, raw, parsed: parsedSpec, strictIssues };
 }
 /**
@@ -369,42 +369,29 @@ export function getRawFromInput(input: SpecInput, t: ReturnType<typeof translato
 
 /**
  * Helper function (High level)
- * Strikt validering via Spectral. Returnerar undefined om inga träffar.
- * Ett internt fel får inte tolkas som "grönt", så det blir en Info-träff.
+ * Strict validation via Spectral (oas3-schema plus selected rules).
+ * Returns undefined if there are no findings.
+ * Internal errors are never reported as findings in the spec. They are rethrown via
+ * mapValidationExecutionError (rule-engine crash -> SpecParseError, anything else -> unexpected error).
  */
 async function runStrictValidation(
   raw: string,
   target: 'json' | 'yaml',
+  context: RuleExecutionContext,
+  t: ReturnType<typeof translator>
 ): Promise<Issue[] | undefined> {
   const parser = (target === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
   try {
-    const diagnostics = await semanticValidate(new SpectralDocument(raw, parser, ''));
+    const diagnostics = await semanticValidate(new SpectralDocument(raw, parser, ''), context);
     const issues = IssueHelper.buildIssuesFromPrettyAndSpectral([], diagnostics, true /* addOneToLine */);
     return issues.length ? issues : undefined;
   } catch (e) {
-    // Dokumentet är inte verifierat än: en rule-engine-krasch beror troligen på trasig struktur
-    // (samma tolkning som i icke-strikt läge). Okända fel blir 500 (API) eller felloggning (CLI).
-    throw mapValidationExecutionError(e, { strictEnabled: false });
+    // The document has not been validated yet: a rule engine crash is likely caused by an invalid structure
+    // (same interpretation as in non-strict mode). Unknown errors result in a 500 (API) or error logging (CLI).
+    throw mapValidationExecutionError(e, { strictEnabled: false }, t);
   }
 }
 
-/**
- * Helper function (High level)
- * Run strict validation with @apidevtools/swagger-parser.
- */
-// async function runStrictValidationIfRequested(parsed: any, source:'yaml' | 'json' | 'xml' | 'unknown' = 'unknown'): Promise<void> {
-//   try {
-//     await SwaggerParser.validate(parsed);
-//   } catch (e: any) {
-//     // Encapsulate errors in SpecParseError so the rest of the system can handle them uniformly
-//     const msg = e?.message ? String(e.message) : String(e);
-//     throw new SpecParseError(`Strict validation failed: ${msg}`, {
-//        source,
-//        stage: 'strict',
-//        cause: e,
-//     });
-//   }
-// }
 /**
  * R
  * @returns 
