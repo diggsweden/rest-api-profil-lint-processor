@@ -207,7 +207,7 @@ paths:
 });
 
 describe('Integration: OpenAPI 3.2 via runner', () => {
-  const fixtureDir = path.join(__dirname, '..', 'fixtures', 'openapi-3.2');
+  const fixtureDir = fileURLToPath(new URL('../fixtures/openapi-3.2/', import.meta.url));
   const readFixture = (name: string) => fs.readFileSync(path.join(fixtureDir, name), 'utf8');
 
   it.each(['01-minimal.yaml', '02-query-metod.yaml', '03-querystring.yaml', '04-taggar.yaml', '05-streaming.yaml'])(
