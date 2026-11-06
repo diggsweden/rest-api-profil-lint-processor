@@ -92,6 +92,8 @@ Regel-ID, regelbeskrivningar, valideringsmeddelanden och innehåll från den nat
 
   - [Snabbstart - API-läge](#snabbstart---api-läge)
 
+  - [Statistik](#statistik)
+
 </details>
 
 <details>
@@ -465,14 +467,15 @@ Verktyget kan även köras som en lokal HTTP-server, via API (Applikation Progra
 
 ### Endpoints för API-läge
 
-| Endpoint                             | Beskrivning                                                                          |
-| ------------------------------------ | ------------------------------------------------------------------------------------ |
-| `/api/v1/docs`                       | Används för att hämta aktuell API-dokumentation med Swagger UI.                      |
-| `/api/v1/api-info`                   | Används för att hämta information om API:et.                                         |
-| `/api/v1/validation/rules`           | Används för att hämta lista med tillgängliga regelkategorier som stöds av verktyget. |
-| `/api/v1/validation/validatespec`    | Används för att validera en OpenAPI-specifikation mot REST API-profilens regler.     |
-| `/api/v1/validation/url`             | Används för att validera en OpenAPI-specifikation från en angiven URL.               |
-| `/api/v1/validation/generate-report` | Används för att generera en rapport baserad på ett valideringsresultat.              |
+| Endpoint                             | Beskrivning                                                                                        |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------|
+| `/api/v1/docs`                       | Används för att hämta aktuell API-dokumentation med Swagger UI.                                    |
+| `/api/v1/api-info`                   | Används för att hämta information om API:et.                                                       |
+| `/api/v1/validation/rules`           | Används för att hämta lista med tillgängliga regelkategorier som stöds av verktyget.               |
+| `/api/v1/validation/validatespec`    | Används för att validera en OpenAPI-specifikation mot REST API-profilens regler.                   |
+| `/api/v1/validation/url`             | Används för att validera en OpenAPI-specifikation från en angiven URL.                             |
+| `/api/v1/validation/generate-report` | Används för att generera en rapport baserad på ett valideringsresultat.                            |
+| `/api/v1/statistics/*`               | Används för att hämta statistik över regelutfall, anrop och klienter (se [Statistik](#statistik)). |
 
 ---
 
@@ -491,6 +494,8 @@ Vid körning i API-läge från en lokal server kan RAP-LP konfigureras med hjäl
 | RAP_LP_PORT                           | Portkonfiguration för vilken port servern ska starta på och lyssna på inkommande requests. Defaultvärdet är `3000`.                                                                                                    |
 | RAP_LP_PUBLIC_BASE_URL                | Publik bas-URL för servern, exempelvis `https://raplp.example.com`. Används för länken `apiDocumentation` i `/api/v1/api-info`. Om den inte är satt kommer länken peka mot `https://raplp.digg.se/api/v1/api-info`.    |
 | RAP_LP_LANG                           | Standardspråk för generella meddelanden och felmeddelanden. Tillgängliga språk: `sv`, `en`. Standardvärdet är `sv`.                                                                                                    |
+| RAP_LP_STATISTICS_ENABLED                | Anger om statistik ska vara aktiverat. Kan sättas till `true` eller `false`. Defaultvärdet `false` används om värdet saknas.    |
+| RAP_LP_STATISTICS_DATA_DIR                | Mapp där SQLite-databasen placeras. Defaultvärdet `/app/data` används om värdet saknas.    |
 
 ---
 
@@ -696,6 +701,75 @@ flowchart TD
     P --> Q["Excel-fil med<br> regelutfall genereras"]
 
     Q --> N
+```
+
+### Statistik
+
+RAP-LP kan samla anonym användningsstatistik. Funktionen är **avstängd som standard** och aktiveras med miljövariabeln `RAP_LP_STATISTICS_ENABLED=true` (se [Miljövariabler](#miljövariabler)). När den är avstängd skapas ingen databas, ingen statistik sparas och statistik-endpoints svarar med `enabled: false`.
+
+#### Vad som sparas
+
+**Regelutfall** sparas med en rad per regel för varje validering:
+
+- Ett slumpat id för valideringen (så att rader från samma validering hör ihop)
+- Regelns id, utfall (`ok` eller `violation`) och allvarlighetsgrad (`error`, `warning`, `none` för godkända regler)
+- Tidpunkt samt version av RAP-LP
+
+Regler som inte var tillämpliga sparas inte. Innehåll från den validerade specifikationen sparas aldrig.
+
+**Anrop** sparas med en rad per HTTP-anrop:
+
+- Tidpunkt, HTTP-metod och route
+- Statuskod och svarstid i millisekunder
+- Webbläsarfamilj och operativsystem, utlästa ur `User-Agent` (till exempel `chrome` och `windows`, API-klienter som curl blir `non_browser`)
+
+Ingen IP-adress, hel `User-Agent`, cookie eller annan unik identifierare för en besökare sparas.
+
+#### Lagring
+
+Statistiken sparas som standard i en SQLite-databas (`statistics.db`) i mappen som anges av `RAP_LP_STATISTICS_DATA_DIR`. Mappen, databasen och tabellerna skapas vid uppstart om de ej redan finns.
+
+Om databasen inte kan öppnas vid uppstart loggas en varning och applikationen fortsätter att fungera utan statistik tills den startas om.
+
+#### Hämta statistik
+
+Statistiken kan hämtas genom att ansluta till databasen med valfri klient. Som ett enklare alternativ finns även tre endpoints. Alla svarar med `enabled`, perioden som gäller (`range`) och summeringar.
+
+| Endpoint | Innehåll |
+|---|---|
+| `GET /api/v1/statistics/rules` | Antal valideringar, antal regelbrott och godkända regler samt antal per regel och utfall |
+| `GET /api/v1/statistics/requests` | Antal anrop per route och metod, med genomsnittlig och högsta svarstid samt antal felsvar (status 400 och uppåt) |
+| `GET /api/v1/statistics/clients` | Antal anrop per webbläsarfamilj och operativsystem |
+
+Query-parametrar (valfria):
+
+| Parameter | Beskrivning | Utan parametern |
+|---|---|---|
+| `from` | Start på perioden, inklusive. Datum eller tidpunkt enligt ISO 8601. | Ingen nedre gräns |
+| `to` | Slut på perioden, exklusive. Datum eller tidpunkt enligt ISO 8601. | Ingen övre gräns |
+| `onlyViolations` | Endast för `/rules`. Vid `true` returneras bara regelbrott. | Alla utfall returneras |
+
+`from` och `to` kan användas var för sig eller tillsammans, och utan båda summeras all sparad statistik. Ett ogiltigt datum ignoreras, vilket innebär att gränsen inte tillämpas.
+
+Exempel, regelbrott under oktober 2026:
+
+```bash
+curl "http://localhost:3000/api/v1/statistics/rules?from=2026-10-01&to=2026-11-01&onlyViolations=true"
+```
+
+Exempel på svar:
+
+```json
+{
+  "enabled": true,
+  "range": { "from": "2026-10-01T00:00:00.000Z", "to": "2026-11-01T00:00:00.000Z" },
+  "validations": 31,
+  "totalViolations": 3,
+  "totalOk": 0,
+  "byRule": [
+    { "ruleId": "DOK.03", "outcome": "violation", "severity": "error", "count": 3 }
+  ]
+}
 ```
 
 ---

@@ -44,6 +44,8 @@ tags:
     description: Operations for validating OpenAPI specifications and generating reports.
   - name: metadata
     description: Operations for API metadata and available rule categories.
+  - name: statistics
+    description: Usage statistics. Statistics are disabled by default; when disabled, these endpoints respond with enabled false and empty data.
   - name: operations
     description: Operational endpoints for health checks and monitoring. Served from the root path, outside the versioned API base path.
 security: []
@@ -499,6 +501,121 @@ paths:
                     status: 500
                     detail: Failed to generate report.
                     instance: /api/v1/validation/generate-report
+  /statistics/rules:
+    get:
+      tags:
+        - statistics
+      summary: Get rule outcome statistics.
+      description: |
+        Returns how many times each rule has passed (ok) or been violated, together with the number of validations in the period.
+        Rules that were not applicable are not recorded.
+        `totalOk` is 0 when `onlyViolations` is true, because passed rules are left out.
+      operationId: getRuleStatistics
+      parameters:
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/OnlyViolations'
+      responses:
+        '200':
+          description: Rule statistics were returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RulesStatistics'
+              examples:
+                default:
+                  value:
+                    enabled: true
+                    range:
+                      from: '2026-10-01T00:00:00.000Z'
+                      to: '2026-11-01T00:00:00.000Z'
+                    validations: 31
+                    totalViolations: 3
+                    totalOk: 10
+                    byRule:
+                      - ruleId: DOK.03
+                        outcome: ok
+                        severity: none
+                        count: 10
+                      - ruleId: DOK.03
+                        outcome: violation
+                        severity: error
+                        count: 3
+                disabled:
+                  value:
+                    enabled: false
+                    range: {}
+                    validations: 0
+                    totalViolations: 0
+                    totalOk: 0
+                    byRule: []
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /statistics/requests:
+    get:
+      tags:
+        - statistics
+      summary: Get request statistics per route.
+      description: Returns the number of requests per route and method, with average and maximum duration and the number of error responses (status 400 and above).
+      operationId: getRequestStatistics
+      parameters:
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Request statistics were returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestsStatistics'
+              examples:
+                default:
+                  value:
+                    enabled: true
+                    range:
+                      from: '2026-10-01T00:00:00.000Z'
+                    totalRequests: 5
+                    byRoute:
+                      - route: /api/v1/validation/validatespec
+                        method: POST
+                        count: 3
+                        avgDurationMs: 120
+                        maxDurationMs: 547
+                        errorCount: 1
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /statistics/clients:
+    get:
+      tags:
+        - statistics
+      summary: Get request statistics per client.
+      description: Returns the number of requests per browser family and operating system. API clients such as curl are reported as non_browser.
+      operationId: getClientStatistics
+      parameters:
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Client statistics were returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientsStatistics'
+              examples:
+                default:
+                  value:
+                    enabled: true
+                    range: {}
+                    totalRequests: 5
+                    byClient:
+                      - browserFamily: chrome
+                        osFamily: windows
+                        count: 4
+                      - browserFamily: non_browser
+                        osFamily: other
+                        count: 1
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /health/live:
     get:
       servers:
@@ -580,6 +697,55 @@ paths:
                     nodejs_gc_duration_seconds_sum{kind="major"} 0.07461329999566078
                     nodejs_gc_duration_seconds_count{kind="major"} 13
 components:
+  parameters:
+    From:
+      name: from
+      in: query
+      required: false
+      description: |
+        Start of the period, inclusive. ISO 8601 date or date-time.
+        A date (2026-10-01) is interpreted as UTC. A date-time without Z or offset is interpreted in the server's time zone, so add Z for UTC.
+        Invalid values are ignored. Omit for no lower limit.
+      schema:
+        type: string
+        examples:
+          - '2026-10-01'
+          - '2026-10-01T00:00:00Z'
+    To:
+      name: to
+      in: query
+      required: false
+      description: |
+        End of the period, exclusive. ISO 8601 date or date-time, interpreted as UTC.
+        A date (2026-10-01) is interpreted as UTC. A date-time without Z or offset is interpreted in the server's time zone, so add Z for UTC.
+        Invalid values are ignored. Omit for no upper limit.
+      schema:
+        type: string
+        examples:
+          - '2026-11-01'
+    OnlyViolations:
+      name: onlyViolations
+      in: query
+      required: false
+      description: When true, only rows with outcome violation are returned. Only the exact value true enables the filter.
+      schema:
+        type: boolean
+        default: false
+  responses:
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          examples:
+            internalServerError:
+              value:
+                type: https://raplp.digg.se/problems/internal-server-error
+                title: Internt serverfel
+                status: 500
+                detail: Ett ovantat fel intraffade.
+                instance: /api/v1/statistics/rules
   schemas:
     HealthStatus:
       type: object
@@ -965,3 +1131,175 @@ components:
             $ref: '#/components/schemas/DiagnosticReport'
       required:
         - report
+    StatisticsRange:
+      type: object
+      additionalProperties: false
+      description: The period the statistics cover. Only the limits that were requested are included, so the object is empty when no period was given.
+      properties:
+        from:
+          type: string
+          format: date-time
+          description: Start of the period, inclusive.
+          example: '2026-10-01T00:00:00.000Z'
+        to:
+          type: string
+          format: date-time
+          description: End of the period, exclusive.
+          example: '2026-11-01T00:00:00.000Z'
+    RuleStatisticsRow:
+      type: object
+      additionalProperties: false
+      properties:
+        ruleId:
+          type: string
+          example: DOK.03
+        outcome:
+          type: string
+          enum:
+            - ok
+            - violation
+        severity:
+          type: string
+          description: Lowercase severity of a violation (for example error or warning). none for passed rules.
+          example: error
+        count:
+          type: integer
+          minimum: 0
+      required:
+        - ruleId
+        - outcome
+        - severity
+        - count
+    RulesStatistics:
+      type: object
+      additionalProperties: false
+      properties:
+        enabled:
+          type: boolean
+          description: False when statistics are disabled or could not be started.
+        range:
+          $ref: '#/components/schemas/StatisticsRange'
+        validations:
+          type: integer
+          minimum: 0
+          description: Number of distinct validations in the period that reached the rule engine. Requests stopped by strict validation or invalid input are not counted.
+        totalViolations:
+          type: integer
+          minimum: 0
+          description: Sum of violations. A rule can be violated several times in one validation.
+        totalOk:
+          type: integer
+          minimum: 0
+          description: Sum of passed rules.
+        byRule:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleStatisticsRow'
+      required:
+        - enabled
+        - range
+        - validations
+        - totalViolations
+        - totalOk
+        - byRule
+    RequestStatisticsRow:
+      type: object
+      additionalProperties: false
+      properties:
+        route:
+          type: string
+          description: Route pattern, or unmatched when no route matched.
+          example: /api/v1/validation/validatespec
+        method:
+          type: string
+          example: POST
+        count:
+          type: integer
+          minimum: 0
+        avgDurationMs:
+          type: number
+        maxDurationMs:
+          type: integer
+          minimum: 0
+        errorCount:
+          type: integer
+          minimum: 0
+          description: Number of responses with status 400 or above.
+      required:
+        - route
+        - method
+        - count
+        - avgDurationMs
+        - maxDurationMs
+        - errorCount
+    RequestsStatistics:
+      type: object
+      additionalProperties: false
+      properties:
+        enabled:
+          type: boolean
+          description: False when statistics are disabled or could not be started.
+        range:
+          $ref: '#/components/schemas/StatisticsRange'
+        totalRequests:
+          type: integer
+          minimum: 0
+        byRoute:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestStatisticsRow'
+      required:
+        - enabled
+        - range
+        - totalRequests
+        - byRoute
+    ClientStatisticsRow:
+      type: object
+      additionalProperties: false
+      properties:
+        browserFamily:
+          type: string
+          enum:
+            - chrome
+            - firefox
+            - safari
+            - edge
+            - other
+            - non_browser
+        osFamily:
+          type: string
+          enum:
+            - windows
+            - macos
+            - linux
+            - android
+            - ios
+            - other
+        count:
+          type: integer
+          minimum: 0
+      required:
+        - browserFamily
+        - osFamily
+        - count
+    ClientsStatistics:
+      type: object
+      additionalProperties: false
+      properties:
+        enabled:
+          type: boolean
+          description: False when statistics are disabled or could not be started.
+        range:
+          $ref: '#/components/schemas/StatisticsRange'
+        totalRequests:
+          type: integer
+          minimum: 0
+        byClient:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientStatisticsRow'
+      required:
+        - enabled
+        - range
+        - totalRequests
+        - byClient
