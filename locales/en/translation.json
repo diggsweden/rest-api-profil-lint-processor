@@ -46,6 +46,10 @@
     },
     "diagnosticOutput": "Writing diagnostic information from RAP-LP to {{filePath}}",
     "validationOutput": "Writing inspection/validation information from RAP-LP to {{filePath}}",
+    "criteria": {
+      "failOnErrorNotMet": "Criterion --failOnError not met. Unmet MUST (SKA) requirements: {{rules}}",
+      "failOnWarningNotMet": "Criterion --failOnWarning not met. Unmet MUST (SKA) or SHOULD (BÖR) requirements: {{rules}}"
+    },
     "help": {
       "options": "Options:",
       "showHelp": "Show help",
@@ -61,7 +65,9 @@
       "enableUrlValidation": "[api-mode] Enable validation of files by URL.",
       "urlValidationConfigFile": "[api-mode] Path to the URL validation configuration file. Falls back to ./urlValidationConfig.cjs",
       "strict": "Enable strict validation of semantics and structure.",
-      "lang": "Language for CLI output (sv or en)"
+      "lang": "Language for CLI output (sv or en)",
+      "failOnError": "[cli mode] Exit with code 22 if any MUST (SKA) requirement is not met.",
+      "failOnWarning": "[cli mode] Exit with code 22 if any MUST (SKA) or SHOULD (BÖR) requirement is not met."
     }
   },
   "api": {

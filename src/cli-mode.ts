@@ -24,6 +24,7 @@ import { RuleExecutionContext } from './util/RuleExecutionContext.js';
 import { parseRuleCategories, resolveRuleCategories } from './rulesets/util/ruleModules.js';
 import { resolveLocale, translator } from './i18n.js';
 import { ExitCode } from './util/exitCodes.js';
+import { findUnmetCriteria } from './util/exitCriteria.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -42,6 +43,8 @@ export type CliArgs = {
   dex?: string;
   strict?: boolean;
   lang?: string;
+  failOnError?: boolean;
+  failOnWarning?: boolean;
 };
 
 export async function execCLI<T extends CliArgs>(argv: T) {
@@ -362,6 +365,17 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             .forEach((item) => {
               console.log(formatLintingResult(item));
             });
+        }
+
+        const unmetCriteria = findUnmetCriteria(result, {
+          failOnError: argv.failOnError,
+          failOnWarning: argv.failOnWarning,
+        });
+        unmetCriteria.forEach((criterion) => {
+          console.error(chalk.red(t(`cli.criteria.${criterion.flag}NotMet`, { rules: criterion.ruleIds.join(', ') })));
+        });
+        if (unmetCriteria.length > 0) {
+          process.exitCode ??= ExitCode.CriteriaNotMet; // an internal error, e.g. a failed report write, takes precedence
         }
       } catch (spectralError: any) {
         logErrorToFile(spectralError); // Log stack

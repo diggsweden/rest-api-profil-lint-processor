@@ -47,6 +47,10 @@
     },
     "diagnosticOutput": "Skriver diagnostiseringsinformation från RAP-LP till {{filePath}}",
     "validationOutput": "Skriver inspektions-/valideringsinformation från RAP-LP till {{filePath}}",
+    "criteria": {
+      "failOnErrorNotMet": "Kriteriet --failOnError är inte uppfyllt. SKA-krav som inte uppfylls: {{rules}}",
+      "failOnWarningNotMet": "Kriteriet --failOnWarning är inte uppfyllt. SKA- eller BÖR-krav som inte uppfylls: {{rules}}"
+    },
     "help": {
       "options": "Alternativ:",
       "showHelp": "Visa hjälp",
@@ -62,7 +66,9 @@
       "enableUrlValidation": "[api-mode] Möjliggör validering av filer via URL.",
       "urlValidationConfigFile": "[api-mode] Sökväg till konfigurationsfil för URL-validering. Faller tillbaka på ./urlValidationConfig.cjs",
       "strict": "Aktivera strict mode för validering av semantik och struktur.",
-      "lang": "Språk för CLI-utdata (sv eller en)"
+      "lang": "Språk för CLI-utdata (sv eller en)",
+      "failOnError": "[cli mode] Avsluta med exitkod 22 om något SKA-krav inte uppfylls.",
+      "failOnWarning": "[cli mode] Avsluta med exitkod 22 om något SKA- eller BÖR-krav inte uppfylls."
     }
   },
   "api": {
