@@ -326,6 +326,15 @@ Strict validation reported issues:
 | `-c, --categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `DokRules, DotRules, ResRules, UfnRules, MogRules, SakRules, SpaRules, AmeRules, ArqRules, FelRules, VerRules, FnsRules, ForRules`. | String | –        | Nej          |
 | `--lang` | Språk för utskrifter och generella felmeddelanden. Tillgängliga: `sv`, `en`. Regelrelaterade meddelanden förblir på svenska. | String | `sv`        | Nej          |
 
+### Exitkoder i CLI-läge
+
+| Kod  | Beskrivning                                                                  |
+| ---- | ---------------------------------------------------------------------------- |
+| `0`  | Valideringen genomfördes.                                                    |
+| `1`  | Oväntat internt fel, till exempel att en resultat- eller loggfil inte kunde skrivas. |
+| `2`  | Ogiltiga eller saknade argument, inklusive okända flaggor.                   |
+| `21` | Fel i strict- eller sanity-validering, till exempel att specifikationen inte kan läsas eller parsas. |
+
 ### Loggning i CLI-läge
 
 RAP-LP erbjuder stöd för att logga fel, exportera diagnostiseringsinformation samt generera rapporter baserade på resultatet från en validering. Läs mer om de olika alternativen för CLI-läge nedan.

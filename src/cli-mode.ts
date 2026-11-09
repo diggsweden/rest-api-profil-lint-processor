@@ -23,6 +23,7 @@ import * as path from 'node:path';
 import { RuleExecutionContext } from './util/RuleExecutionContext.js';
 import { parseRuleCategories, resolveRuleCategories } from './rulesets/util/ruleModules.js';
 import { resolveLocale, translator } from './i18n.js';
+import { ExitCode } from './util/exitCodes.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -85,7 +86,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             ),
           ),
         );
-        process.exitCode = 2;
+        process.exitCode = ExitCode.SpecValidationFailed;
         return;
       }
     } catch (err: any) {
@@ -116,6 +117,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             console.log(chalk.green(t('cli.parserErrorLogged', { path: logErrorFilePath })));
           } catch (fileErr: any) {
             console.error(chalk.red(t('cli.parserLogWriteFailed')), fileErr.message);
+            process.exitCode = ExitCode.InternalError;
           }
         } else {
           // No log file specified - write to stdout
@@ -133,14 +135,14 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           }
         }
 
-        process.exitCode = 1;
+        process.exitCode ??= ExitCode.SpecValidationFailed; // a failed log write above takes precedence
         return; // terminate main gracefully
       }
 
       // Övrigt oväntat fel
       logErrorToFile(err);
       console.error(chalk.red(t('cli.parseOrReadError')));
-      process.exitCode = 1;
+      process.exitCode = ExitCode.InternalError;
       return;
     }
 
@@ -229,6 +231,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           } catch (excelError: any) {
             logErrorToFile(excelError);
             console.error(chalk.red(`Misslyckades att skriva avstämningsfil i Excel-format: ${excelError.message}`));
+            process.exitCode = ExitCode.InternalError;
           }
         }
 
@@ -363,14 +366,17 @@ export async function execCLI<T extends CliArgs>(argv: T) {
       } catch (spectralError: any) {
         logErrorToFile(spectralError); // Log stack
         console.error(chalk.red(t('cli.ruleClassExecutionError')));
+        process.exitCode = ExitCode.InternalError;
       }
     } catch (initializingError: any) {
       logErrorToFile(initializingError);
       console.error(chalk.red(t('cli.ruleModuleLoadingError')));
+      process.exitCode = ExitCode.InternalError;
     }
   } catch (error: any) {
     logErrorToFile(error);
     console.error(chalk.red(`${t('cli.unexpectedError')} ${t('cli.inspectLog')}`, error.message));
+    process.exitCode = ExitCode.InternalError;
   }
   function logErrorToFile(error: any) {
     const errorMessage = `${new Date().toISOString()} - ${error.stack}\n`;

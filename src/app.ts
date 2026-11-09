@@ -21,7 +21,10 @@ import { execCLI } from './cli-mode.js';
 import { getRuleModules } from './util/ruleUtil.js';
 import { resolveLocale, translator } from './i18n.js';
 import { cliLocale } from './cliLocale.js';
+import { ExitCode } from './util/exitCodes.js';
 const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+
+class InvalidArgumentsError extends Error {}
 
 async function main() {
   const rawArgs = hideBin(process.argv);
@@ -30,9 +33,9 @@ async function main() {
   const argv = await yargs(rawArgs)
     .version(pkg.version)
     .updateStrings({
-    'Options:': t('cli.help.options'),
-    'Show help': t('cli.help.showHelp'),
-    'Show version number': t('cli.help.showVersion'),
+      'Options:': t('cli.help.options'),
+      'Show help': t('cli.help.showHelp'),
+      'Show version number': t('cli.help.showVersion'),
     })
     .option('mode', {
       alias: 'm',
@@ -108,6 +111,11 @@ async function main() {
       }
 
       return true;
+    })
+    .strict()
+    .fail((msg, err, parser) => {
+      parser.showHelp('error');
+      throw new InvalidArgumentsError(msg ?? err?.message);
     }).argv;
 
   const mode = argv.mode;
@@ -121,6 +129,12 @@ async function main() {
 
 // Starta huvudprocessen
 main().catch((err) => {
+  if (err instanceof InvalidArgumentsError) {
+    console.error(`\n${err.message}`);
+    process.exitCode = ExitCode.InvalidArguments;
+    return;
+  }
   const t = translator(cliLocale(hideBin(process.argv)));
   console.error('%s: %o', t('cli.unexpectedError'), err);
+  process.exitCode = ExitCode.InternalError;
 });
