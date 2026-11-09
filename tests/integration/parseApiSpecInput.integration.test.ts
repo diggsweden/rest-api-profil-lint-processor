@@ -204,6 +204,31 @@ paths:
       expect(found).toBe(true);
     }
   });
+
+    it('strict mode: broken internal $ref is reported', async () => {
+      const badYaml = `openapi: 3.0.0
+info:
+  title: t
+  version: 1.0.0
+paths:
+  /pets:
+    get:
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing'
+`;
+      const { ok, payload } = await runRunnerWithInput({ raw: badYaml, strict: true });
+      expect(ok).toBe(true);
+      expect(
+        extractIssuesFromResult(payload).some(
+          (i: any) => String(i.path).endsWith('schema.$ref') && String(i.message).includes('does not exist'),
+        ),
+      ).toBe(true);
+    });
 });
 
 describe('Integration: OpenAPI 3.2 via runner', () => {
