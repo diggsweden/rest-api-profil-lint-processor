@@ -229,6 +229,81 @@ paths:
         ),
       ).toBe(true);
     });
+
+      it('strict mode: $ref pointing to the wrong kind of component is reported', async () => {
+    const badYaml = `openapi: 3.0.3
+info:
+  title: t
+  version: 1.0.0
+paths:
+  /pets:
+    get:
+      operationId: listPets
+      parameters:
+        - $ref: '#/components/schemas/Pet'
+      responses:
+        '200':
+          $ref: '#/components/schemas/Pet'
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        name:
+          type: string
+`;
+    const { ok, payload } = await runRunnerWithInput({ raw: badYaml, strict: true });
+    expect(ok).toBe(true);
+    const issues = extractIssuesFromResult(payload).filter((i: any) => i.code === 'ref-target-type');
+    expect(issues.map((i: any) => [i.type, i.path, i.line])).toEqual([
+      ['Structural', 'paths./pets.get.parameters.0.$ref', 10],
+      ['Structural', 'paths./pets.get.responses.200.$ref', 13],
+    ]);
+  });
+
+  it('strict mode: correct $refs, and schema properties named like OpenAPI keywords, give no issues', async () => {
+    const okYaml = `openapi: 3.0.3
+info:
+  title: t
+  version: 1.0.0
+paths:
+  /pets:
+    get:
+      operationId: listPets
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+components:
+  parameters:
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+  responses:
+    Ok:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              examples:
+                $ref: '#/components/schemas/Item'
+              parameters:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+  schemas:
+    Item:
+      type: object
+`;
+    const { ok, payload } = await runRunnerWithInput({ raw: okYaml, strict: true });
+    expect(ok).toBe(true);
+    expect(extractIssuesFromResult(payload)).toEqual([]);
+  });
 });
 
 describe('Integration: OpenAPI 3.2 via runner', () => {
