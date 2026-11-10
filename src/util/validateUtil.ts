@@ -21,6 +21,7 @@ import { Issue } from './Issue.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
 import { translator } from '../i18n.js';
 import { mapValidationExecutionError } from './mapValidationExecutionError.js';
+import { findRefTargetMismatches } from './refTargetCheck.js';
 
 /**
  * 
@@ -382,9 +383,16 @@ async function runStrictValidation(
 ): Promise<Issue[] | undefined> {
   const parser = (target === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
   try {
-    const diagnostics = await semanticValidate(new SpectralDocument(raw, parser, ''), context);
+    const document = new SpectralDocument(raw, parser, '');
+    const diagnostics = await semanticValidate(document, context);
     const issues = IssueHelper.buildIssuesFromPrettyAndSpectral([], diagnostics, true /* addOneToLine */);
-    return issues.length ? issues : undefined;
+    // Spectral's oas3-schema accepts a $ref anywhere an object may be. Check the kind of target here.
+    const refIssues = findRefTargetMismatches(document.data, (p) => {
+      const range = document.getRangeForJsonPath(p, true);
+      return range ? range.start.line + 1 : null;
+    });
+    const all = IssueHelper.sortIssues([...issues, ...refIssues]);
+    return all.length ? all : undefined;
   } catch (e) {
     // The document has not been validated yet: a rule engine crash is likely caused by an invalid structure
     // (same interpretation as in non-strict mode). Unknown errors result in a 500 (API) or error logging (CLI).
