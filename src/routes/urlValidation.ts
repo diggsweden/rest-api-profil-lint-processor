@@ -12,7 +12,7 @@ import { loadUrlValidationConfiguration } from '../util/urlValidationConfig.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 import { parseRuleCategories, resolveRuleCategories } from '../rulesets/util/ruleModules.js';
 import { SpecValidationRequestDto } from '../model/SpecValidationRequestDto.js';
-import { parseApiSpecInput, detectSpecFormatPreference, ParseResult } from '../util/validateUtil.js';
+import { parseApiSpecInput, detectSpecFormatPreference } from '../util/validateUtil.js';
 import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
 import * as IssueHelper from '../util/RapLPIssueHelpers.js';
 import type { IParser } from '@stoplight/spectral-parsers';
@@ -22,6 +22,7 @@ import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js'
 import { measure } from '../util/performance.js';
 import crypto from 'node:crypto';
 import { resolveLocale, translator } from '../i18n.js';
+import { StatisticsService } from '../statistics/StatisticsService.js';
 
 const isIpv4Address = (value: string): boolean => {
   const parts = value.split('.');
@@ -89,7 +90,11 @@ const assertSsrfSafeUrl = (config: any, urlString: string, t: ReturnType<typeof 
   }
 };
 
-export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFile?: string) => {
+export const registerUrlValidationRoutes = (
+  app: Express,
+  urlValidationConfigFile?: string,
+  statisticsService?: StatisticsService,
+) => {
   const config = loadUrlValidationConfiguration(urlValidationConfigFile);
   // Route for validating openapi yaml from url.
 
@@ -186,6 +191,10 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
           processApiSpec(context, rules, apiSpecDocument),
         );
 
+        if (StatisticsService.isStatisticsEnabled()){
+          statisticsService?.recordValidationResult(result, locale);
+        }
+
         const hasRuleViolations = result.result.some((d) => d.severity === 'ERROR' || d.severity === 'WARNING');
         if (hasRuleViolations) {
           //Rulevalidation occured in RapLP-ruleengine
@@ -232,7 +241,7 @@ export const registerUrlValidationRoutes = (app: Express, urlValidationConfigFil
   );
 };
 
-// Fallback route if feature dissabled.
+// Fallback route if feature disabled.
 export const registerUrlValidationFallbackRoutes = (app: Express) => {
   app.post('/api/v1/validation/url', async (req, res, next) => {
     const t = translator(res.locals?.locale ?? resolveLocale());
