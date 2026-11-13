@@ -18,7 +18,7 @@ export type RuleOutcome = {
 
 export type UnmetCriterion =
   | { flag: 'failOnError' | 'failOnWarning'; ruleIds: string[] }
-  | { flag: 'minCompliance'; compliance: number; threshold: number };
+  | { flag: 'minCompliance'; compliance: number; threshold: number; passed: number; executed: number };
 
 /**
  * Calculates the rule compliance as a whole percentage, rounded down so that
@@ -60,7 +60,13 @@ export function findUnmetCriteria(
   if (criteria.minCompliance !== undefined) {
     const compliance = calculateCompliance(outcome);
     if (compliance < criteria.minCompliance) {
-      unmet.push({ flag: 'minCompliance', compliance, threshold: criteria.minCompliance });
+      unmet.push({
+        flag: 'minCompliance',
+        compliance,
+        threshold: criteria.minCompliance,
+        passed: outcome.passed,
+        executed: outcome.passed + outcome.failed,
+      });
     }
   }
   return unmet;

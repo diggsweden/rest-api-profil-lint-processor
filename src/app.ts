@@ -14,6 +14,7 @@
  **************************************************************/
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import chalk from 'chalk';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { startServer } from './api-mode.js';
@@ -132,8 +133,7 @@ async function main() {
       return true;
     })
     .strict()
-    .fail((msg, err, parser) => {
-      parser.showHelp('error');
+    .fail((msg, err) => {
       throw new InvalidArgumentsError(msg ?? err?.message);
     }).argv;
 
@@ -148,12 +148,13 @@ async function main() {
 
 // Starta huvudprocessen
 main().catch((err) => {
+  const t = translator(cliLocale(hideBin(process.argv)));
   if (err instanceof InvalidArgumentsError) {
-    console.error(`\n${err.message}`);
+    console.error(chalk.red(err.message));
+    console.error(t('cli.seeHelp'));
     process.exitCode = ExitCode.InvalidArguments;
     return;
   }
-  const t = translator(cliLocale(hideBin(process.argv)));
   console.error('%s: %o', t('cli.unexpectedError'), err);
   process.exitCode = ExitCode.InternalError;
 });

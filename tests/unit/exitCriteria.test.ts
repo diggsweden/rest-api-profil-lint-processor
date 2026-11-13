@@ -56,7 +56,7 @@ describe('findUnmetCriteria', () => {
 
   it('minCompliance är inte uppfyllt när graden understiger tröskeln', () => {
     expect(findUnmetCriteria(violations, outcome, { minCompliance: 81 })).toEqual([
-      { flag: 'minCompliance', compliance: 80, threshold: 81 },
+      { flag: 'minCompliance', compliance: 80, threshold: 81, passed: 8, executed: 10 },
     ]);
   });
 });

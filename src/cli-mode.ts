@@ -397,6 +397,8 @@ export async function execCLI<T extends CliArgs>(argv: T) {
               ? t('cli.criteria.minComplianceNotMet', {
                   compliance: criterion.compliance,
                   threshold: criterion.threshold,
+                  passed: criterion.passed,
+                  executed: criterion.executed,
                 })
               : t(`cli.criteria.${criterion.flag}NotMet`, { rules: criterion.ruleIds.join(', ') });
           console.error(chalk.red(message));
