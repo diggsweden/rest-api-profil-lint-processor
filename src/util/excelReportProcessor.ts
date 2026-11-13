@@ -522,6 +522,7 @@ export class ExcelReportProcessor {
    * This method will persis the current representation of the excel file.
    */
   private persistUpdates(outputFile: string) {
-    this.zip.writeZip(outputFile);
+    fs.mkdirSync(path.dirname(outputFile), { recursive: true });
+    fs.writeFileSync(outputFile, this.zip.toBuffer());
   }
 }

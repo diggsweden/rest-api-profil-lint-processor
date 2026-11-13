@@ -14,6 +14,7 @@
  **************************************************************/
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import chalk from 'chalk';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { startServer } from './api-mode.js';
@@ -21,7 +22,10 @@ import { execCLI } from './cli-mode.js';
 import { getRuleModules } from './util/ruleUtil.js';
 import { resolveLocale, translator } from './i18n.js';
 import { cliLocale } from './cliLocale.js';
+import { ExitCode } from './util/exitCodes.js';
 const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+
+class InvalidArgumentsError extends Error {}
 
 async function main() {
   const rawArgs = hideBin(process.argv);
@@ -30,9 +34,9 @@ async function main() {
   const argv = await yargs(rawArgs)
     .version(pkg.version)
     .updateStrings({
-    'Options:': t('cli.help.options'),
-    'Show help': t('cli.help.showHelp'),
-    'Show version number': t('cli.help.showVersion'),
+      'Options:': t('cli.help.options'),
+      'Show help': t('cli.help.showHelp'),
+      'Show version number': t('cli.help.showVersion'),
     })
     .option('mode', {
       alias: 'm',
@@ -88,16 +92,35 @@ async function main() {
       choices: ['sv', 'en'],
       type: 'string',
     })
+    .option('failOnError', {
+      describe: t('cli.help.failOnError'),
+      type: 'boolean',
+    })
+    .option('failOnWarning', {
+      describe: t('cli.help.failOnWarning'),
+      type: 'boolean',
+    })
+    .option('minCompliance', {
+      describe: t('cli.help.minCompliance'),
+      type: 'number',
+    })
     .check(function (argv) {
       if (argv.mode !== 'api') {
         if (!argv.file) {
           throw new Error(translator(resolveLocale(argv.lang ?? process.env.RAP_LP_LANG))('cli.missingFile'));
         }
+        const minCompliance = argv.minCompliance;
+        if (
+          minCompliance !== undefined &&
+          (!Number.isInteger(minCompliance) || minCompliance < 1 || minCompliance > 100)
+        ) {
+          throw new Error(t('cli.invalidMinCompliance'));
+        }
         return true;
       }
 
       if (argv.mode === 'api') {
-        const apiForbiddenArgs = new Set(['f', 'c', 'dex']);
+        const apiForbiddenArgs = new Set(['f', 'c', 'dex', 'failOnError', 'failOnWarning', 'minCompliance']);
         const hasForbiddenArgs = Object.keys(argv).filter(
           (k) => apiForbiddenArgs.has(k) && Object.prototype.hasOwnProperty.call(argv, k),
         );
@@ -108,6 +131,10 @@ async function main() {
       }
 
       return true;
+    })
+    .strict()
+    .fail((msg, err) => {
+      throw new InvalidArgumentsError(msg ?? err?.message);
     }).argv;
 
   const mode = argv.mode;
@@ -122,5 +149,12 @@ async function main() {
 // Starta huvudprocessen
 main().catch((err) => {
   const t = translator(cliLocale(hideBin(process.argv)));
+  if (err instanceof InvalidArgumentsError) {
+    console.error(chalk.red(err.message));
+    console.error(t('cli.seeHelp'));
+    process.exitCode = ExitCode.InvalidArguments;
+    return;
+  }
   console.error('%s: %o', t('cli.unexpectedError'), err);
+  process.exitCode = ExitCode.InternalError;
 });

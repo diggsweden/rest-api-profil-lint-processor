@@ -23,6 +23,8 @@ import * as path from 'node:path';
 import { RuleExecutionContext } from './util/RuleExecutionContext.js';
 import { parseRuleCategories, resolveRuleCategories } from './rulesets/util/ruleModules.js';
 import { resolveLocale, translator } from './i18n.js';
+import { ExitCode } from './util/exitCodes.js';
+import { findUnmetCriteria } from './util/exitCriteria.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -41,11 +43,14 @@ export type CliArgs = {
   dex?: string;
   strict?: boolean;
   lang?: string;
+  failOnError?: boolean;
+  failOnWarning?: boolean;
+  minCompliance?: number;
 };
 
 export async function execCLI<T extends CliArgs>(argv: T) {
-    const locale = resolveLocale(argv.lang ?? process.env.RAP_LP_LANG);
-    const t = translator(locale);
+  const locale = resolveLocale(argv.lang ?? process.env.RAP_LP_LANG);
+  const t = translator(locale);
   try {
     // Parse command-line arguments using yargs
     const apiSpecFileName = (argv.file as string) || '';
@@ -55,7 +60,6 @@ export async function execCLI<T extends CliArgs>(argv: T) {
     const logErrorFilePath = argv.logError as string | undefined;
     const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
     const strict = (argv.strict as boolean) ?? false;
-    
 
     const context = new RuleExecutionContext(locale);
 
@@ -70,7 +74,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           strict: strict,
           preferJsonError: prefer,
         },
-        context
+        context,
       );
 
       // Issue handling ----------
@@ -85,7 +89,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             ),
           ),
         );
-        process.exitCode = 2;
+        process.exitCode = ExitCode.SpecValidationFailed;
         return;
       }
     } catch (err: any) {
@@ -116,6 +120,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             console.log(chalk.green(t('cli.parserErrorLogged', { path: logErrorFilePath })));
           } catch (fileErr: any) {
             console.error(chalk.red(t('cli.parserLogWriteFailed')), fileErr.message);
+            process.exitCode = ExitCode.InternalError;
           }
         } else {
           // No log file specified - write to stdout
@@ -133,14 +138,14 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           }
         }
 
-        process.exitCode = 1;
+        process.exitCode ??= ExitCode.SpecValidationFailed; // a failed log write above takes precedence
         return; // terminate main gracefully
       }
 
       // Övrigt oväntat fel
       logErrorToFile(err);
       console.error(chalk.red(t('cli.parseOrReadError')));
-      process.exitCode = 1;
+      process.exitCode = ExitCode.InternalError;
       return;
     }
 
@@ -187,14 +192,18 @@ export async function execCLI<T extends CliArgs>(argv: T) {
                 ),
               );
             } else {
-              console.log(chalk.green(`Skriver avstämningsfil i Excel-format från RAP-LP till ${reportHandler.outputFilePath}`));
+              console.log(
+                chalk.green(`Skriver avstämningsfil i Excel-format från RAP-LP till ${reportHandler.outputFilePath}`),
+              );
             }
             if (reportHandler.isBasedOnExistingFile) {
               const { templateProfileVersion, fileProfileVersion } = reportHandler;
               if (!fileProfileVersion) {
                 console.log(
                   chalk.yellow(
-                    `Kunde inte avgöra vilken version av REST API-profilen avstämningsfilen avser, RAP-LP använder version ${templateProfileVersion ?? 'okänd'}`,
+                    `Kunde inte avgöra vilken version av REST API-profilen avstämningsfilen avser, RAP-LP använder version ${
+                      templateProfileVersion ?? 'okänd'
+                    }`,
                   ),
                 );
               } else if (templateProfileVersion && fileProfileVersion !== templateProfileVersion) {
@@ -207,7 +216,9 @@ export async function execCLI<T extends CliArgs>(argv: T) {
               if (reportHandler.missingRules.length > 0) {
                 console.log(
                   chalk.yellow(
-                    `Följande regler har verkställts av RAP-LP men saknas i avstämningsfilen, deras utfall har inte skrivits: ${reportHandler.missingRules.join(', ')}`,
+                    `Följande regler har verkställts av RAP-LP men saknas i avstämningsfilen, deras utfall har inte skrivits: ${reportHandler.missingRules.join(
+                      ', ',
+                    )}`,
                   ),
                 );
               }
@@ -215,20 +226,25 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             if (reportHandler.keptInProgressRules.length > 0) {
               console.log(
                 chalk.yellow(
-                  `Status "Pågående" behålls för regler som inte validerats OK: ${reportHandler.keptInProgressRules.join(', ')}`,
+                  `Status "Pågående" behålls för regler som inte validerats OK: ${reportHandler.keptInProgressRules.join(
+                    ', ',
+                  )}`,
                 ),
               );
             }
             if (reportHandler.resolvedInProgressRules.length > 0) {
               console.log(
                 chalk.green(
-                  `Status "Pågående" ersatt med OK för regler som nu validerats OK: ${reportHandler.resolvedInProgressRules.join(', ')}`,
+                  `Status "Pågående" ersatt med OK för regler som nu validerats OK: ${reportHandler.resolvedInProgressRules.join(
+                    ', ',
+                  )}`,
                 ),
               );
             }
           } catch (excelError: any) {
             logErrorToFile(excelError);
             console.error(chalk.red(`Misslyckades att skriva avstämningsfil i Excel-format: ${excelError.message}`));
+            process.exitCode = ExitCode.InternalError;
           }
         }
 
@@ -251,13 +267,15 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           }
         };
         const formatLintingResult = (result: any) => {
-          return `\n${t('cli.ruleExecution.details.severity')}: ${colorizeSeverity(result.severity)} \n${t('cli.ruleExecution.details.id')}: ${result.id} \n${t('cli.ruleExecution.details.requirement')}: ${
-            result.requirement
-          } \n${t('cli.ruleExecution.details.area')}: ${result.area} \n${t('cli.ruleExecution.details.path')}:[${result.path}] \n${t('cli.ruleExecution.details.range')}:${JSON.stringify(
-            result.range,
-            null,
-            2,
-          )}\n${t('cli.ruleExecution.details.designRule')}: ${result.helpUrl} `;
+          return `\n${t('cli.ruleExecution.details.severity')}: ${colorizeSeverity(result.severity)} \n${t(
+            'cli.ruleExecution.details.id',
+          )}: ${result.id} \n${t('cli.ruleExecution.details.requirement')}: ${result.requirement} \n${t(
+            'cli.ruleExecution.details.area',
+          )}: ${result.area} \n${t('cli.ruleExecution.details.path')}:[${result.path}] \n${t(
+            'cli.ruleExecution.details.range',
+          )}:${JSON.stringify(result.range, null, 2)}\n${t('cli.ruleExecution.details.designRule')}: ${
+            result.helpUrl
+          } `;
         };
         //Check specified option from yargs input
 
@@ -360,17 +378,48 @@ export async function execCLI<T extends CliArgs>(argv: T) {
               console.log(formatLintingResult(item));
             });
         }
+
+        const unmetCriteria = findUnmetCriteria(
+          result,
+          {
+            passed: customDiagnostic.diagnosticInformation.executedUniqueRules?.length ?? 0,
+            failed: customDiagnostic.diagnosticInformation.executedUniqueRulesWithError?.length ?? 0,
+          },
+          {
+            failOnError: argv.failOnError,
+            failOnWarning: argv.failOnWarning,
+            minCompliance: argv.minCompliance,
+          },
+        );
+        unmetCriteria.forEach((criterion) => {
+          const message =
+            criterion.flag === 'minCompliance'
+              ? t('cli.criteria.minComplianceNotMet', {
+                  compliance: criterion.compliance,
+                  threshold: criterion.threshold,
+                  passed: criterion.passed,
+                  executed: criterion.executed,
+                })
+              : t(`cli.criteria.${criterion.flag}NotMet`, { rules: criterion.ruleIds.join(', ') });
+          console.error(chalk.red(message));
+        });
+        if (unmetCriteria.length > 0) {
+          process.exitCode ??= ExitCode.CriteriaNotMet;
+        }
       } catch (spectralError: any) {
         logErrorToFile(spectralError); // Log stack
         console.error(chalk.red(t('cli.ruleClassExecutionError')));
+        process.exitCode = ExitCode.InternalError;
       }
     } catch (initializingError: any) {
       logErrorToFile(initializingError);
       console.error(chalk.red(t('cli.ruleModuleLoadingError')));
+      process.exitCode = ExitCode.InternalError;
     }
   } catch (error: any) {
     logErrorToFile(error);
     console.error(chalk.red(`${t('cli.unexpectedError')} ${t('cli.inspectLog')}`, error.message));
+    process.exitCode = ExitCode.InternalError;
   }
   function logErrorToFile(error: any) {
     const errorMessage = `${new Date().toISOString()} - ${error.stack}\n`;
