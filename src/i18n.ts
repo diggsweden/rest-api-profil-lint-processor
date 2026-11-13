@@ -37,7 +37,6 @@ i18next.init({
   supportedLngs: SUPPORTED_LOCALES,
   resources: { sv: { translation: loadLocale('sv') }, en: { translation: loadLocale('en') } },
   interpolation: { escapeValue: false },
-  showSupportNotice: false,
 });
 
 export function resolveLocale(value?: string): Locale {
