@@ -13,6 +13,7 @@
     "unexpectedError": "An unexpected error occurred!",
     "inspectLog": "Inspect the RAP-LP error log for more information about the error.",
     "apiModeForbiddenArgs": "In API mode, only --enableUrlValidation and --urlValidationConfigFile are allowed.",
+    "invalidMinCompliance": "--minCompliance must be a whole number between 1 and 100.",
     "strictValidationIssues": "Strict validation reported issues:",
     "parserErrorLogged": "Parser error logged to {{path}}",
     "parserLogWriteFailed": "Failed to write parser error to the log file:",
@@ -48,7 +49,8 @@
     "validationOutput": "Writing inspection/validation information from RAP-LP to {{filePath}}",
     "criteria": {
       "failOnErrorNotMet": "Criterion --failOnError not met. Unmet MUST (SKA) requirements: {{rules}}",
-      "failOnWarningNotMet": "Criterion --failOnWarning not met. Unmet MUST (SKA) or SHOULD (BÖR) requirements: {{rules}}"
+      "failOnWarningNotMet": "Criterion --failOnWarning not met. Unmet MUST (SKA) or SHOULD (BÖR) requirements: {{rules}}",
+      "minComplianceNotMet": "Criterion --minCompliance not met. Rule compliance is {{compliance}}%, required {{threshold}}%"
     },
     "help": {
       "options": "Options:",
@@ -67,7 +69,8 @@
       "strict": "Enable strict validation of semantics and structure.",
       "lang": "Language for CLI output (sv or en)",
       "failOnError": "[cli mode] Exit with code 22 if any MUST (SKA) requirement is not met.",
-      "failOnWarning": "[cli mode] Exit with code 22 if any MUST (SKA) or SHOULD (BÖR) requirement is not met."
+      "failOnWarning": "[cli mode] Exit with code 22 if any MUST (SKA) or SHOULD (BÖR) requirement is not met.",
+      "minCompliance": "[cli mode] Exit with code 22 if the rule compliance (1-100 %) is below the given value. Not applicable rules are excluded."
     }
   },
   "api": {

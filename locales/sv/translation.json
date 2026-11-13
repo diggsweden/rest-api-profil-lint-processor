@@ -13,6 +13,7 @@
     "unexpectedError": "Ett oväntat fel uppstod!",
     "inspectLog": "Undersök felloggen för RAP-LP för mer information om felet.",
     "apiModeForbiddenArgs": "I API-läge är endast --enableUrlValidation och --urlValidationConfigFile tillåtna.",
+    "invalidMinCompliance": "--minCompliance måste vara ett heltal mellan 1 och 100.",
     "strictValidationIssues": "Strict validation rapporterade fel:",
     "parserErrorLogged": "Parserfel loggat till {{path}}",
     "parserLogWriteFailed": "Misslyckades att skriva parserfel till loggfilen:",
@@ -49,7 +50,8 @@
     "validationOutput": "Skriver inspektions-/valideringsinformation från RAP-LP till {{filePath}}",
     "criteria": {
       "failOnErrorNotMet": "Kriteriet --failOnError är inte uppfyllt. SKA-krav som inte uppfylls: {{rules}}",
-      "failOnWarningNotMet": "Kriteriet --failOnWarning är inte uppfyllt. SKA- eller BÖR-krav som inte uppfylls: {{rules}}"
+      "failOnWarningNotMet": "Kriteriet --failOnWarning är inte uppfyllt. SKA- eller BÖR-krav som inte uppfylls: {{rules}}",
+      "minComplianceNotMet": "Kriteriet --minCompliance är inte uppfyllt. Regeluppfyllnadsgraden är {{compliance}} %, krav {{threshold}} %"
     },
     "help": {
       "options": "Alternativ:",
@@ -68,7 +70,8 @@
       "strict": "Aktivera strict mode för validering av semantik och struktur.",
       "lang": "Språk för CLI-utdata (sv eller en)",
       "failOnError": "[cli mode] Avsluta med exitkod 22 om något SKA-krav inte uppfylls.",
-      "failOnWarning": "[cli mode] Avsluta med exitkod 22 om något SKA- eller BÖR-krav inte uppfylls."
+      "failOnWarning": "[cli mode] Avsluta med exitkod 22 om något SKA- eller BÖR-krav inte uppfylls.",
+      "minCompliance": "[cli mode] Avsluta med exitkod 22 om regeluppfyllnadsgraden (1-100 %) understiger angivet värde. Ej tillämpliga regler räknas inte."
     }
   },
   "api": {

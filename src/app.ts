@@ -99,16 +99,27 @@ async function main() {
       describe: t('cli.help.failOnWarning'),
       type: 'boolean',
     })
+    .option('minCompliance', {
+      describe: t('cli.help.minCompliance'),
+      type: 'number',
+    })
     .check(function (argv) {
       if (argv.mode !== 'api') {
         if (!argv.file) {
           throw new Error(translator(resolveLocale(argv.lang ?? process.env.RAP_LP_LANG))('cli.missingFile'));
         }
+        const minCompliance = argv.minCompliance;
+        if (
+          minCompliance !== undefined &&
+          (!Number.isInteger(minCompliance) || minCompliance < 1 || minCompliance > 100)
+        ) {
+          throw new Error(t('cli.invalidMinCompliance'));
+        }
         return true;
       }
 
       if (argv.mode === 'api') {
-        const apiForbiddenArgs = new Set(['f', 'c', 'dex', 'failOnError', 'failOnWarning']);
+        const apiForbiddenArgs = new Set(['f', 'c', 'dex', 'failOnError', 'failOnWarning', 'minCompliance']);
         const hasForbiddenArgs = Object.keys(argv).filter(
           (k) => apiForbiddenArgs.has(k) && Object.prototype.hasOwnProperty.call(argv, k),
         );

@@ -327,6 +327,7 @@ Strict validation reported issues:
 | `--lang` | Språk för utskrifter och generella felmeddelanden. Tillgängliga: `sv`, `en`. Regelrelaterade meddelanden förblir på svenska. | String | `sv`        | Nej          |
 | `--failOnError` | Avsluta med exitkod `22` om något SKA-krav inte uppfylls. | Boolean | `false` | Nej |
 | `--failOnWarning` | Avsluta med exitkod `22` om något SKA- eller BÖR-krav inte uppfylls. | Boolean | `false` | Nej |
+| `--minCompliance` | Avsluta med exitkod `22` om regeluppfyllnadsgraden understiger angivet heltal (1–100). Graden beräknas som andelen uppfyllda regler av de verkställda reglerna, avrundat nedåt; ej tillämpliga regler räknas inte. | Number | – | Nej |
 
 ### Exitkoder i CLI-läge
 
@@ -336,7 +337,7 @@ Strict validation reported issues:
 | `1`  | Oväntat internt fel, till exempel att en resultat- eller loggfil inte kunde skrivas. |
 | `2`  | Ogiltiga eller saknade argument, inklusive okända flaggor.                   |
 | `21` | Fel i strict- eller sanity-validering, till exempel att specifikationen inte kan läsas eller parsas. |
-| `22` | Regelresultatet uppfyller inte aktiverade kriterier (`--failOnError`, `--failOnWarning`). |
+| `22` | Regelresultatet uppfyller inte aktiverade kriterier (`--failOnError`, `--failOnWarning`, `--minCompliance`). |
 
 Utan kriterieflaggor avslutas en genomförd validering med `0`, även om regler inte uppfylls. Använd en kriterieflagga för att låta exempelvis en CI-pipeline fallera när kraven inte uppfylls:
 

@@ -45,11 +45,12 @@ export type CliArgs = {
   lang?: string;
   failOnError?: boolean;
   failOnWarning?: boolean;
+  minCompliance?: number;
 };
 
 export async function execCLI<T extends CliArgs>(argv: T) {
-    const locale = resolveLocale(argv.lang ?? process.env.RAP_LP_LANG);
-    const t = translator(locale);
+  const locale = resolveLocale(argv.lang ?? process.env.RAP_LP_LANG);
+  const t = translator(locale);
   try {
     // Parse command-line arguments using yargs
     const apiSpecFileName = (argv.file as string) || '';
@@ -59,7 +60,6 @@ export async function execCLI<T extends CliArgs>(argv: T) {
     const logErrorFilePath = argv.logError as string | undefined;
     const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
     const strict = (argv.strict as boolean) ?? false;
-    
 
     const context = new RuleExecutionContext(locale);
 
@@ -74,7 +74,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           strict: strict,
           preferJsonError: prefer,
         },
-        context
+        context,
       );
 
       // Issue handling ----------
@@ -192,14 +192,18 @@ export async function execCLI<T extends CliArgs>(argv: T) {
                 ),
               );
             } else {
-              console.log(chalk.green(`Skriver avstämningsfil i Excel-format från RAP-LP till ${reportHandler.outputFilePath}`));
+              console.log(
+                chalk.green(`Skriver avstämningsfil i Excel-format från RAP-LP till ${reportHandler.outputFilePath}`),
+              );
             }
             if (reportHandler.isBasedOnExistingFile) {
               const { templateProfileVersion, fileProfileVersion } = reportHandler;
               if (!fileProfileVersion) {
                 console.log(
                   chalk.yellow(
-                    `Kunde inte avgöra vilken version av REST API-profilen avstämningsfilen avser, RAP-LP använder version ${templateProfileVersion ?? 'okänd'}`,
+                    `Kunde inte avgöra vilken version av REST API-profilen avstämningsfilen avser, RAP-LP använder version ${
+                      templateProfileVersion ?? 'okänd'
+                    }`,
                   ),
                 );
               } else if (templateProfileVersion && fileProfileVersion !== templateProfileVersion) {
@@ -212,7 +216,9 @@ export async function execCLI<T extends CliArgs>(argv: T) {
               if (reportHandler.missingRules.length > 0) {
                 console.log(
                   chalk.yellow(
-                    `Följande regler har verkställts av RAP-LP men saknas i avstämningsfilen, deras utfall har inte skrivits: ${reportHandler.missingRules.join(', ')}`,
+                    `Följande regler har verkställts av RAP-LP men saknas i avstämningsfilen, deras utfall har inte skrivits: ${reportHandler.missingRules.join(
+                      ', ',
+                    )}`,
                   ),
                 );
               }
@@ -220,14 +226,18 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             if (reportHandler.keptInProgressRules.length > 0) {
               console.log(
                 chalk.yellow(
-                  `Status "Pågående" behålls för regler som inte validerats OK: ${reportHandler.keptInProgressRules.join(', ')}`,
+                  `Status "Pågående" behålls för regler som inte validerats OK: ${reportHandler.keptInProgressRules.join(
+                    ', ',
+                  )}`,
                 ),
               );
             }
             if (reportHandler.resolvedInProgressRules.length > 0) {
               console.log(
                 chalk.green(
-                  `Status "Pågående" ersatt med OK för regler som nu validerats OK: ${reportHandler.resolvedInProgressRules.join(', ')}`,
+                  `Status "Pågående" ersatt med OK för regler som nu validerats OK: ${reportHandler.resolvedInProgressRules.join(
+                    ', ',
+                  )}`,
                 ),
               );
             }
@@ -257,13 +267,15 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           }
         };
         const formatLintingResult = (result: any) => {
-          return `\n${t('cli.ruleExecution.details.severity')}: ${colorizeSeverity(result.severity)} \n${t('cli.ruleExecution.details.id')}: ${result.id} \n${t('cli.ruleExecution.details.requirement')}: ${
-            result.requirement
-          } \n${t('cli.ruleExecution.details.area')}: ${result.area} \n${t('cli.ruleExecution.details.path')}:[${result.path}] \n${t('cli.ruleExecution.details.range')}:${JSON.stringify(
-            result.range,
-            null,
-            2,
-          )}\n${t('cli.ruleExecution.details.designRule')}: ${result.helpUrl} `;
+          return `\n${t('cli.ruleExecution.details.severity')}: ${colorizeSeverity(result.severity)} \n${t(
+            'cli.ruleExecution.details.id',
+          )}: ${result.id} \n${t('cli.ruleExecution.details.requirement')}: ${result.requirement} \n${t(
+            'cli.ruleExecution.details.area',
+          )}: ${result.area} \n${t('cli.ruleExecution.details.path')}:[${result.path}] \n${t(
+            'cli.ruleExecution.details.range',
+          )}:${JSON.stringify(result.range, null, 2)}\n${t('cli.ruleExecution.details.designRule')}: ${
+            result.helpUrl
+          } `;
         };
         //Check specified option from yargs input
 
@@ -367,15 +379,30 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             });
         }
 
-        const unmetCriteria = findUnmetCriteria(result, {
-          failOnError: argv.failOnError,
-          failOnWarning: argv.failOnWarning,
-        });
+        const unmetCriteria = findUnmetCriteria(
+          result,
+          {
+            passed: customDiagnostic.diagnosticInformation.executedUniqueRules?.length ?? 0,
+            failed: customDiagnostic.diagnosticInformation.executedUniqueRulesWithError?.length ?? 0,
+          },
+          {
+            failOnError: argv.failOnError,
+            failOnWarning: argv.failOnWarning,
+            minCompliance: argv.minCompliance,
+          },
+        );
         unmetCriteria.forEach((criterion) => {
-          console.error(chalk.red(t(`cli.criteria.${criterion.flag}NotMet`, { rules: criterion.ruleIds.join(', ') })));
+          const message =
+            criterion.flag === 'minCompliance'
+              ? t('cli.criteria.minComplianceNotMet', {
+                  compliance: criterion.compliance,
+                  threshold: criterion.threshold,
+                })
+              : t(`cli.criteria.${criterion.flag}NotMet`, { rules: criterion.ruleIds.join(', ') });
+          console.error(chalk.red(message));
         });
         if (unmetCriteria.length > 0) {
-          process.exitCode ??= ExitCode.CriteriaNotMet; // an internal error, e.g. a failed report write, takes precedence
+          process.exitCode ??= ExitCode.CriteriaNotMet;
         }
       } catch (spectralError: any) {
         logErrorToFile(spectralError); // Log stack

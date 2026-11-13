@@ -7,20 +7,36 @@ import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.j
 export type ExitCriteria = {
   failOnError?: boolean;
   failOnWarning?: boolean;
+  minCompliance?: number;
 };
 
-export type UnmetCriterion = {
-  flag: keyof ExitCriteria;
-  ruleIds: string[];
+/** Number of unique executed rules that passed and failed. Not applicable rules are excluded. */
+export type RuleOutcome = {
+  passed: number;
+  failed: number;
 };
+
+export type UnmetCriterion =
+  | { flag: 'failOnError' | 'failOnWarning'; ruleIds: string[] }
+  | { flag: 'minCompliance'; compliance: number; threshold: number };
 
 /**
- * Evaluates the enabled exit criteria against the rule violations.
+ * Calculates the rule compliance as a whole percentage, rounded down so that
+ * a threshold is never reached by rounding. No executed rules counts as full compliance.
+ */
+export function calculateCompliance({ passed, failed }: RuleOutcome): number {
+  const executed = passed + failed;
+  return executed === 0 ? 100 : Math.floor((passed / executed) * 100);
+}
+
+/**
+ * Evaluates the enabled exit criteria against the rule violations and outcome.
  * ERROR corresponds to SKA requirements and WARNING to BÖR requirements.
- * @returns The criteria that are not met, each with the ids of the violated rules.
+ * @returns The criteria that are not met.
  */
 export function findUnmetCriteria(
   violations: RapLPCustomSpectralDiagnostic[],
+  outcome: RuleOutcome,
   criteria: ExitCriteria,
 ): UnmetCriterion[] {
   const violatedRuleIds = (severities: string[]) =>
@@ -40,6 +56,12 @@ export function findUnmetCriteria(
   if (criteria.failOnWarning) {
     const ruleIds = violatedRuleIds(['ERROR', 'WARNING']);
     if (ruleIds.length > 0) unmet.push({ flag: 'failOnWarning', ruleIds });
+  }
+  if (criteria.minCompliance !== undefined) {
+    const compliance = calculateCompliance(outcome);
+    if (compliance < criteria.minCompliance) {
+      unmet.push({ flag: 'minCompliance', compliance, threshold: criteria.minCompliance });
+    }
   }
   return unmet;
 }
