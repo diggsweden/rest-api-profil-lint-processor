@@ -23,6 +23,7 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/package*.json ./
 
 COPY --from=build /app/document ./document
+COPY --from=build /app/locales ./locales
 COPY --from=build /app/README.md ./README.md
 COPY --from=build /app/GUIDELINES.md ./GUIDELINES.md
 COPY --from=build /app/rap-lp-openapi.yaml ./rap-lp-openapi.yaml
