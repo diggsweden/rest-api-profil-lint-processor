@@ -21,6 +21,7 @@ import { ERROR_TYPE, RapLPBaseApiError, sendProblem } from '../util/RapLPBaseApi
 import type { IParser } from '@stoplight/spectral-parsers';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
 import { parseRuleCategories, resolveRuleCategories, RULE_REGISTRY } from '../rulesets/util/ruleModules.js';
+import { getAllRules } from '../util/ruleUtil.js';
 import { mapValidationExecutionError } from '../util/mapValidationExecutionError.js';
 import { AggregateError } from '../util/RapLPCustomErrorInfo.js';
 
@@ -54,6 +55,10 @@ export const registerValidationRoutes = (app: Express) => {
         description: t(entry.descriptionKey),
       })),
     );
+  });
+
+  app.get('/api/v1/validation/all-rules', (req, res) => {
+    res.send(getAllRules());
   });
 
   app.get('/api/v1/api-info', async (req, res, next) => {
