@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import { calculateCompliance, findUnmetCriteria } from '../../src/util/exitCriteria.js';
+import { calculateConformance, findUnmetCriteria } from '../../src/util/exitCriteria.js';
 import { RapLPCustomSpectralDiagnostic } from '../../src/util/RapLPCustomSpectralDiagnostic.js';
 
 const violations = [
@@ -13,18 +13,18 @@ const violations = [
 
 const outcome = { passed: 8, failed: 2 };
 
-describe('calculateCompliance', () => {
+describe('calculateConformance', () => {
   it('räknar andelen uppfyllda regler som heltal', () => {
-    expect(calculateCompliance({ passed: 3, failed: 1 })).toBe(75);
+    expect(calculateConformance({ passed: 3, failed: 1 })).toBe(75);
   });
 
   it('avrundar nedåt så att tröskeln inte nås genom avrundning', () => {
-    expect(calculateCompliance({ passed: 199, failed: 1 })).toBe(99);
-    expect(calculateCompliance({ passed: 2, failed: 1 })).toBe(66);
+    expect(calculateConformance({ passed: 199, failed: 1 })).toBe(99);
+    expect(calculateConformance({ passed: 2, failed: 1 })).toBe(66);
   });
 
   it('ger 100 när inga regler verkställts', () => {
-    expect(calculateCompliance({ passed: 0, failed: 0 })).toBe(100);
+    expect(calculateConformance({ passed: 0, failed: 0 })).toBe(100);
   });
 });
 
@@ -50,13 +50,13 @@ describe('findUnmetCriteria', () => {
     expect(findUnmetCriteria(onlyWarnings, outcome, { failOnError: true })).toEqual([]);
   });
 
-  it('minCompliance är uppfyllt när graden når tröskeln', () => {
-    expect(findUnmetCriteria(violations, outcome, { minCompliance: 80 })).toEqual([]);
+  it('minConformance är uppfyllt när graden når tröskeln', () => {
+    expect(findUnmetCriteria(violations, outcome, { minConformance: 80 })).toEqual([]);
   });
 
-  it('minCompliance är inte uppfyllt när graden understiger tröskeln', () => {
-    expect(findUnmetCriteria(violations, outcome, { minCompliance: 81 })).toEqual([
-      { flag: 'minCompliance', compliance: 80, threshold: 81, passed: 8, executed: 10 },
+  it('minConformance är inte uppfyllt när graden understiger tröskeln', () => {
+    expect(findUnmetCriteria(violations, outcome, { minConformance: 81 })).toEqual([
+      { flag: 'minConformance', conformance: 80, threshold: 81, passed: 8, executed: 10 },
     ]);
   });
 });

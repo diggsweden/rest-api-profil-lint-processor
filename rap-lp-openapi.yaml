@@ -434,7 +434,7 @@ paths:
       tags:
         - validation
       summary: Generate an Excel report.
-      description: Generates an Excel reconciliation report from a precomputed RAP-LP report.
+      description: Generates an Excel conformance report from a precomputed RAP-LP report.
       operationId: generateReport
       requestBody:
         required: true

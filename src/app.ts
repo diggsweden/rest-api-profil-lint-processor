@@ -100,8 +100,8 @@ async function main() {
       describe: t('cli.help.failOnWarning'),
       type: 'boolean',
     })
-    .option('minCompliance', {
-      describe: t('cli.help.minCompliance'),
+    .option('minConformance', {
+      describe: t('cli.help.minConformance'),
       type: 'number',
     })
     .check(function (argv) {
@@ -109,18 +109,18 @@ async function main() {
         if (!argv.file) {
           throw new Error(translator(resolveLocale(argv.lang ?? process.env.RAP_LP_LANG))('cli.missingFile'));
         }
-        const minCompliance = argv.minCompliance;
+        const minConformance = argv.minConformance;
         if (
-          minCompliance !== undefined &&
-          (!Number.isInteger(minCompliance) || minCompliance < 1 || minCompliance > 100)
+          minConformance !== undefined &&
+          (!Number.isInteger(minConformance) || minConformance < 1 || minConformance > 100)
         ) {
-          throw new Error(t('cli.invalidMinCompliance'));
+          throw new Error(t('cli.invalidMinConformance'));
         }
         return true;
       }
 
       if (argv.mode === 'api') {
-        const apiForbiddenArgs = new Set(['f', 'c', 'dex', 'failOnError', 'failOnWarning', 'minCompliance']);
+        const apiForbiddenArgs = new Set(['f', 'c', 'dex', 'failOnError', 'failOnWarning', 'minConformance']);
         const hasForbiddenArgs = Object.keys(argv).filter(
           (k) => apiForbiddenArgs.has(k) && Object.prototype.hasOwnProperty.call(argv, k),
         );

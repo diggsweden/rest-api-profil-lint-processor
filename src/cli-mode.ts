@@ -45,7 +45,7 @@ export type CliArgs = {
   lang?: string;
   failOnError?: boolean;
   failOnWarning?: boolean;
-  minCompliance?: number;
+  minConformance?: number;
 };
 
 export async function execCLI<T extends CliArgs>(argv: T) {
@@ -182,68 +182,60 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             if (reportHandler.lockedFilePath) {
               console.log(
                 chalk.yellow(
-                  `Avstämningsfilen ${reportHandler.lockedFilePath} är låst (öppen i Excel?), skriver till ${reportHandler.outputFilePath} i stället`,
+                  t('cli.excelReport.fileLocked', {
+                    lockedFilePath: reportHandler.lockedFilePath,
+                    outputFilePath: reportHandler.outputFilePath,
+                  }),
                 ),
               );
             } else if (reportHandler.isBasedOnExistingFile) {
-              console.log(
-                chalk.green(
-                  `Uppdaterar avstämningsfil ${reportHandler.outputFilePath}, kommentarer och övriga ändringar bevaras`,
-                ),
-              );
+              console.log(chalk.green(t('cli.excelReport.updating', { filePath: reportHandler.outputFilePath })));
             } else {
-              console.log(
-                chalk.green(`Skriver avstämningsfil i Excel-format från RAP-LP till ${reportHandler.outputFilePath}`),
-              );
+              console.log(chalk.green(t('cli.excelReport.writing', { filePath: reportHandler.outputFilePath })));
             }
             if (reportHandler.isBasedOnExistingFile) {
               const { templateProfileVersion, fileProfileVersion } = reportHandler;
               if (!fileProfileVersion) {
                 console.log(
                   chalk.yellow(
-                    `Kunde inte avgöra vilken version av REST API-profilen avstämningsfilen avser, RAP-LP använder version ${
-                      templateProfileVersion ?? 'okänd'
-                    }`,
+                    t('cli.excelReport.unknownFileProfileVersion', {
+                      templateVersion: templateProfileVersion ?? t('cli.excelReport.unknownVersion'),
+                    }),
                   ),
                 );
               } else if (templateProfileVersion && fileProfileVersion !== templateProfileVersion) {
                 console.log(
                   chalk.yellow(
-                    `Avstämningsfilen avser version ${fileProfileVersion} av REST API-profilen men RAP-LP använder version ${templateProfileVersion}, regler kan saknas eller ha ändrats`,
+                    t('cli.excelReport.profileVersionMismatch', {
+                      fileVersion: fileProfileVersion,
+                      templateVersion: templateProfileVersion,
+                    }),
                   ),
                 );
               }
               if (reportHandler.missingRules.length > 0) {
                 console.log(
-                  chalk.yellow(
-                    `Följande regler har verkställts av RAP-LP men saknas i avstämningsfilen, deras utfall har inte skrivits: ${reportHandler.missingRules.join(
-                      ', ',
-                    )}`,
-                  ),
+                  chalk.yellow(t('cli.excelReport.missingRules', { rules: reportHandler.missingRules.join(', ') })),
                 );
               }
             }
             if (reportHandler.keptInProgressRules.length > 0) {
               console.log(
                 chalk.yellow(
-                  `Status "Pågående" behålls för regler som inte validerats OK: ${reportHandler.keptInProgressRules.join(
-                    ', ',
-                  )}`,
+                  t('cli.excelReport.keptInProgress', { rules: reportHandler.keptInProgressRules.join(', ') }),
                 ),
               );
             }
             if (reportHandler.resolvedInProgressRules.length > 0) {
               console.log(
                 chalk.green(
-                  `Status "Pågående" ersatt med OK för regler som nu validerats OK: ${reportHandler.resolvedInProgressRules.join(
-                    ', ',
-                  )}`,
+                  t('cli.excelReport.resolvedInProgress', { rules: reportHandler.resolvedInProgressRules.join(', ') }),
                 ),
               );
             }
           } catch (excelError: any) {
             logErrorToFile(excelError);
-            console.error(chalk.red(`Misslyckades att skriva avstämningsfil i Excel-format: ${excelError.message}`));
+            console.error(chalk.red(t('cli.excelReport.writeFailed', { message: excelError.message })));
             process.exitCode = ExitCode.InternalError;
           }
         }
@@ -388,14 +380,14 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           {
             failOnError: argv.failOnError,
             failOnWarning: argv.failOnWarning,
-            minCompliance: argv.minCompliance,
+            minConformance: argv.minConformance,
           },
         );
         unmetCriteria.forEach((criterion) => {
           const message =
-            criterion.flag === 'minCompliance'
-              ? t('cli.criteria.minComplianceNotMet', {
-                  compliance: criterion.compliance,
+            criterion.flag === 'minConformance'
+              ? t('cli.criteria.minConformanceNotMet', {
+                  conformance: criterion.conformance,
                   threshold: criterion.threshold,
                   passed: criterion.passed,
                   executed: criterion.executed,

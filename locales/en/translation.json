@@ -14,7 +14,7 @@
     "inspectLog": "Inspect the RAP-LP error log for more information about the error.",
     "apiModeForbiddenArgs": "In API mode, only --enableUrlValidation and --urlValidationConfigFile are allowed.",
     "seeHelp": "Run with --help to see available options.",
-    "invalidMinCompliance": "--minCompliance must be a whole number between 1 and 100.",
+    "invalidMinConformance": "--minConformance must be a whole number between 1 and 100.",
     "strictValidationIssues": "Strict validation reported issues:",
     "parserErrorLogged": "Parser error logged to {{path}}",
     "parserLogWriteFailed": "Failed to write parser error to the log file:",
@@ -48,10 +48,22 @@
     },
     "diagnosticOutput": "Writing diagnostic information from RAP-LP to {{filePath}}",
     "validationOutput": "Writing inspection/validation information from RAP-LP to {{filePath}}",
+    "excelReport": {
+      "fileLocked": "The conformance report {{lockedFilePath}} is locked (open in Excel?), writing to {{outputFilePath}} instead",
+      "updating": "Updating conformance report {{filePath}}, comments and other changes are preserved",
+      "writing": "Writing conformance report in Excel format from RAP-LP to {{filePath}}",
+      "unknownFileProfileVersion": "Could not determine which version of the REST API profile the conformance report refers to, RAP-LP uses version {{templateVersion}}",
+      "unknownVersion": "unknown",
+      "profileVersionMismatch": "The conformance report refers to version {{fileVersion}} of the REST API profile but RAP-LP uses version {{templateVersion}}, rules may be missing or have changed",
+      "missingRules": "The following rules were executed by RAP-LP but are missing from the conformance report, their outcome has not been written: {{rules}}",
+      "keptInProgress": "Status \"Pågående\" (in progress) kept for rules that did not validate OK: {{rules}}",
+      "resolvedInProgress": "Status \"Pågående\" (in progress) replaced with OK for rules that now validate OK: {{rules}}",
+      "writeFailed": "Failed to write conformance report in Excel format: {{message}}"
+    },
     "criteria": {
       "failOnErrorNotMet": "Criterion --failOnError not met. Unmet MUST (SKA) requirements: {{rules}}",
       "failOnWarningNotMet": "Criterion --failOnWarning not met. Unmet MUST (SKA) or SHOULD (BÖR) requirements: {{rules}}",
-      "minComplianceNotMet": "Criterion --minCompliance not met. Rule compliance is {{compliance}}% ({{passed}} of {{executed}} rules met), but at least {{threshold}}% is required."
+      "minConformanceNotMet": "Criterion --minConformance not met. Rule conformance is {{conformance}}% ({{passed}} of {{executed}} rules met), but at least {{threshold}}% is required."
     },
     "help": {
       "options": "Options:",
@@ -71,7 +83,7 @@
       "lang": "Language for CLI output (sv or en)",
       "failOnError": "[cli mode] Exit with code 22 if any MUST (SKA) requirement is not met.",
       "failOnWarning": "[cli mode] Exit with code 22 if any MUST (SKA) or SHOULD (BÖR) requirement is not met.",
-      "minCompliance": "[cli mode] Exit with code 22 if the rule compliance (1-100%) is below the given value. Not applicable rules are excluded."
+      "minConformance": "[cli mode] Exit with code 22 if the rule conformance (1-100%) is below the given value. Not applicable rules are excluded."
     }
   },
   "api": {

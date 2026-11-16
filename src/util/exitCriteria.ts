@@ -7,7 +7,7 @@ import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.j
 export type ExitCriteria = {
   failOnError?: boolean;
   failOnWarning?: boolean;
-  minCompliance?: number;
+  minConformance?: number;
 };
 
 /** Number of unique executed rules that passed and failed. Not applicable rules are excluded. */
@@ -18,13 +18,13 @@ export type RuleOutcome = {
 
 export type UnmetCriterion =
   | { flag: 'failOnError' | 'failOnWarning'; ruleIds: string[] }
-  | { flag: 'minCompliance'; compliance: number; threshold: number; passed: number; executed: number };
+  | { flag: 'minConformance'; conformance: number; threshold: number; passed: number; executed: number };
 
 /**
- * Calculates the rule compliance as a whole percentage, rounded down so that
- * a threshold is never reached by rounding. No executed rules counts as full compliance.
+ * Calculates the rule conformance as a whole percentage, rounded down so that
+ * a threshold is never reached by rounding. No executed rules counts as full conformance.
  */
-export function calculateCompliance({ passed, failed }: RuleOutcome): number {
+export function calculateConformance({ passed, failed }: RuleOutcome): number {
   const executed = passed + failed;
   return executed === 0 ? 100 : Math.floor((passed / executed) * 100);
 }
@@ -57,13 +57,13 @@ export function findUnmetCriteria(
     const ruleIds = violatedRuleIds(['ERROR', 'WARNING']);
     if (ruleIds.length > 0) unmet.push({ flag: 'failOnWarning', ruleIds });
   }
-  if (criteria.minCompliance !== undefined) {
-    const compliance = calculateCompliance(outcome);
-    if (compliance < criteria.minCompliance) {
+  if (criteria.minConformance !== undefined) {
+    const conformance = calculateConformance(outcome);
+    if (conformance < criteria.minConformance) {
       unmet.push({
-        flag: 'minCompliance',
-        compliance,
-        threshold: criteria.minCompliance,
+        flag: 'minConformance',
+        conformance,
+        threshold: criteria.minConformance,
         passed: outcome.passed,
         executed: outcome.passed + outcome.failed,
       });

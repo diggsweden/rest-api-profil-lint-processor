@@ -33,7 +33,7 @@ function resolveTemplatePath() {
 
 /**
  * Mapped to actual Excel template for corresponding version of the Swedish REST API-profile
- * This integration is intended to facilitate reconciliation against the respective requirements
+ * This integration is intended to facilitate conformance checks against the respective requirements
  * and to provide an overview of how an API meets this REST API profile.
  */
 const DEFAULT_CONFIG: ExcelTemplateConfig = {
