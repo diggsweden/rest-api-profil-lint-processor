@@ -341,6 +341,40 @@ describe('Integration: OpenAPI 3.2 via runner', () => {
       ),
     ).toBe(true);
   });
+
+    it('strict mode: a structural error on the same line as a semantic error is reported separately', async () => {
+      const badYaml = `openapi: 3.0.3
+info:
+  title: t
+  version: 1.0.0
+paths:
+  /pets/{petId}:
+    get:
+      operationId: getPet
+      parameters:
+        - name: 12345
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+`;
+      const { ok, payload } = await runRunnerWithInput({ raw: badYaml, strict: true });
+      expect(ok).toBe(true);
+      const issues = extractIssuesFromResult(payload);
+      expect(
+        issues.some(
+          (i: any) =>
+            i.type === 'Structural' &&
+            i.code === 'oas3-schema' &&
+            i.path === 'paths./pets/{petId}.get.parameters.0.name' &&
+            String(i.message).includes('string'),
+        ),
+      ).toBe(true);
+      expect(issues.some((i: any) => i.code === 'path-params')).toBe(true);
+    });
 });
 /**
  * Helper function to extract array with issues from payload result.
