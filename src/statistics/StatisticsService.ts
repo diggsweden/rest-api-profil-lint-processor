@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
+import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { translator, type Locale } from '../i18n.js';
 import type { Request, Response } from 'express';
@@ -43,6 +44,10 @@ export type ClientsSummary = {
 
 const STATISTICS_ENABLED = process.env.RAP_LP_STATISTICS_ENABLED === 'true'; // Disabled by default
 
+// Express static answers this path with a 301 to /api/v1/docs/ (no trailing slash)
+const DOCS_REDIRECT_PATH = '/api/v1/docs';
+const IGNORED_EXTENSIONS = new Set(['.js', '.css', '.yaml', '.png', '.ico', '.svg', '.map']);
+
 export class StatisticsService {
   private readonly store: StatisticsStore;
   private readonly rapLpVersion: string;
@@ -55,6 +60,13 @@ export class StatisticsService {
 
   static isStatisticsEnabled(): boolean {
     return STATISTICS_ENABLED;
+  }
+
+  static shouldRecord(req: Request): boolean {
+    const pathname = req.originalUrl.split('?')[0];
+
+    if (pathname === DOCS_REDIRECT_PATH) return false;
+    return !IGNORED_EXTENSIONS.has(path.extname(pathname).toLowerCase());
   }
 
   // Called at startup. On failure, statistics are disabled until restart.

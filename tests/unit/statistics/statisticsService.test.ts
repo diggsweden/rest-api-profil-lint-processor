@@ -495,3 +495,34 @@ async function recordWithHeaders(headers: Record<string, string | string[]>) {
   service.recordRequest(buildRequest(headers), buildResponse());
   return store.requestEntries[0];
 }
+
+
+describe('StatisticsService.shouldRecord', () => {
+  // Minimal request stub
+  const req = (originalUrl: string) => ({ originalUrl }) as Request;
+
+  it('records the docs page', () => {
+    expect(StatisticsService.shouldRecord(req('/api/v1/docs/'))).toBe(true);
+  });
+
+  it('does not record the 301 redirect', () => {
+    expect(StatisticsService.shouldRecord(req('/api/v1/docs'))).toBe(false);
+  });
+
+  it.each([
+    '/api/v1/docs/swagger-ui.css',
+    '/api/v1/docs/swagger-ui-bundle.js',
+    '/api/v1/rap-lp-openapi.yaml',
+  ])('does not record asset %s', (url) => {
+    expect(StatisticsService.shouldRecord(req(url))).toBe(false);
+  });
+
+  it('does not treat an extension in the query string as a file extension', () => {
+    expect(StatisticsService.shouldRecord(req('/api/v1/docs/?url=spec.yaml'))).toBe(true);
+  });
+
+  it('records regular API traffic, including statistics', () => {
+    expect(StatisticsService.shouldRecord(req('/api/v1/statistics/requests'))).toBe(true);
+    expect(StatisticsService.shouldRecord(req('/api/v1/validation/validatespec'))).toBe(true);
+  });
+});
