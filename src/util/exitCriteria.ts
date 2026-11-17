@@ -26,7 +26,7 @@ export type UnmetCriterion =
  */
 export function calculateConformance({ passed, failed }: RuleOutcome): number {
   const executed = passed + failed;
-  return executed === 0 ? 100 : Math.floor((passed / executed) * 100);
+  return executed === 0 ? 100 : Math.floor((passed * 100) / executed);
 }
 
 /**

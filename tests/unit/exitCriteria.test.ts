@@ -26,6 +26,12 @@ describe('calculateConformance', () => {
   it('ger 100 när inga regler verkställts', () => {
     expect(calculateConformance({ passed: 0, failed: 0 })).toBe(100);
   });
+
+  it('ger inga konverteringsfel i flyttal', () => {
+    expect(calculateConformance({ passed: 29, failed: 21 })).toBe(58); // 29/50   → 57.99999999999999 gav 57 borde bli 58
+    expect(calculateConformance({ passed: 57, failed: 43 })).toBe(57); // 57/100  → 56.99999999999999 gav 56 borde bli 57
+    expect(calculateConformance({ passed: 58, failed: 42 })).toBe(58); // 58/100  → 57.99999999999999 gav 57 borde bli 58
+  });
 });
 
 describe('findUnmetCriteria', () => {
