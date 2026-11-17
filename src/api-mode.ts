@@ -39,12 +39,14 @@ export async function startServer<T extends ApiArgs>(args: T) {
 
     // Middleware for request statistics
     app.use((req, res, next) => {
-      res.locals.statsStart = process.hrtime.bigint();
-      res.on('finish', () => service.recordRequest(req, res));
+      if (StatisticsService.shouldRecord(req)) {
+        res.locals.statsStart = process.hrtime.bigint();
+        res.on('finish', () => service.recordRequest(req, res));
+      }
       next();
     });
   }
-  
+
   app.use((req, res, next) => {
     res.locals.locale = localeFromAcceptLanguage(req.header('Accept-Language'));
     res.append('Vary', 'Accept-Language');
