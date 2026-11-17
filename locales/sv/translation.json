@@ -62,8 +62,8 @@
       "writeFailed": "Misslyckades att skriva avstämningsfil i Excel-format: {{message}}"
     },
     "criteria": {
-      "failOnErrorNotMet": "Kriteriet --failOnError är inte uppfyllt. SKA-krav som inte uppfylls: {{rules}}",
-      "failOnWarningNotMet": "Kriteriet --failOnWarning är inte uppfyllt. SKA- eller BÖR-krav som inte uppfylls: {{rules}}",
+      "failOnErrorNotMet": "Kriteriet --failOnError är inte uppfyllt. SKALL-krav som inte uppfylls: {{rules}}",
+      "failOnWarningNotMet": "Kriteriet --failOnWarning är inte uppfyllt. SKALL- eller BÖR-krav som inte uppfylls: {{rules}}",
       "minConformanceNotMet": "Kriteriet --minConformance är inte uppfyllt. Regeluppfyllnadsgraden är {{conformance}}% ({{passed}} av {{executed}} regler uppfyllda), men minst {{threshold}}% krävs."
     },
     "help": {
@@ -82,8 +82,8 @@
       "urlValidationConfigFile": "[api-mode] Sökväg till konfigurationsfil för URL-validering. Faller tillbaka på ./urlValidationConfig.cjs",
       "strict": "Aktivera strict mode för validering av semantik och struktur.",
       "lang": "Språk för CLI-utdata (sv eller en)",
-      "failOnError": "[cli mode] Avsluta med exitkod 22 om något SKA-krav inte uppfylls.",
-      "failOnWarning": "[cli mode] Avsluta med exitkod 22 om något SKA- eller BÖR-krav inte uppfylls.",
+      "failOnError": "[cli mode] Avsluta med exitkod 22 om något SKALL-krav inte uppfylls.",
+      "failOnWarning": "[cli mode] Avsluta med exitkod 22 om något SKALL- eller BÖR-krav inte uppfylls.",
       "minConformance": "[cli mode] Avsluta med exitkod 22 om regeluppfyllnadsgraden (1-100%) understiger angivet värde. Ej tillämpliga regler räknas inte."
     }
   },

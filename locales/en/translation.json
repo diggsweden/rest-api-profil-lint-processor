@@ -61,8 +61,8 @@
       "writeFailed": "Failed to write conformance report in Excel format: {{message}}"
     },
     "criteria": {
-      "failOnErrorNotMet": "Criterion --failOnError not met. Unmet MUST (SKA) requirements: {{rules}}",
-      "failOnWarningNotMet": "Criterion --failOnWarning not met. Unmet MUST (SKA) or SHOULD (BÖR) requirements: {{rules}}",
+      "failOnErrorNotMet": "Criterion --failOnError not met. Unmet MUST (SKALL) requirements: {{rules}}",
+      "failOnWarningNotMet": "Criterion --failOnWarning not met. Unmet MUST (SKALL) or SHOULD (BÖR) requirements: {{rules}}",
       "minConformanceNotMet": "Criterion --minConformance not met. Rule conformance is {{conformance}}% ({{passed}} of {{executed}} rules met), but at least {{threshold}}% is required."
     },
     "help": {
@@ -81,8 +81,8 @@
       "urlValidationConfigFile": "[api-mode] Path to the URL validation configuration file. Falls back to ./urlValidationConfig.cjs",
       "strict": "Enable strict validation of semantics and structure.",
       "lang": "Language for CLI output (sv or en)",
-      "failOnError": "[cli mode] Exit with code 22 if any MUST (SKA) requirement is not met.",
-      "failOnWarning": "[cli mode] Exit with code 22 if any MUST (SKA) or SHOULD (BÖR) requirement is not met.",
+      "failOnError": "[cli mode] Exit with code 22 if any MUST (SKALL) requirement is not met.",
+      "failOnWarning": "[cli mode] Exit with code 22 if any MUST (SKALL) or SHOULD (BÖR) requirement is not met.",
       "minConformance": "[cli mode] Exit with code 22 if the rule conformance (1-100%) is below the given value. Not applicable rules are excluded."
     }
   },
