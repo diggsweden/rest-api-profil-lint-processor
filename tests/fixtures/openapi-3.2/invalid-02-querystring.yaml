@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
 #
 # SPDX-License-Identifier: EUPL-1.2
-
 openapi: 3.2.0
 info:
   title: Invalid querystring
