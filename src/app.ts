@@ -109,10 +109,14 @@ async function main() {
         if (!argv.file) {
           throw new Error(translator(resolveLocale(argv.lang ?? process.env.RAP_LP_LANG))('cli.missingFile'));
         }
+        // yargs sets the key to undefined when the flag is given without a value
         const minConformance = argv.minConformance;
         if (
-          minConformance !== undefined &&
-          (!Number.isInteger(minConformance) || minConformance < 1 || minConformance > 100)
+          Object.prototype.hasOwnProperty.call(argv, 'minConformance') &&
+          (minConformance === undefined ||
+            !Number.isInteger(minConformance) ||
+            minConformance < 1 ||
+            minConformance > 100)
         ) {
           throw new Error(t('cli.invalidMinConformance'));
         }
