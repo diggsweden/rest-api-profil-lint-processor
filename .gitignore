@@ -13,3 +13,8 @@ megalinter-reports
 tests/generated
 openapitools.json
 dist
+coverage/
+.vscode
+.env
+
+statistics.db

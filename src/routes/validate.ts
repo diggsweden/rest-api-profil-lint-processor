@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import * as fs from 'node:fs';
-import util from 'util';
 import { Document } from '@stoplight/spectral-core';
 import Parsers from '@stoplight/spectral-parsers';
 import { Express } from 'express';
@@ -14,7 +13,7 @@ import { ApiInfo } from '../model/ApiInfo.js';
 import { ExcelReportProcessor } from '../util/excelReportProcessor.js';
 import { DiagnosticReport, RapLPDiagnostic } from '../util/RapLPDiagnostic.js';
 import * as IssueHelper from '../util/RapLPIssueHelpers.js';
-import { parseApiSpecInput, detectSpecFormatPreference, ParseResult } from '../util/validateUtil.js';
+import { parseApiSpecInput, detectSpecFormatPreference } from '../util/validateUtil.js';
 import { ProblemDetailsDTO } from '../model/ProblemDetailsDto.js';
 import { SpecValidationRequestDto } from '../model/SpecValidationRequestDto.js';
 import { ERROR_TYPE, RapLPBaseApiError, sendProblem } from '../util/RapLPBaseApiErrorHandling.js';
@@ -28,6 +27,7 @@ import { validateConcurrencyLimit } from '../util/validationConcurrencyLimit.js'
 import { measure } from '../util/performance.js';
 import crypto from 'node:crypto';
 import { resolveLocale, translator } from '../i18n.js';
+import { StatisticsService } from '../statistics/StatisticsService.js';
 
 const PRODUCTION_URL = 'https://raplp.digg.se';
 
@@ -42,7 +42,7 @@ declare var AggregateError: {
   new (errors: any[], message?: string): AggregateError;
 };
 
-export const registerValidationRoutes = (app: Express) => {
+export const registerValidationRoutes = (app: Express, statisticsService?: StatisticsService) => {
   // Route for raw content upload.
   app.get('/api/v1/validation/rules', (req, res) => {
     const locale = res.locals?.locale ?? resolveLocale();
@@ -196,7 +196,13 @@ export const registerValidationRoutes = (app: Express) => {
         const result = await measure({ requestId, operation: 'processApiSpec' }, () =>
           processApiSpec(context, rules, apiSpecDocument),
         );
-        const hasRuleViolations = result.result.some((d) => d.severity === 'ERROR' || d.severity === 'WARNING');
+        
+        if (StatisticsService.isStatisticsEnabled()){
+          statisticsService?.recordValidationResult(result, locale);
+        }
+        
+        const violations = result.result.filter((d) => d.severity === 'ERROR' || d.severity === 'WARNING');
+        const hasRuleViolations = violations.length > 0;
         if (hasRuleViolations) {
           //Rulevalidation occured in RapLP-ruleengine
           return sendProblem(
