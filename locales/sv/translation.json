@@ -13,6 +13,8 @@
     "unexpectedError": "Ett oväntat fel uppstod!",
     "inspectLog": "Undersök felloggen för RAP-LP för mer information om felet.",
     "apiModeForbiddenArgs": "I API-läge är endast --enableUrlValidation och --urlValidationConfigFile tillåtna.",
+    "seeHelp": "Kör med --help för att se tillgängliga alternativ.",
+    "invalidMinConformance": "--minConformance måste vara ett heltal mellan 1 och 100.",
     "strictValidationIssues": "Strict validation rapporterade fel:",
     "parserErrorLogged": "Parserfel loggat till {{path}}",
     "parserLogWriteFailed": "Misslyckades att skriva parserfel till loggfilen:",
@@ -47,6 +49,23 @@
     },
     "diagnosticOutput": "Skriver diagnostiseringsinformation från RAP-LP till {{filePath}}",
     "validationOutput": "Skriver inspektions-/valideringsinformation från RAP-LP till {{filePath}}",
+    "excelReport": {
+      "fileLocked": "Avstämningsfilen {{lockedFilePath}} är låst (öppen i Excel?), skriver till {{outputFilePath}} i stället",
+      "updating": "Uppdaterar avstämningsfil {{filePath}}, kommentarer och övriga ändringar bevaras",
+      "writing": "Skriver avstämningsfil i Excel-format från RAP-LP till {{filePath}}",
+      "unknownFileProfileVersion": "Kunde inte avgöra vilken version av REST API-profilen avstämningsfilen avser, RAP-LP använder version {{templateVersion}}",
+      "unknownVersion": "okänd",
+      "profileVersionMismatch": "Avstämningsfilen avser version {{fileVersion}} av REST API-profilen men RAP-LP använder version {{templateVersion}}, regler kan saknas eller ha ändrats",
+      "missingRules": "Följande regler har verkställts av RAP-LP men saknas i avstämningsfilen, deras utfall har inte skrivits: {{rules}}",
+      "keptInProgress": "Status \"Pågående\" behålls för regler som inte validerats OK: {{rules}}",
+      "resolvedInProgress": "Status \"Pågående\" ersatt med OK för regler som nu validerats OK: {{rules}}",
+      "writeFailed": "Misslyckades att skriva avstämningsfil i Excel-format: {{message}}"
+    },
+    "criteria": {
+      "failOnErrorNotMet": "Kriteriet --failOnError är inte uppfyllt. SKALL-krav som inte uppfylls: {{rules}}",
+      "failOnWarningNotMet": "Kriteriet --failOnWarning är inte uppfyllt. SKALL- eller BÖR-krav som inte uppfylls: {{rules}}",
+      "minConformanceNotMet": "Kriteriet --minConformance är inte uppfyllt. Regeluppfyllnadsgraden är {{conformance}}% ({{passed}} av {{executed}} regler uppfyllda), men minst {{threshold}}% krävs."
+    },
     "help": {
       "options": "Alternativ:",
       "showHelp": "Visa hjälp",
@@ -62,7 +81,10 @@
       "enableUrlValidation": "[api-mode] Möjliggör validering av filer via URL.",
       "urlValidationConfigFile": "[api-mode] Sökväg till konfigurationsfil för URL-validering. Faller tillbaka på ./urlValidationConfig.cjs",
       "strict": "Aktivera strict mode för validering av semantik och struktur.",
-      "lang": "Språk för CLI-utdata (sv eller en)"
+      "lang": "Språk för CLI-utdata (sv eller en)",
+      "failOnError": "[cli mode] Avsluta med exitkod 22 om något SKALL-krav inte uppfylls.",
+      "failOnWarning": "[cli mode] Avsluta med exitkod 22 om något SKALL- eller BÖR-krav inte uppfylls.",
+      "minConformance": "[cli mode] Avsluta med exitkod 22 om regeluppfyllnadsgraden (1-100%) understiger angivet värde. Ej tillämpliga regler räknas inte."
     }
   },
   "api": {
