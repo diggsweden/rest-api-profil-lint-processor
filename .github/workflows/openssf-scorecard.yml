@@ -4,10 +4,10 @@
 name: OpenSSF Scorecard Analysis
 on:
   schedule:
-    # Saturdays at 02:20 UTC
-    - cron: '20 2 * * 6'
-    # Wednesdays at 02:20 UTC
-    - cron: '20 2 * * 3'
+    # Saturdays at 02:40 UTC
+    - cron: "40 2 * * 6"
+    # Wednesdays at 02:40 UTC
+    - cron: "40 2 * * 3"
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,6 +17,10 @@ jobs:
       contents: read
       security-events: write
       id-token: write
-    uses: diggsweden/reusable-ci/.github/workflows/security-openssf-scorecard.yml@617cb32268cb6aefdfa4117b4159d37e3b47d7b3 # v2.8.3
+      pull-requests: read
+    uses: diggsweden/reusable-ci/.github/workflows/security-openssf-scorecard.yml@1a76b0c1a69952742ea663c8cfe77d8fe1d168ad # v3.1.0
+    secrets:
+      CODE_SCANNING_TOKEN: ${{ secrets.SARIF_UPLOAD_TOKEN }}
     with:
+      reusable-ci-ref: 1a76b0c1a69952742ea663c8cfe77d8fe1d168ad # v3.1.0
       publish-results: true
