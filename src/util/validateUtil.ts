@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import SwaggerParser from '@apidevtools/swagger-parser'; 
 import { prettifySwaggerParserErrorToEditorStyle } from './prettifyOpenAPIErrors.js';
 import  { bundleAndLoadRuleset } from '@stoplight/spectral-ruleset-bundler/with-loader';
@@ -358,6 +358,9 @@ function tryParseJson(raw: string, t: ReturnType<typeof translator>): any {
   }
 }
 
+// Resolve merge keys (`<<: *anchor`) and keep timestamps as Date, unlike js-yaml default CORE_SCHEMA.
+const SPEC_YAML_SCHEMA = yaml.CORE_SCHEMA.withTags(yaml.mergeTag, yaml.timestampTag);
+
 /**
  * Helper function to parse YAML( high level ) 
  * @param raw - raw yaml
@@ -365,7 +368,7 @@ function tryParseJson(raw: string, t: ReturnType<typeof translator>): any {
  */
 function tryParseYaml(raw: string, maxSnippetLength: number, t: ReturnType<typeof translator>): any {
   try {
-    const parsed = yaml.load(raw);
+    const parsed = yaml.load(raw, { schema: SPEC_YAML_SCHEMA });
     return parsed;
   } catch (e: any) {
     if (e && typeof e === 'object' && (e.name === 'YAMLException' || e.mark)) {

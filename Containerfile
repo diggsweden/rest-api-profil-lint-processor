@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-FROM node:24.11.0-slim AS build
+FROM node:26.13.1-slim AS build
 WORKDIR /app
 
 COPY package*.json ./
@@ -14,7 +14,7 @@ COPY . .
 RUN npm run build && \
     npm prune --omit=dev
 
-FROM node:24.11.0-slim AS runtime
+FROM node:26.13.1-slim AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
 
@@ -23,6 +23,7 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/package*.json ./
 
 COPY --from=build /app/document ./document
+COPY --from=build /app/locales ./locales
 COPY --from=build /app/README.md ./README.md
 COPY --from=build /app/GUIDELINES.md ./GUIDELINES.md
 COPY --from=build /app/rap-lp-openapi.yaml ./rap-lp-openapi.yaml

@@ -7,7 +7,7 @@ import util from 'util';
 import { Document } from '@stoplight/spectral-core';
 import Parsers from '@stoplight/spectral-parsers';
 import { Express } from 'express';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml'
 import { decodeBase64String, processApiSpec, logError } from '../util/apiUtil.js';
 import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
 import { ApiInfo } from '../model/ApiInfo.js';
