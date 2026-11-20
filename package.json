@@ -35,7 +35,7 @@
     "test": "tests"
   },
   "devDependencies": {
-    "@stoplight/spectral-formats": "1.8.3",
+    "@types/adm-zip": "0.5.8",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
     "@types/node": "26.6.6",
@@ -48,12 +48,12 @@
     "typescript": "6.0.3"
   },
   "dependencies": {
-    "@apidevtools/swagger-parser": "^12.1.0",
-    "@stoplight/spectral-core": "^1.20.0",
+    "@stoplight/spectral-core": "^1.24.0",
+    "@stoplight/spectral-formats": "^1.9.0",
     "@stoplight/spectral-functions": "^1.7.2",
     "@stoplight/spectral-parsers": "^1.0.5",
     "@stoplight/spectral-ruleset-bundler": "^1.6.3",
-    "@stoplight/spectral-rulesets": "^1.22.0",
+    "@stoplight/spectral-rulesets": "^1.23.0",
     "adm-zip": "^0.6.1",
     "body-parser": "^2.4.0",
     "chalk": "^6.0.1",
