@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-FROM node:26.13.1-slim AS build
+FROM node:26.13.1-slim@sha256:e6bedef217677b276c591795e169840edd9096dbf13f29df8ef8d1856b8820bc AS build
 WORKDIR /app
 
 COPY package*.json ./
@@ -14,7 +14,7 @@ COPY . .
 RUN npm run build && \
     npm prune --omit=dev
 
-FROM node:26.13.1-slim AS runtime
+FROM node:26.13.1-slim@sha256:e6bedef217677b276c591795e169840edd9096dbf13f29df8ef8d1856b8820bc AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
 
