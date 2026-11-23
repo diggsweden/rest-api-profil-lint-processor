@@ -79,9 +79,9 @@ export async function execCLI<T extends CliArgs>(argv: T) {
 
       // Issue handling ----------
       if (parseResult.strictIssues && parseResult.strictIssues.length > 0) {
-        console.error(t('cli.strictValidationIssues'));
+        console.log(t('cli.strictValidationIssues'));
         parseResult.strictIssues.forEach((iss: Issue) =>
-          console.error(
+          console.log(
             chalk.yellow(
               `- ${iss.type} ${t('cli.atLabel')} ${iss.path} : ${iss.message} ${
                 iss.line ? `(${t('cli.lineLabel').toLowerCase()} ${iss.line})` : ''
@@ -119,22 +119,22 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             await writeFileAsync(logErrorFilePath, Buffer.from(updatedContent, 'utf8'));
             console.log(chalk.green(t('cli.parserErrorLogged', { path: logErrorFilePath })));
           } catch (fileErr: any) {
-            console.error(chalk.red(t('cli.parserLogWriteFailed')), fileErr.message);
+            console.log(chalk.red(t('cli.parserLogWriteFailed')), fileErr.message);
             process.exitCode = ExitCode.InternalError;
           }
         } else {
           // No log file specified - write to stdout
-          console.error(chalk.red(t('cli.parserErrorHeader')));
-          console.error(chalk.red(`${t('cli.errorLabel')}: ${err.message}`));
+          console.log(chalk.red(t('cli.parserErrorHeader')));
+          console.log(chalk.red(`${t('cli.errorLabel')}: ${err.message}`));
           if (err.line || err.column) {
-            console.error(
+            console.log(
               chalk.yellow(`${t('cli.lineLabel')}: ${err.line ?? '-'}, ${t('cli.columnLabel')}: ${err.column ?? '-'}`),
             );
           }
           if (err.snippet && !err.message.includes(err.snippet)) {
-            console.error(chalk.gray('--- snippet ---'));
-            console.error(chalk.gray(err.snippet));
-            console.error(chalk.gray('---------------'));
+            console.log(chalk.gray('--- snippet ---'));
+            console.log(chalk.gray(err.snippet));
+            console.log(chalk.gray('---------------'));
           }
         }
 
@@ -144,7 +144,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
 
       // Övrigt oväntat fel
       logErrorToFile(err);
-      console.error(chalk.red(t('cli.parseOrReadError')));
+      console.log(chalk.red(t('cli.parseOrReadError')));
       process.exitCode = ExitCode.InternalError;
       return;
     }
@@ -235,7 +235,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             }
           } catch (excelError: any) {
             logErrorToFile(excelError);
-            console.error(chalk.red(t('cli.excelReport.writeFailed', { message: excelError.message })));
+            console.log(chalk.red(t('cli.excelReport.writeFailed', { message: excelError.message })));
             process.exitCode = ExitCode.InternalError;
           }
         }
@@ -393,24 +393,24 @@ export async function execCLI<T extends CliArgs>(argv: T) {
                   executed: criterion.executed,
                 })
               : t(`cli.criteria.${criterion.flag}NotMet`, { rules: criterion.ruleIds.join(', ') });
-          console.error(chalk.red(message));
+          console.log(chalk.red(message));
         });
         if (unmetCriteria.length > 0) {
           process.exitCode ??= ExitCode.CriteriaNotMet;
         }
       } catch (spectralError: any) {
         logErrorToFile(spectralError); // Log stack
-        console.error(chalk.red(t('cli.ruleClassExecutionError')));
+        console.log(chalk.red(t('cli.ruleClassExecutionError')));
         process.exitCode = ExitCode.InternalError;
       }
     } catch (initializingError: any) {
       logErrorToFile(initializingError);
-      console.error(chalk.red(t('cli.ruleModuleLoadingError')));
+      console.log(chalk.red(t('cli.ruleModuleLoadingError')));
       process.exitCode = ExitCode.InternalError;
     }
   } catch (error: any) {
     logErrorToFile(error);
-    console.error(chalk.red(`${t('cli.unexpectedError')} ${t('cli.inspectLog')}`, error.message));
+    console.log(chalk.red(`${t('cli.unexpectedError')} ${t('cli.inspectLog')}`, error.message));
     process.exitCode = ExitCode.InternalError;
   }
   function logErrorToFile(error: any) {
