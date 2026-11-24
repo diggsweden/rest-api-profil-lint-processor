@@ -410,7 +410,7 @@ export class Dok19 extends BaseRuleset {
     område: 'Dokumentation',
     id: 'DOK.19',
   };
-  given = '$.paths[*][*]';
+  given = '$.paths[*][get,post,put,patch,delete]';
   then = [
     {
       field: 'summary',
