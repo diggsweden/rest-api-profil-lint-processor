@@ -45,7 +45,7 @@ describe('CLI locale integration', () => {
       const distApp = path.resolve('dist/app.js');
       const apiSpec = path.resolve('tests/testdata/dok-api.yaml');
 
-      const output = execFileSync(process.execPath, [distApp, '--lang', 'en', '-f', apiSpec], {
+      const output = execFileSync(process.execPath, [distApp, '--lang', 'en', '--verbose', '-f', apiSpec], {
         encoding: 'utf8',
       });
 
@@ -57,7 +57,7 @@ describe('CLI locale integration', () => {
       const distApp = path.resolve('dist/app.js');
       const apiSpec = path.resolve('tests/testdata/dok-api.yaml');
 
-      const output = execFileSync(process.execPath, [distApp, '-f', apiSpec], {
+      const output = execFileSync(process.execPath, [distApp, '--verbose', '-f', apiSpec], {
         encoding: 'utf8',
       });
 

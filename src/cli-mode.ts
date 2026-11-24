@@ -24,7 +24,7 @@ import { RuleExecutionContext } from './util/RuleExecutionContext.js';
 import { parseRuleCategories, resolveRuleCategories } from './rulesets/util/ruleModules.js';
 import { resolveLocale, translator } from './i18n.js';
 import { ExitCode } from './util/exitCodes.js';
-import { findUnmetCriteria } from './util/exitCriteria.js';
+import { calculateConformance, findUnmetCriteria } from './util/exitCriteria.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -46,6 +46,7 @@ export type CliArgs = {
   failOnError?: boolean;
   failOnWarning?: boolean;
   minConformance?: number;
+  verbose?: boolean;
 };
 
 export async function execCLI<T extends CliArgs>(argv: T) {
@@ -289,8 +290,9 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           await writeFileAsync(logDiagnosticFilePath, utf8EncodedContent);
           console.log(chalk.green(t('cli.diagnosticOutput', { filePath: logDiagnosticFilePath })));
         } else {
-          //STDOUT
+          //STDOUT, approved and not applicable rules are only listed in verbose mode
           if (
+            argv.verbose &&
             customDiagnostic.diagnosticInformation.executedUniqueRules != undefined &&
             customDiagnostic.diagnosticInformation.executedUniqueRules.length > 0
           ) {
@@ -327,6 +329,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
               });
           }
           if (
+            argv.verbose &&
             customDiagnostic.diagnosticInformation.notApplicableRules != undefined &&
             customDiagnostic.diagnosticInformation.notApplicableRules.length > 0
           ) {
@@ -357,7 +360,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             await writeFileAsync(logErrorFilePath, utf8EncodedContent);
             console.log(chalk.green(t('cli.validationOutput', { filePath: logErrorFilePath })));
           }
-        } else {
+        } else if (argv.verbose) {
           //Verbose error logging goes here with detailed result
           console.log(chalk.whiteBright(`\n\n${t('cli.ruleExecution.resultTitle')}`));
           result
@@ -371,32 +374,78 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             });
         }
 
-        const unmetCriteria = findUnmetCriteria(
-          result,
-          {
-            passed: customDiagnostic.diagnosticInformation.executedUniqueRules?.length ?? 0,
-            failed: customDiagnostic.diagnosticInformation.executedUniqueRulesWithError?.length ?? 0,
-          },
-          {
-            failOnError: argv.failOnError,
-            failOnWarning: argv.failOnWarning,
-            minConformance: argv.minConformance,
-          },
+        const outcome = {
+          passed: customDiagnostic.diagnosticInformation.executedUniqueRules?.length ?? 0,
+          failed: customDiagnostic.diagnosticInformation.executedUniqueRulesWithError?.length ?? 0,
+        };
+        const notApplicable = customDiagnostic.diagnosticInformation.notApplicableRules?.length ?? 0;
+        console.log(chalk.whiteBright(`\n${t('cli.ruleExecution.summaryTitle')}`));
+        console.log(
+          [
+            chalk.green(`${t('common.ruleStatus.ok')}: ${outcome.passed}`),
+            chalk.red(`${t('common.ruleStatus.notOk')}: ${outcome.failed}`),
+            chalk.gray(`${t('common.ruleStatus.notApplicable')}: ${notApplicable}`),
+          ].join(' | '),
         );
-        unmetCriteria.forEach((criterion) => {
+        const activeCriteria = (['failOnError', 'failOnWarning', 'minConformance'] as const).filter((flag) =>
+          flag === 'minConformance' ? argv.minConformance !== undefined : argv[flag],
+        );
+        const requirements = activeCriteria.map((flag) =>
+          t(`cli.criteria.requirement.${flag}`, { threshold: argv.minConformance }),
+        );
+        const conformanceLines = [
+          ...(outcome.passed + outcome.failed > 0
+            ? [
+                t('cli.ruleExecution.summaryConformance', {
+                  conformance: calculateConformance(outcome),
+                  passed: outcome.passed,
+                  executed: outcome.passed + outcome.failed,
+                }),
+              ]
+            : []),
+          ...(requirements.length > 0
+            ? [`${t('cli.criteria.requirementsLabel')}:`, ...requirements.map((requirement) => `  - ${requirement}`)]
+            : []),
+        ];
+        if (conformanceLines.length > 0) {
+          console.log(`\n${conformanceLines.join('\n')}`);
+        }
+
+        const unmetCriteria = findUnmetCriteria(result, outcome, {
+          failOnError: argv.failOnError,
+          failOnWarning: argv.failOnWarning,
+          minConformance: argv.minConformance,
+        });
+        if (activeCriteria.length > 0) {
+          console.log('');
+        }
+        activeCriteria.forEach((flag) => {
+          const unmet = unmetCriteria.find((criterion) => criterion.flag === flag);
+          if (!unmet) {
+            console.log(
+              chalk.green(
+                t(`cli.criteria.${flag}Met`, {
+                  conformance: calculateConformance(outcome),
+                  threshold: argv.minConformance,
+                }),
+              ),
+            );
+            return;
+          }
           const message =
-            criterion.flag === 'minConformance'
+            unmet.flag === 'minConformance'
               ? t('cli.criteria.minConformanceNotMet', {
-                  conformance: criterion.conformance,
-                  threshold: criterion.threshold,
-                  passed: criterion.passed,
-                  executed: criterion.executed,
+                  conformance: unmet.conformance,
+                  threshold: unmet.threshold,
                 })
-              : t(`cli.criteria.${criterion.flag}NotMet`, { rules: criterion.ruleIds.join(', ') });
+              : t(`cli.criteria.${unmet.flag}NotMet`, { rules: unmet.ruleIds.join(', ') });
           console.log(chalk.red(message));
         });
         if (unmetCriteria.length > 0) {
           process.exitCode ??= ExitCode.CriteriaNotMet;
+        }
+        if (!argv.verbose && (!logDiagnosticFilePath || !logErrorFilePath)) {
+          console.log(chalk.gray(`\n${t('cli.ruleExecution.verboseHint')}`));
         }
       } catch (spectralError: any) {
         logErrorToFile(spectralError); // Log stack

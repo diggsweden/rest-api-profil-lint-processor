@@ -30,6 +30,9 @@
       "rejectedTitle": "<<<Verkställda och ej godkända regler - RAP-LP>>>",
       "notApplicableTitle": "<<<Ej tillämpade regler - RAP-LP>>>",
       "resultTitle": "<<Regelutfall RAP-LP>>",
+      "summaryTitle": "<<<Sammanställning - RAP-LP>>>",
+      "summaryConformance": "Regeluppfyllnadsgrad: {{conformance}}% ({{passed}} av {{executed}} verkställda regler uppfyllda)",
+      "verboseHint": "Kör med --verbose för att se alla regler och detaljerat regelutfall.",
 
       "headers": {
         "status": "STATUS",
@@ -62,9 +65,18 @@
       "writeFailed": "Misslyckades att skriva avstämningsfil i Excel-format: {{message}}"
     },
     "criteria": {
+      "requirementsLabel": "Kriterier",
+      "requirement": {
+        "minConformance": "Regeluppfyllnadsgrad minst {{threshold}}% (--minConformance)",
+        "failOnError": "Alla SKALL-krav uppfyllda (--failOnError)",
+        "failOnWarning": "Alla SKALL- och BÖR-krav uppfyllda (--failOnWarning)"
+      },
+      "failOnErrorMet": "Kriteriet --failOnError är uppfyllt: alla SKALL-krav uppfylls.",
+      "failOnWarningMet": "Kriteriet --failOnWarning är uppfyllt: alla SKALL- och BÖR-krav uppfylls.",
+      "minConformanceMet": "Kriteriet --minConformance är uppfyllt: {{conformance}}% är inte under {{threshold}}%.",
       "failOnErrorNotMet": "Kriteriet --failOnError är inte uppfyllt. SKALL-krav som inte uppfylls: {{rules}}",
       "failOnWarningNotMet": "Kriteriet --failOnWarning är inte uppfyllt. SKALL- eller BÖR-krav som inte uppfylls: {{rules}}",
-      "minConformanceNotMet": "Kriteriet --minConformance är inte uppfyllt. Regeluppfyllnadsgraden är {{conformance}}% ({{passed}} av {{executed}} regler uppfyllda), men minst {{threshold}}% krävs."
+      "minConformanceNotMet": "Kriteriet --minConformance är inte uppfyllt: {{conformance}}% är under {{threshold}}%."
     },
     "help": {
       "options": "Alternativ:",
@@ -84,7 +96,8 @@
       "lang": "Språk för CLI-utdata (sv eller en)",
       "failOnError": "[cli mode] Avsluta med exitkod 22 om något SKALL-krav inte uppfylls.",
       "failOnWarning": "[cli mode] Avsluta med exitkod 22 om något SKALL- eller BÖR-krav inte uppfylls.",
-      "minConformance": "[cli mode] Avsluta med exitkod 22 om regeluppfyllnadsgraden (1-100%) understiger angivet värde. Ej tillämpliga regler räknas inte."
+      "minConformance": "[cli mode] Avsluta med exitkod 22 om regeluppfyllnadsgraden (1-100%) understiger angivet värde. Ej tillämpliga regler räknas inte.",
+      "verbose": "[cli mode] Visa även godkända och ej tillämpliga regler samt detaljerat regelutfall. Utan flaggan visas ej godkända regler, summering och eventuella kriterier."
     }
   },
   "api": {

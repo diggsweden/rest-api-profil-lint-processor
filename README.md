@@ -322,14 +322,15 @@ Strict validation reported issues:
 
 ### Flaggor för CLI-läge
 
-| Flagga                  | Beskrivning                                                                                                                                                                                                        | Typ     | Standard | Obligatorisk |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- | -------- | ------------ |
-| `-f`,<br>`--file`       | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                                                                     | String  | –        | Ja           |
-| `-c`,<br>`--categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `DokRules, DotRules, ResRules, UfnRules, MogRules, SakRules, SpaRules, AmeRules, ArqRules, FelRules, VerRules, FnsRules, ForRules`.                      | String  | –        | Nej          |
-| `--lang`                | Språk för utskrifter och generella felmeddelanden. Tillgängliga: `sv`, `en`. Regelrelaterade meddelanden förblir på svenska.                                                                                       | String  | `sv`     | Nej          |
-| `--failOnError`         | Avsluta med exitkod `22` om något SKALL-krav inte uppfylls.                                                                                                                                                        | Boolean | `false`  | Nej          |
-| `--failOnWarning`       | Avsluta med exitkod `22` om något SKALL- eller BÖR-krav inte uppfylls.                                                                                                                                             | Boolean | `false`  | Nej          |
-| `--minConformance`      | Avsluta med exitkod `22` om regeluppfyllnadsgraden understiger angivet heltal (1–100). Graden beräknas som andelen uppfyllda regler av de verkställda reglerna, avrundat nedåt; ej tillämpliga regler räknas inte. | Number  | –        | Nej          |
+| Flagga                  | Beskrivning                                                                                                                                                                                                                                              | Typ     | Standard | Obligatorisk |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------- | ------------ |
+| `-f`,<br>`--file`       | Sökväg till OpenAPI-specifikation (YAML/JSON).                                                                                                                                                                                                           | String  | –        | Ja           |
+| `-c`,<br>`--categories` | Regelkategorier separerade med kommatecken. Tillgängliga: `DokRules, DotRules, ResRules, UfnRules, MogRules, SakRules, SpaRules, AmeRules, ArqRules, FelRules, VerRules, FnsRules, ForRules`.                                                            | String  | –        | Nej          |
+| `--lang`                | Språk för utskrifter och generella felmeddelanden. Tillgängliga: `sv`, `en`. Regelrelaterade meddelanden förblir på svenska.                                                                                                                             | String  | `sv`     | Nej          |
+| `--failOnError`         | Avsluta med exitkod `22` om något SKALL-krav inte uppfylls.                                                                                                                                                                                              | Boolean | `false`  | Nej          |
+| `--failOnWarning`       | Avsluta med exitkod `22` om något SKALL- eller BÖR-krav inte uppfylls.                                                                                                                                                                                   | Boolean | `false`  | Nej          |
+| `--minConformance`      | Avsluta med exitkod `22` om regeluppfyllnadsgraden understiger angivet heltal (1–100). Graden beräknas som andelen uppfyllda regler av de verkställda reglerna, avrundat nedåt; ej tillämpliga regler räknas inte.                                       | Number  | –        | Nej          |
+| `--verbose`             | Visa alla regler (godkända, ej godkända och ej tillämpliga) samt detaljerat regelutfall. Utan flaggan visas ej godkända regler och en summering, samt kriterier och deras utfall om `--failOnError`, `--failOnWarning` eller `--minConformance` används. | Boolean | `false`  | Nej          |
 
 ### Exitkoder i CLI-läge
 
@@ -354,12 +355,12 @@ RAP-LP erbjuder stöd för att logga fel, exportera diagnostiseringsinformation 
 <details>
 <summary><strong>Flaggor för loggning</strong></summary>
 
-| Flagga                | Beskrivning                                                                             | Typ     | Standard            | Obligatorisk |
-| --------------------- | --------------------------------------------------------------------------------------- | ------- | ------------------- | ------------ |
-| `-l, --logError`      | Sökväg till fil för felloggning från RAP-LP. Om inte angiven skrivs loggen till stdout. | string  | stdout (om ej satt) | Nej          |
-| `-a, --append`        | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används).             | boolean | `false`             | Nej          |
-| `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format.              | string  | –                   | Nej          |
-| `--dex`               | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format.             | string  | –                   | Nej          |
+| Flagga                | Beskrivning                                                                                             | Typ     | Standard            | Obligatorisk |
+| --------------------- | ------------------------------------------------------------------------------------------------------- | ------- | ------------------- | ------------ |
+| `-l, --logError`      | Sökväg till fil för felloggning från RAP-LP. Om inte angiven skrivs loggen till stdout med `--verbose`. | string  | stdout (om ej satt) | Nej          |
+| `-a, --append`        | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används).                             | boolean | `false`             | Nej          |
+| `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format.                              | string  | –                   | Nej          |
+| `--dex`               | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format.                             | string  | –                   | Nej          |
 
 </details>
 <br>
@@ -487,7 +488,7 @@ Verktyget kan även köras som en lokal HTTP-server, via API (Applikation Progra
 ### Endpoints för API-läge
 
 | Endpoint                             | Beskrivning                                                                                        |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------|
+| ------------------------------------ | -------------------------------------------------------------------------------------------------- |
 | `/api/v1/docs`                       | Används för att hämta aktuell API-dokumentation med Swagger UI.                                    |
 | `/api/v1/api-info`                   | Används för att hämta information om API:et.                                                       |
 | `/api/v1/validation/rules`           | Används för att hämta lista med tillgängliga regelkategorier som stöds av verktyget.               |
@@ -513,8 +514,8 @@ Vid körning i API-läge från en lokal server kan RAP-LP konfigureras med hjäl
 | RAP_LP_PORT                           | Portkonfiguration för vilken port servern ska starta på och lyssna på inkommande requests. Defaultvärdet är `3000`.                                                                                                    |
 | RAP_LP_PUBLIC_BASE_URL                | Publik bas-URL för servern, exempelvis `https://raplp.example.com`. Används för länken `apiDocumentation` i `/api/v1/api-info`. Om den inte är satt kommer länken peka mot `https://raplp.digg.se/api/v1/api-info`.    |
 | RAP_LP_LANG                           | Standardspråk för generella meddelanden och felmeddelanden. Tillgängliga språk: `sv`, `en`. Standardvärdet är `sv`.                                                                                                    |
-| RAP_LP_STATISTICS_ENABLED                | Anger om statistik ska vara aktiverat. Kan sättas till `true` eller `false`. Defaultvärdet `false` används om värdet saknas.    |
-| RAP_LP_STATISTICS_DATA_DIR                | Mapp där SQLite-databasen placeras. Defaultvärdet `/app/data` används om värdet saknas.    |
+| RAP_LP_STATISTICS_ENABLED             | Anger om statistik ska vara aktiverat. Kan sättas till `true` eller `false`. Defaultvärdet `false` används om värdet saknas.                                                                                           |
+| RAP_LP_STATISTICS_DATA_DIR            | Mapp där SQLite-databasen placeras. Defaultvärdet `/app/data` används om värdet saknas.                                                                                                                                |
 
 ---
 
@@ -755,19 +756,19 @@ Om databasen inte kan öppnas vid uppstart loggas en varning och applikationen f
 
 Statistiken kan hämtas genom att ansluta till databasen med valfri klient. Som ett enklare alternativ finns även tre endpoints. Alla svarar med `enabled`, perioden som gäller (`range`) och summeringar.
 
-| Endpoint | Innehåll |
-|---|---|
-| `GET /api/v1/statistics/rules` | Antal valideringar, antal regelbrott och godkända regler samt antal per regel och utfall |
+| Endpoint                          | Innehåll                                                                                                         |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `GET /api/v1/statistics/rules`    | Antal valideringar, antal regelbrott och godkända regler samt antal per regel och utfall                         |
 | `GET /api/v1/statistics/requests` | Antal anrop per route och metod, med genomsnittlig och högsta svarstid samt antal felsvar (status 400 och uppåt) |
-| `GET /api/v1/statistics/clients` | Antal anrop per webbläsarfamilj och operativsystem |
+| `GET /api/v1/statistics/clients`  | Antal anrop per webbläsarfamilj och operativsystem                                                               |
 
 Query-parametrar (valfria):
 
-| Parameter | Beskrivning | Utan parametern |
-|---|---|---|
-| `from` | Start på perioden, inklusive. Datum eller tidpunkt enligt ISO 8601. | Ingen nedre gräns |
-| `to` | Slut på perioden, exklusive. Datum eller tidpunkt enligt ISO 8601. | Ingen övre gräns |
-| `onlyViolations` | Endast för `/rules`. Vid `true` returneras bara regelbrott. | Alla utfall returneras |
+| Parameter        | Beskrivning                                                         | Utan parametern        |
+| ---------------- | ------------------------------------------------------------------- | ---------------------- |
+| `from`           | Start på perioden, inklusive. Datum eller tidpunkt enligt ISO 8601. | Ingen nedre gräns      |
+| `to`             | Slut på perioden, exklusive. Datum eller tidpunkt enligt ISO 8601.  | Ingen övre gräns       |
+| `onlyViolations` | Endast för `/rules`. Vid `true` returneras bara regelbrott.         | Alla utfall returneras |
 
 `from` och `to` kan användas var för sig eller tillsammans, och utan båda summeras all sparad statistik. Ett ogiltigt datum ignoreras, vilket innebär att gränsen inte tillämpas.
 
@@ -786,9 +787,7 @@ Exempel på svar:
   "validations": 31,
   "totalViolations": 3,
   "totalOk": 0,
-  "byRule": [
-    { "ruleId": "DOK.03", "outcome": "violation", "severity": "error", "count": 3 }
-  ]
+  "byRule": [{ "ruleId": "DOK.03", "outcome": "violation", "severity": "error", "count": 3 }]
 }
 ```
 
@@ -836,7 +835,8 @@ Det går endast att köra RAP-LP mot en enda OpenAPI-specifikation åt gången.
 #### Förklaring av översikt för regelutfall
 
 Om man väljer att köra verktyget i CLI-läge, så kommer diagnostiseringsinformationen på stdout.<br>
-I denna så kommer en sammanställning av det totala regelutfallet att visas.
+Som standard visas de ej godkända reglerna följt av en sammanställning. Med `--verbose` visas även de godkända och ej tillämpade reglerna.<br>
+Sammanställningen visar antalet regler per utfall och regeluppfyllnadsgraden, det vill säga andelen uppfyllda regler av de verkställda reglerna. Om `--failOnError`, `--failOnWarning` eller `--minConformance` används visas även kriterierna och om de är uppfyllda.
 
 - Verkställda och godkända regler:
   - OK = Krav bedömt och hanterat för att möta kravet
@@ -855,7 +855,7 @@ Dessutom framgår det att reglerna SAK.10 och DOK.01 inte är tillämpade för d
 
 #### Förklaring av detaljering för regelutfall
 
-Tillsammans med diagnostiseringsinformationen följer en detaljerad beskrivning av informationen för regelutfallet. I denna beskrivning framgår följande:
+Med `--verbose` följer en detaljerad beskrivning av informationen för regelutfallet tillsammans med diagnostiseringsinformationen. I denna beskrivning framgår följande:
 
 - Allvarlighetsgrad: Anger allvaret av problemet som upptäckts av regeln. De möjliga värdena är error och warning, vilka tolkas enligt följande:
   - Error: Ett uppenbart fel som måste åtgärdas. I REST API-profilen motsvarar detta kravtypen SKALL och SKALL INTE.

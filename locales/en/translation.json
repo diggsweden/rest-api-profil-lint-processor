@@ -30,6 +30,9 @@
       "rejectedTitle": "<<<Executed and not approved rules - RAP-LP>>>",
       "notApplicableTitle": "<<<Not applicable rules - RAP-LP>>>",
       "resultTitle": "<<Rule results RAP-LP>>",
+      "summaryTitle": "<<<Summary - RAP-LP>>>",
+      "summaryConformance": "Rule conformance: {{conformance}}% ({{passed}} of {{executed}} executed rules met)",
+      "verboseHint": "Run with --verbose to see all rules and detailed rule results.",
       "headers": {
         "status": "STATUS",
         "area": "AREA",
@@ -61,9 +64,18 @@
       "writeFailed": "Failed to write conformance report in Excel format: {{message}}"
     },
     "criteria": {
+      "requirementsLabel": "Criteria",
+      "requirement": {
+        "minConformance": "Rule conformance at least {{threshold}}% (--minConformance)",
+        "failOnError": "All MUST (SKALL) requirements met (--failOnError)",
+        "failOnWarning": "All MUST (SKALL) and SHOULD (BÖR) requirements met (--failOnWarning)"
+      },
+      "failOnErrorMet": "Criterion --failOnError met: all MUST (SKALL) requirements are met.",
+      "failOnWarningMet": "Criterion --failOnWarning met: all MUST (SKALL) and SHOULD (BÖR) requirements are met.",
+      "minConformanceMet": "Criterion --minConformance met: {{conformance}}% is not below {{threshold}}%.",
       "failOnErrorNotMet": "Criterion --failOnError not met. Unmet MUST (SKALL) requirements: {{rules}}",
       "failOnWarningNotMet": "Criterion --failOnWarning not met. Unmet MUST (SKALL) or SHOULD (BÖR) requirements: {{rules}}",
-      "minConformanceNotMet": "Criterion --minConformance not met. Rule conformance is {{conformance}}% ({{passed}} of {{executed}} rules met), but at least {{threshold}}% is required."
+      "minConformanceNotMet": "Criterion --minConformance not met: {{conformance}}% is below {{threshold}}%."
     },
     "help": {
       "options": "Options:",
@@ -83,7 +95,8 @@
       "lang": "Language for CLI output (sv or en)",
       "failOnError": "[cli mode] Exit with code 22 if any MUST (SKALL) requirement is not met.",
       "failOnWarning": "[cli mode] Exit with code 22 if any MUST (SKALL) or SHOULD (BÖR) requirement is not met.",
-      "minConformance": "[cli mode] Exit with code 22 if the rule conformance (1-100%) is below the given value. Not applicable rules are excluded."
+      "minConformance": "[cli mode] Exit with code 22 if the rule conformance (1-100%) is below the given value. Not applicable rules are excluded.",
+      "verbose": "[cli mode] Also show approved and not applicable rules and detailed rule results. Without the flag, rules that are not approved, the summary and any criteria are shown."
     }
   },
   "api": {
