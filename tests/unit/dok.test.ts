@@ -5,81 +5,6 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import testRule from '../util/helperTest.js';
 
-testRule('Dok20', [
-  {
-    name: 'giltigt testfall',
-    document: {
-      openapi: '3.1.0',
-      info: { version: '1.0' },
-      servers: [{ url: 'https://example.com/my-api/v1' }],
-      paths: {
-        '/Dettacase': {
-          get: {
-            description: 'Ogiltigt testfall av CamelCase',
-            parameters: [
-              {
-                name: 'Very_LongName',
-                in: 'path',
-                required: false,
-              },
-            ],
-            responses: {
-              '200': {
-                description: 'test',
-              },
-            },
-          },
-        },
-      },
-    },
-    errors: [],
-  },
-  {
-    name: 'ogiltigt testfall',
-    document: {
-      openapi: '3.1.0',
-      info: { version: '1.0' },
-      servers: [{ url: 'https://example.com/my-api/v1' }],
-      paths: {
-        '/Dettacase': {
-          get: {
-            description: 'Ogiltigt testfall av CamelCase',
-            parameters: [
-              {
-                name: 'Very_LongName',
-                in: 'path',
-                required: false,
-              },
-            ],
-            responses: {
-              '200': {
-                description: '',
-              },
-            },
-          },
-        },
-      },
-    },
-    errors: [
-      {
-        code: 'Dok20',
-        message: 'Förväntade returkoder och felkoder SKALL vara fullständigt dokumenterade.',
-        path: ['paths', '/Dettacase', 'get', 'responses', '200', 'description'],
-        severity: DiagnosticSeverity.Error,
-        range: {
-          start: {
-            line: 0,
-            character: 276,
-          },
-          end: {
-            line: 0,
-            character: 278,
-          },
-        },
-      },
-    ],
-  },
-]);
 testRule('Dok06', [
   {
     name: 'giltigt testfall',
@@ -455,6 +380,86 @@ testRule('Dok17', [
 ]);
 
 testRule('Dok19', [
+{
+  name: 'giltigt testfall - GET med summary och description',
+  document: {
+    openapi: '3.1.0',
+    info: { version: '1.0' },
+    servers: [{ url: 'https://example.com/my-api/v1'}],
+    paths: {
+      '/books': {
+        get: {
+          description: 'Returnerar en lista på alla böcker',
+          summary: 'Hämta alla böcker',
+          responses: {
+            '200': {
+              description: 'OK',
+            },
+          },
+        },
+      },
+    },
+  },
+  errors: [],
+},
+{
+    name: 'ogiltigt testfall - POST saknar summary',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [{ url: 'https://example.com/my-api/v1' }],
+      paths: {
+        '/books': {
+          post: {
+            description: 'Skapar en ny bok',
+            responses: {
+              '201': {
+                description: 'Created',
+              },
+            },
+          },
+        },
+      },
+    },
+    errors: [
+    {
+      code: 'Dok19',
+      message: 'Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt.',
+      path: ['paths', '/books', 'post'],
+      severity: DiagnosticSeverity.Error,
+    }
+  ]
+},
+{
+  name: 'ogiltigt testfall - GET saknar summary och description',
+  document: {
+    openapi: '3.1.0',
+    info: { version: '1.0' },
+    servers: [{ url: 'https://example.com/my-api/v1' }],
+    paths: {
+      '/books': {
+        get: {
+          responses: {
+            '200': {
+              description: 'OK',
+            },
+          },
+        },
+      },
+    },
+  },
+  errors: [
+    {
+      code: 'Dok19',
+      message: 'Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt.',
+      path: ['paths', '/books', 'get'],
+      severity: DiagnosticSeverity.Error,
+    }
+  ]
+},
+]);
+
+testRule('Dok20', [
   {
     name: 'giltigt testfall',
     document: {
@@ -462,10 +467,16 @@ testRule('Dok19', [
       info: { version: '1.0' },
       servers: [{ url: 'https://example.com/my-api/v1' }],
       paths: {
-        '/thiscase': {
-          operation: {
-            description: 'description field test',
-            summary: 'summary field test',
+        '/Dettacase': {
+          get: {
+            description: 'Ogiltigt testfall av CamelCase',
+            parameters: [
+              {
+                name: 'Very_LongName',
+                in: 'path',
+                required: false,
+              },
+            ],
             responses: {
               '200': {
                 description: 'test',
@@ -484,10 +495,16 @@ testRule('Dok19', [
       info: { version: '1.0' },
       servers: [{ url: 'https://example.com/my-api/v1' }],
       paths: {
-        '/thiscase': {
-          operation: {
-            //description: "dfadfa",
-            //summary: "",
+        '/Dettacase': {
+          get: {
+            description: 'Ogiltigt testfall av CamelCase',
+            parameters: [
+              {
+                name: 'Very_LongName',
+                in: 'path',
+                required: false,
+              },
+            ],
             responses: {
               '200': {
                 description: '',
@@ -499,11 +516,20 @@ testRule('Dok19', [
     },
     errors: [
       {
-        code: 'Dok19',
-        message:
-          'Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt.',
-        path: ['paths', '/thiscase', 'operation'],
+        code: 'Dok20',
+        message: 'Förväntade returkoder och felkoder SKALL vara fullständigt dokumenterade.',
+        path: ['paths', '/Dettacase', 'get', 'responses', '200', 'description'],
         severity: DiagnosticSeverity.Error,
+        range: {
+          start: {
+            line: 0,
+            character: 276,
+          },
+          end: {
+            line: 0,
+            character: 278,
+          },
+        },
       },
     ],
   },
