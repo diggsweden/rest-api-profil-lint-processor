@@ -1,0 +1,68 @@
+// SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
+//
+// SPDX-License-Identifier: EUPL-1.2
+
+import { calculateConformance, findUnmetCriteria } from '../../src/util/exitCriteria.js';
+import { RapLPCustomSpectralDiagnostic } from '../../src/util/RapLPCustomSpectralDiagnostic.js';
+
+const violations = [
+  { id: 'SAK.16', severity: 'ERROR' },
+  { id: 'DOK.1', severity: 'WARNING' },
+  { id: 'SAK.16', severity: 'ERROR' },
+] as RapLPCustomSpectralDiagnostic[];
+
+const outcome = { passed: 8, failed: 2 };
+
+describe('calculateConformance', () => {
+  it('räknar andelen uppfyllda regler som heltal', () => {
+    expect(calculateConformance({ passed: 3, failed: 1 })).toBe(75);
+  });
+
+  it('avrundar nedåt så att tröskeln inte nås genom avrundning', () => {
+    expect(calculateConformance({ passed: 199, failed: 1 })).toBe(99);
+    expect(calculateConformance({ passed: 2, failed: 1 })).toBe(66);
+  });
+
+  it('ger 100 när inga regler verkställts', () => {
+    expect(calculateConformance({ passed: 0, failed: 0 })).toBe(100);
+  });
+
+  it('ger inga konverteringsfel i flyttal', () => {
+    expect(calculateConformance({ passed: 29, failed: 21 })).toBe(58); // 29/50   → 57.99999999999999 gav 57 borde bli 58
+    expect(calculateConformance({ passed: 57, failed: 43 })).toBe(57); // 57/100  → 56.99999999999999 gav 56 borde bli 57
+    expect(calculateConformance({ passed: 58, failed: 42 })).toBe(58); // 58/100  → 57.99999999999999 gav 57 borde bli 58
+  });
+});
+
+describe('findUnmetCriteria', () => {
+  it('returnerar inget när inga kriterier är aktiverade', () => {
+    expect(findUnmetCriteria(violations, outcome, {})).toEqual([]);
+  });
+
+  it('failOnError tar bara med SKA-krav, utan dubbletter', () => {
+    expect(findUnmetCriteria(violations, outcome, { failOnError: true })).toEqual([
+      { flag: 'failOnError', ruleIds: ['SAK.16'] },
+    ]);
+  });
+
+  it('failOnWarning tar med både SKA- och BÖR-krav', () => {
+    expect(findUnmetCriteria(violations, outcome, { failOnWarning: true })).toEqual([
+      { flag: 'failOnWarning', ruleIds: ['DOK.1', 'SAK.16'] },
+    ]);
+  });
+
+  it('failOnError är uppfyllt när det bara finns BÖR-brott', () => {
+    const onlyWarnings = [{ id: 'DOK.1', severity: 'WARNING' }] as RapLPCustomSpectralDiagnostic[];
+    expect(findUnmetCriteria(onlyWarnings, outcome, { failOnError: true })).toEqual([]);
+  });
+
+  it('minConformance är uppfyllt när graden når tröskeln', () => {
+    expect(findUnmetCriteria(violations, outcome, { minConformance: 80 })).toEqual([]);
+  });
+
+  it('minConformance är inte uppfyllt när graden understiger tröskeln', () => {
+    expect(findUnmetCriteria(violations, outcome, { minConformance: 81 })).toEqual([
+      { flag: 'minConformance', conformance: 80, threshold: 81, passed: 8, executed: 10 },
+    ]);
+  });
+});
