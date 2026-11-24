@@ -371,7 +371,8 @@ testRule('Dok17', [
     },
     errors: [
       {
-        message: 'API specifikation BÖR dokumenteras med den senaste versionen av OpenAPI Specification. ( Linter-analysverktyget (RAP-LP) för den nationella REST API-profilen är designat för senaste major versionen av OpenAPI Specification. Använd därför denna för full täckning av de implementerade reglerna. )',
+        message:
+          'API specifikation BÖR dokumenteras med den senaste versionen av OpenAPI Specification. ( Linter-analysverktyget (RAP-LP) för den nationella REST API-profilen är designat för senaste major versionen av OpenAPI Specification. Använd därför denna för full täckning av de implementerade reglerna. )',
         path: ['swagger'],
         severity: DiagnosticSeverity.Warning,
       },
@@ -380,29 +381,50 @@ testRule('Dok17', [
 ]);
 
 testRule('Dok19', [
-{
-  name: 'giltigt testfall - GET med summary och description',
-  document: {
-    openapi: '3.1.0',
-    info: { version: '1.0' },
-    servers: [{ url: 'https://example.com/my-api/v1'}],
-    paths: {
-      '/books': {
-        get: {
-          description: 'Returnerar en lista på alla böcker',
-          summary: 'Hämta alla böcker',
-          responses: {
-            '200': {
-              description: 'OK',
+  {
+    name: 'giltigt testfall - GET med summary och description',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [{ url: 'https://example.com/my-api/v1' }],
+      paths: {
+        '/books': {
+          get: {
+            description: 'Returnerar en lista på alla böcker',
+            summary: 'Hämta alla böcker',
+            responses: {
+              '200': {
+                description: 'OK',
+              },
             },
           },
         },
       },
     },
+    errors: [],
   },
-  errors: [],
-},
-{
+  {
+    name: 'giltigt testfall - path-nivå med parameters, summary och description ger inga fel',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [{ url: 'https://example.com/my-api/v1' }],
+      paths: {
+        '/books/{id}': {
+          summary: 'Bokresurs',
+          description: 'Gemensam beskrivning för path item',
+          parameters: [{ name: 'id', in: 'path', required: true }],
+          get: {
+            summary: 'Hämta en bok',
+            description: 'Returnerar en bok',
+            responses: { '200': { description: 'OK' } },
+          },
+        },
+      },
+    },
+    errors: [],
+  },
+  {
     name: 'ogiltigt testfall - POST saknar summary',
     document: {
       openapi: '3.1.0',
@@ -422,41 +444,43 @@ testRule('Dok19', [
       },
     },
     errors: [
-    {
-      code: 'Dok19',
-      message: 'Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt.',
-      path: ['paths', '/books', 'post'],
-      severity: DiagnosticSeverity.Error,
-    }
-  ]
-},
-{
-  name: 'ogiltigt testfall - GET saknar summary och description',
-  document: {
-    openapi: '3.1.0',
-    info: { version: '1.0' },
-    servers: [{ url: 'https://example.com/my-api/v1' }],
-    paths: {
-      '/books': {
-        get: {
-          responses: {
-            '200': {
-              description: 'OK',
+      {
+        code: 'Dok19',
+        message:
+          'Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt.',
+        path: ['paths', '/books', 'post'],
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
+  },
+  {
+    name: 'ogiltigt testfall - GET saknar summary och description',
+    document: {
+      openapi: '3.1.0',
+      info: { version: '1.0' },
+      servers: [{ url: 'https://example.com/my-api/v1' }],
+      paths: {
+        '/books': {
+          get: {
+            responses: {
+              '200': {
+                description: 'OK',
+              },
             },
           },
         },
       },
     },
+    errors: [
+      {
+        code: 'Dok19',
+        message:
+          'Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt.',
+        path: ['paths', '/books', 'get'],
+        severity: DiagnosticSeverity.Error,
+      },
+    ],
   },
-  errors: [
-    {
-      code: 'Dok19',
-      message: 'Ett API:s resurser och de möjliga operationer som kan utföras på resursen SKALL beskrivas så utförligt och tydligt som möjligt.',
-      path: ['paths', '/books', 'get'],
-      severity: DiagnosticSeverity.Error,
-    }
-  ]
-},
 ]);
 
 testRule('Dok20', [
