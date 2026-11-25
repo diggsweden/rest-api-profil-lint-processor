@@ -361,6 +361,7 @@ RAP-LP erbjuder stöd för att logga fel, exportera diagnostiseringsinformation 
 | `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format.              | string  | –                   | Nej          |
 | `--dex`               | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format.             | string  | –                   | Nej          |
 | `--sarif`             | Sökväg till fil för regelutfall från RAP-LP i SARIF-format (`.sarif` eller `.json`).    | string  | –                   | Nej          |
+| `--junit`             | Sökväg till fil för regelutfall från RAP-LP i Junit xml-format.                         | string  | –                   | Nej          |
 
 </details>
 <br>
@@ -434,6 +435,21 @@ raplp -f openapi.yaml --sarif raplp.sarif
 - Filen skrivs även när ett kriterium (`--failOnError`, `--failOnWarning`, `--minConformance`) inte uppfylls och körningen avslutas med exitkod `22`.
 
 </details>
+
+<br>
+<details>
+<summary><strong>Validering som genererar JUnit xml rapport med gräns för följsamhet</strong></summary>
+För att spara information om regelutfall från diagnostiseringen till en JUnit xml-fil, lägg till `--junit`. 
+
+<br>
+
+**Exempel med minsta tillåtna följsamhet på 90%**
+```bash
+raplp -f openapi.yaml --junit reports/raplp.xml
+```
+
+</details>
+
 
 ---
 

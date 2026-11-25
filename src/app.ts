@@ -79,6 +79,11 @@ async function main() {
       describe: t('cli.help.sarif'),
       type: 'string',
     })
+    .option('junit', {
+      type: 'string',
+      description: 'Skriv valideringsresultatet som en JUnit XML-rapport',
+      requiresArg: true,
+    })
     .option('enableUrlValidation', {
       type: 'boolean',
       describe: t('cli.help.enableUrlValidation'),

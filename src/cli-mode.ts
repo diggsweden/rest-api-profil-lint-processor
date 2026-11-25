@@ -27,6 +27,7 @@ import { ExitCode } from './util/exitCodes.js';
 import { findUnmetCriteria } from './util/exitCriteria.js';
 import { RapLPCustomSpectralDiagnostic } from './util/RapLPCustomSpectralDiagnostic.js';
 import { buildSarifLog } from './report/sarifReportProcessor.js';
+import { junitReportProcessor } from './report/junitReportProcessor.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -45,6 +46,7 @@ export type CliArgs = {
   logDiagnostic?: string;
   dex?: string;
   sarif?: string;
+  junit?: string;
   strict?: boolean;
   lang?: string;
   failOnError?: boolean;
@@ -410,6 +412,14 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         });
         if (unmetCriteria.length > 0) {
           process.exitCode ??= ExitCode.CriteriaNotMet;
+        }
+
+        if (argv.junit) {
+          const junitReport = new junitReportProcessor({
+            outputFilePath: argv.junit,
+          });
+
+          await junitReport.generateReportDocument(diagnosticReports);
         }
       } catch (spectralError: any) {
         logErrorToFile(spectralError); // Log stack
