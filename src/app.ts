@@ -23,6 +23,7 @@ import { getRuleModules } from './util/ruleUtil.js';
 import { resolveLocale, translator } from './i18n.js';
 import { cliLocale } from './cliLocale.js';
 import { ExitCode } from './util/exitCodes.js';
+import { isValidSarifPath } from './report/sarifReportProcessor.js';
 const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
 class InvalidArgumentsError extends Error {}
@@ -74,6 +75,10 @@ async function main() {
       describe: t('cli.help.dex'),
       type: 'string',
     })
+    .option('sarif', {
+      describe: t('cli.help.sarif'),
+      type: 'string',
+    })
     .option('enableUrlValidation', {
       type: 'boolean',
       describe: t('cli.help.enableUrlValidation'),
@@ -120,11 +125,16 @@ async function main() {
         ) {
           throw new Error(t('cli.invalidMinConformance'));
         }
+
+        if (argv.sarif !== undefined && !isValidSarifPath(argv.sarif)) {
+          throw new Error(t('cli.sarif.invalidArgument'));
+        }
+        
         return true;
       }
 
       if (argv.mode === 'api') {
-        const apiForbiddenArgs = new Set(['f', 'c', 'dex', 'failOnError', 'failOnWarning', 'minConformance']);
+        const apiForbiddenArgs = new Set(['f', 'c', 'dex', 'failOnError', 'failOnWarning', 'minConformance', 'sarif']);
         const hasForbiddenArgs = Object.keys(argv).filter(
           (k) => apiForbiddenArgs.has(k) && Object.prototype.hasOwnProperty.call(argv, k),
         );

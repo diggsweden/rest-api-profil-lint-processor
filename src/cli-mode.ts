@@ -25,6 +25,8 @@ import { parseRuleCategories, resolveRuleCategories } from './rulesets/util/rule
 import { resolveLocale, translator } from './i18n.js';
 import { ExitCode } from './util/exitCodes.js';
 import { findUnmetCriteria } from './util/exitCriteria.js';
+import { RapLPCustomSpectralDiagnostic } from './util/RapLPCustomSpectralDiagnostic.js';
+import { buildSarifLog } from './report/sarifReportProcessor.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -33,6 +35,7 @@ declare var AggregateError: {
 
 const writeFileAsync = util.promisify(fs.writeFile);
 const appendFileAsync = util.promisify(fs.appendFile);
+const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
 export type CliArgs = {
   file?: string;
@@ -41,6 +44,7 @@ export type CliArgs = {
   append: boolean;
   logDiagnostic?: string;
   dex?: string;
+  sarif?: string;
   strict?: boolean;
   lang?: string;
   failOnError?: boolean;
@@ -60,7 +64,8 @@ export async function execCLI<T extends CliArgs>(argv: T) {
     const logErrorFilePath = argv.logError as string | undefined;
     const logDiagnosticFilePath = argv.logDiagnostic as string | undefined;
     const strict = (argv.strict as boolean) ?? false;
-
+    const sarifFilePath = argv.sarif as string | undefined; 
+    
     const context = new RuleExecutionContext(locale);
 
     // Schemevalidation and Spectral  Document creation ----------
@@ -89,7 +94,10 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             ),
           ),
         );
-        process.exitCode = ExitCode.SpecValidationFailed;
+        if (sarifFilePath) {
+          await writeSarifReport(sarifFilePath, apiSpecFileName, [], parseResult.strictIssues);
+        }
+        process.exitCode ??= ExitCode.SpecValidationFailed;
         return;
       }
     } catch (err: any) {
@@ -383,6 +391,11 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             minConformance: argv.minConformance,
           },
         );
+
+        if (sarifFilePath) {
+          await writeSarifReport(sarifFilePath, apiSpecFileName, result);
+        }
+
         unmetCriteria.forEach((criterion) => {
           const message =
             criterion.flag === 'minConformance'
@@ -425,6 +438,24 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         const causeMessage = `Cause ${index + 1}: ${err.stack || err}\n`;
         fs.appendFileSync('rap-lp-error.log', causeMessage);
       });
+    }
+  }
+
+  async function writeSarifReport(
+    sarifPath: string,
+    specFile: string,
+    violations: RapLPCustomSpectralDiagnostic[],
+    strictIssues: Issue[] = [],
+  ): Promise<void> {
+    try {
+      const specUri = path.relative(process.cwd(), specFile).split(path.sep).join('/');
+      const sarifLog = buildSarifLog(t, specUri, pkg.version, violations, strictIssues);
+      await writeFileAsync(sarifPath, Buffer.from(JSON.stringify(sarifLog, null, 2), 'utf8'));
+      console.log(chalk.green(`\n${t('cli.sarif.output', { filePath: sarifPath })}`));
+    } catch (sarifError: any) {
+      logErrorToFile(sarifError);
+      console.log(chalk.red(t('cli.sarif.writeFailed', { filePath: sarifPath, message: sarifError.message })));
+      process.exitCode = ExitCode.InternalError;
     }
   }
 }
