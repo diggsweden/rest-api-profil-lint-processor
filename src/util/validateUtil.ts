@@ -23,6 +23,10 @@ import { Issue } from './Issue.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
 import { translator } from '../i18n.js';
 
+const ALLOW_EXTERNAL_REFS =
+  process.env.RAP_LP_ALLOW_EXTERNAL_REFS === 'true';
+
+
 /**
  * 
  */
@@ -117,6 +121,8 @@ export async function parseApiSpecInput(input: SpecInput,
       throw new SpecParseError(t('validation.invalidParsedOpenApi'),
          { source: 'unknown', stage: 'sanity' });
     }
+    //Make sure that parsed specfikation is secure
+    ensureIsSecureOpenApiLike(parsed, 'unknown', t);
     const serialized = JSON.stringify(parsed, null, 2); // Serialize raw format
     let strictIssues: Issue[] | undefined;
     if (strict) { 
@@ -286,8 +292,8 @@ function stripLeadingCommentsAndWhitespace(raw: string): string {
 function ensureIsSecureOpenApiLike(parsed: any, target: any, t: ReturnType<typeof translator>) {
 
   const violations: string[] = [];
-  //Look for external $refs
-  if (findExternalRefs(parsed).length > 0) {
+  // Look for external $refs unless explicitly allowed.
+  if (!ALLOW_EXTERNAL_REFS && findExternalRefs(parsed).length > 0) {
     violations.push(t('validation.externalRefsNotAllowed'));
   }
   /*const details = externalRefs
