@@ -7,6 +7,7 @@ import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { BaseRuleset } from './BaseRuleset.js';
 import { personalIdentityNumberFieldNames } from './constants/ResConstants.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
+import { isObject } from '../util/typeUtil.js';
 
 const moduleName: string = 'ResRules.js';
 
@@ -19,6 +20,9 @@ export class Res02 extends BaseRuleset {
   then = [
     {
       function: (targetVal: any, _opts: string, paths: string[]) => {
+        if (!isObject(targetVal) || typeof targetVal.name !== 'string') {
+          return [];
+        }
         if (targetVal.in == 'query' || targetVal.in == 'path') {
           const lowerCaseTargetVal = targetVal.name.toLowerCase();
           const containsPersonalIdentityNumber = personalIdentityNumberFieldNames.includes(lowerCaseTargetVal);

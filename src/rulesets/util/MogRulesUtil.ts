@@ -1,10 +1,12 @@
 // SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
 //
 // SPDX-License-Identifier: EUPL-1.2
+import { isObject } from '../../util/typeUtil.js';
 
 export const validHttpMethods = ['get', 'post', 'put', 'delete', 'patch'];
 
 export const countEndpoints = (apiPaths: Record<string, any>): number => {
+  if (!isObject(apiPaths)) return 0;
   const normalized = new Set(
     Object.keys(apiPaths).map(
       (path) =>
@@ -19,8 +21,11 @@ export const countEndpoints = (apiPaths: Record<string, any>): number => {
 };
 
 export const countDistinctHttpMethods = (apiPaths: Record<string, any>): number => {
+  if (!isObject(apiPaths)) return 0;
   const methods = new Set<string>();
   Object.values(apiPaths).forEach((methodsObj) => {
+    // Empty path (null) if incorrect indentation
+    if (!isObject(methodsObj)) return;
     Object.keys(methodsObj)
       .filter((m) => validHttpMethods.includes(m.toLowerCase()))
       .forEach((m) => methods.add(m.toLowerCase()));
@@ -29,8 +34,11 @@ export const countDistinctHttpMethods = (apiPaths: Record<string, any>): number 
 };
 
 export const eachPathHasValidRestOperation = (apiPaths: Record<string, any>): boolean => {
-  return Object.values(apiPaths).every((methodsObj) =>
-    Object.keys(methodsObj).some((m) => validHttpMethods.includes(m.toLowerCase())),
+  if (!isObject(apiPaths)) return false;
+  return Object.values(apiPaths).every(
+    (methodsObj) =>
+      // En path som inte är ett objekt har ingen giltig operation
+      isObject(methodsObj) && Object.keys(methodsObj).some((m) => validHttpMethods.includes(m.toLowerCase())),
   );
 };
 
@@ -57,16 +65,18 @@ const hasLinksInSchema = (schema: any): boolean => {
 };
 
 export const hasHateoasIndicators = (apiPaths: Record<string, any>): boolean => {
+  if (!isObject(apiPaths)) return false;
   return Object.values(apiPaths).some((pathItem) => {
-    if (typeof pathItem !== 'object') return false;
+    if (!isObject(pathItem)) return false;
     return Object.entries(pathItem)
       .filter(([key]) => allHttpMethods.includes(key.toLowerCase()))
       .some(([, operation]: [string, any]) => {
-        if (!operation?.responses) return false;
+        if (!isObject(operation?.responses)) return false;
         return Object.values(operation.responses).some((response: any) => {
-          if (typeof response !== 'object') return false;
-          if (response.links && Object.keys(response.links).length > 0) return true;
-          if (!response.content) return false;
+          if (!isObject(response)) return false;
+          if (isObject(response.links) && Object.keys(response.links).length > 0) return true;
+          // content måste vara ett objekt med mediatyper (t.ex. inte en sträng)
+          if (!isObject(response.content)) return false;
           if ('application/hal+json' in response.content) return true;
           return Object.values(response.content).some((mediaType: any) => hasLinksInSchema(mediaType?.schema));
         });
