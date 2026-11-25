@@ -10,7 +10,7 @@ import * as yaml from 'js-yaml'
 import { decodeBase64String, processApiSpec, logError } from '../util/apiUtil.js';
 import { importAndCreateRuleInstances } from '../util/ruleUtil.js';
 import { ApiInfo } from '../model/ApiInfo.js';
-import { ExcelReportProcessor } from '../util/excelReportProcessor.js';
+import { ExcelReportProcessor } from '../report/excelReportProcessor.js';
 import { DiagnosticReport, RapLPDiagnostic } from '../util/RapLPDiagnostic.js';
 import * as IssueHelper from '../util/RapLPIssueHelpers.js';
 import { parseApiSpecInput, detectSpecFormatPreference } from '../util/validateUtil.js';

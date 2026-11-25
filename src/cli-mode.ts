@@ -12,7 +12,7 @@ import { RapLPCustomSpectral } from './util/RapLPCustomSpectral.js';
 import { DiagnosticReport, RapLPDiagnostic } from './util/RapLPDiagnostic.js';
 import { AggregateError } from './util/RapLPCustomErrorInfo.js';
 import chalk from 'chalk';
-import { ExcelReportProcessor } from './util/excelReportProcessor.js';
+import { ExcelReportProcessor } from './report/excelReportProcessor.js';
 
 import type { IParser } from '@stoplight/spectral-parsers';
 import { Document as SpectralDocument } from '@stoplight/spectral-core';

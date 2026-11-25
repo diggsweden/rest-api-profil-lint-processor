@@ -5,7 +5,7 @@
 import AdmZip from 'adm-zip';
 import { XMLBuilder, XMLParser } from 'fast-xml-parser';
 import path from 'path';
-import { RapLPDiagnostic } from './RapLPDiagnostic.js';
+import { RapLPDiagnostic } from '../util/RapLPDiagnostic.js';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 
