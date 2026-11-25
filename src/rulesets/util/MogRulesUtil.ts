@@ -37,7 +37,7 @@ export const eachPathHasValidRestOperation = (apiPaths: Record<string, any>): bo
   if (!isObject(apiPaths)) return false;
   return Object.values(apiPaths).every(
     (methodsObj) =>
-      // En path som inte är ett objekt har ingen giltig operation
+      // A path that is not an object has no valid operation
       isObject(methodsObj) && Object.keys(methodsObj).some((m) => validHttpMethods.includes(m.toLowerCase())),
   );
 };
@@ -75,7 +75,7 @@ export const hasHateoasIndicators = (apiPaths: Record<string, any>): boolean => 
         return Object.values(operation.responses).some((response: any) => {
           if (!isObject(response)) return false;
           if (isObject(response.links) && Object.keys(response.links).length > 0) return true;
-          // content måste vara ett objekt med mediatyper (t.ex. inte en sträng)
+          // content must be an object of media types (e.g. not a string)
           if (!isObject(response.content)) return false;
           if ('application/hal+json' in response.content) return true;
           return Object.values(response.content).some((mediaType: any) => hasLinksInSchema(mediaType?.schema));
