@@ -360,6 +360,7 @@ RAP-LP erbjuder stöd för att logga fel, exportera diagnostiseringsinformation 
 | `-a, --append`        | Append—utökar loggen i befintlig felloggningsfil (om `--logError` används).             | boolean | `false`             | Nej          |
 | `-d, --logDiagnostic` | Sökväg till fil för diagnostiseringsinformation från RAP-LP i JSON-format.              | string  | –                   | Nej          |
 | `--dex`               | Sökväg till fil för diagnostiseringsinformation från RAP-LP i Excel-format.             | string  | –                   | Nej          |
+| `--sarif`             | Sökväg till fil för regelutfall från RAP-LP i SARIF-format (`.sarif` eller `.json`).    | string  | –                   | Nej          |
 
 </details>
 <br>
@@ -416,6 +417,24 @@ raplp -f openapi.yaml --dex <PATH>
 
 </details>
 
+<br>
+<details>
+<summary><strong>Validering som sparar regelutfall i SARIF-format</strong></summary>
+
+För att spara regelutfallet i SARIF-format (2.1.0) vilket är ett standardformat som kan läsas av andra verktyg, lägg till `--sarif <FILE>`.<br>
+Filen måste ha filändelsen `.sarif` eller `.json`. Filen sparas på angiven sökväg, relativt till katalogen där RAP-LP körs. En befintlig fil skrivs över. Kataloger i sökvägen skapas inte, utan måste finnas.
+
+```bash
+raplp -f openapi.yaml --sarif raplp.sarif
+```
+
+- Varje regelbrott blir ett resultat med regelns id, allvarlighetsgrad, krav, sökväg och position i specifikationen, samt en länk till designregeln.
+- Med `--strict` skrivs fel från OAS3-valideringen som resultat under regeln `OAS3-STRICT`, eftersom profilreglerna då inte hunnit köras.
+- Om specifikationen inte kan läsas eller parsas skrivs ingen fil.
+- Filen skrivs även när ett kriterium (`--failOnError`, `--failOnWarning`, `--minConformance`) inte uppfylls och körningen avslutas med exitkod `22`.
+
+</details>
+
 ---
 
 ### Snabbstart - CLI-läge
@@ -459,10 +478,12 @@ flowchart TD
     J -->|Fellogg| L["-l <fil>"]
     J -->|Diagnostik JSON| M["-d <fil>"]
     J -->|Excelrapport| N["--dex"]
+    J -->|SARIF| O["--sarif <fil>"]
 
     L --> K
     M --> K
     N --> K
+    O --> K
 ```
 
 ---

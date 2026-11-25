@@ -1,0 +1,5 @@
+{
+	"extends": "../tsconfig.jest.json",
+	"compilerOptions": { "noEmit": true },
+	"isolatedModules": true
+}

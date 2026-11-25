@@ -65,6 +65,13 @@
       "failOnWarningNotMet": "Criterion --failOnWarning not met. Unmet MUST (SKALL) or SHOULD (BÖR) requirements: {{rules}}",
       "minConformanceNotMet": "Criterion --minConformance not met. Rule conformance is {{conformance}}% ({{passed}} of {{executed}} rules met), but at least {{threshold}}% is required."
     },
+    "sarif": {
+      "strictRuleDescription": "OpenAPI 3 validation error: the specification does not conform to the OpenAPI standard.",
+      "output": "SARIF report written to {{filePath}}",
+      "writeFailed": "Failed to write SARIF report to {{filePath}}: {{message}}",
+      "designRuleLink": "Design rule {{id}} in the REST API profile",
+      "invalidArgument": "Invalid value for --sarif. Specify a file path with the .sarif or .json extension, e.g. --sarif raplp.sarif"
+    },
     "help": {
       "options": "Options:",
       "showHelp": "Show help",
@@ -77,6 +84,7 @@
       "append": "Append error log information to an existing log file when specified.",
       "logDiagnostic": "Path to RAP-LP diagnostic information. If specified, diagnostic information is written to the file as JSON.",
       "dex": "Path to RAP-LP diagnostic information. If specified, diagnostic information is written to the file as Excel.",
+      "sarif": "Path to the RAP-LP SARIF report (.sarif or .json). If specified, rule results are written to the file in SARIF format.",
       "enableUrlValidation": "[api-mode] Enable validation of files by URL.",
       "urlValidationConfigFile": "[api-mode] Path to the URL validation configuration file. Falls back to ./urlValidationConfig.cjs",
       "strict": "Enable strict validation of semantics and structure.",
