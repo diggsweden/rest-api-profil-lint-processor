@@ -4,10 +4,8 @@
 
 import { SpecParseError } from './RapLPSpecParseError.js';
 import { translator } from '../i18n.js';
+import { isObject } from '../util/typeUtil.js';
 
-function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
-}
 function hasErrorsArray(value: unknown): value is { errors: unknown[] } {
   return isObject(value) && Array.isArray(value.errors);
 }
