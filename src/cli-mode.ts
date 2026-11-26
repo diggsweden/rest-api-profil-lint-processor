@@ -73,6 +73,8 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         {
           strict: strict,
           preferJsonError: prefer,
+          // External refs are opt-in and only supported in CLI mode.
+          allowExternalRefs: process.env.RAP_LP_ALLOW_EXTERNAL_REFS === 'true',
         },
         context,
       );
