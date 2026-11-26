@@ -115,6 +115,11 @@ export async function parseApiSpecInput(input: SpecInput,
   const strict = opts.strict ?? false; // Strict flag is normally set to false
   const t = translator(context.locale);
   
+  // Preserve the original source path for relative reference resolution.
+  const sourcePath = 'filePath' in input
+    ? path.resolve(input.filePath)
+    : undefined;
+
   if ('parsed' in input) { // Checks if content is alreay parsed
     const parsed = input.parsed;
     if (!isOpenApiLike(parsed)) {
@@ -213,7 +218,10 @@ export async function parseApiSpecInput(input: SpecInput,
   if (strict) {
     try {
       //Run structural validation first (async run)
-      await runStrictValidationIfRequested(parsedSpec, target, t);
+      //await runStrictValidationIfRequested(parsedSpec, target, t);
+      await runStrictValidationIfRequested(
+        parsedSpec, target, t, sourcePath
+      );      
     }catch (err:any) {
         prettyLines = prettifySwaggerParserErrorToEditorStyle(
           err?.message ?? String(err), raw ?? '');
@@ -223,8 +231,12 @@ export async function parseApiSpecInput(input: SpecInput,
     try {
       // Build a Spectral Document from raw and the right parser so Spectral gets correct ranges      
       const parser: IParser<any> = (target === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
-      const apiSpecDocument = new SpectralDocument(raw, parser, '');
-
+      //const apiSpecDocument = new SpectralDocument(raw, parser, '');
+      const apiSpecDocument = new SpectralDocument(
+        raw,
+        parser,
+        sourcePath ?? ''
+      );
       //Run sematic validation second(async)
       spectralDiagnostics = await semanticValidate(apiSpecDocument, context) as SpectralCore.ISpectralDiagnostic[]; 
     }catch (e: any) {
@@ -418,9 +430,15 @@ export function getRawFromInput(input: SpecInput, t: ReturnType<typeof translato
  * Helper function (High level)
  * Run strict validation with @apidevtools/swagger-parser.
  */
-async function runStrictValidationIfRequested(parsed: any, source:'yaml' | 'json' | 'xml' | 'unknown' = 'unknown', t: ReturnType<typeof translator>): Promise<void> {
+async function runStrictValidationIfRequested(parsed: any, source:'yaml' | 'json' | 'xml' | 'unknown' = 'unknown', t: ReturnType<typeof translator>,
+  sourcePath?: string): Promise<void> {
   try {
-    await SwaggerParser.validate(parsed);
+    //await SwaggerParser.validate(parsed);
+    if (ALLOW_EXTERNAL_REFS && sourcePath) {
+      await SwaggerParser.validate(sourcePath, parsed, {});
+    } else {
+      await SwaggerParser.validate(parsed);
+    }    
   } catch (e: any) {
     // Encapsulate errors in SpecParseError so the rest of the system can handle them uniformly
     const msg = e?.message ? String(e.message) : String(e);
