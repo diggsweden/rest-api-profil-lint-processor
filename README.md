@@ -72,6 +72,8 @@ Regel-ID, regelbeskrivningar, valideringsmeddelanden och innehåll från den nat
 - [CLI-läge](#cli-läge)
   - [Flaggor för CLI-läge](#flaggor-för-cli-läge)
 
+  - [Externa referenser i CLI-läge](#externa-referenser-i-cli-läge)
+
   - [Loggning i CLI-läge](#loggning-i-cli-läge)
 
   - [Snabbstart - CLI-läge](#snabbstart---cli-läge)
@@ -346,6 +348,24 @@ Utan kriterieflaggor avslutas en genomförd validering med `0`, även om regler 
 ```bash
 raplp -f openapi.yaml --failOnError
 ```
+
+### Externa referenser i CLI-läge
+
+Som standard tillåter RAP-LP endast interna `$ref`-referenser (som börjar med `#/`). En specifikation med externa referenser, till exempel `$ref: './schemas/pet.yaml'`, avvisas.
+
+I CLI-läge kan externa referenser tillåtas med miljövariabeln `RAP_LP_ALLOW_EXTERNAL_REFS`:
+
+```bash
+RAP_LP_ALLOW_EXTERNAL_REFS=true raplp -f openapi.yaml --strict
+```
+
+| Miljövariabel              | Beskrivning                                                                                                                         |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| RAP_LP_ALLOW_EXTERNAL_REFS | Anger om externa `$ref`-referenser är tillåtna i CLI-läge, kan sättas till `true` eller `false`. Funktionen är inaktiverad som standard. |
+
+- Relativa referenser löses utifrån katalogen där specifikationsfilen ligger, oavsett vilken katalog RAP-LP körs från.
+- I strikt läge valideras även strukturen i de refererade filerna.
+- Inställningen gäller endast CLI-läge. I API-läge avvisas externa referenser alltid, eftersom en uppladdad specifikation saknar egen katalog.
 
 ### Loggning i CLI-läge
 
