@@ -117,9 +117,8 @@ export async function parseApiSpecInput(input: SpecInput,
   const t = translator(context.locale);
   
   // Preserve the original source path for relative reference resolution.
-  const sourcePath = 'filePath' in input
-    ? path.resolve(input.filePath)
-    : undefined;
+  // Spectral and swagger-parser resolve a relative path against the working directory themselves.
+  const sourcePath = 'filePath' in input ? input.filePath : undefined;
   // External refs are only allowed for file input. Raw/parsed input (API mode) has no
   // base path, so relative refs would be resolved against the server's own filesystem.
   const allowExternalRefs = (opts.allowExternalRefs ?? false) && sourcePath !== undefined;
