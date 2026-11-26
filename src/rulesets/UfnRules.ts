@@ -7,6 +7,7 @@ import { BaseRuleset } from './BaseRuleset.js';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { CustomProperties } from '../ruleinterface/CustomProperties.js';
 import { RuleExecutionContext } from '../util/RuleExecutionContext.js';
+import { isObject } from '../util/typeUtil.js';
 
 const moduleName: string = 'UfnRules.js';
 
@@ -85,6 +86,9 @@ export class Ufn02 extends BaseRuleset {
   then = [
     {
       function: (targetVal): any => {
+        if (typeof targetVal !== 'string') {
+          return [];
+        }
         const protocollPattern = /^https:/i;
         const portPattern = /(?<port>:[0-9]+)\//;
         const port = targetVal.match(portPattern);
@@ -92,7 +96,7 @@ export class Ufn02 extends BaseRuleset {
 
         if (protocollPattern.test(targetVal)) {
           if (port != null) {
-            if (port.groups.port === ':443') {
+            if (port.groups?.port === ':443') {
               return result;
             }
           } else {
@@ -192,15 +196,26 @@ export class Ufn05paths extends Ufn05Base {
       function: (targetVal: any, _opts: string, paths: any) => {
         let result: any = [];
         let pathArray: any = [];
-        for (const [key] of Object.entries(targetVal)) {
-          for (let method of Object.entries(targetVal[key])) {
+        if (!isObject(targetVal)) {
+          return result;
+        }
+        for (const [key, pathItem] of Object.entries(targetVal)) {
+          if (!isObject(pathItem)) {
+            continue;
+          }
+          for (let method of Object.entries(pathItem)) {
             if (method.length > 1) {
               let metodObj: any = method[1];
               let pathStr = key;
               let paramStr = '';
-              if (metodObj.hasOwnProperty('parameters')) {
+              if (isObject(metodObj) && Array.isArray(metodObj.parameters)) {
                 for (let parameter of metodObj.parameters) {
-                  if (parameter.hasOwnProperty('in') && parameter.in === 'path' && parameter.hasOwnProperty('name')) {
+                  if (
+                    isObject(parameter) &&
+                    parameter.hasOwnProperty('in') &&
+                    parameter.in === 'path' &&
+                    parameter.hasOwnProperty('name')
+                  ) {
                     paramStr += `${parameter.name}=&`;
                   }
                 }
@@ -344,10 +359,15 @@ export class Ufn07 extends BaseRuleset {
           const property: string = 'url';
 
           for (let i = 0; i < targetVal.length; i++) {
-            if (targetVal[i].hasOwnProperty(property)) {
-              const url = targetVal[i][property].replace(delimiter, '').split(removeTemplating).join('');
+            const server = targetVal[i];
+            if (!isObject(server)) {
+              continue;
+            }
+            const rawUrl = server[property];
+            if (typeof rawUrl === 'string') {
+              const url = rawUrl.replace(delimiter, '').split(removeTemplating).join('');
               this.trackRuleExecutionHandler(
-                JSON.stringify(targetVal[i], null, 2),
+                JSON.stringify(server, null, 2),
                 _opts,
                 paths,
                 this.severity,
