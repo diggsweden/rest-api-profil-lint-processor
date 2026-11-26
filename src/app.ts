@@ -104,6 +104,10 @@ async function main() {
       describe: t('cli.help.minConformance'),
       type: 'number',
     })
+    .option('verbose', {
+      describe: t('cli.help.verbose'),
+      type: 'boolean',
+    })
     .check(function (argv) {
       if (argv.mode !== 'api') {
         if (!argv.file) {
@@ -124,7 +128,15 @@ async function main() {
       }
 
       if (argv.mode === 'api') {
-        const apiForbiddenArgs = new Set(['f', 'c', 'dex', 'failOnError', 'failOnWarning', 'minConformance']);
+        const apiForbiddenArgs = new Set([
+          'f',
+          'c',
+          'dex',
+          'failOnError',
+          'failOnWarning',
+          'minConformance',
+          'verbose',
+        ]);
         const hasForbiddenArgs = Object.keys(argv).filter(
           (k) => apiForbiddenArgs.has(k) && Object.prototype.hasOwnProperty.call(argv, k),
         );

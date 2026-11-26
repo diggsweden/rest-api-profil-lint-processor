@@ -3,10 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 import * as fs from 'node:fs';
-import { join } from 'path';
 import Parsers from '@stoplight/spectral-parsers';
-import { Document } from '@stoplight/spectral-core';
-import { importAndCreateRuleInstances, getRuleModules } from './util/ruleUtil.js'; // Import the helper function
+import { importAndCreateRuleInstances } from './util/ruleUtil.js'; // Import the helper function
 import util from 'util';
 import { RapLPCustomSpectral } from './util/RapLPCustomSpectral.js';
 import { DiagnosticReport, RapLPDiagnostic } from './util/RapLPDiagnostic.js';
@@ -16,15 +14,22 @@ import { ExcelReportProcessor } from './util/excelReportProcessor.js';
 
 import type { IParser } from '@stoplight/spectral-parsers';
 import { Document as SpectralDocument } from '@stoplight/spectral-core';
-import { Issue } from './util/Issue.js';
 import { parseApiSpecInput, detectSpecFormatPreference, ParseResult } from './util/validateUtil.js';
 import { SpecParseError } from './util/RapLPSpecParseError.js';
-import * as path from 'node:path';
 import { RuleExecutionContext } from './util/RuleExecutionContext.js';
 import { parseRuleCategories, resolveRuleCategories } from './rulesets/util/ruleModules.js';
 import { resolveLocale, translator } from './i18n.js';
 import { ExitCode } from './util/exitCodes.js';
-import { findUnmetCriteria } from './util/exitCriteria.js';
+import { calculateConformance, findUnmetCriteria } from './util/exitCriteria.js';
+import i18next from 'i18next';
+import {
+  printOkRules,
+  printNaRules,
+  printNokRules,
+  printSummary,
+  printStrictIssues,
+  printVerboseResult,
+} from './util/cliOutput.js';
 
 declare var AggregateError: {
   prototype: AggregateError;
@@ -46,15 +51,16 @@ export type CliArgs = {
   failOnError?: boolean;
   failOnWarning?: boolean;
   minConformance?: number;
+  verbose?: boolean;
 };
 
 export async function execCLI<T extends CliArgs>(argv: T) {
   const locale = resolveLocale(argv.lang ?? process.env.RAP_LP_LANG);
+  await i18next.changeLanguage(locale);
   const t = translator(locale);
   try {
     // Parse command-line arguments using yargs
     const apiSpecFileName = (argv.file as string) || '';
-    //const ruleCategories = argv.categories ? (argv.categories as string).split(',') : undefined;
     const ruleCategories = parseRuleCategories(argv.categories as string | undefined);
     const resolvedCategories = resolveRuleCategories(ruleCategories);
     const logErrorFilePath = argv.logError as string | undefined;
@@ -79,16 +85,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
 
       // Issue handling ----------
       if (parseResult.strictIssues && parseResult.strictIssues.length > 0) {
-        console.log(t('cli.strictValidationIssues'));
-        parseResult.strictIssues.forEach((iss: Issue) =>
-          console.log(
-            chalk.yellow(
-              `- ${iss.type} ${t('cli.atLabel')} ${iss.path} : ${iss.message} ${
-                iss.line ? `(${t('cli.lineLabel').toLowerCase()} ${iss.line})` : ''
-              }`,
-            ),
-          ),
-        );
+        printStrictIssues(parseResult.strictIssues);
         process.exitCode = ExitCode.SpecValidationFailed;
         return;
       }
@@ -240,35 +237,6 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           }
         }
 
-        /**
-         * Chalk impl.
-         * @param allvarlighetsgrad
-         * @returns
-         */
-        // Run Spectral on the API specification and log the result
-        const colorizeSeverity = (allvarlighetsgrad: string) => {
-          switch (allvarlighetsgrad) {
-            case 'ERROR': // Error
-              return chalk.red('Error');
-            case 'WARNING': // Warning
-              return chalk.yellow('Warning');
-            case 'HINT': // Info
-              return chalk.greenBright('Hint');
-            default:
-              return chalk.white('Info');
-          }
-        };
-        const formatLintingResult = (result: any) => {
-          return `\n${t('cli.ruleExecution.details.severity')}: ${colorizeSeverity(result.severity)} \n${t(
-            'cli.ruleExecution.details.id',
-          )}: ${result.id} \n${t('cli.ruleExecution.details.requirement')}: ${result.requirement} \n${t(
-            'cli.ruleExecution.details.area',
-          )}: ${result.area} \n${t('cli.ruleExecution.details.path')}:[${result.path}] \n${t(
-            'cli.ruleExecution.details.range',
-          )}:${JSON.stringify(result.range, null, 2)}\n${t('cli.ruleExecution.details.designRule')}: ${
-            result.helpUrl
-          } `;
-        };
         //Check specified option from yargs input
 
         const currentDate = new Date(); //.toISOString(); // Get current date and time in ISO format
@@ -289,60 +257,26 @@ export async function execCLI<T extends CliArgs>(argv: T) {
           await writeFileAsync(logDiagnosticFilePath, utf8EncodedContent);
           console.log(chalk.green(t('cli.diagnosticOutput', { filePath: logDiagnosticFilePath })));
         } else {
-          //STDOUT
+          //STDOUT, approved and not applicable rules are only listed in verbose mode
           if (
+            argv.verbose &&
             customDiagnostic.diagnosticInformation.executedUniqueRules != undefined &&
             customDiagnostic.diagnosticInformation.executedUniqueRules.length > 0
           ) {
-            console.log(chalk.green(t('cli.ruleExecution.approvedTitle') + '\r'));
-            console.log(
-              chalk.whiteBright(t('cli.ruleExecution.headers.status')) +
-                '\t' +
-                chalk.whiteBright(t('cli.ruleExecution.headers.area')) +
-                ' / ' +
-                chalk.whiteBright(t('cli.ruleExecution.headers.identifier')),
-            );
-            customDiagnostic.diagnosticInformation.executedUniqueRules
-              .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
-              .forEach((item) => {
-                console.log(chalk.bgGreen(t('common.ruleStatus.ok')) + '\t' + item.area + ' / ' + item.id);
-              });
+            printOkRules(customDiagnostic.diagnosticInformation.executedUniqueRules);
           }
           if (
             customDiagnostic.diagnosticInformation.executedUniqueRulesWithError != undefined &&
             customDiagnostic.diagnosticInformation.executedUniqueRulesWithError.length > 0
           ) {
-            console.log(chalk.green(t('cli.ruleExecution.rejectedTitle') + '\r'));
-            console.log(
-              chalk.whiteBright(t('cli.ruleExecution.headers.status')) +
-                '\t' +
-                chalk.whiteBright(t('cli.ruleExecution.headers.area')) +
-                ' / ' +
-                chalk.whiteBright(t('cli.ruleExecution.headers.identifier')),
-            );
-            customDiagnostic.diagnosticInformation.executedUniqueRulesWithError
-              .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
-              .forEach((item) => {
-                console.log(chalk.bgRed(t('common.ruleStatus.notOk')) + '\t' + item.area + ' / ' + item.id);
-              });
+            printNokRules(customDiagnostic.diagnosticInformation.executedUniqueRulesWithError);
           }
           if (
+            argv.verbose &&
             customDiagnostic.diagnosticInformation.notApplicableRules != undefined &&
             customDiagnostic.diagnosticInformation.notApplicableRules.length > 0
           ) {
-            console.log(chalk.green(t('cli.ruleExecution.notApplicableTitle') + '\r'));
-            console.log(
-              chalk.whiteBright(t('cli.ruleExecution.headers.status')) +
-                '\t' +
-                chalk.whiteBright(t('cli.ruleExecution.headers.area')) +
-                ' / ' +
-                chalk.whiteBright(t('cli.ruleExecution.headers.identifier')),
-            );
-            customDiagnostic.diagnosticInformation.notApplicableRules
-              .sort((a, b) => a.id.localeCompare(b.id, 'sv'))
-              .forEach((item) => {
-                console.log(chalk.bgGrey(t('common.ruleStatus.notApplicable')) + '\t' + item.area + '/' + item.id);
-              });
+            printNaRules(customDiagnostic.diagnosticInformation.notApplicableRules);
           }
         }
         if (logErrorFilePath) {
@@ -357,46 +291,76 @@ export async function execCLI<T extends CliArgs>(argv: T) {
             await writeFileAsync(logErrorFilePath, utf8EncodedContent);
             console.log(chalk.green(t('cli.validationOutput', { filePath: logErrorFilePath })));
           }
-        } else {
+        } else if (argv.verbose) {
           //Verbose error logging goes here with detailed result
-          console.log(chalk.whiteBright(`\n\n${t('cli.ruleExecution.resultTitle')}`));
-          result
-            .sort((a, b) => {
-              const idA = a.id ?? '';
-              const idB = b.id ?? '';
-              return idA.localeCompare(idB, 'sv');
-            })
-            .forEach((item) => {
-              console.log(formatLintingResult(item));
-            });
+          printVerboseResult(result);
         }
 
-        const unmetCriteria = findUnmetCriteria(
-          result,
-          {
-            passed: customDiagnostic.diagnosticInformation.executedUniqueRules?.length ?? 0,
-            failed: customDiagnostic.diagnosticInformation.executedUniqueRulesWithError?.length ?? 0,
-          },
-          {
-            failOnError: argv.failOnError,
-            failOnWarning: argv.failOnWarning,
-            minConformance: argv.minConformance,
-          },
+        const outcome = {
+          passed: customDiagnostic.diagnosticInformation.executedUniqueRules?.length ?? 0,
+          failed: customDiagnostic.diagnosticInformation.executedUniqueRulesWithError?.length ?? 0,
+        };
+        const notApplicable = customDiagnostic.diagnosticInformation.notApplicableRules?.length ?? 0;
+        printSummary(outcome, notApplicable);
+        const activeCriteria = (['failOnError', 'failOnWarning', 'minConformance'] as const).filter((flag) =>
+          flag === 'minConformance' ? argv.minConformance !== undefined : argv[flag],
         );
-        unmetCriteria.forEach((criterion) => {
+        const requirements = activeCriteria.map((flag) =>
+          t(`cli.criteria.requirement.${flag}`, { threshold: argv.minConformance }),
+        );
+        const conformanceLines = [
+          ...(outcome.passed + outcome.failed > 0
+            ? [
+                t('cli.ruleExecution.summaryConformance', {
+                  conformance: calculateConformance(outcome),
+                  passed: outcome.passed,
+                  executed: outcome.passed + outcome.failed,
+                }),
+              ]
+            : []),
+          ...(requirements.length > 0
+            ? [`${t('cli.criteria.requirementsLabel')}:`, ...requirements.map((requirement) => `  - ${requirement}`)]
+            : []),
+        ];
+        if (conformanceLines.length > 0) {
+          console.log(`\n${conformanceLines.join('\n')}`);
+        }
+
+        const unmetCriteria = findUnmetCriteria(result, outcome, {
+          failOnError: argv.failOnError,
+          failOnWarning: argv.failOnWarning,
+          minConformance: argv.minConformance,
+        });
+        if (activeCriteria.length > 0) {
+          console.log('');
+        }
+        activeCriteria.forEach((flag) => {
+          const unmet = unmetCriteria.find((criterion) => criterion.flag === flag);
+          if (!unmet) {
+            console.log(
+              chalk.green(
+                t(`cli.criteria.${flag}Met`, {
+                  conformance: calculateConformance(outcome),
+                  threshold: argv.minConformance,
+                }),
+              ),
+            );
+            return;
+          }
           const message =
-            criterion.flag === 'minConformance'
+            unmet.flag === 'minConformance'
               ? t('cli.criteria.minConformanceNotMet', {
-                  conformance: criterion.conformance,
-                  threshold: criterion.threshold,
-                  passed: criterion.passed,
-                  executed: criterion.executed,
+                  conformance: unmet.conformance,
+                  threshold: unmet.threshold,
                 })
-              : t(`cli.criteria.${criterion.flag}NotMet`, { rules: criterion.ruleIds.join(', ') });
+              : t(`cli.criteria.${unmet.flag}NotMet`, { rules: unmet.ruleIds.join(', ') });
           console.log(chalk.red(message));
         });
         if (unmetCriteria.length > 0) {
           process.exitCode ??= ExitCode.CriteriaNotMet;
+        }
+        if (!argv.verbose && (!logDiagnosticFilePath || !logErrorFilePath)) {
+          console.log(chalk.gray(`\n${t('cli.ruleExecution.verboseHint')}`));
         }
       } catch (spectralError: any) {
         logErrorToFile(spectralError); // Log stack
@@ -413,6 +377,7 @@ export async function execCLI<T extends CliArgs>(argv: T) {
     console.log(chalk.red(`${t('cli.unexpectedError')} ${t('cli.inspectLog')}`, error.message));
     process.exitCode = ExitCode.InternalError;
   }
+
   function logErrorToFile(error: any) {
     const errorMessage = `${new Date().toISOString()} - ${error.stack}\n`;
     fs.appendFileSync('rap-lp-error.log', errorMessage);
