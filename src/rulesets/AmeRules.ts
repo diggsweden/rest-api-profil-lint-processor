@@ -225,6 +225,7 @@ export class Ame05 extends BaseRuleset {
       function: (targetVal: string, _opts: string, paths) => {
         const result: any = [];
         const stateExecutionLogDictionary: StateExecutionLog = {};
+        let index = 0;
         const data = JSON.parse(JSON.stringify(targetVal, null, 2)); // Need to use both stringfy and parse in order to parse to JSON correctly here...hm ?
         for (const key in data) {
           // Loop throough each Schema object found in given expression
@@ -237,7 +238,7 @@ export class Ame05 extends BaseRuleset {
             const camelCasePattern: RegExp = /^([a-z]+)(?:([A-Z]{1})([a-z]+))+$/;
             const lowercasePattern: RegExp = /^[a-z]+$/;
 
-            const stateKey = `${'casingCamelState'}:${'casingSnakeState'}:${Math.floor(Math.random() * 1000)}`;
+            const stateKey = `casingCamelState:casingSnakeState:${index++}`;
             if (!stateExecutionLogDictionary[stateKey]) {
               // Init dictionary
               stateExecutionLogDictionary[stateKey] = [];
