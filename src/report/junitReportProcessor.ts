@@ -46,7 +46,7 @@ export class junitReportProcessor {
 
     const suiteName = `RAP-LP – Följsamhet: ${compliance}`;
 
-    const testCases = rules.map((rule) => this.createTestCase(rule, suiteName)).join('\n');
+    const testCases = rules.map((rule) => this.createTestCase(rule)).join('\n');
 
     const xml = [
       '<?xml version="1.0" encoding="UTF-8"?>',
@@ -65,8 +65,8 @@ export class junitReportProcessor {
     await writeFile(this.options.outputFilePath, xml, 'utf8');
   }
 
-  private createTestCase(rule: DiagnosticRule, suiteName: string): string {
-    const attributes = `classname="${escapeXml(suiteName)}" ` + `name="${escapeXml(`${rule.area} / ${rule.id}`)}"`;
+  private createTestCase(rule: DiagnosticRule): string {
+    const attributes = `classname="${rule.area}" ` + `name="${rule.id}" ` + `file="${rule.helpUrl ? rule.helpUrl : "https://github.com/diggsweden/rest-api-profil-lint-processor/blob/main/GUIDELINES.md"}"`;
 
     if (rule.status === 'OK') {
       return `    <testcase ${attributes} />`;
