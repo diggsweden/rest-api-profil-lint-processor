@@ -7,8 +7,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci --no-audit --no-fund --ignore-scripts && \
-    npm rebuild better-sqlite3
+RUN npm ci --no-audit --no-fund --ignore-scripts
 
 COPY . .
 
