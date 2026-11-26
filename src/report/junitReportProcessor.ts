@@ -1,12 +1,28 @@
 
 import { mkdir, writeFile } from 'node:fs/promises';
-import { dirname } from 'node:path';
+import path from 'node:path';
 import type { DiagnosticReport } from '../util/RapLPDiagnostic.js';
 
 type DiagnosticRule = DiagnosticReport['rules'][number];
 
 interface JUnitReportOptions {
   outputFilePath: string;
+  inputFilePath: string;
+}
+
+function getJUnitFilePath(inputFile, repoRoot) {
+  const relativePath = path.relative(repoRoot, path.resolve(inputFile));
+
+  if (
+    !relativePath ||
+    relativePath === '..' ||
+    relativePath.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(relativePath)
+  ) {
+    return undefined;
+  }
+
+  return relativePath.split(path.sep).join('/');
 }
 
 function escapeXml(value: string): string {
@@ -58,7 +74,7 @@ export class junitReportProcessor {
       '',
     ].join('\n');
 
-    await mkdir(dirname(this.options.outputFilePath), {
+    await mkdir(path.dirname(this.options.outputFilePath), {
       recursive: true,
     });
 
@@ -66,7 +82,9 @@ export class junitReportProcessor {
   }
 
   private createTestCase(rule: DiagnosticRule): string {
-    const attributes = `classname="${rule.area}" ` + `name="${rule.id}" ` + `file="${rule.helpUrl ? rule.helpUrl : "https://github.com/diggsweden/rest-api-profil-lint-processor/blob/main/GUIDELINES.md"}"`;
+    const specPath = getJUnitFilePath(this.options.inputFilePath, process.env.CI_PROJECT_DIR ?? process.cwd());
+
+    const attributes = `classname="${rule.area}" ` + `name="${rule.id}" ` + `file="${specPath}"`;
 
     if (rule.status === 'OK') {
       return `    <testcase ${attributes} />`;

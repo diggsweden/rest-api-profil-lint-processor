@@ -417,6 +417,8 @@ export async function execCLI<T extends CliArgs>(argv: T) {
         if (argv.junit) {
           const junitReport = new junitReportProcessor({
             outputFilePath: argv.junit,
+            inputFilePath: apiSpecFileName,
+
           });
 
           await junitReport.generateReportDocument(diagnosticReports);
