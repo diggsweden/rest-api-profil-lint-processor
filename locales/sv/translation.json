@@ -66,6 +66,13 @@
       "failOnWarningNotMet": "Kriteriet --failOnWarning är inte uppfyllt. SKALL- eller BÖR-krav som inte uppfylls: {{rules}}",
       "minConformanceNotMet": "Kriteriet --minConformance är inte uppfyllt. Regeluppfyllnadsgraden är {{conformance}}% ({{passed}} av {{executed}} regler uppfyllda), men minst {{threshold}}% krävs."
     },
+    "sarif": {
+      "strictRuleDescription": "OpenAPI 3-valideringsfel: specifikationen följer inte OpenAPI-standarden",
+      "output": "SARIF-rapport skriven till {{filePath}}",
+      "writeFailed": "Misslyckades att skriva SARIF-rapport till {{filePath}}: {{message}}",
+      "designRuleLink": "Designregel {{id}} i REST API-profilen",
+      "invalidArgument": "Ogiltigt värde för --sarif. Ange en sökväg till en fil med filändelsen .sarif eller .json, t.ex. --sarif raplp.sarif"
+    },
     "help": {
       "options": "Alternativ:",
       "showHelp": "Visa hjälp",
@@ -78,6 +85,7 @@
       "append": "Utöka loginformationen i en befintlig felloggfil när den anges.",
       "logDiagnostic": "Sökväg till diagnostiseringsinformation från RAP-LP. Om den anges skrivs diagnostiseringsinformationen till filen i JSON-format.",
       "dex": "Sökväg till diagnostiseringsinformation från RAP-LP. Om den anges skrivs diagnostiseringsinformationen till filen i Excel-format.",
+      "sarif": "Sökväg till SARIF-rapport från RAP-LP (.sarif eller .json). Om den anges skrivs regelutfallen till filen i SARIF-format.",
       "enableUrlValidation": "[api-mode] Möjliggör validering av filer via URL.",
       "urlValidationConfigFile": "[api-mode] Sökväg till konfigurationsfil för URL-validering. Faller tillbaka på ./urlValidationConfig.cjs",
       "strict": "Aktivera strict mode för validering av semantik och struktur.",

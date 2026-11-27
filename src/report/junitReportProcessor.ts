@@ -1,0 +1,116 @@
+// SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
+//
+// SPDX-License-Identifier: EUPL-1.2
+
+import { mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import type { DiagnosticReport } from '../util/RapLPDiagnostic.js';
+
+type DiagnosticRule = DiagnosticReport['rules'][number];
+
+interface JUnitReportOptions {
+  outputFilePath: string;
+  inputFilePath: string;
+}
+
+function getJUnitFilePath(inputFile, repoRoot) {
+  const relativePath = path.relative(repoRoot, path.resolve(inputFile));
+
+  if (
+    !relativePath ||
+    relativePath === '..' ||
+    relativePath.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(relativePath)
+  ) {
+    return undefined;
+  }
+
+  return relativePath.split(path.sep).join('/');
+}
+
+function escapeXml(value: string): string {
+  return value
+    .replace(/[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\u{10000}-\u{10FFFF}]/gu, '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+export class junitReportProcessor {
+  constructor(private readonly options: JUnitReportOptions) {}
+
+  async generateReportDocument(reports: readonly DiagnosticReport[]): Promise<void> {
+    const rules = reports.flatMap((report) => report.rules);
+
+    for (const rule of rules) {
+      if (rule.status !== 'OK' && rule.status !== 'EJ OK' && rule.status !== 'N/A') {
+        throw new Error(`Okänd regelstatus för ${rule.id}: ${rule.status}`);
+      }
+    }
+
+    const passed = rules.filter((rule) => rule.status === 'OK').length;
+
+    const failures = rules.filter((rule) => rule.status === 'EJ OK').length;
+
+    const skipped = rules.filter((rule) => rule.status === 'N/A').length;
+
+    const applicable = passed + failures;
+
+    const compliance = applicable > 0 ? `${((passed / applicable) * 100).toFixed(1)} %` : 'Ej beräkningsbar';
+
+    const suiteName = `RAP-LP – Följsamhet: ${compliance}`;
+
+    const testCases = rules.map((rule) => this.createTestCase(rule)).join('\n');
+
+    const xml = [
+      '<?xml version="1.0" encoding="UTF-8"?>',
+      '<testsuites>',
+      `  <testsuite name="${escapeXml(suiteName)}" tests="${rules.length}" failures="${failures}" errors="0" skipped="${skipped}">`,
+      testCases,
+      '  </testsuite>',
+      '</testsuites>',
+      '',
+    ].join('\n');
+
+    await mkdir(path.dirname(this.options.outputFilePath), {
+      recursive: true,
+    });
+
+    await writeFile(this.options.outputFilePath, xml, 'utf8');
+  }
+
+  private createTestCase(rule: DiagnosticRule): string {
+    const specPath = getJUnitFilePath(this.options.inputFilePath, process.env.CI_PROJECT_DIR ?? process.cwd());
+
+    const testCaseAttributes = [`classname="${escapeXml(rule.area)}"`, `name="${escapeXml(rule.id)}"`];
+
+    if (specPath !== undefined) {
+      testCaseAttributes.push(`file="${escapeXml(specPath)}"`);
+    }
+
+    const attributes = testCaseAttributes.join(' ');
+    if (rule.status === 'OK') {
+      return `    <testcase ${attributes} />`;
+    }
+
+    if (rule.status === 'N/A') {
+      return [
+        `    <testcase ${attributes}>`,
+        '      <skipped message="Regeln är inte tillämplig" />',
+        '    </testcase>',
+      ].join('\n');
+    }
+
+    const details = [rule.requirement, rule.helpUrl].filter(Boolean).join('\n\n') || 'Regeln är inte godkänd.';
+
+    return [
+      `    <testcase ${attributes}>`,
+      `      <failure message="${escapeXml(`${rule.id}: EJ OK`)}">`,
+      escapeXml(details),
+      '      </failure>',
+      '    </testcase>',
+    ].join('\n');
+  }
+}
