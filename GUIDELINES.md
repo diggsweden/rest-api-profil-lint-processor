@@ -372,7 +372,7 @@ _Detta exempel illustrerar ett icke godkänt värde för OpenAPI-specifikationen
 **JSON Path Plus-uttryck:**
 
 ```
-$.paths[*][*]
+$.paths[*][get,post,put,patch,delete]
 ```
 
 **Förklaring:**
