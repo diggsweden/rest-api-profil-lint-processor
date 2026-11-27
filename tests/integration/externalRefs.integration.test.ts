@@ -20,6 +20,8 @@ const runnerPath = fileURLToPath(new URL('./validateRunner.mjs', import.meta.url
 let tmpDir: string;
 let validSpec: string;
 let brokenSpec: string;
+let httpSpec: string;
+let nestedHttpSpec: string;
 
 const specWithRef = (ref: string) => `openapi: 3.0.3
 info:
@@ -45,6 +47,8 @@ properties:
 `;
 
 const EXTERNAL_REFS_NOT_ALLOWED = 'Externa $ref-referenser är ej tillåtna';
+const SCHEME_NOT_ALLOWED = 'Endast lokala filreferenser och https-referenser är tillåtna';
+const HTTP_REF = 'http://127.0.0.1:9/pet.yaml';
 
 /**
  * Runs parseApiSpecInput in a separate node process. The process runs from the repo root,
@@ -87,6 +91,18 @@ describe('Integration: external $refs', () => {
     brokenSpec = path.join(tmpDir, 'api-broken.yaml');
     fs.writeFileSync(validSpec, specWithRef('./schemas/pet.yaml'));
     fs.writeFileSync(brokenSpec, specWithRef('./schemas/broken-pet.yaml'));
+
+    // http ref directly in the main file
+    httpSpec = path.join(tmpDir, 'api-http.yaml');
+    fs.writeFileSync(httpSpec, specWithRef(HTTP_REF));
+
+    // http ref hidden inside an external file
+    fs.writeFileSync(
+      path.join(tmpDir, 'schemas', 'pet-with-http.yaml'),
+      `type: object\nproperties:\n  owner:\n    $ref: '${HTTP_REF}'\n`,
+    );
+    nestedHttpSpec = path.join(tmpDir, 'api-nested-http.yaml');
+    fs.writeFileSync(nestedHttpSpec, specWithRef('./schemas/pet-with-http.yaml'));
   });
 
   afterAll(() => {
@@ -119,5 +135,19 @@ describe('Integration: external $refs', () => {
     const issues = strictIssues(payload);
     expect(hasEnoent(issues)).toBe(false);
     expect(issues.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('rejects http refs in the main file even when allowExternalRefs is set', async () => {
+    const { ok, payload } = await run({ filePath: httpSpec, strict: true, allowExternalRefs: true });
+    expect(ok).toBe(false);
+    expect(payload.message).toContain(SCHEME_NOT_ALLOWED);
+  });
+
+  it('does not resolve http refs inside an external file', async () => {
+    const { ok, payload } = await run({ filePath: nestedHttpSpec, strict: true, allowExternalRefs: true });
+    expect(ok).toBe(true);
+    // The http ref must show up as an unresolvable ref, not be fetched silently
+    const issues = strictIssues(payload);
+    expect(issues.some((i) => /http/i.test(String(i?.message ?? '')))).toBe(true);
   });
 });
