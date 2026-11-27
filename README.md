@@ -443,8 +443,6 @@ För att spara information om regelutfall från diagnostiseringen till en JUnit 
 
 <br>
 
-**Exempel med minsta tillåtna följsamhet på 90%**
-
 ```bash
 raplp -f openapi.yaml --junit reports/raplp.xml
 ```
@@ -495,6 +493,7 @@ flowchart TD
     J -->|Diagnostik JSON| M["-d <fil>"]
     J -->|Excelrapport| N["--dex"]
     J -->|SARIF| O["--sarif <fil>"]
+    J -->|JUNIT| P["--junit <fil>"]
 
     L --> K
     M --> K

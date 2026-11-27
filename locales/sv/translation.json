@@ -93,6 +93,7 @@
       "logDiagnostic": "Sökväg till diagnostiseringsinformation från RAP-LP. Om den anges skrivs diagnostiseringsinformationen till filen i JSON-format.",
       "dex": "Sökväg till diagnostiseringsinformation från RAP-LP. Om den anges skrivs diagnostiseringsinformationen till filen i Excel-format.",
       "sarif": "Sökväg till SARIF-rapport från RAP-LP (.sarif eller .json). Om den anges skrivs regelutfallen till filen i SARIF-format.",
+      "junit": "Skriv valideringsresultatet som en JUnit XML-rapport",
       "enableUrlValidation": "[api-mode] Möjliggör validering av filer via URL.",
       "urlValidationConfigFile": "[api-mode] Sökväg till konfigurationsfil för URL-validering. Faller tillbaka på ./urlValidationConfig.cjs",
       "strict": "Aktivera strict mode för validering av semantik och struktur.",

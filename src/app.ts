@@ -81,7 +81,7 @@ async function main() {
     })
     .option('junit', {
       type: 'string',
-      description: 'Skriv valideringsresultatet som en JUnit XML-rapport',
+      description: t('cli.help.junit'),
       requiresArg: true,
     })
     .option('enableUrlValidation', {

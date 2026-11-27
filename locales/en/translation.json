@@ -92,6 +92,7 @@
       "logDiagnostic": "Path to RAP-LP diagnostic information. If specified, diagnostic information is written to the file as JSON.",
       "dex": "Path to RAP-LP diagnostic information. If specified, diagnostic information is written to the file as Excel.",
       "sarif": "Path to the RAP-LP SARIF report (.sarif or .json). If specified, rule results are written to the file in SARIF format.",
+      "junit": "Write the validation result as a JUnit XML report",
       "enableUrlValidation": "[api-mode] Enable validation of files by URL.",
       "urlValidationConfigFile": "[api-mode] Path to the URL validation configuration file. Falls back to ./urlValidationConfig.cjs",
       "strict": "Enable strict validation of semantics and structure.",
