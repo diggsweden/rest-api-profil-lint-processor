@@ -349,6 +349,7 @@ Utan kriterieflaggor avslutas en genomförd validering med `0`, även om regler 
 ```bash
 raplp -f openapi.yaml --failOnError
 ```
+
 | `--allowExternalRefs` | Tillåt externa `$ref`-referenser till lokala filer och https-adresser. Se [Externa referenser i CLI-läge](#externa-referenser-i-cli-läge). | Boolean | `false` | Nej |
 
 ### Externa referenser i CLI-läge
@@ -398,6 +399,7 @@ Om du befinner dig bakom en http-proxy kan https-referenser misslyckas med ett `
 ```bash
 HTTPS_PROXY=http://proxy.example.se:8080 NODE_USE_ENV_PROXY=1 raplp -f openapi.yaml --allowExternalRefs
 ```
+
 </details>
 <br>
 
