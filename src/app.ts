@@ -90,7 +90,6 @@ async function main() {
     .option('allowExternalRefs', {
       describe: t('cli.help.allowExternalRefs'),
       type: 'boolean',
-      default: false,
     })
     .option('lang', {
       describe: t('cli.help.lang'),
@@ -129,7 +128,7 @@ async function main() {
       }
 
       if (argv.mode === 'api') {
-        const apiForbiddenArgs = new Set(['f', 'c', 'dex', 'failOnError', 'failOnWarning', 'minConformance']);
+        const apiForbiddenArgs = new Set(['f', 'c', 'dex', 'failOnError', 'failOnWarning', 'minConformance', 'allowExternalRefs']);
         const hasForbiddenArgs = Object.keys(argv).filter(
           (k) => apiForbiddenArgs.has(k) && Object.prototype.hasOwnProperty.call(argv, k),
         );
