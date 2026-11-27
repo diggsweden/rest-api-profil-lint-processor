@@ -22,6 +22,7 @@ import { SpecParseError, SpecParseErrorSource} from './RapLPSpecParseError.js';
 import { Issue } from './Issue.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
 import { translator } from '../i18n.js';
+import { isAllowedExternalRef } from './externalRefPolicy.js';
 
 /**
  * 
@@ -299,9 +300,14 @@ function stripLeadingCommentsAndWhitespace(raw: string): string {
 function ensureIsSecureOpenApiLike(parsed: any, target: any, t: ReturnType<typeof translator>, allowExternalRefs = false) {
 
   const violations: string[] = [];
+  const externalRefs = findExternalRefs(parsed);
   // Look for external $refs unless explicitly allowed.
-  if (!allowExternalRefs && findExternalRefs(parsed).length > 0) {
+  if (!allowExternalRefs && externalRefs.length > 0) {
     violations.push(t('validation.externalRefsNotAllowed'));
+  }
+  // Even when allowed, only local files and https are permitted (http and other schemes are blocked).
+  if (allowExternalRefs && externalRefs.some((r) => !isAllowedExternalRef(r.ref))) {
+    violations.push(t('validation.externalRefSchemeNotAllowed'));
   }
   /*const details = externalRefs
     .map(ref => `${ref.path}: ${ref.ref}`)
@@ -430,7 +436,9 @@ async function runStrictValidationIfRequested(parsed: any, source:'yaml' | 'json
   try {
     // With a source path, swagger-parser resolves relative refs against the spec file instead of the working directory.
     if (sourcePath) {
-      await SwaggerParser.validate(sourcePath, parsed, {});
+      // Same policy as the Spectral resolver: only https is fetched, http refs cannot be resolved.
+      const options = { resolve: { http: { canRead: /^https:\/\//i } } } as SwaggerParser.Options;
+      await SwaggerParser.validate(sourcePath, parsed, options);
     } else {
       await SwaggerParser.validate(parsed);
     }    

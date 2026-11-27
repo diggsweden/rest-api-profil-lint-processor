@@ -87,6 +87,11 @@ async function main() {
       type: 'boolean',
       default: false,
     })
+    .option('allowExternalRefs', {
+      describe: t('cli.help.allowExternalRefs'),
+      type: 'boolean',
+      default: false,
+    })
     .option('lang', {
       describe: t('cli.help.lang'),
       choices: ['sv', 'en'],
