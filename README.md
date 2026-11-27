@@ -332,6 +332,7 @@ Strict validation reported issues:
 | `--failOnError`         | Avsluta med exitkod `22` om något SKALL-krav inte uppfylls.                                                                                                                                                        | Boolean | `false`  | Nej          |
 | `--failOnWarning`       | Avsluta med exitkod `22` om något SKALL- eller BÖR-krav inte uppfylls.                                                                                                                                             | Boolean | `false`  | Nej          |
 | `--minConformance`      | Avsluta med exitkod `22` om regeluppfyllnadsgraden understiger angivet heltal (1–100). Graden beräknas som andelen uppfyllda regler av de verkställda reglerna, avrundat nedåt; ej tillämpliga regler räknas inte. | Number  | –        | Nej          |
+| `--allowExternalRefs`   | Tillåt externa `$ref`-referenser till lokala filer och https-adresser. Se [Externa referenser i CLI-läge](#externa-referenser-i-cli-läge).                                                                       | Boolean | `false`  | Nej          |
 
 ### Exitkoder i CLI-läge
 
@@ -348,24 +349,57 @@ Utan kriterieflaggor avslutas en genomförd validering med `0`, även om regler 
 ```bash
 raplp -f openapi.yaml --failOnError
 ```
+| `--allowExternalRefs` | Tillåt externa `$ref`-referenser till lokala filer och https-adresser. Se [Externa referenser i CLI-läge](#externa-referenser-i-cli-läge). | Boolean | `false` | Nej |
 
 ### Externa referenser i CLI-läge
 
-Som standard tillåter RAP-LP endast interna `$ref`-referenser (som börjar med `#/`). En specifikation med externa referenser, till exempel `$ref: './schemas/pet.yaml'`, avvisas.
+Som standard tillåter RAP-LP endast interna `$ref`-referenser (som börjar med `#/`). Externa referenser, till exempel `$ref: './schemas/pet.yaml'`, är avaktiverade av säkerhetsskäl. En specifikation som innehåller sådana referenser avvisas.
 
-I CLI-läge kan externa referenser tillåtas med miljövariabeln `RAP_LP_ALLOW_EXTERNAL_REFS`:
+Externa referenser stöds **endast i CLI-läge** och aktiveras med flaggan `--allowExternalRefs`:
 
 ```bash
-RAP_LP_ALLOW_EXTERNAL_REFS=true raplp -f openapi.yaml --strict
+raplp -f openapi.yaml --allowExternalRefs
+raplp -f openapi.yaml --allowExternalRefs --strict
 ```
 
-| Miljövariabel              | Beskrivning                                                                                                                         |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| RAP_LP_ALLOW_EXTERNAL_REFS | Anger om externa `$ref`-referenser är tillåtna i CLI-läge, kan sättas till `true` eller `false`. Funktionen är inaktiverad som standard. |
+| Referenstyp                                       | CLI (standard) | CLI med `--allowExternalRefs` | API-läge  |
+| ------------------------------------------------- | -------------- | ----------------------------- | --------- |
+| Intern `$ref` (`#/components/...`)               | Tillåts        | Tillåts                       | Tillåts   |
+| Relativ filreferens (`./schemas/pet.yaml`)        | Blockeras      | Tillåts                       | Blockeras |
+| Absolut filreferens (`/data/schemas/pet.yaml`)    | Blockeras      | Tillåts                       | Blockeras |
+| HTTPS-referens (`https://example.se/pet.yaml`)    | Blockeras      | Tillåts                       | Blockeras |
+| HTTP-referens (`http://example.se/pet.yaml`)      | Blockeras      | Blockeras                     | Blockeras |
 
-- Relativa referenser löses utifrån katalogen där specifikationsfilen ligger, oavsett vilken katalog RAP-LP körs från.
+- Relativa referenser löses utifrån katalogen där den refererande filen ligger, oavsett vilken katalog RAP-LP körs från.
+- Samma regler gäller för referenser i de refererade filerna, i flera led.
 - I strikt läge valideras även strukturen i de refererade filerna.
-- Inställningen gäller endast CLI-läge. I API-läge avvisas externa referenser alltid, eftersom en uppladdad specifikation saknar egen katalog.
+- I API-läge avvisas externa referenser alltid. En uppladdad specifikation saknar egen katalog, och referenserna skulle annars läsas från serverns filsystem.
+
+<details>
+<summary><strong>Säkerhetsaspekter</strong></summary>
+<br>
+<!-- #### Säkerhetsaspekter -->
+
+När `--allowExternalRefs` används läser RAP-LP de filer och hämtar de https-adresser som specifikationen pekar på. Validera därför bara specifikationer från okända källor med flaggan om du har granskat referenserna först. Tänk särskilt på följande:
+
+- En filreferens kan peka på vilken fil som helst som användaren som kör RAP-LP har läsrättighet till, även utanför projektets katalog. Innehållet kan synas i valideringsresultatet.
+- En https-referens gör att RAP-LP anropar den angivna adressen, även interna adresser som datorn eller CI-miljön når.
+- I CI-miljöer som validerar specifikationer från externa bidrag, till exempel pull requests från forkar, bör flaggan inte användas.
+</details>
+<br>
+
+<details>
+<summary><strong>Proxykonfiguration</strong></summary>
+<br>
+<!-- #### Proxykonfiguration -->
+
+Om du befinner dig bakom en http-proxy kan https-referenser misslyckas med ett `FetchError`. Node.js använder inte miljövariablerna `HTTP_PROXY`/`HTTPS_PROXY` som standard. Aktivera det med `NODE_USE_ENV_PROXY=1`:
+
+```bash
+HTTPS_PROXY=http://proxy.example.se:8080 NODE_USE_ENV_PROXY=1 raplp -f openapi.yaml --allowExternalRefs
+```
+</details>
+<br>
 
 ### Loggning i CLI-läge
 
