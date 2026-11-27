@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Digg - Agency for Digital Government
+//
+// SPDX-License-Identifier: EUPL-1.2
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -26,16 +29,13 @@ function getJUnitFilePath(inputFile, repoRoot) {
 }
 
 function escapeXml(value: string): string {
-  return (
-    value
-      // Ta bort tecken som inte är tillåtna i XML 1.0.
-      .replace(/[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\u{10000}-\u{10FFFF}]/gu, '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&apos;')
-  );
+  return value
+    .replace(/[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\u{10000}-\u{10FFFF}]/gu, '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
 
 export class junitReportProcessor {
@@ -84,8 +84,13 @@ export class junitReportProcessor {
   private createTestCase(rule: DiagnosticRule): string {
     const specPath = getJUnitFilePath(this.options.inputFilePath, process.env.CI_PROJECT_DIR ?? process.cwd());
 
-    const attributes = `classname="${rule.area}" ` + `name="${rule.id}" ` + `file="${specPath}"`;
+    const testCaseAttributes = [`classname="${escapeXml(rule.area)}"`, `name="${escapeXml(rule.id)}"`];
 
+    if (specPath !== undefined) {
+      testCaseAttributes.push(`file="${escapeXml(specPath)}"`);
+    }
+
+    const attributes = testCaseAttributes.join(' ');
     if (rule.status === 'OK') {
       return `    <testcase ${attributes} />`;
     }
