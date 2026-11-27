@@ -73,6 +73,13 @@
       "designRuleLink": "Designregel {{id}} i REST API-profilen",
       "invalidArgument": "Ogiltigt värde för --sarif. Ange en sökväg till en fil med filändelsen .sarif eller .json, t.ex. --sarif raplp.sarif"
     },
+    "junit": {
+      "notApplicable": "Regeln är inte tillämplig",
+      "ruleNotOk": "Regeln är inte godkänd.",
+      "unknownRulestatus": "Okänd regelstatus för",
+      "compliance": "RAP-LP - Följsamhet:",
+      "notCalculable": "Ej beräkningsbar"
+    },
     "help": {
       "options": "Alternativ:",
       "showHelp": "Visa hjälp",

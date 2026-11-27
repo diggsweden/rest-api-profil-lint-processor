@@ -5,12 +5,14 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { DiagnosticReport } from '../util/RapLPDiagnostic.js';
+import { Locale, translator } from '../i18n.js';
 
 type DiagnosticRule = DiagnosticReport['rules'][number];
 
 interface JUnitReportOptions {
   outputFilePath: string;
   inputFilePath: string;
+  locale: Locale;
 }
 
 function getJUnitFilePath(inputFile, repoRoot) {
@@ -43,24 +45,25 @@ export class junitReportProcessor {
 
   async generateReportDocument(reports: readonly DiagnosticReport[]): Promise<void> {
     const rules = reports.flatMap((report) => report.rules);
-
+    const t = translator(this.options.locale);
+    
     for (const rule of rules) {
-      if (rule.status !== 'OK' && rule.status !== 'EJ OK' && rule.status !== 'N/A') {
-        throw new Error(`Okänd regelstatus för ${rule.id}: ${rule.status}`);
+      if (rule.status !== t("common.ruleStatus.ok") && rule.status !== t("common.ruleStatus.notOk") && rule.status !== t("common.ruleStatus.notApplicable")) {
+        throw new Error(`${t("cli.junit.unknownRulestatus")} ${rule.id}: ${rule.status}`);
       }
     }
 
-    const passed = rules.filter((rule) => rule.status === 'OK').length;
+    const passed = rules.filter((rule) => rule.status === t("common.ruleStatus.ok")).length;
 
-    const failures = rules.filter((rule) => rule.status === 'EJ OK').length;
+    const failures = rules.filter((rule) => rule.status === t("common.ruleStatus.notOk")).length;
 
-    const skipped = rules.filter((rule) => rule.status === 'N/A').length;
+    const skipped = rules.filter((rule) => rule.status === t("common.ruleStatus.notApplicable")).length;
 
     const applicable = passed + failures;
 
-    const compliance = applicable > 0 ? `${((passed / applicable) * 100).toFixed(1)} %` : 'Ej beräkningsbar';
+    const compliance = applicable > 0 ? `${((passed / applicable) * 100).toFixed(1)} %` : t('cli.junit.notCalculable');
 
-    const suiteName = `RAP-LP – Följsamhet: ${compliance}`;
+    const suiteName = `${t("cli.junit.compliance")} ${compliance}`;
 
     const testCases = rules.map((rule) => this.createTestCase(rule)).join('\n');
 
@@ -82,6 +85,7 @@ export class junitReportProcessor {
   }
 
   private createTestCase(rule: DiagnosticRule): string {
+    const t = translator(this.options.locale);
     const specPath = getJUnitFilePath(this.options.inputFilePath, process.env.CI_PROJECT_DIR ?? process.cwd());
 
     const testCaseAttributes = [`classname="${escapeXml(rule.area)}"`, `name="${escapeXml(rule.id)}"`];
@@ -91,23 +95,23 @@ export class junitReportProcessor {
     }
 
     const attributes = testCaseAttributes.join(' ');
-    if (rule.status === 'OK') {
+    if (rule.status === t("common.ruleStatus.ok")) {
       return `    <testcase ${attributes} />`;
     }
 
-    if (rule.status === 'N/A') {
+    if (rule.status === t("common.ruleStatus.notApplicable")) {
       return [
         `    <testcase ${attributes}>`,
-        '      <skipped message="Regeln är inte tillämplig" />',
+        `      <skipped message="${t('cli.junit.notApplicable')}" />`,
         '    </testcase>',
       ].join('\n');
     }
 
-    const details = [rule.requirement, rule.helpUrl].filter(Boolean).join('\n\n') || 'Regeln är inte godkänd.';
+    const details = [rule.requirement, rule.helpUrl].filter(Boolean).join('\n\n') || t("cli.junit.ruleNotOk");
 
     return [
       `    <testcase ${attributes}>`,
-      `      <failure message="${escapeXml(`${rule.id}: EJ OK`)}">`,
+      `      <failure message="${escapeXml(`${rule.id}: ${t("common.ruleStatus.notOk")}`)}">`,
       escapeXml(details),
       '      </failure>',
       '    </testcase>',

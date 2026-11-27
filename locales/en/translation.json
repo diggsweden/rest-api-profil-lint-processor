@@ -72,6 +72,13 @@
       "designRuleLink": "Design rule {{id}} in the REST API profile",
       "invalidArgument": "Invalid value for --sarif. Specify a file path with the .sarif or .json extension, e.g. --sarif raplp.sarif"
     },
+    "junit": {
+      "notApplicable": "Rule was not applicable",
+      "ruleNotOk": "Rulestatus not OK.",
+      "unkownRulestatus": "Unknown rule status for",
+      "compliance": "RAP-LP - compliance:",
+      "notCalculable": "Not calculable"
+    },
     "help": {
       "options": "Options:",
       "showHelp": "Show help",

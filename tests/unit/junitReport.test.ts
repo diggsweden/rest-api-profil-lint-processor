@@ -49,6 +49,7 @@ describe('junitReportProcessor', () => {
     const processor = new junitReportProcessor({
       inputFilePath: specPath,
       outputFilePath,
+      locale: "sv",
     });
 
     await processor.generateReportDocument(reports);
