@@ -439,17 +439,17 @@ raplp -f openapi.yaml --sarif raplp.sarif
 <br>
 <details>
 <summary><strong>Validering som genererar JUnit xml rapport med gräns för följsamhet</strong></summary>
-För att spara information om regelutfall från diagnostiseringen till en JUnit xml-fil, lägg till `--junit`. 
+För att spara information om regelutfall från diagnostiseringen till en JUnit xml-fil, lägg till `--junit`.
 
 <br>
 
 **Exempel med minsta tillåtna följsamhet på 90%**
+
 ```bash
 raplp -f openapi.yaml --junit reports/raplp.xml
 ```
 
 </details>
-
 
 ---
 
