@@ -14,7 +14,11 @@ async function main() {
     const { RuleExecutionContext } = await import('../../dist/util/RuleExecutionContext.js');
 
     const context = new RuleExecutionContext('sv');
-    const res = await parseApiSpecInput(input, { strict: !!input.strict }, context);
+    const res = await parseApiSpecInput(
+      input,
+      { strict: !!input.strict, allowExternalRefs: !!input.allowExternalRefs },
+      context,
+    );
     console.log(JSON.stringify({ ok: true, result: res }));
     process.exit(0);
   } catch (err) {

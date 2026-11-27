@@ -10,6 +10,8 @@ import { RapLPCustomSpectralDiagnostic } from './RapLPCustomSpectralDiagnostic.j
 import { buildRuleHelpUrl } from '../rulesets/util/rules-doc.config.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
 import { translateRuleArea } from './ruleAreaTranslation.js';
+import { createExternalRefResolver } from './externalRefPolicy.js';
+import { translator } from '../i18n.js';
 
 class RapLPCustomSpectral {
   private spectral: SpectralCore.Spectral;
@@ -19,7 +21,8 @@ class RapLPCustomSpectral {
   };
   private instanceCategoryMap: Map<string, any>;
   constructor(private context: RuleExecutionContext) {
-    this.spectral = new Spectral();
+    // Only local files and https are resolved; http and other schemes are blocked.
+    this.spectral = new Spectral({ resolver: createExternalRefResolver(translator(context.locale)) });
     this.rules = {};
     this.instanceCategoryMap = new Map<string, any>();
   }

@@ -22,6 +22,7 @@ import { SpecParseError, SpecParseErrorSource} from './RapLPSpecParseError.js';
 import { Issue } from './Issue.js';
 import { RuleExecutionContext } from './RuleExecutionContext.js';
 import { translator } from '../i18n.js';
+import { isAllowedExternalRef } from './externalRefPolicy.js';
 
 /**
  * 
@@ -62,6 +63,11 @@ export type ParseOptions = {
   maxSnippetLength?: number;
   disableSanity?: boolean;
   strict?: boolean;
+  /**
+   * Allow external $refs. Only honoured for file input (CLI mode), where relative refs
+   * can be resolved against the spec file. Ignored for raw/parsed input (API mode).
+   */
+  allowExternalRefs?: boolean;
 };
 export type PreferJsonOption = 'auto' | 'never' | 'always';
 
@@ -111,12 +117,21 @@ export async function parseApiSpecInput(input: SpecInput,
   const strict = opts.strict ?? false; // Strict flag is normally set to false
   const t = translator(context.locale);
   
+  // Preserve the original source path for relative reference resolution.
+  // Spectral and swagger-parser resolve a relative path against the working directory themselves.
+  const sourcePath = 'filePath' in input ? input.filePath : undefined;
+  // External refs are only allowed for file input. Raw/parsed input (API mode) has no
+  // base path, so relative refs would be resolved against the server's own filesystem.
+  const allowExternalRefs = (opts.allowExternalRefs ?? false) && sourcePath !== undefined;
+
   if ('parsed' in input) { // Checks if content is alreay parsed
     const parsed = input.parsed;
     if (!isOpenApiLike(parsed)) {
       throw new SpecParseError(t('validation.invalidParsedOpenApi'),
          { source: 'unknown', stage: 'sanity' });
     }
+    //Make sure that parsed specification is secure
+    ensureIsSecureOpenApiLike(parsed, 'unknown', t, false);
     const serialized = JSON.stringify(parsed, null, 2); // Serialize raw format
     let strictIssues: Issue[] | undefined;
     if (strict) { 
@@ -199,7 +214,7 @@ export async function parseApiSpecInput(input: SpecInput,
   //Make sure parsed specification is OpenAPI like
   ensureIsOpenApiLike(parsedSpec,target, t);
   //Make sure parsed specification is a secure OpenAPI like
-  ensureIsSecureOpenApiLike(parsedSpec,target, t);
+  ensureIsSecureOpenApiLike(parsedSpec, target, t, allowExternalRefs);
   
   let issues: Issue[] | undefined;
   let prettyLines: string[] = [];
@@ -207,7 +222,7 @@ export async function parseApiSpecInput(input: SpecInput,
   if (strict) {
     try {
       //Run structural validation first (async run)
-      await runStrictValidationIfRequested(parsedSpec, target, t);
+      await runStrictValidationIfRequested(parsedSpec, target, t, allowExternalRefs ? sourcePath : undefined);
     }catch (err:any) {
         prettyLines = prettifySwaggerParserErrorToEditorStyle(
           err?.message ?? String(err), raw ?? '');
@@ -217,8 +232,7 @@ export async function parseApiSpecInput(input: SpecInput,
     try {
       // Build a Spectral Document from raw and the right parser so Spectral gets correct ranges      
       const parser: IParser<any> = (target === 'json' ? Parsers.Json : Parsers.Yaml) as unknown as IParser<any>;
-      const apiSpecDocument = new SpectralDocument(raw, parser, '');
-
+      const apiSpecDocument = new SpectralDocument(raw, parser, sourcePath ?? '');
       //Run sematic validation second(async)
       spectralDiagnostics = await semanticValidate(apiSpecDocument, context) as SpectralCore.ISpectralDiagnostic[]; 
     }catch (e: any) {
@@ -283,12 +297,17 @@ function stripLeadingCommentsAndWhitespace(raw: string): string {
   }
   return lines.slice(i).join('\n');
 }
-function ensureIsSecureOpenApiLike(parsed: any, target: any, t: ReturnType<typeof translator>) {
+function ensureIsSecureOpenApiLike(parsed: any, target: any, t: ReturnType<typeof translator>, allowExternalRefs = false) {
 
   const violations: string[] = [];
-  //Look for external $refs
-  if (findExternalRefs(parsed).length > 0) {
+  const externalRefs = findExternalRefs(parsed);
+  // Look for external $refs unless explicitly allowed.
+  if (!allowExternalRefs && externalRefs.length > 0) {
     violations.push(t('validation.externalRefsNotAllowed'));
+  }
+  // Even when allowed, only local files and https are permitted (http and other schemes are blocked).
+  if (allowExternalRefs && externalRefs.some((r) => !isAllowedExternalRef(r.ref))) {
+    violations.push(t('validation.externalRefSchemeNotAllowed'));
   }
   /*const details = externalRefs
     .map(ref => `${ref.path}: ${ref.ref}`)
@@ -412,9 +431,17 @@ export function getRawFromInput(input: SpecInput, t: ReturnType<typeof translato
  * Helper function (High level)
  * Run strict validation with @apidevtools/swagger-parser.
  */
-async function runStrictValidationIfRequested(parsed: any, source:'yaml' | 'json' | 'xml' | 'unknown' = 'unknown', t: ReturnType<typeof translator>): Promise<void> {
+async function runStrictValidationIfRequested(parsed: any, source:'yaml' | 'json' | 'xml' | 'unknown' = 'unknown', t: ReturnType<typeof translator>,
+  sourcePath?: string): Promise<void> {
   try {
-    await SwaggerParser.validate(parsed);
+    // With a source path, swagger-parser resolves relative refs against the spec file instead of the working directory.
+    if (sourcePath) {
+      // Same policy as the Spectral resolver: only https is fetched, http refs cannot be resolved.
+      const options = { resolve: { http: { canRead: /^https:\/\//i } } } as SwaggerParser.Options;
+      await SwaggerParser.validate(sourcePath, parsed, options);
+    } else {
+      await SwaggerParser.validate(parsed);
+    }    
   } catch (e: any) {
     // Encapsulate errors in SpecParseError so the rest of the system can handle them uniformly
     const msg = e?.message ? String(e.message) : String(e);
